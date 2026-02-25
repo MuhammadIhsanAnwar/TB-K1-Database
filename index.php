@@ -6,6 +6,6 @@
     <title>Document</title>
 </head>
 <body>
-    <H1>nopruy uhuyyy</h1>
+    <H1>nopruy suhuyyy</h1>
 </body>
 </html>
