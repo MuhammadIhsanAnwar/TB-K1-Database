@@ -35,19 +35,30 @@ body {
 }
 
 nav,
+.container,
 .bg-white,
-[class*="rounded"] {
+[class*="rounded"],
+section,
+div[class*="bg-white"],
+div[class*="bg-gray"] {
     background-color: var(--bg-surface);
 }
 
 .bg-gray-50,
-.bg-gray-100 {
+.bg-gray-100,
+body.bg-gray-50 {
     background-color: var(--bg-soft) !important;
 }
 
 .bg-indigo-50,
 .bg-blue-50 {
     background-color: var(--bg-muted) !important;
+}
+
+/* Override dark mode hardcoded classes */
+.dark .dark\:bg-gray-800,
+.dark .dark\:bg-gray-900 {
+    background-color: var(--bg-surface) !important;
 }
 
 .text-gray-900,
