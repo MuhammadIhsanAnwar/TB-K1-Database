@@ -266,13 +266,6 @@ function showToast(message, type = 'success') {
     }, 3000);
 }
 
-// Dark Mode Toggle
-document.getElementById('darkModeToggle')?.addEventListener('click', () => {
-    document.body.classList.toggle('dark');
-    const isDark = document.body.classList.contains('dark');
-    localStorage.setItem('darkMode', isDark);
-});
-
 // Notification Polling
 async function pollNotifications() {
     if (!state.token) return;
@@ -317,6 +310,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Check dark mode preference
     if (localStorage.getItem('darkMode') === 'true') {
         document.body.classList.add('dark');
+        // Update dark mode icon
+        const darkModeIcon = document.querySelector('#darkModeToggle i');
+        if (darkModeIcon) {
+            darkModeIcon.classList.remove('fa-moon');
+            darkModeIcon.classList.add('fa-sun');
+        }
     }
     
     // Add event listeners for navbar buttons
@@ -325,6 +324,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 // Setup Navbar Event Listeners
 function setupNavbarEvents() {
+    // Dark Mode Toggle
+    const darkModeToggle = document.getElementById('darkModeToggle');
+    if (darkModeToggle) {
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark');
+            const isDark = document.body.classList.contains('dark');
+            localStorage.setItem('darkMode', isDark);
+            
+            // Update icon
+            const icon = darkModeToggle.querySelector('i');
+            if (isDark) {
+                icon.classList.remove('fa-moon');
+                icon.classList.add('fa-sun');
+            } else {
+                icon.classList.remove('fa-sun');
+                icon.classList.add('fa-moon');
+            }
+        });
+    }
+    
     // Login button
     const loginBtn = document.getElementById('loginBtn');
     if (loginBtn) {
