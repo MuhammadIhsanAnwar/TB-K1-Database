@@ -1,213 +1,369 @@
-# 🚀 Quick Start Guide - Lapak Gaming
+# Quick Start Guide - Lapak Gaming Marketplace
 
-## Panduan Instalasi Cepat
+## 🚀 5-Minute Setup Guide
 
-### 1. Persiapan
-Pastikan terinstal:
-- Node.js (v16+)
-- MySQL (v8.0+)
-- npm atau yarn
+### Step 1: Database Setup (2 minutes)
 
-### 2. Setup Backend
+1. **Create MySQL Database in cPanel:**
+   ```
+   Database Name: neoz6813_TB-K1-Database
+   Username: neoz6813
+   Password: @Webihsananwar33
+   ```
 
-```bash
-# Masuk ke folder backend
-cd backend
+2. **Import Schema:**
+   - Open phpMyAdmin
+   - Select your database
+   - Click "Import"
+   - Choose `database.sql`
+   - Click "Go"
 
-# Install dependencies
-npm install
+### Step 2: Configure Files (1 minute)
 
-# Jalankan migrasi database (otomatis buat tabel)
-npm run migrate
+All configuration files are already set up with your credentials:
 
-# Jalankan server
-npm run dev
+- ✅ Database: `config/database.php`
+- ✅ Email: `config/mail.php`
+- ✅ App: `config/app.php`
+
+**⚠️ IMPORTANT**: Change `jwt_secret` in `config/app.php` for production!
+
+```php
+// config/app.php
+'jwt_secret' => 'your-unique-secret-key-here-2026',
 ```
 
-Server backend akan berjalan di: `http://localhost:5000`
+### Step 3: Set Document Root (1 minute)
 
-### 3. Setup Frontend
+In cPanel → Domains → Document Root:
 
-```bash
-# Buka terminal baru, masuk ke folder frontend
-cd frontend
-
-# Install dependencies
-npm install
-
-# Jalankan aplikasi
-npm run dev
+```
+/home/neoz6813/public_html/TB-K1-Database/public
 ```
 
-Frontend akan berjalan di: `http://localhost:3000`
+Or if in subdirectory, update `.htaccess` in root.
 
-## ✅ Akun Default
+### Step 4: Test Installation (1 minute)
 
-### Admin
-- Email: `admin@lapakgaming.neoverse.my.id`
-- Password: `admin123`
-
-### Testing
-Buat akun baru untuk buyer/seller melalui halaman register.
-Email verifikasi akan dikirim otomatis.
-
-## 📖 Fitur Utama
-
-### Sebagai Buyer (Pembeli)
-1. Browse produk dan kategori
-2. Tambah ke keranjang
-3. Checkout dan upload bukti bayar
-4. Chat dengan seller
-5. Beri rating & review
-6. Kelola wallet
-
-### Sebagai Seller (Penjual)
-1. Tambah produk digital
-2. Atur stok dan harga
-3. Terima pesanan
-4. Auto-delivery untuk produk digital
-5. Withdraw saldo
-6. Lihat analitik penjualan
-
-### Sebagai Admin
-1. Dashboard analytics lengkap
-2. Moderasi produk
-3. Manajemen user
-4. Approve deposit/withdrawal
-5. Handle dispute
-
-## 🔧 Konfigurasi (Sudah di-setup)
-
-### Database
-- Host: localhost
-- User: neoz6813
-- Password: @Webihsananwar33
-- Database: neoz6813_TB-K1-Database
-
-### Email (SMTP)
-- Host: lapakgaming.neoverse.my.id
-- Port: 465
-- User: administrator@lapakgaming.neoverse.my.id
-- Password: tbsbdk1database
-
-## 📚 API Documentation
-
-### Authentication Endpoints
+Visit your domain:
 ```
-POST /api/auth/register     - Daftar akun baru
-POST /api/auth/login        - Login
-POST /api/auth/verify-email - Verifikasi email
-POST /api/auth/logout       - Logout
+https://lapakgaming.neoverse.my.id
 ```
 
-### Product Endpoints
-```
-GET    /api/products           - List produk
-GET    /api/products/:id       - Detail produk
-POST   /api/products           - Buat produk (seller)
-PUT    /api/products/:id       - Update produk
-DELETE /api/products/:id       - Hapus produk
-```
-
-### Order Endpoints
-```
-POST /api/orders                    - Buat order
-GET  /api/orders/buyer/my-orders    - Order buyer
-GET  /api/orders/seller/my-orders   - Order seller
-PUT  /api/orders/:id/confirm        - Konfirmasi order
-```
-
-### Wallet Endpoints
-```
-GET  /api/wallet              - Info wallet
-GET  /api/wallet/transactions - Riwayat transaksi
-POST /api/wallet/deposit      - Request deposit
-POST /api/wallet/withdraw     - Request withdraw
-```
-
-## 🎯 Alur Transaksi
-
-1. **Buyer** membuat order
-2. Platform hold dana di escrow
-3. **Seller** proses dan kirim item
-4. **Buyer** konfirmasi terima item
-5. Dana diteruskan ke wallet **Seller**
-6. Platform ambil fee (default 5%)
-
-## 💬 Chat Real-time
-
-Menggunakan WebSocket untuk komunikasi:
-- Chat buyer dengan seller
-- Real-time messaging
-- Typing indicator
-- Read receipts
-
-## 🎨 Theme
-
-Aplikasi support dark/light mode:
-- Toggle di navbar
-- Otomatis save preference
-- Responsive untuk mobile
-
-## ⚡ Tips Development
-
-### Hot Reload
-Kedua server support hot reload:
-- Backend: nodemon
-- Frontend: Next.js dev mode
-
-### Debug
-```bash
-# Backend logs
-npm run dev
-
-# Frontend logs
-npm run dev
-```
-
-### Build Production
-```bash
-# Backend
-npm start
-
-# Frontend
-npm run build && npm start
-```
-
-## 🐛 Troubleshooting
-
-### Port sudah digunakan
-```bash
-# Ganti port di .env backend
-PORT=5001
-
-# Ganti port frontend
-npm run dev -- -p 3001
-```
-
-### Database error
-```bash
-# Reset database
-npm run migrate
-```
-
-### Email tidak terkirim
-- Cek koneksi internet
-- Verify SMTP credentials
-- Cek spam folder
-
-## 📞 Support
-
-Jika ada error atau pertanyaan:
-1. Cek console browser (F12)
-2. Cek terminal backend
-3. Lihat error message
-4. Baca dokumentasi README.md
-
-## 🎊 Selamat Mencoba!
-
-Website marketplace digital siap digunakan. Silakan explore semua fitur yang tersedia!
+You should see the homepage!
 
 ---
 
-**Made with ❤️ for TB-K1-Database Project**
+## 🧪 Testing the System
+
+### Test 1: Login as Admin
+
+1. Go to: `/login`
+2. Email: `admin@lapakgaming.neoverse.my.id`
+3. Password: `password`
+4. Click "Sign in"
+5. You should be redirected to admin dashboard
+
+### Test 2: API Test (Using curl or Postman)
+
+#### Register New User
+```bash
+curl -X POST https://lapakgaming.neoverse.my.id/api/auth/register \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "testbuyer@example.com",
+    "username": "testbuyer",
+    "password": "SecurePass123",
+    "full_name": "Test Buyer",
+    "phone": "081234567890",
+    "role": "buyer"
+  }'
+```
+
+#### Login
+```bash
+curl -X POST https://lapakgaming.neoverse.my.id/api/auth/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "buyer@demo.com",
+    "password": "password"
+  }'
+```
+
+**Expected Response:**
+```json
+{
+  "success": true,
+  "message": "Login successful",
+  "data": {
+    "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+    "refresh_token": "abc123...",
+    "user": {
+      "id": 3,
+      "email": "buyer@demo.com",
+      "username": "demo_buyer",
+      "role": "buyer"
+    }
+  }
+}
+```
+
+#### Get Products
+```bash
+curl https://lapakgaming.neoverse.my.id/api/products
+```
+
+#### Get User Profile (Authenticated)
+```bash
+curl https://lapakgaming.neoverse.my.id/api/user/profile \
+  -H "Authorization: Bearer YOUR_ACCESS_TOKEN_HERE"
+```
+
+### Test 3: Complete Buyer Flow
+
+1. **Register/Login as Buyer**
+   - Use demo buyer: `buyer@demo.com` / `password`
+
+2. **Check Wallet Balance**
+   ```bash
+   curl https://lapakgaming.neoverse.my.id/api/wallet \
+     -H "Authorization: Bearer YOUR_TOKEN"
+   ```
+
+3. **Browse Products**
+   - Visit: `/products`
+   - Click on a product
+
+4. **Purchase Product**
+   ```bash
+   curl -X POST https://lapakgaming.neoverse.my.id/api/orders \
+     -H "Authorization: Bearer YOUR_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "product_id": 1,
+       "quantity": 1,
+       "payment_method": "wallet",
+       "notes": "Please deliver ASAP"
+     }'
+   ```
+
+5. **Check Order Status**
+   ```bash
+   curl https://lapakgaming.neoverse.my.id/api/orders \
+     -H "Authorization: Bearer YOUR_TOKEN"
+   ```
+
+### Test 4: Complete Seller Flow
+
+1. **Login as Seller**
+   - Use demo seller: `seller@demo.com` / `password`
+
+2. **Create Product**
+   ```bash
+   curl -X POST https://lapakgaming.neoverse.my.id/api/products \
+     -H "Authorization: Bearer YOUR_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "name": "Test Product - Mobile Legends Account",
+       "description": "High tier account with many skins",
+       "price": 500000,
+       "discount_price": 450000,
+       "category_id": 6,
+       "product_type": "account",
+       "delivery_method": "manual",
+       "stock_type": "limited",
+       "stock_quantity": 1
+     }'
+   ```
+
+3. **View Seller Orders**
+   ```bash
+   curl https://lapakgaming.neoverse.my.id/api/seller/orders \
+     -H "Authorization: Bearer YOUR_TOKEN"
+   ```
+
+4. **Deliver Order**
+   ```bash
+   curl -X POST https://lapakgaming.neoverse.my.id/api/orders/1/deliver \
+     -H "Authorization: Bearer YOUR_TOKEN" \
+     -H "Content-Type: application/json" \
+     -d '{
+       "digital_items": {
+         "email": "account@example.com",
+         "password": "AccountPassword123",
+         "note": "Please change password after login"
+       }
+     }'
+   ```
+
+5. **Check Wallet (After Buyer Confirms)**
+   ```bash
+   curl https://lapakgaming.neoverse.my.id/api/wallet \
+     -H "Authorization: Bearer YOUR_TOKEN"
+   ```
+
+---
+
+## 📱 Frontend Testing
+
+### Homepage Features
+- ✅ Browse categories
+- ✅ View featured products
+- ✅ Search products (real-time AJAX)
+- ✅ Dark mode toggle
+- ✅ Responsive design
+
+### User Dashboard
+- ✅ View wallet balance
+- ✅ Recent orders
+- ✅ Order tracking
+- ✅ Notifications (polling every 3s)
+- ✅ Chat system
+
+### Seller Dashboard
+- ✅ Product management (CRUD)
+- ✅ Order management
+- ✅ Sales analytics
+- ✅ Wallet/earnings
+- ✅ Seller level badge
+
+### Admin Dashboard
+- ✅ Platform statistics
+- ✅ User management
+- ✅ Product moderation
+- ✅ Order monitoring
+- ✅ Dispute resolution
+
+---
+
+## 🔐 Security Checklist
+
+Before going live:
+
+- [ ] Change JWT secret in `config/app.php`
+- [ ] Change all default passwords
+- [ ] Enable SSL certificate (Let's Encrypt)
+- [ ] Verify email SMTP settings
+- [ ] Test email delivery
+- [ ] Set restrictive file permissions (644 for files, 755 for directories)
+- [ ] Disable directory listing (already done in .htaccess)
+- [ ] Review error logging settings
+- [ ] Test all payment flows
+- [ ] Test escrow system
+
+---
+
+## 🐛 Common Issues & Solutions
+
+### Issue: "Route not found" on all pages
+
+**Cause**: mod_rewrite not enabled or .htaccess not working
+
+**Solution**:
+1. Check if mod_rewrite is enabled in Apache
+2. Verify .htaccess files exist in root and `/public`
+3. Check AllowOverride directive in Apache config
+
+### Issue: "Database connection failed"
+
+**Cause**: Incorrect credentials or database doesn't exist
+
+**Solution**:
+1. Verify database name, username, password in `config/database.php`
+2. Ensure database exists in cPanel MySQL
+3. Grant all privileges to user on database
+
+### Issue: Email not sending
+
+**Cause**: SMTP settings incorrect
+
+**Solution**:
+1. Verify SMTP credentials in `config/mail.php`
+2. Test SMTP connection from cPanel
+3. Check if port 465 is open (SSL)
+4. Try port 587 (TLS) if 465 fails
+
+### Issue: JWT decode errors
+
+**Cause**: Token expired or invalid
+
+**Solution**:
+1. Clear browser localStorage
+2. Login again to get new token
+3. Use refresh token endpoint to get new access token
+
+### Issue: 500 Internal Server Error
+
+**Cause**: PHP errors
+
+**Solution**:
+1. Enable error reporting in PHP (dev only):
+   ```php
+   error_reporting(E_ALL);
+   ini_set('display_errors', 1);
+   ```
+2. Check PHP error logs in cPanel
+3. Verify PHP version is 8.0+
+
+---
+
+## 📊 Monitoring & Maintenance
+
+### Daily Tasks
+- [ ] Check new user registrations
+- [ ] Review disputed orders
+- [ ] Monitor email deliverability
+- [ ] Check error logs
+
+### Weekly Tasks
+- [ ] Review platform revenue
+- [ ] Verify seller withdrawals
+- [ ] Update featured products
+- [ ] Analyze sales trends
+
+### Monthly Tasks
+- [ ] Backup database
+- [ ] Review security logs
+- [ ] Update seller levels
+- [ ] Generate reports
+
+---
+
+## 🎯 Next Steps
+
+1. **Customize Design**
+   - Update logo in `app/views/home.php`
+   - Modify color scheme in TailwindCSS
+   - Add custom CSS in `public/assets/css/`
+
+2. **Add Payment Gateway**
+   - Integrate Midtrans/Xendit
+   - Update deposit/withdrawal logic
+   - Add payment proof upload
+
+3. **Enhance Features**
+   - Add product image upload
+   - Implement PDF invoice
+   - Add advanced analytics
+   - Enable two-factor authentication
+
+4. **Marketing**
+   - SEO optimization
+   - Social media integration
+   - Affiliate system
+   - Email marketing
+
+---
+
+## 📞 Support
+
+For technical issues:
+- Email: administrator@lapakgaming.neoverse.my.id
+- Check README.md for detailed documentation
+- Review inline code comments
+
+---
+
+**Congratulations! Your marketplace is ready to launch! 🚀**
+
+Remember to change default passwords and JWT secret before going live!
