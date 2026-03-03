@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Products - Lapak Gaming</title>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/theme.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
@@ -18,6 +22,9 @@
                 <div class="flex items-center space-x-4">
                     <a href="/" class="text-gray-700 hover:text-indigo-600">Home</a>
                     <a href="/products" class="text-indigo-600 font-semibold">Products</a>
+                    <button id="darkModeToggle" class="text-gray-600 hover:text-gray-900" aria-label="Toggle dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
                     <a href="/login" class="bg-indigo-600 text-white px-4 py-2 rounded-lg hover:bg-indigo-700">Login</a>
                 </div>
             </div>
@@ -109,6 +116,7 @@
         </div>
     </div>
 
+    <script src="/assets/js/theme.js"></script>
     <script>
         const API_BASE = window.location.origin + '/api';
         let currentPage = 1;

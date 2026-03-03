@@ -1,0 +1,70 @@
+html,
+body {
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.dark body,
+body.dark {
+    background-color: #111827 !important;
+    color: #f3f4f6 !important;
+}
+
+.dark nav {
+    background-color: #1f2937 !important;
+}
+
+.dark .bg-white {
+    background-color: #1f2937 !important;
+}
+
+.dark .bg-gray-50 {
+    background-color: #111827 !important;
+}
+
+.dark .text-gray-900 {
+    color: #f9fafb !important;
+}
+
+.dark .text-gray-700 {
+    color: #e5e7eb !important;
+}
+
+.dark .text-gray-600,
+.dark .text-gray-500 {
+    color: #d1d5db !important;
+}
+
+.dark .border,
+.dark .border-b,
+.dark .border-t,
+.dark .border-gray-300 {
+    border-color: #374151 !important;
+}
+
+.dark input,
+.dark select,
+.dark textarea {
+    background-color: #374151 !important;
+    border-color: #4b5563 !important;
+    color: #f9fafb !important;
+}
+
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #9ca3af !important;
+}
+
+.dark table tr {
+    border-color: #374151 !important;
+}
+
+.dark .hover\:bg-gray-100:hover {
+    background-color: #374151 !important;
+}
+
+.dark .shadow,
+.dark .shadow-lg,
+.dark .shadow-xl,
+.dark .shadow-2xl {
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.35) !important;
+}

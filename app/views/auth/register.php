@@ -4,11 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Lapak Gaming</title>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="/assets/css/theme.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gradient-to-br from-indigo-500 to-purple-600 min-h-screen flex items-center justify-center p-4">
+    <button id="darkModeToggle" class="fixed top-4 right-4 z-50 bg-white text-gray-700 px-3 py-2 rounded-lg shadow" aria-label="Toggle dark mode">
+        <i class="fas fa-moon"></i>
+    </button>
     <div class="bg-white rounded-2xl shadow-2xl w-full max-w-md p-8">
         <div class="text-center mb-8">
             <a href="/" class="text-3xl font-bold text-indigo-600">
@@ -96,6 +103,7 @@
         </div>
     </div>
 
+    <script src="/assets/js/theme.js"></script>
     <script>
         const API_BASE = window.location.origin + '/api';
 

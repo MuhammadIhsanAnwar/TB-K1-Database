@@ -11,6 +11,7 @@
     </script>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link rel="stylesheet" href="/assets/css/theme.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         .skeleton { animation: skeleton-loading 1s linear infinite alternate; }
@@ -172,6 +173,7 @@
         </div>
     </footer>
 
+    <script src="/assets/js/theme.js"></script>
     <script src="/assets/js/app.js"></script>
 </body>
 </html>

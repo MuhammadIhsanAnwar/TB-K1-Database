@@ -4,7 +4,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard - Lapak Gaming</title>
+    <script>
+        tailwind.config = { darkMode: 'class' };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/assets/css/theme.css">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
@@ -17,6 +21,9 @@
                 </a>
                 <div class="flex items-center space-x-4">
                     <a href="/dashboard" class="text-indigo-600 font-semibold">Dashboard</a>
+                    <button id="darkModeToggle" class="text-gray-600 hover:text-gray-900" aria-label="Toggle dark mode">
+                        <i class="fas fa-moon"></i>
+                    </button>
                     <button id="logoutBtn" class="text-red-600 hover:text-red-700">
                         <i class="fas fa-sign-out-alt mr-2"></i>Logout
                     </button>
@@ -71,6 +78,7 @@
         </div>
     </div>
 
+    <script src="/assets/js/theme.js"></script>
     <script>
         const API_BASE = window.location.origin + '/api';
         const token = localStorage.getItem('access_token');
