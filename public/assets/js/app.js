@@ -318,4 +318,54 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (localStorage.getItem('darkMode') === 'true') {
         document.body.classList.add('dark');
     }
+    
+    // Add event listeners for navbar buttons
+    setupNavbarEvents();
 });
+
+// Setup Navbar Event Listeners
+function setupNavbarEvents() {
+    // Login button
+    const loginBtn = document.getElementById('loginBtn');
+    if (loginBtn) {
+        loginBtn.addEventListener('click', () => {
+            window.location.href = '/login';
+        });
+    }
+    
+    // Notification button
+    const notificationBtn = document.getElementById('notificationBtn');
+    if (notificationBtn) {
+        notificationBtn.addEventListener('click', () => {
+            if (!state.token) {
+                alert('Please login to view notifications');
+                window.location.href = '/login';
+                return;
+            }
+            // TODO: Show notification dropdown
+            alert('Notifications feature will open here');
+        });
+    }
+    
+    // Chat button
+    const chatBtn = document.getElementById('chatBtn');
+    if (chatBtn) {
+        chatBtn.addEventListener('click', () => {
+            if (!state.token) {
+                alert('Please login to access chat');
+                window.location.href = '/login';
+                return;
+            }
+            // TODO: Open chat modal or redirect to chat page
+            alert('Chat feature will open here');
+        });
+    }
+    
+    // User dropdown toggle
+    const userDropdown = document.getElementById('userDropdown');
+    if (userDropdown && state.user) {
+        userDropdown.addEventListener('click', () => {
+            window.location.href = '/dashboard';
+        });
+    }
+}

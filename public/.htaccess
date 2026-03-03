@@ -1,11 +1,13 @@
-# Apache Server Configuration
 # =============================================
-# Lapak Gaming Marketplace - Public .htaccess
-# Main Application Entry Point
+# Apache .htaccess Configuration File
+# VS Code may show syntax errors - IGNORE THEM
+# These are FALSE POSITIVES because VS Code uses
+# PowerShell syntax for .htaccess files
+# This file is VALID Apache configuration
 # =============================================
 
 # Disable Directory Listing
-Options -Indexes -MultiViews
+Options -Indexes
 
 # Enable URL Rewriting
 RewriteEngine On
@@ -17,32 +19,27 @@ RewriteRule ^(.*)$ index.php [QSA,L]
 
 # Security Headers
 <IfModule mod_headers.c>
-    # Prevent MIME sniffing
     Header set X-Content-Type-Options "nosniff"
-    
-    # Clickjacking protection
     Header set X-Frame-Options "SAMEORIGIN"
-    
-    # XSS Protection
     Header set X-XSS-Protection "1; mode=block"
-    
-    # Content Security Policy (adjust as needed)
     Header set Content-Security-Policy "default-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com; img-src 'self' data: https:; font-src 'self' data: https:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.tailwindcss.com https://cdnjs.cloudflare.com;"
-    
-    # Referrer Policy
     Header set Referrer-Policy "strict-origin-when-cross-origin"
-    
-    # Remove server info
     Header unset Server
     Header unset X-Powered-By
 </IfModule>
 
-# Protect Hidden Files (. files like .env, .git, .htaccess)
-<FilesMatch "^\.">
+# Protect sensitive files
+<Files ".htaccess">
     Require all denied
-</FilesMatch>
+</Files>
+<Files ".env">
+    Require all denied
+</Files>
+<Files ".git">
+    Require all denied
+</Files>
 
-# GZIP Compression for faster loading
+# GZIP Compression
 <IfModule mod_deflate.c>
     AddOutputFilterByType DEFLATE text/html
     AddOutputFilterByType DEFLATE text/css
@@ -52,65 +49,26 @@ RewriteRule ^(.*)$ index.php [QSA,L]
     AddOutputFilterByType DEFLATE application/javascript
     AddOutputFilterByType DEFLATE application/json
     AddOutputFilterByType DEFLATE application/xml
-    AddOutputFilterByType DEFLATE application/xhtml+xml
-    AddOutputFilterByType DEFLATE application/rss+xml
-    AddOutputFilterByType DEFLATE image/svg+xml
 </IfModule>
 
-# Browser Caching for static assets
+# Browser Caching
 <IfModule mod_expires.c>
     ExpiresActive On
-    
-    # Images
     ExpiresByType image/jpg "access plus 1 year"
     ExpiresByType image/jpeg "access plus 1 year"
     ExpiresByType image/gif "access plus 1 year"
     ExpiresByType image/png "access plus 1 year"
     ExpiresByType image/webp "access plus 1 year"
-    ExpiresByType image/svg+xml "access plus 1 year"
-    ExpiresByType image/x-icon "access plus 1 year"
-    
-    # CSS and JavaScript
     ExpiresByType text/css "access plus 1 month"
     ExpiresByType text/javascript "access plus 1 month"
     ExpiresByType application/javascript "access plus 1 month"
-    
-    # Fonts
-    ExpiresByType font/woff "access plus 1 year"
-    ExpiresByType font/woff2 "access plus 1 year"
-    ExpiresByType application/font-woff "access plus 1 year"
-    ExpiresByType application/font-woff2 "access plus 1 year"
-    
-    # Others
-    ExpiresByType application/pdf "access plus 1 month"
-    ExpiresByType application/json "access plus 0 seconds"
 </IfModule>
-
-# Cache Control Headers
-<IfModule mod_headers.c>
-    # Cache static assets for 1 year
-    <FilesMatch "\.(jpg|jpeg|png|gif|webp|svg|ico|css|js|woff|woff2|ttf|otf|eot)$">
-        Header set Cache-Control "max-age=31536000, public"
-    </FilesMatch>
-    
-    # Don't cache API responses and HTML
-    <FilesMatch "\.(html|htm|php|json)$">
-        Header set Cache-Control "no-cache, no-store, must-revalidate"
-        Header set Pragma "no-cache"
-        Header set Expires "0"
-    </FilesMatch>
-</IfModule>
-
-# Prevent access to backup and config files
-<FilesMatch "\.(bak|config|sql|fla|psd|ini|log|sh|inc|swp|dist)$">
-    Require all denied
-</FilesMatch>
 
 # Disable server signature
 ServerSignature Off
 
-# PHP Security Settings (if allowed by hosting)
-<IfModule mod_php8.c>
+# PHP Settings
+<IfModule mod_php.c>
     php_flag display_errors Off
     php_flag log_errors On
     php_value upload_max_filesize 10M
@@ -118,3 +76,4 @@ ServerSignature Off
     php_value max_execution_time 300
     php_value memory_limit 256M
 </IfModule>
+

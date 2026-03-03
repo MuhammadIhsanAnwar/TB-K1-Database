@@ -23,7 +23,7 @@
                     <div class="hidden md:flex space-x-6">
                         <a href="/" class="text-gray-700 hover:text-indigo-600">Home</a>
                         <a href="/products" class="text-gray-700 hover:text-indigo-600">Products</a>
-                        <a href="#" class="text-gray-700 hover:text-indigo-600">Categories</a>
+                        <a href="/products" class="text-gray-700 hover:text-indigo-600">Categories</a>
                     </div>
                 </div>
                 
@@ -44,14 +44,14 @@
                     </button>
                     
                     <div class="relative" id="notificationDropdown">
-                        <button class="text-gray-600 hover:text-gray-900 relative">
+                        <button id="notificationBtn" class="text-gray-600 hover:text-gray-900 relative">
                             <i class="fas fa-bell text-xl"></i>
                             <span id="notifBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">0</span>
                         </button>
                     </div>
                     
                     <div class="relative" id="chatDropdown">
-                        <button class="text-gray-600 hover:text-gray-900 relative">
+                        <button id="chatBtn" class="text-gray-600 hover:text-gray-900 relative">
                             <i class="fas fa-comments text-xl"></i>
                             <span id="chatBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">0</span>
                         </button>
