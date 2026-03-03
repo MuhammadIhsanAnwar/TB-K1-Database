@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Orders - Lapak Gaming</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
@@ -117,17 +118,42 @@
         }
 
         async function confirmOrder(orderId) {
-            if (!confirm('Confirm that you have received the digital items?')) return;
+            const result = await Swal.fire({
+                icon: 'question',
+                title: 'Confirm Delivery',
+                text: 'Confirm that you have received the digital items?',
+                showCancelButton: true,
+                confirmButtonText: 'Yes, Confirm',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#16a34a'
+            });
+
+            if (!result.isConfirmed) return;
             
             try {
-                await fetch(API_BASE + `/orders/${orderId}/confirm`, {
+                const response = await fetch(API_BASE + `/orders/${orderId}/confirm`, {
                     method: 'POST',
                     headers: { 'Authorization': `Bearer ${token}` }
                 });
-                alert('Order confirmed! Payment released to seller.');
+
+                if (!response.ok) {
+                    throw new Error('Failed to confirm order');
+                }
+
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Order confirmed! Payment released to seller.',
+                    confirmButtonColor: '#4f46e5'
+                });
                 loadOrders();
             } catch (error) {
-                alert('Failed to confirm order');
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Failed',
+                    text: 'Failed to confirm order',
+                    confirmButtonColor: '#4f46e5'
+                });
             }
         }
 

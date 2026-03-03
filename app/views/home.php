@@ -4,16 +4,22 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lapak Gaming - Digital Marketplace</title>
+    <script>
+        tailwind.config = {
+            darkMode: 'class'
+        };
+    </script>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
     <style>
         .skeleton { animation: skeleton-loading 1s linear infinite alternate; }
         @keyframes skeleton-loading { 0% { background-color: hsl(200, 20%, 80%); } 100% { background-color: hsl(200, 20%, 95%); } }
     </style>
 </head>
-<body class="bg-gray-50">
+<body class="bg-gray-50 text-gray-900 dark:bg-gray-900 dark:text-gray-100 transition-colors duration-200">
     <!-- Navbar -->
-    <nav class="bg-white shadow-lg sticky top-0 z-50">
+    <nav class="bg-white shadow-lg sticky top-0 z-50 dark:bg-gray-800">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center py-4">
                 <div class="flex items-center space-x-8">
@@ -21,9 +27,9 @@
                         <i class="fas fa-gamepad"></i> Lapak Gaming
                     </a>
                     <div class="hidden md:flex space-x-6">
-                        <a href="/" class="text-gray-700 hover:text-indigo-600">Home</a>
-                        <a href="/products" class="text-gray-700 hover:text-indigo-600">Products</a>
-                        <a href="/products" class="text-gray-700 hover:text-indigo-600">Categories</a>
+                        <a href="/" class="text-gray-700 hover:text-indigo-600 dark:text-gray-200 dark:hover:text-indigo-400">Home</a>
+                        <a href="/products" class="text-gray-700 hover:text-indigo-600 dark:text-gray-200 dark:hover:text-indigo-400">Products</a>
+                        <a href="/products" class="text-gray-700 hover:text-indigo-600 dark:text-gray-200 dark:hover:text-indigo-400">Categories</a>
                     </div>
                 </div>
                 
@@ -31,27 +37,27 @@
                 <div class="flex-1 max-w-md mx-8 hidden lg:block">
                     <div class="relative">
                         <input type="text" id="searchInput" placeholder="Search products..."
-                               class="w-full px-4 py-2 pl-10 rounded-lg border focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                               class="w-full px-4 py-2 pl-10 rounded-lg border focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white text-gray-900 dark:bg-gray-700 dark:text-gray-100 dark:border-gray-600">
                         <i class="fas fa-search absolute left-3 top-3 text-gray-400"></i>
-                        <div id="searchResults" class="absolute w-full bg-white mt-2 rounded-lg shadow-lg hidden max-h-96 overflow-y-auto"></div>
+                           <div id="searchResults" class="absolute w-full bg-white mt-2 rounded-lg shadow-lg hidden max-h-96 overflow-y-auto dark:bg-gray-800"></div>
                     </div>
                 </div>
                 
                 <!-- User Menu -->
                 <div class="flex items-center space-x-4">
-                    <button id="darkModeToggle" class="text-gray-600 hover:text-gray-900">
+                    <button id="darkModeToggle" class="text-gray-600 hover:text-gray-900 dark:text-gray-200 dark:hover:text-white">
                         <i class="fas fa-moon"></i>
                     </button>
                     
                     <div class="relative" id="notificationDropdown">
-                        <button id="notificationBtn" class="text-gray-600 hover:text-gray-900 relative">
+                        <button id="notificationBtn" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-200 dark:hover:text-white">
                             <i class="fas fa-bell text-xl"></i>
                             <span id="notifBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">0</span>
                         </button>
                     </div>
                     
                     <div class="relative" id="chatDropdown">
-                        <button id="chatBtn" class="text-gray-600 hover:text-gray-900 relative">
+                        <button id="chatBtn" class="text-gray-600 hover:text-gray-900 relative dark:text-gray-200 dark:hover:text-white">
                             <i class="fas fa-comments text-xl"></i>
                             <span id="chatBadge" class="hidden absolute -top-1 -right-1 bg-red-500 text-white rounded-full w-5 h-5 text-xs flex items-center justify-center">0</span>
                         </button>
@@ -90,7 +96,7 @@
     </section>
 
     <!-- Categories -->
-    <section class="py-12 bg-white">
+    <section class="py-12 bg-white dark:bg-gray-800">
         <div class="container mx-auto px-4">
             <h2 class="text-3xl font-bold mb-8 text-center">Popular Categories</h2>
             <div id="categoriesGrid" class="grid grid-cols-2 md:grid-cols-5 gap-6">
@@ -105,14 +111,14 @@
     </section>
 
     <!-- Featured Products -->
-    <section class="py-12">
+    <section class="py-12 dark:bg-gray-900">
         <div class="container mx-auto px-4">
             <div class="flex justify-between items-center mb-8">
                 <h2 class="text-3xl font-bold">Featured Products</h2>
                 <div class="space-x-4">
                     <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg">Popular</button>
-                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg">Latest</button>
-                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg">Top Rated</button>
+                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-100">Latest</button>
+                    <button class="px-4 py-2 bg-gray-200 text-gray-700 rounded-lg dark:bg-gray-700 dark:text-gray-100">Top Rated</button>
                 </div>
             </div>
             

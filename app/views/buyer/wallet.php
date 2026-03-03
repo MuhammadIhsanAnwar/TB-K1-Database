@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Wallet - Lapak Gaming</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
@@ -155,7 +156,7 @@
             const data = Object.fromEntries(formData);
             
             try {
-                await fetch(API_BASE + '/wallet/deposit', {
+                const response = await fetch(API_BASE + '/wallet/deposit', {
                     method: 'POST',
                     headers: { 
                         'Authorization': `Bearer ${token}`,
@@ -163,11 +164,26 @@
                     },
                     body: JSON.stringify(data)
                 });
-                alert('Deposit successful!');
+
+                if (!response.ok) {
+                    throw new Error('Deposit failed');
+                }
+
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Deposit successful!',
+                    confirmButtonColor: '#4f46e5'
+                });
                 e.target.reset();
                 loadWallet();
             } catch (error) {
-                alert('Deposit failed');
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Failed',
+                    text: 'Deposit failed',
+                    confirmButtonColor: '#4f46e5'
+                });
             }
         });
 
@@ -177,7 +193,7 @@
             const data = { ...Object.fromEntries(formData), account_name: 'User' };
             
             try {
-                await fetch(API_BASE + '/wallet/withdraw', {
+                const response = await fetch(API_BASE + '/wallet/withdraw', {
                     method: 'POST',
                     headers: { 
                         'Authorization': `Bearer ${token}`,
@@ -185,11 +201,26 @@
                     },
                     body: JSON.stringify(data)
                 });
-                alert('Withdrawal request submitted!');
+
+                if (!response.ok) {
+                    throw new Error('Withdrawal failed');
+                }
+
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Withdrawal request submitted!',
+                    confirmButtonColor: '#4f46e5'
+                });
                 e.target.reset();
                 loadWallet();
             } catch (error) {
-                alert('Withdrawal failed');
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Failed',
+                    text: 'Withdrawal failed',
+                    confirmButtonColor: '#4f46e5'
+                });
             }
         });
 

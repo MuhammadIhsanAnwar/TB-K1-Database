@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Register - Lapak Gaming</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gradient-to-br from-indigo-500 to-purple-600 min-h-screen flex items-center justify-center p-4">
@@ -129,7 +130,12 @@
                 }
                 
                 // Show success and redirect
-                alert('Registration successful! Please check your email to verify your account.');
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Registration Successful',
+                    text: 'Please check your email to verify your account.',
+                    confirmButtonColor: '#4f46e5'
+                });
                 window.location.href = '/login';
                 
             } catch (error) {

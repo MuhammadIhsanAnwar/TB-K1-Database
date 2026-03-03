@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Detail - Lapak Gaming</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
@@ -187,25 +188,45 @@
             return colors[level] || 'gray-200';
         }
 
-        function buyNow() {
+        async function buyNow() {
             const token = localStorage.getItem('access_token');
             if (!token) {
-                alert('Please login to make a purchase');
+                await Swal.fire({
+                    icon: 'warning',
+                    title: 'Login Required',
+                    text: 'Please login to make a purchase',
+                    confirmButtonColor: '#4f46e5'
+                });
                 window.location.href = '/login';
                 return;
             }
             // Redirect to order page
-            alert('This will redirect to checkout. Feature coming soon!');
+            await Swal.fire({
+                icon: 'info',
+                title: 'Checkout',
+                text: 'This will redirect to checkout. Feature coming soon!',
+                confirmButtonColor: '#4f46e5'
+            });
         }
 
-        function chatSeller() {
+        async function chatSeller() {
             const token = localStorage.getItem('access_token');
             if (!token) {
-                alert('Please login to chat with seller');
+                await Swal.fire({
+                    icon: 'warning',
+                    title: 'Login Required',
+                    text: 'Please login to chat with seller',
+                    confirmButtonColor: '#4f46e5'
+                });
                 window.location.href = '/login';
                 return;
             }
-            alert('Chat feature coming soon!');
+            await Swal.fire({
+                icon: 'info',
+                title: 'Chat',
+                text: 'Chat feature coming soon!',
+                confirmButtonColor: '#4f46e5'
+            });
         }
 
         loadProductDetail();

@@ -9,6 +9,24 @@ const state = {
     refreshToken: localStorage.getItem('refresh_token')
 };
 
+function showSweetAlert({
+    icon = 'info',
+    title = 'Info',
+    text = ''
+}) {
+    if (window.Swal) {
+        return Swal.fire({
+            icon,
+            title,
+            text,
+            confirmButtonColor: '#4f46e5'
+        });
+    }
+
+    console.warn('SweetAlert2 is not loaded. Message:', text || title);
+    return Promise.resolve();
+}
+
 // API Helper
 async function apiCall(endpoint, options = {}) {
     const headers = {
@@ -106,10 +124,10 @@ async function loadCategories() {
         
         grid.innerHTML = data.data.categories.slice(0, 5).map(cat => `
             <a href="/products/category/${cat.slug}" 
-               class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition text-center">
+               class="bg-white p-6 rounded-lg shadow hover:shadow-lg transition text-center dark:bg-gray-700">
                 <i class="fas fa-${cat.icon || 'gamepad'} text-4xl text-indigo-600 mb-3"></i>
                 <h3 class="font-semibold">${cat.name}</h3>
-                <p class="text-sm text-gray-600">${cat.subcategories?.length || 0} items</p>
+                <p class="text-sm text-gray-600 dark:text-gray-300">${cat.subcategories?.length || 0} items</p>
             </a>
         `).join('');
     } catch (error) {
@@ -124,7 +142,7 @@ async function loadProducts(featured = true) {
         const grid = document.getElementById('productsGrid');
         
         grid.innerHTML = data.data.products.map(product => `
-            <div class="bg-white rounded-lg shadow hover:shadow-xl transition overflow-hidden">
+            <div class="bg-white rounded-lg shadow hover:shadow-xl transition overflow-hidden dark:bg-gray-800">
                 <div class="relative">
                     <img src="${product.thumbnail || '/assets/img/placeholder.jpg'}" 
                          alt="${product.name}" 
@@ -152,7 +170,7 @@ async function loadProducts(featured = true) {
                     <div class="flex items-center justify-between mb-3">
                         <div>
                             ${product.discount_price ? `
-                                <div class="text-gray-500 line-through text-sm">Rp ${formatPrice(product.price)}</div>
+                                <div class="text-gray-500 line-through text-sm dark:text-gray-400">Rp ${formatPrice(product.price)}</div>
                                 <div class="text-lg font-bold text-indigo-600">Rp ${formatPrice(product.discount_price)}</div>
                             ` : `
                                 <div class="text-lg font-bold text-indigo-600">Rp ${formatPrice(product.price)}</div>
@@ -160,14 +178,14 @@ async function loadProducts(featured = true) {
                         </div>
                     </div>
                     
-                    <div class="flex items-center text-sm text-gray-600 mb-3">
+                    <div class="flex items-center text-sm text-gray-600 mb-3 dark:text-gray-300">
                         <span class="px-2 py-1 bg-${getSellerLevelColor(product.seller_level)} rounded text-xs mr-2">
                             ${product.seller_level.toUpperCase()}
                         </span>
                         <span>${product.seller_username}</span>
                     </div>
                     
-                    <div class="flex items-center justify-between text-sm text-gray-600 mb-4">
+                    <div class="flex items-center justify-between text-sm text-gray-600 mb-4 dark:text-gray-300">
                         <span><i class="fas fa-eye"></i> ${product.view_count}</span>
                         <span><i class="fas fa-shopping-cart"></i> ${product.sold_count} sold</span>
                     </div>
@@ -355,28 +373,44 @@ function setupNavbarEvents() {
     // Notification button
     const notificationBtn = document.getElementById('notificationBtn');
     if (notificationBtn) {
-        notificationBtn.addEventListener('click', () => {
+        notificationBtn.addEventListener('click', async () => {
             if (!state.token) {
-                alert('Please login to view notifications');
+                await showSweetAlert({
+                    icon: 'warning',
+                    title: 'Login Required',
+                    text: 'Please login to view notifications'
+                });
                 window.location.href = '/login';
                 return;
             }
             // TODO: Show notification dropdown
-            alert('Notifications feature will open here');
+            await showSweetAlert({
+                icon: 'info',
+                title: 'Notifications',
+                text: 'Notifications feature will open here'
+            });
         });
     }
     
     // Chat button
     const chatBtn = document.getElementById('chatBtn');
     if (chatBtn) {
-        chatBtn.addEventListener('click', () => {
+        chatBtn.addEventListener('click', async () => {
             if (!state.token) {
-                alert('Please login to access chat');
+                await showSweetAlert({
+                    icon: 'warning',
+                    title: 'Login Required',
+                    text: 'Please login to access chat'
+                });
                 window.location.href = '/login';
                 return;
             }
             // TODO: Open chat modal or redirect to chat page
-            alert('Chat feature will open here');
+            await showSweetAlert({
+                icon: 'info',
+                title: 'Chat',
+                text: 'Chat feature will open here'
+            });
         });
     }
     

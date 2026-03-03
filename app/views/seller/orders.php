@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Sales Orders - Lapak Gaming</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gray-50">
@@ -111,11 +112,30 @@
         }
 
         async function deliverOrder(orderId) {
-            const items = prompt('Enter digital items (JSON format or simple text):');
+            const { value: items } = await Swal.fire({
+                title: 'Deliver Order',
+                text: 'Enter digital items (JSON format or simple text):',
+                input: 'textarea',
+                inputPlaceholder: 'Contoh: {"username":"abc","password":"123"}',
+                inputAttributes: {
+                    'aria-label': 'Digital items'
+                },
+                showCancelButton: true,
+                confirmButtonText: 'Send Delivery',
+                cancelButtonText: 'Cancel',
+                confirmButtonColor: '#4f46e5',
+                preConfirm: (value) => {
+                    if (!value || !value.trim()) {
+                        Swal.showValidationMessage('Digital items cannot be empty');
+                    }
+                    return value;
+                }
+            });
+
             if (!items) return;
             
             try {
-                await fetch(API_BASE + `/orders/${orderId}/deliver`, {
+                const response = await fetch(API_BASE + `/orders/${orderId}/deliver`, {
                     method: 'POST',
                     headers: { 
                         'Authorization': `Bearer ${token}`,
@@ -123,10 +143,25 @@
                     },
                     body: JSON.stringify({ digital_items: items })
                 });
-                alert('Order delivered successfully!');
+
+                if (!response.ok) {
+                    throw new Error('Failed to deliver order');
+                }
+
+                await Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: 'Order delivered successfully!',
+                    confirmButtonColor: '#4f46e5'
+                });
                 loadOrders();
             } catch (error) {
-                alert('Failed to deliver order');
+                await Swal.fire({
+                    icon: 'error',
+                    title: 'Failed',
+                    text: 'Failed to deliver order',
+                    confirmButtonColor: '#4f46e5'
+                });
             }
         }
 
