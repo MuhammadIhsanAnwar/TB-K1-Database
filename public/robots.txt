@@ -1,0 +1,31 @@
+# Lapak Gaming Marketplace - Robots.txt
+# Control search engine crawling
+
+User-agent: *
+
+# Allow public pages
+Allow: /
+Allow: /assets/
+Allow: /products
+Allow: /categories
+
+# Disallow sensitive directories
+Disallow: /app/
+Disallow: /config/
+Disallow: /routes/
+Disallow: /vendor/
+Disallow: /api/
+Disallow: /admin/
+Disallow: /dashboard/
+
+# Disallow user-specific pages
+Disallow: /login
+Disallow: /register
+Disallow: /cart
+Disallow: /checkout
+Disallow: /profile
+Disallow: /orders
+Disallow: /wallet
+
+# Sitemap (create this later if needed)
+# Sitemap: https://lapakgaming.neoverse.my.id/sitemap.xml
