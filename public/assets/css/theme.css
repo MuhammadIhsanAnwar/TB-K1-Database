@@ -3,8 +3,21 @@ body {
     transition: background-color 0.2s ease, color 0.2s ease;
 }
 
+.dark {
+    color-scheme: dark;
+}
+
+:root:not(.dark) body {
+    background-color: #f8fafc !important;
+    color: #111827 !important;
+}
+
+:root:not(.dark) nav {
+    background-color: #ffffff !important;
+}
+
 .dark body,
-body.dark {
+.dark {
     background-color: #111827 !important;
     color: #f3f4f6 !important;
 }

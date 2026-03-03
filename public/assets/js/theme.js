@@ -6,7 +6,7 @@
     function setTheme(isDark) {
         document.documentElement.classList.toggle('dark', isDark);
         if (document.body) {
-            document.body.classList.toggle('dark', isDark);
+            document.body.classList.remove('dark');
         }
         localStorage.setItem('darkMode', isDark ? 'true' : 'false');
         updateThemeIcons(isDark);
