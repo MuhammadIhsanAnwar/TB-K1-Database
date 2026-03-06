@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\Auth\LoginController;
@@ -87,6 +88,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/wallet', function() {
         return view('buyer.wallet.index');
     })->name('wallet');
+
+    // Navbar pages
+    Route::get('/chat', function () {
+        return view('chat.index');
+    })->name('chat.index');
+
+    Route::get('/notifications', function () {
+        return view('notifications.index');
+    })->name('notifications.index');
+
+    Route::get('/settings', function () {
+        return view('profile.settings');
+    })->name('settings');
+
+    Route::get('/admin/dashboard', function () {
+        $user = Auth::user();
+        abort_unless($user instanceof \App\Models\User && $user->isAdmin(), 403);
+        return view('admin.dashboard');
+    })->name('admin.dashboard');
 
     // Profile
     Route::get('/profile', function() {
