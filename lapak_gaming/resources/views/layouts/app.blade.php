@@ -13,8 +13,6 @@
         <script src="https://cdn.tailwindcss.com"></script>
     @endif
     
-    {{-- Alpine.js --}}
-    <script defer src="https://cdn.jsdelivr.net/npm/alpinejs@3.x.x/dist/cdn.min.js"></script>
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
     {{-- Navigation --}}
@@ -62,12 +60,12 @@
                         </a>
 
                         {{-- User Menu --}}
-                        <div class="relative" x-data="{ open: false }">
-                            <button @click="open = !open" class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
+                        <div class="relative" id="user-menu-wrapper">
+                            <button id="user-menu-button" class="flex items-center gap-2 p-2 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg">
                                 <img src="{{ auth()->user()->avatar }}" alt="Avatar" class="w-8 h-8 rounded-full">
                                 <span class="hidden sm:inline text-sm font-medium">{{ auth()->user()->name }}</span>
                             </button>
-                            <div x-show="open" @click.away="open = false" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-lg shadow-lg py-2 z-20">
+                            <div id="user-menu-dropdown" class="absolute right-0 mt-2 w-48 bg-white dark:bg-gray-700 rounded-lg shadow-lg py-2 z-20 hidden">
                                 <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">Profile</a>
                                 <a href="#" class="block px-4 py-2 hover:bg-gray-100 dark:hover:bg-gray-600">Settings</a>
                                 @if(auth()->user()->isSeller())
@@ -163,6 +161,24 @@
             themeToggleBtn.addEventListener('click', () => {
                 document.documentElement.classList.toggle('dark');
                 localStorage.theme = document.documentElement.classList.contains('dark') ? 'dark' : 'light';
+            });
+        }
+
+        // User dropdown menu without Alpine.js
+        const userMenuButton = document.getElementById('user-menu-button');
+        const userMenuDropdown = document.getElementById('user-menu-dropdown');
+        const userMenuWrapper = document.getElementById('user-menu-wrapper');
+
+        if (userMenuButton && userMenuDropdown && userMenuWrapper) {
+            userMenuButton.addEventListener('click', (event) => {
+                event.stopPropagation();
+                userMenuDropdown.classList.toggle('hidden');
+            });
+
+            document.addEventListener('click', (event) => {
+                if (!userMenuWrapper.contains(event.target)) {
+                    userMenuDropdown.classList.add('hidden');
+                }
             });
         }
 
