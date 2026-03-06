@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -43,7 +44,16 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('dashboard'));
+        /** @var User|null $user */
+        $user = Auth::user();
+        if ($user && $user->isAdmin()) {
+            return redirect()->route('home');
+        }
+        if ($user && $user->isSeller()) {
+            return redirect()->route('seller.dashboard');
+        }
+
+        return redirect()->route('home');
     }
 
     public function logout(Request $request)
