@@ -10,11 +10,11 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
         :root {
-            --brand-600: #4f46e5;
-            --brand-700: #4338ca;
-            --surface: #f8fafc;
+            --brand-600: #2563eb;
+            --brand-700: #1d4ed8;
+            --surface: #eff6ff;
             --text: #0f172a;
-            --muted: #475569;
+            --muted: #334155;
         }
 
         body {
@@ -144,7 +144,7 @@
     </style>
     
 </head>
-<body class="bg-slate-50 text-slate-900">
+<body class="bg-blue-50 text-slate-900">
     <div id="game-loader" class="game-loader" aria-live="polite" aria-label="Loading">
         <div class="game-loader-card">
             <div class="game-loader-title">
@@ -160,12 +160,12 @@
     </div>
 
     {{-- Navigation --}}
-    <nav class="sticky top-0 z-50 bg-white border-b border-slate-200 shadow-sm">
+    <nav class="sticky top-0 z-50 bg-white border-b border-blue-100 shadow-sm">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex justify-between items-center h-16">
                 {{-- Logo --}}
                 <div class="flex items-center gap-2">
-                    <a href="{{ route('home') }}" class="text-2xl font-bold text-indigo-600">🎮 Lapak Gaming</a>
+                    <a href="{{ route('home') }}" class="text-2xl font-bold text-blue-600">🎮 Lapak Gaming</a>
                 </div>
 
                 {{-- Search Bar --}}
@@ -173,7 +173,7 @@
                     <form id="search-form" class="w-full max-w-md">
                         <div class="relative">
                             <input type="text" id="search-input" placeholder="Cari game item, voucher, akun..."
-                                class="w-full px-4 py-2 rounded-lg border border-slate-300 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                                class="w-full px-4 py-2 rounded-lg border border-blue-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
                             <button type="submit" class="absolute right-3 top-2.5">
                                 <svg class="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
@@ -226,8 +226,8 @@
                             </div>
                         </div>
                     @else
-                        <a href="{{ route('login') }}" class="px-4 py-2 text-indigo-600 hover:text-indigo-700 font-medium">Login</a>
-                        <a href="{{ route('register') }}" class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700">Register</a>
+                        <a href="{{ route('login') }}" class="px-4 py-2 text-blue-600 hover:text-blue-700 font-medium">Login</a>
+                        <a href="{{ route('register') }}" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Register</a>
                     @endauth
 
                 </div>
@@ -254,7 +254,7 @@
     </main>
 
     {{-- Footer --}}
-    <footer class="bg-gray-900 text-gray-300 mt-16">
+    <footer class="bg-blue-900 text-blue-100 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
                 <div>
@@ -285,7 +285,7 @@
                     </ul>
                 </div>
             </div>
-            <div class="border-t border-gray-800 mt-8 pt-8 text-center text-sm">
+            <div class="border-t border-blue-800 mt-8 pt-8 text-center text-sm">
                 <p>&copy; 2024 Lapak Gaming. All rights reserved. | <a href="#" class="hover:text-white">Privacy Policy</a> | <a href="#" class="hover:text-white">Terms of Service</a></p>
             </div>
         </div>
@@ -294,15 +294,21 @@
     {{-- JavaScript --}}
     <script>
         const gameLoader = document.getElementById('game-loader');
+        const gameLoaderStart = Date.now();
         window.addEventListener('load', () => {
             if (!gameLoader) {
                 return;
             }
 
-            gameLoader.classList.add('hidden');
+            const elapsed = Date.now() - gameLoaderStart;
+            const remaining = Math.max(0, 3000 - elapsed);
+
             setTimeout(() => {
-                gameLoader.remove();
-            }, 500);
+                gameLoader.classList.add('hidden');
+                setTimeout(() => {
+                    gameLoader.remove();
+                }, 500);
+            }, remaining);
         });
 
         // Theme Toggle
