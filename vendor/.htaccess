@@ -1,3 +1,0 @@
-# Deny all direct access to vendor directory
-Order Deny,Allow
-Deny from all

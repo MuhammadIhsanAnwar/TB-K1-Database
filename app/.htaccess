@@ -1,3 +1,0 @@
-# Deny all direct access to app directory
-Order Deny,Allow
-Deny from all
