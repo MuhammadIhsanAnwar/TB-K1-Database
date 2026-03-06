@@ -30,11 +30,13 @@ echo "<!DOCTYPE html>
 // Load Laravel
 require __DIR__ . '/../vendor/autoload.php';
 $app = require_once __DIR__ . '/../bootstrap/app.php';
-$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 
-// Import Laravel facades
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Artisan;
+// Bootstrap Laravel application
+$kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
+$kernel->bootstrap();
+
+// Set facade application instance
+Illuminate\Support\Facades\Facade::setFacadeApplication($app);
 
 // Check action
 $action = $_GET['action'] ?? 'check';
@@ -45,11 +47,11 @@ if ($action === 'check') {
     echo "<h2>Database Status</h2>";
     
     try {
-        $pdo = DB::connection()->getPdo();
+        $pdo = \Illuminate\Support\Facades\DB::connection()->getPdo();
         echo "<p class='success'>✓ Database connected</p>";
         
         // Get tables
-        $tables = DB::select('SHOW TABLES');
+        $tables = \Illuminate\Support\Facades\DB::select('SHOW TABLES');
         
         if (empty($tables)) {
             echo "<p class='error'>⚠ No tables found. Database is empty.</p>";
@@ -78,8 +80,8 @@ if ($action === 'check') {
     
     try {
         // Artisan call
-        Artisan::call('migrate', ['--force' => true]);
-        $output = Artisan::output();
+        \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+        $output = \Illuminate\Support\Facades\Artisan::output();
         
         echo "<pre>$output</pre>";
         echo "<p class='success'>✓ Migrations completed!</p>";
@@ -101,8 +103,8 @@ if ($action === 'check') {
         echo "<a href='?action=check' class='btn'>Cancel</a>";
     } else {
         try {
-            Artisan::call('migrate:fresh', ['--force' => true]);
-            $output = Artisan::output();
+            \Illuminate\Support\Facades\Artisan::call('migrate:fresh', ['--force' => true]);
+            $output = \Illuminate\Support\Facades\Artisan::output();
             
             echo "<pre>$output</pre>";
             echo "<p class='success'>✓ Fresh migration completed!</p>";
@@ -119,8 +121,8 @@ if ($action === 'check') {
     echo "<h2>Running Database Seeders...</h2>";
     
     try {
-        Artisan::call('db:seed', ['--force' => true]);
-        $output = Artisan::output();
+        \Illuminate\Support\Facades\Artisan::call('db:seed', ['--force' => true]);
+        $output = \Illuminate\Support\Facades\Artisan::output();
         
         echo "<pre>$output</pre>";
         echo "<p class='success'>✓ Seeding completed!</p>";
