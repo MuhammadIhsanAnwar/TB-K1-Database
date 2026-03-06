@@ -6,12 +6,8 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>{{ config('app.name', 'Lapak Gaming') }} - @yield('title')</title>
 
-    {{-- Assets: use Vite when manifest exists, fallback to CDN when it does not --}}
-    @if (file_exists(public_path('build/manifest.json')))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @else
-        <script src="https://cdn.tailwindcss.com"></script>
-    @endif
+    {{-- Tailwind CDN for shared hosting without Node/Vite runtime --}}
+    <script src="https://cdn.tailwindcss.com"></script>
     
 </head>
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-900 dark:text-gray-100">
