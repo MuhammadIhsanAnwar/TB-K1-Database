@@ -37,7 +37,7 @@
                         </div>
                         <div class="p-4">
                             <h3 class="font-semibold text-lg mb-2 truncate">{{ $product->name }}</h3>
-                            <p class="text-gray-600 text-sm mb-2">{{ $product->category->name ?? 'Tanpa Kategori' }}</p>
+                            <p class="text-gray-600 text-sm mb-2">{{ $product->category?->name ?? 'Tanpa Kategori' }}</p>
                             <div class="flex justify-between items-center">
                                 <span class="text-blue-600 font-bold">Rp {{ number_format($product->price, 0, ',', '.') }}</span>
                                 <a href="{{ route('product.show', $product->slug) }}" class="text-blue-600 hover:text-blue-800">
@@ -81,7 +81,7 @@
                         </div>
                         <div class="p-4">
                             <h3 class="font-semibold text-lg mb-2 truncate">{{ $product->name }}</h3>
-                            <p class="text-gray-600 text-sm mb-2">{{ $product->category->name ?? 'Tanpa Kategori' }}</p>
+                            <p class="text-gray-600 text-sm mb-2">{{ $product->category?->name ?? 'Tanpa Kategori' }}</p>
                             <div class="flex items-center text-sm text-gray-500 mb-2">
                                 <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
@@ -130,9 +130,9 @@
                         </div>
                         <div class="p-4">
                             <h3 class="font-semibold text-lg mb-2 truncate">{{ $product->name }}</h3>
-                            <p class="text-gray-600 text-sm mb-2">{{ $product->category->name ?? 'Tanpa Kategori' }}</p>
+                            <p class="text-gray-600 text-sm mb-2">{{ $product->category?->name ?? 'Tanpa Kategori' }}</p>
                             <p class="text-xs text-gray-500 mb-2">
-                                <span class="font-semibold">Seller:</span> {{ $product->seller->sellerAccount->shop_name ?? $product->seller->name ?? 'Seller' }}
+                                <span class="font-semibold">Seller:</span> {{ $product->seller?->sellerAccount?->shop_name ?? $product->seller?->name ?? 'Seller' }}
                             </p>
                             <div class="flex justify-between items-center">
                                 <span class="text-blue-600 font-bold">Rp {{ number_format($product->price, 0, ',', '.') }}</span>

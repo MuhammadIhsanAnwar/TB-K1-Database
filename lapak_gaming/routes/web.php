@@ -9,6 +9,8 @@ use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Seller\DashboardController as SellerDashboardController;
 use App\Http\Controllers\Seller\ProductController as SellerProductController;
+use App\Models\Category;
+use App\Models\Product;
 
 // Public Routes
 Route::get('/', [HomeController::class, 'index'])->name('home');
@@ -98,4 +100,41 @@ Route::middleware(['auth', 'verified'])->group(function () {
 // Error Pages
 Route::fallback(function () {
     return view('errors.404');
+});
+
+// Temporary debug route for diagnosing production home 500
+Route::get('/__debug-home', function () {
+    try {
+        $categories = Category::where('parent_id', null)
+            ->where('is_active', true)
+            ->with('children')
+            ->get();
+
+        $featured = Product::where('is_featured', true)
+            ->where('is_active', true)
+            ->with(['seller', 'category'])
+            ->limit(8)
+            ->get();
+
+        $trending = Product::where('is_active', true)
+            ->with(['seller', 'category'])
+            ->orderByDesc('view_count')
+            ->limit(12)
+            ->get();
+
+        $newest = Product::where('is_active', true)
+            ->with(['seller', 'category'])
+            ->latest()
+            ->limit(12)
+            ->get();
+
+        return view('home', compact('categories', 'featured', 'trending', 'newest'));
+    } catch (\Throwable $e) {
+        return response()->json([
+            'ok' => false,
+            'error' => $e->getMessage(),
+            'file' => $e->getFile(),
+            'line' => $e->getLine(),
+        ], 500);
+    }
 });
