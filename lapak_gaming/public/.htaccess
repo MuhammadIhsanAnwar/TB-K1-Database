@@ -31,19 +31,13 @@
     RewriteRule ^artisan$ - [F,L]
 </IfModule>
 
-# Prevent directory listing
-<FilesMatch "^$">
-    Order allow,deny
-    Deny from all
+# Block hidden and sensitive files
+<FilesMatch "^(\.env|\.git|composer\.(json|lock)|package\.(json|lock)|artisan|\..*|#.*#|.*~)$">
+    <IfModule mod_authz_core.c>
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        Order allow,deny
+        Deny from all
+    </IfModule>
 </FilesMatch>
-
-# Block hidden files and directories
-<FilesMatch "^\.|^#.*#|~$">
-    Order allow,deny
-    Deny from all
-</FilesMatch>
-
-# Disable PHP execution in certain directories (optional but recommended)
-<Directory ~ "^/storage/">
-    php_flag engine off
-</Directory>
