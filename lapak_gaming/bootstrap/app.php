@@ -11,15 +11,7 @@ return Application::configure(basePath: dirname(__DIR__))
         health: '/up',
     )
     ->withMiddleware(function (Middleware $middleware): void {
-        $middleware->validateCsrfTokens(except: [
-            'login',
-        ]);
-
-        $middleware->alias([
-            'role' => \App\Http\Middleware\CheckRole::class,
-            'verified' => \App\Http\Middleware\EnsureEmailIsVerified::class,
-            'seller' => \App\Http\Middleware\CheckSeller::class,
-        ]);
+        //
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         //

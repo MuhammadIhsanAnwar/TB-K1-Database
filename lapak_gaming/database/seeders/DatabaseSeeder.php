@@ -2,21 +2,24 @@
 
 namespace Database\Seeders;
 
-use App\Models\Category;
-use App\Models\SellerLevel;
+use App\Models\User;
+use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
 {
+    use WithoutModelEvents;
+
+    /**
+     * Seed the application's database.
+     */
     public function run(): void
     {
-        // Create seller levels
-        $this->call(SellerLevelSeeder::class);
+        // User::factory(10)->create();
 
-        // Create categories
-        $this->call(CategorySeeder::class);
-
-        // Create users, sellers and products
-        $this->call(UserSeeder::class);
+        User::factory()->create([
+            'name' => 'Test User',
+            'email' => 'test@example.com',
+        ]);
     }
 }
