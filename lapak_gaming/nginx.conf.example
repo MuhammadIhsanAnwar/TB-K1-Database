@@ -1,0 +1,135 @@
+# Nginx Configuration for Lapak Gaming
+# Letakkan di: /etc/nginx/sites-available/lapak_gaming
+# Atau adjust sesuai hosting provider
+
+server {
+    listen 80;
+    listen [::]:80;
+    
+    # Ganti dengan domain Anda
+    server_name lapak-gaming.com www.lapak-gaming.com;
+    
+    # Redirect HTTP ke HTTPS (optional tapi recommended)
+    return 301 https://$server_name$request_uri;
+}
+
+server {
+    listen 443 ssl http2;
+    listen [::]:443 ssl http2;
+    
+    server_name lapak-gaming.com www.lapak-gaming.com;
+    
+    # SSL Certificate (menggunakan Let's Encrypt)
+    ssl_certificate /etc/letsencrypt/live/lapak-gaming.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/lapak-gaming.com/privkey.pem;
+    
+    # SSL Configuration
+    ssl_protocols TLSv1.2 TLSv1.3;
+    ssl_ciphers HIGH:!aNULL:!MD5;
+    ssl_prefer_server_ciphers on;
+    ssl_session_cache shared:SSL:10m;
+    ssl_session_timeout 10m;
+    
+    # Logging
+    access_log /var/log/nginx/lapak_gaming_access.log;
+    error_log /var/log/nginx/lapak_gaming_error.log;
+    
+    # Set root ke public folder
+    root /home/user/lapak_gaming/public;
+    
+    # Jangan list directory
+    autoindex off;
+    
+    # Index file
+    index index.php index.html index.htm;
+    
+    # Upload limit
+    client_max_body_size 50M;
+    
+    # ======================
+    # SECURITY RULES
+    # ======================
+    
+    # Block .env file
+    location ~ /\.env {
+        deny all;
+        return 403;
+    }
+    
+    # Block .git directory
+    location ~ /\.git {
+        deny all;
+        return 403;
+    }
+    
+    # Block sensitive files
+    location ~ /(composer\.(json|lock)|package\.(json|lock)|artisan|\.htaccess)$ {
+        deny all;
+        return 403;
+    }
+    
+    # Block access to storage folder (kecuali public storage)
+    location ~ ^/storage/(app|database|framework)/.*$ {
+        deny all;
+        return 403;
+    }
+    
+    # Block hidden files
+    location ~ /\. {
+        deny all;
+        return 403;
+    }
+    
+    # ======================
+    # APPLICATION LOGIC
+    # ======================
+    
+    # Allow static files
+    location ~* \.(jpg|jpeg|png|gif|ico|css|js|svg|woff|woff2|ttf|eot)$ {
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+        try_files $uri =404;
+    }
+    
+    # Favicon dan robots.txt
+    location ~ ^/(favicon\.ico|robots\.txt)$ {
+        access_log off;
+        log_not_found off;
+    }
+    
+    # Default Laravel routing (penting!)
+    location / {
+        try_files $uri $uri/ /index.php?$query_string;
+    }
+    
+    # PHP Processing
+    location ~ \.php$ {
+        try_files $uri =404;
+        fastcgi_split_path_info ^(.+\.php)(/.+)$;
+        
+        # Ganti dengan PHP version yang Anda gunakan
+        fastcgi_pass unix:/var/run/php8.2-fpm.sock;
+        fastcgi_index index.php;
+        
+        fastcgi_param SCRIPT_FILENAME $document_root$fastcgi_script_name;
+        fastcgi_param PATH_INFO $fastcgi_path_info;
+        
+        include fastcgi_params;
+        
+        # Laravel specific
+        fastcgi_param LARAVEL_SKIPAUTHENTICATION true;
+    }
+    
+    # Deny PHP execution dalam public directories tertentu
+    location ~ ^/(build|uploads|downloads)/.+\.php$ {
+        deny all;
+        return 403;
+    }
+}
+
+# Explanation:
+# 1. Semua request ke .env, .git, composer.json dll di-deny (return 403)
+# 2. autoindex off = directory listing dinonaktifkan
+# 3. try_files $uri $uri/ /index.php = semua request dikirim ke index.php
+# 4. SSL/HTTPS untuk security (highly recommended)
+# 5. Cache control untuk static assets
