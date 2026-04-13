@@ -15,11 +15,27 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
-
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        $this->call([
+            SellerLevelSeeder::class,
+            CategorySeeder::class,
         ]);
+
+        $admin = User::factory()->admin()->create([
+            'name' => 'Marketplace Admin',
+            'email' => 'admin@marketplace.test',
+        ]);
+
+        $seller = User::factory()->seller()->create([
+            'name' => 'Digital Seller',
+            'email' => 'seller@marketplace.test',
+            'seller_level_id' => 2,
+        ]);
+
+        $buyer = User::factory()->create([
+            'name' => 'Digital Buyer',
+            'email' => 'buyer@marketplace.test',
+        ]);
+
+        $this->call(ProductSeeder::class);
     }
 }
