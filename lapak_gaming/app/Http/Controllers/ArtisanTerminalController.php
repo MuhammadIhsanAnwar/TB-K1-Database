@@ -4,11 +4,18 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
-use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 class ArtisanTerminalController extends Controller
 {
+    private const FORCE_COMMANDS = [
+        'migrate',
+        'migrate:rollback',
+        'migrate:reset',
+        'migrate:refresh',
+        'db:seed',
+    ];
+
     /**
      * Tampilkan halaman terminal
      */
@@ -43,12 +50,12 @@ class ArtisanTerminalController extends Controller
      */
     public function executeCommand(Request $request)
     {
-        // Validasi & validasi whitelist perintah
+        // Validasi perintah
         $request->validate([
             'command' => 'required|string',
         ]);
 
-        $command = $request->input('command');
+        $command = $this->normalizeCommand($request->input('command'));
 
         // Whitelist perintah yang diizinkan (keamanan)
         $allowedCommands = [
@@ -81,11 +88,7 @@ class ArtisanTerminalController extends Controller
         }
 
         try {
-            // Jalankan perintah menggunakan Artisan
-            $output = new BufferedOutput();
-            Artisan::call($command, [], $output);
-
-            $result = $output->fetch();
+            $result = $this->runArtisanCommand($command);
 
             return response()->json([
                 'success' => true,
@@ -111,9 +114,7 @@ class ArtisanTerminalController extends Controller
         $command = $request->input('command');
 
         try {
-            $output = new BufferedOutput();
-            Artisan::call($command, [], $output);
-            $result = $output->fetch();
+            $result = $this->runArtisanCommand($command);
 
             return response()->json([
                 'success' => true,
@@ -125,5 +126,28 @@ class ArtisanTerminalController extends Controller
                 'output' => "❌ Error: " . $e->getMessage()
             ], 400);
         }
+    }
+
+    private function normalizeCommand(string $command): string
+    {
+        $command = trim($command);
+        $command = preg_replace('/^php\s+artisan\s+/i', '', $command) ?? $command;
+
+        return trim($command);
+    }
+
+    private function runArtisanCommand(string $command): string
+    {
+        $commandName = explode(' ', $command)[0];
+        $parameters = [];
+
+        if (in_array($commandName, self::FORCE_COMMANDS, true)) {
+            $parameters['--force'] = true;
+        }
+
+        $output = new BufferedOutput();
+        Artisan::call($command, $parameters, $output);
+
+        return $output->fetch();
     }
 }
