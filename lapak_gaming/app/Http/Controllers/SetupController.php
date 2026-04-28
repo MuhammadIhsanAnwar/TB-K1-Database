@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Schema;
 
 class SetupController extends Controller
 {
@@ -13,6 +14,11 @@ class SetupController extends Controller
      */
     public function index()
     {
+        // Cek apakah tabel users sudah ada
+        if (!Schema::hasTable('users')) {
+            return redirect()->route('setup.migrate')->with('info', 'Jalankan migrasi terlebih dahulu.');
+        }
+
         // Jika sudah ada user admin, redirect ke dashboard
         if (User::where('role', 'admin')->exists()) {
             return redirect()->route('dashboard')->with('info', 'Admin sudah dibuat. Silakan login.');
@@ -26,6 +32,11 @@ class SetupController extends Controller
      */
     public function storeAdmin(Request $request)
     {
+        // Cek apakah tabel users sudah ada
+        if (!Schema::hasTable('users')) {
+            return back()->with('error', 'Tabel database belum dibuat. Jalankan migrasi terlebih dahulu.');
+        }
+
         // Cek apakah setup sudah dilakukan
         if (User::where('role', 'admin')->exists()) {
             return redirect()->route('login')->with('info', 'Admin sudah dibuat sebelumnya.');
