@@ -11,6 +11,7 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ChatController;
+use App\Http\Controllers\ArtisanTerminalController;
 
 Route::get('/', [MarketplaceController::class, 'home'])->name('home');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
@@ -56,4 +57,11 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/api/chat/{order}', [ChatController::class, 'poll'])->name('chat.poll');
 
     Route::get('/notifications/poll', [NotificationController::class, 'poll'])->name('notifications.poll');
+
+    // Admin Terminal untuk menjalankan perintah Artisan
+    Route::middleware('role:admin')->group(function (): void {
+        Route::get('/admin/terminal', [ArtisanTerminalController::class, 'index'])->name('admin.terminal.index');
+        Route::post('/admin/terminal/execute', [ArtisanTerminalController::class, 'executeCommand'])->name('admin.terminal.execute');
+        Route::post('/admin/terminal/quick', [ArtisanTerminalController::class, 'runQuickCommand'])->name('admin.terminal.quick');
+    });
 });
