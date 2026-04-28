@@ -16,6 +16,14 @@ class ArtisanTerminalController extends Controller
         'db:seed',
     ];
 
+    private const OPTION_COMMANDS = [
+        'migrate',
+        'migrate:rollback',
+        'migrate:reset',
+        'migrate:refresh',
+        'db:seed',
+    ];
+
     /**
      * Tampilkan halaman terminal
      */
@@ -108,7 +116,7 @@ class ArtisanTerminalController extends Controller
     public function runQuickCommand(Request $request)
     {
         $request->validate([
-            'command' => 'required|string|in:migrate,cache:clear,config:cache,route:cache,view:cache,optimize,storage:link',
+            'command' => 'required|string|in:migrate,cache:clear,config:cache,route:cache,view:cache,optimize,storage:link,db:seed',
         ]);
 
         $command = $request->input('command');
@@ -138,16 +146,44 @@ class ArtisanTerminalController extends Controller
 
     private function runArtisanCommand(string $command): string
     {
-        $commandName = explode(' ', $command)[0];
-        $parameters = [];
+        $commandParts = preg_split('/\s+/', trim($command)) ?: [];
+        $commandName = array_shift($commandParts);
+        $parameters = $this->parseOptions($commandParts);
 
         if (in_array($commandName, self::FORCE_COMMANDS, true)) {
             $parameters['--force'] = true;
         }
 
+        if ($commandName === 'migrate' && ! isset($parameters['--path'])) {
+            $parameters['--force'] = true;
+        }
+
+        if ($commandName === 'db:seed' && ! isset($parameters['--class'])) {
+            $parameters['--force'] = true;
+        }
+
         $output = new BufferedOutput();
-        Artisan::call($command, $parameters, $output);
+        Artisan::call($commandName, $parameters, $output);
 
         return $output->fetch();
+    }
+
+    private function parseOptions(array $commandParts): array
+    {
+        $parameters = [];
+
+        foreach ($commandParts as $part) {
+            if (str_starts_with($part, '--')) {
+                [$option, $value] = array_pad(explode('=', $part, 2), 2, null);
+
+                if ($value === null || $value === '') {
+                    $parameters[$option] = true;
+                } else {
+                    $parameters[$option] = $value;
+                }
+            }
+        }
+
+        return $parameters;
     }
 }

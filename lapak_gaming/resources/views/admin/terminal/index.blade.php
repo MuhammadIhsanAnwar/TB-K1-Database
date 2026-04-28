@@ -22,23 +22,38 @@
                             <button type="button" class="btn btn-outline-primary text-start" onclick="runQuickCommand('migrate')">
                                 <strong>1. Migrate Database</strong> - Jalankan semua migrasi (buat tabel)
                             </button>
+                            <button type="button" class="btn btn-outline-primary text-start" onclick="runPresetCommand('migrate --path=database/migrations/2026_04_13_000003_create_categories_table.php')">
+                                <strong>2. Migrasi Categories</strong> - Jalankan migration tabel categories
+                            </button>
+                            <button type="button" class="btn btn-outline-primary text-start" onclick="runPresetCommand('migrate --path=database/migrations/2026_04_13_000004_create_products_table.php')">
+                                <strong>3. Migrasi Products</strong> - Jalankan migration tabel products
+                            </button>
                             <button type="button" class="btn btn-outline-info text-start" onclick="runQuickCommand('cache:clear')">
-                                <strong>2. Clear Cache</strong> - Hapus cache aplikasi
+                                <strong>4. Clear Cache</strong> - Hapus cache aplikasi
                             </button>
                             <button type="button" class="btn btn-outline-info text-start" onclick="runQuickCommand('config:cache')">
-                                <strong>3. Config Cache</strong> - Cache konfigurasi aplikasi
+                                <strong>5. Config Cache</strong> - Cache konfigurasi aplikasi
                             </button>
                             <button type="button" class="btn btn-outline-info text-start" onclick="runQuickCommand('route:cache')">
-                                <strong>4. Route Cache</strong> - Cache routes aplikasi
+                                <strong>6. Route Cache</strong> - Cache routes aplikasi
                             </button>
                             <button type="button" class="btn btn-outline-info text-start" onclick="runQuickCommand('view:cache')">
-                                <strong>5. View Cache</strong> - Cache views/blade
+                                <strong>7. View Cache</strong> - Cache views/blade
                             </button>
                             <button type="button" class="btn btn-outline-success text-start" onclick="runQuickCommand('optimize')">
-                                <strong>6. Optimize</strong> - Optimasi aplikasi (cache semua)
+                                <strong>8. Optimize</strong> - Optimasi aplikasi (cache semua)
                             </button>
                             <button type="button" class="btn btn-outline-warning text-start" onclick="runQuickCommand('storage:link')">
-                                <strong>7. Storage Link</strong> - Buat symlink untuk storage public
+                                <strong>9. Storage Link</strong> - Buat symlink untuk storage public
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary text-start" onclick="runPresetCommand('db:seed')">
+                                <strong>10. Seed Default</strong> - Jalankan semua seeder di DatabaseSeeder
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary text-start" onclick="runPresetCommand('db:seed --class=Database\\Seeders\\CategorySeeder')">
+                                <strong>11. Seed Categories</strong> - Jalankan CategorySeeder saja
+                            </button>
+                            <button type="button" class="btn btn-outline-secondary text-start" onclick="runPresetCommand('db:seed --class=Database\\Seeders\\ProductSeeder')">
+                                <strong>12. Seed Products</strong> - Jalankan ProductSeeder saja
                             </button>
                         </div>
                     </div>
@@ -151,6 +166,33 @@
         displayOutput(`▶ Menjalankan: php artisan ${command}`);
 
         fetch('{{ route("admin.terminal.quick") }}', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+            },
+            body: JSON.stringify({ command: command })
+        })
+            .then(response => response.json())
+            .then(data => {
+                showLoading(false);
+                if (data.success) {
+                    displayOutput(data.output || '✓ Perintah berhasil dijalankan');
+                } else {
+                    displayOutput(data.output, true);
+                }
+            })
+            .catch(error => {
+                showLoading(false);
+                displayOutput(`❌ Error: ${error.message}`, true);
+            });
+    }
+
+    function runPresetCommand(command) {
+        showLoading(true);
+        displayOutput(`▶ Menjalankan: php artisan ${command}`);
+
+        fetch('{{ route("admin.terminal.execute") }}', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
