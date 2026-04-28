@@ -9,13 +9,6 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 class ArtisanTerminalController extends Controller
 {
-    // Middleware untuk keamanan - hanya admin dan user dengan IP tertentu
-    public function __construct()
-    {
-        $this->middleware('auth');
-        $this->middleware('role:admin'); // Hanya admin yang bisa akses
-    }
-
     /**
      * Tampilkan halaman terminal
      */
