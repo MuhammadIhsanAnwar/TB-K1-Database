@@ -32,14 +32,39 @@ class MigrationController extends Controller
                 'redirect' => route('setup.index')
             ]);
         } catch (\Exception $e) {
-            // Jika ada foreign key error, coba reset dan re-migrate
             $errorMsg = $e->getMessage();
             
+            // Handle duplicate column error (partial migrate)
+            if (strpos($errorMsg, 'Duplicate column') !== false || 
+                strpos($errorMsg, '1060') !== false) {
+                
+                try {
+                    // Try migrate again - migrasi yang diupdate sudah handle duplicate columns
+                    Artisan::call('migrate', ['--force' => true]);
+                    $output = Artisan::output();
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => '✅ Database sudah dibuat (kolom duplikat ditangani)!',
+                        'output' => $output,
+                        'redirect' => route('setup.index')
+                    ]);
+                } catch (\Exception $retryError) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => '❌ Migrasi masih gagal. Coba reset database.',
+                        'output' => $retryError->getMessage(),
+                        'canReset' => true
+                    ], 400);
+                }
+            }
+            
+            // Handle foreign key constraint error
             if (strpos($errorMsg, 'Foreign key constraint') !== false || 
                 strpos($errorMsg, 'errno: 150') !== false) {
                 
                 try {
-                    // Reset database dan jalankan ulang
+                    // Reset dan jalankan ulang
                     Artisan::call('migrate:reset', ['--force' => true]);
                     Artisan::call('migrate', ['--force' => true]);
                     $output = Artisan::output();
