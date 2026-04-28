@@ -1,3 +1,4 @@
+use App\Http\Controllers\ArtisanTerminalController;
 <?php
 
 use Illuminate\Support\Facades\Route;
