@@ -74,6 +74,7 @@ class ArtisanTerminalController extends Controller
             'optimize:clear',
             'storage:link',
             'key:generate',
+            'make:admin-user',
         ];
 
         // Validasi apakah perintah ada di whitelist

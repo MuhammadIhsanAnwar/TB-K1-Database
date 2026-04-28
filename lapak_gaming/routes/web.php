@@ -11,11 +11,15 @@ use App\Http\Controllers\ProductController;
 use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ChatController;
-use App\Http\Controllers\ArtisanTerminalController;
+use App\Http\Controllers\SetupController;
 
 Route::get('/', [MarketplaceController::class, 'home'])->name('home');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/browse/search', [MarketplaceController::class, 'search'])->name('products.search');
+
+// Setup page untuk membuat admin pertama kali
+Route::get('/setup', [SetupController::class, 'index'])->name('setup.index');
+Route::post('/setup/admin', [SetupController::class, 'storeAdmin'])->name('setup.storeAdmin');
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthController::class, 'createLogin'])->name('login');
