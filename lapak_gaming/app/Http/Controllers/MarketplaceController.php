@@ -6,23 +6,48 @@ use App\Models\Category;
 use App\Models\Product;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class MarketplaceController extends Controller
 {
     public function home(Request $request): View
     {
+        $categories = Schema::hasTable('categories')
+            ? Category::query()->whereNull('parent_id')->with('children')->orderBy('sort_order')->get()
+            : collect();
+        $featuredProducts = Schema::hasTable('products')
+            ? Product::query()->published()->with(['seller', 'category'])->where('is_featured', true)->latest()->take(8)->get()
+            : collect();
+        $trendingProducts = Schema::hasTable('products')
+            ? Product::query()->published()->trending()->with(['seller', 'category'])->latest()->take(8)->get()
+            : collect();
+        $latestProducts = Schema::hasTable('products')
+            ? Product::query()->published()->with(['seller', 'category'])->latest()->take(12)->get()
+            : collect();
+
         return view('marketplace.home', [
-            'categories' => Category::query()->whereNull('parent_id')->with('children')->orderBy('sort_order')->get(),
-            'featuredProducts' => Product::query()->published()->with(['seller', 'category'])->where('is_featured', true)->latest()->take(8)->get(),
-            'trendingProducts' => Product::query()->published()->trending()->with(['seller', 'category'])->latest()->take(8)->get(),
-            'latestProducts' => Product::query()->published()->with(['seller', 'category'])->latest()->take(12)->get(),
+            'categories' => $categories,
+            'featuredProducts' => $featuredProducts,
+            'trendingProducts' => $trendingProducts,
+            'latestProducts' => $latestProducts,
             'search' => $request->string('q')->toString(),
         ]);
     }
 
     public function search(Request $request): JsonResponse
     {
+        if (! Schema::hasTable('products')) {
+            return response()->json([
+                'data' => [],
+                'meta' => [
+                    'current_page' => 1,
+                    'last_page' => 1,
+                    'total' => 0,
+                ],
+            ]);
+        }
+
         $products = Product::query()
             ->published()
             ->with(['seller', 'category'])
