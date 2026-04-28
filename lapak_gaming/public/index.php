@@ -5,9 +5,9 @@ use Illuminate\Http\Request;
 
 define('LARAVEL_START', microtime(true));
 
-if (PHP_VERSION_ID < 80300) {
+if (PHP_VERSION_ID < 80200) {
     http_response_code(500);
-    echo 'Server misconfiguration: This application requires PHP 8.3 or newer.';
+    echo 'Server misconfiguration: This application requires PHP 8.2 or newer.';
     exit;
 }
 
