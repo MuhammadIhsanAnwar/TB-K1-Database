@@ -32,10 +32,38 @@ class MigrationController extends Controller
                 'redirect' => route('setup.index')
             ]);
         } catch (\Exception $e) {
+            // Jika ada foreign key error, coba reset dan re-migrate
+            $errorMsg = $e->getMessage();
+            
+            if (strpos($errorMsg, 'Foreign key constraint') !== false || 
+                strpos($errorMsg, 'errno: 150') !== false) {
+                
+                try {
+                    // Reset database dan jalankan ulang
+                    Artisan::call('migrate:reset', ['--force' => true]);
+                    Artisan::call('migrate', ['--force' => true]);
+                    $output = Artisan::output();
+
+                    return response()->json([
+                        'success' => true,
+                        'message' => '✅ Migrasi berhasil setelah reset database!',
+                        'output' => $output,
+                        'redirect' => route('setup.index')
+                    ]);
+                } catch (\Exception $resetError) {
+                    return response()->json([
+                        'success' => false,
+                        'message' => '❌ Migrasi gagal: ' . $resetError->getMessage(),
+                        'output' => $resetError->getMessage(),
+                        'canReset' => true
+                    ], 400);
+                }
+            }
+
             return response()->json([
                 'success' => false,
-                'message' => '❌ Migrasi gagal: ' . $e->getMessage(),
-                'output' => $e->getMessage()
+                'message' => '❌ Migrasi gagal: ' . $errorMsg,
+                'output' => $errorMsg
             ], 400);
         }
     }

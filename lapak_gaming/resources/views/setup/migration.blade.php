@@ -243,6 +243,10 @@
             <i class="bi bi-arrow-repeat me-2"></i> Jalankan Migrasi Database
         </button>
 
+        <button class="btn btn-warning mt-3" id="retryBtn" style="display: none; width: 100%;" onclick="runMigration()">
+            <i class="bi bi-arrow-clockwise me-2"></i> Coba Lagi (Auto Reset)
+        </button>
+
         <div class="spinner-border text-primary mt-3" id="spinner" role="status" style="display: none;">
             <span class="visually-hidden">Loading...</span>
         </div>
@@ -256,6 +260,7 @@
     <script>
         const consoleOutput = document.getElementById('consoleOutput');
         const migrateBtn = document.getElementById('migrateBtn');
+        const retryBtn = document.getElementById('retryBtn');
         const nextBtn = document.getElementById('nextBtn');
         const spinner = document.getElementById('spinner');
         const alertContainer = document.getElementById('alertContainer');
@@ -271,6 +276,7 @@
         function runMigration() {
             consoleOutput.classList.add('show');
             migrateBtn.disabled = true;
+            retryBtn.style.display = 'none';
             nextBtn.style.display = 'none';
             spinner.style.display = 'block';
             alertContainer.classList.remove('show');
@@ -305,13 +311,16 @@
                     } else {
                         addOutput('❌ Migrasi gagal!', 'error');
                         addOutput(data.message, 'error');
+                        addOutput(data.output, 'error');
                         migrateBtn.disabled = false;
+                        retryBtn.style.display = 'block'; // Tampilkan retry button
                         showAlert('❌ ' + data.message, 'danger');
                     }
                 })
                 .catch(error => {
                     spinner.style.display = 'none';
                     migrateBtn.disabled = false;
+                    retryBtn.style.display = 'block';
                     addOutput('❌ Error: ' + error.message, 'error');
                     showAlert('❌ Terjadi kesalahan: ' + error.message, 'danger');
                 });
