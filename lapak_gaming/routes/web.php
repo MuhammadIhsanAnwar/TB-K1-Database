@@ -1,4 +1,3 @@
-use App\Http\Controllers\ArtisanTerminalController;
 <?php
 
 use Illuminate\Support\Facades\Route;
@@ -14,6 +13,7 @@ use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\MigrationController;
+use App\Http\Controllers\ArtisanTerminalController;
 
 Route::get('/', [MarketplaceController::class, 'home'])->name('home');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Input\StringInput;
 use Symfony\Component\Console\Output\BufferedOutput;
 
@@ -89,7 +90,7 @@ class ArtisanTerminalController extends Controller
         try {
             // Jalankan perintah menggunakan Artisan
             $output = new BufferedOutput();
-            \Artisan::call($command, [], $output);
+            Artisan::call($command, [], $output);
 
             $result = $output->fetch();
 
@@ -118,7 +119,7 @@ class ArtisanTerminalController extends Controller
 
         try {
             $output = new BufferedOutput();
-            \Artisan::call($command, [], $output);
+            Artisan::call($command, [], $output);
             $result = $output->fetch();
 
             return response()->json([
