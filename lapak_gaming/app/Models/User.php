@@ -15,13 +15,11 @@ class User extends Authenticatable {
 
     protected $hidden = ['password', 'remember_token'];
 
-    protected function casts(): array {
-        return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
-            'balance' => 'decimal:2',
-        ];
-    }
+    protected $casts = [
+        'email_verified_at' => 'datetime',
+        'password' => 'hashed',
+        'balance' => 'decimal:2',
+    ];
 
     // Scopes
     public function scopeSeller($query) { return $query->where('role', 'seller'); }
@@ -44,10 +42,7 @@ class User extends Authenticatable {
         return $this->hasMany(Cart::class);
     }
     public function transactions() {
-        return $this->hasMany(Transaction::class);
-    }
-    public function withdrawals() {
-        return $this->hasMany(Withdrawal::class);
+        return $this->hasMany('App\\Models\\Transaction');
     }
 
     // Helpers

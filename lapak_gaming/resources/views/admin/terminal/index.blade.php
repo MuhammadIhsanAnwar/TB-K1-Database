@@ -1,266 +1,362 @@
-@extends('layouts.app')
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Laravel Artisan Terminal</title>
+    <style>
+        :root {
+            color-scheme: dark;
+            --bg: #050816;
+            --panel: #0f172a;
+            --panel-2: #111827;
+            --border: #23304a;
+            --text: #e5e7eb;
+            --muted: #94a3b8;
+            --accent: #8b5cf6;
+            --accent-2: #22c55e;
+            --danger: #ef4444;
+            --warning: #f59e0b;
+        }
 
-@section('content')
-<div class="container py-4">
-    <div class="row">
-        <div class="col-12">
-            <div class="card border-primary">
-                <div class="card-header bg-primary text-white">
-                    <h5 class="mb-0">⚙️ Admin Terminal - Jalankan Perintah Artisan</h5>
+        * { box-sizing: border-box; }
+        body {
+            margin: 0;
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+            background:
+                radial-gradient(circle at top, rgba(139, 92, 246, 0.22), transparent 35%),
+                linear-gradient(180deg, #020617 0%, #0f172a 100%);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        .wrap {
+            max-width: 1180px;
+            margin: 0 auto;
+            padding: 32px 20px 48px;
+        }
+
+        .hero {
+            display: grid;
+            grid-template-columns: 1.4fr 0.8fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel {
+            background: rgba(15, 23, 42, 0.92);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            box-shadow: 0 30px 80px rgba(0, 0, 0, 0.35);
+        }
+
+        .panel-pad { padding: 22px; }
+
+        h1 {
+            margin: 0 0 10px;
+            font-size: clamp(28px, 4vw, 44px);
+            line-height: 1.05;
+        }
+
+        .lead { margin: 0; color: var(--muted); font-size: 15px; line-height: 1.7; }
+
+        .pill-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .pill {
+            padding: 8px 12px;
+            border: 1px solid var(--border);
+            border-radius: 999px;
+            background: rgba(17, 24, 39, 0.85);
+            color: #cbd5e1;
+            font-size: 13px;
+        }
+
+        .aside-grid {
+            display: grid;
+            gap: 12px;
+        }
+
+        .stat {
+            padding: 16px;
+            border-radius: 16px;
+            background: rgba(17, 24, 39, 0.9);
+            border: 1px solid var(--border);
+        }
+
+        .stat strong { display: block; margin-bottom: 4px; }
+        .stat span { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+        .toolbar {
+            display: grid;
+            grid-template-columns: 1fr auto;
+            gap: 12px;
+            align-items: end;
+            margin: 20px 0;
+        }
+
+        .field {
+            display: grid;
+            gap: 8px;
+        }
+
+        label {
+            font-size: 12px;
+            letter-spacing: .02em;
+            color: var(--muted);
+            text-transform: uppercase;
+        }
+
+        input, button, textarea {
+            font: inherit;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            border: 1px solid var(--border);
+            background: #020617;
+            color: var(--text);
+            border-radius: 14px;
+            padding: 14px 16px;
+            outline: none;
+        }
+
+        input[type="text"]:focus {
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, .18);
+        }
+
+        .actions {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 18px;
+        }
+
+        .btn {
+            border: 1px solid var(--border);
+            background: linear-gradient(180deg, #1f2937, #111827);
+            color: var(--text);
+            border-radius: 14px;
+            padding: 12px 14px;
+            cursor: pointer;
+            transition: transform .15s ease, border-color .15s ease, background .15s ease;
+        }
+
+        .btn:hover { transform: translateY(-1px); border-color: rgba(139, 92, 246, 0.7); }
+        .btn-primary { background: linear-gradient(180deg, #8b5cf6, #6d28d9); border-color: transparent; }
+        .btn-secondary { background: linear-gradient(180deg, #0f172a, #111827); }
+
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(0, 1fr));
+            gap: 12px;
+        }
+
+        .cmd {
+            text-align: left;
+            padding: 14px;
+            border-radius: 16px;
+            background: rgba(2, 6, 23, 0.8);
+            border: 1px solid var(--border);
+            cursor: pointer;
+        }
+
+        .cmd strong { display: block; margin-bottom: 4px; }
+        .cmd span { color: var(--muted); font-size: 13px; line-height: 1.5; }
+
+        .terminal {
+            margin-top: 18px;
+            min-height: 340px;
+            max-height: 520px;
+            overflow: auto;
+            background: #020617;
+            border: 1px solid var(--border);
+            border-radius: 18px;
+            padding: 16px;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        .line { white-space: pre-wrap; word-break: break-word; margin-bottom: 6px; }
+        .ok { color: #86efac; }
+        .err { color: #fca5a5; }
+        .warn { color: #fcd34d; }
+        .muted { color: var(--muted); }
+
+        .footer-note {
+            margin-top: 14px;
+            color: var(--muted);
+            font-size: 13px;
+            line-height: 1.6;
+        }
+
+        @media (max-width: 920px) {
+            .hero, .toolbar, .grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+    <div class="wrap">
+        <div class="hero">
+            <div class="panel panel-pad">
+                <h1>Laravel Artisan Terminal</h1>
+                <p class="lead">Halaman ini dibuat tanpa layout utama supaya bisa dibuka walau tabel lain belum lengkap. Gunakan untuk menjalankan perintah Artisan dari browser tanpa login.</p>
+                <div class="pill-row">
+                    <div class="pill">Public access</div>
+                    <div class="pill">No login required</div>
+                    <div class="pill">Safe whitelist</div>
+                    <div class="pill">Standalone view</div>
                 </div>
-                <div class="card-body">
-                    <!-- Alert Info -->
-                    <div class="alert alert-info alert-dismissible fade show" role="alert">
-                        <strong>💡 Info:</strong> Panel ini memungkinkan Anda menjalankan perintah Artisan untuk migrasi database, cache clear, dan sebaliknya.
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-
-                    <!-- Quick Command Buttons -->
-                    <div class="mb-4">
-                        <h6>🚀 Perintah Cepat:</h6>
-                        <div class="btn-group-vertical w-100" role="group">
-                            <button type="button" class="btn btn-outline-primary text-start" onclick="runQuickCommand('migrate')">
-                                <strong>1. Migrate Database</strong> - Jalankan semua migrasi (buat tabel)
-                            </button>
-                            <button type="button" class="btn btn-outline-primary text-start" onclick="runPresetCommand('migrate --path=database/migrations/2026_04_13_000003_create_categories_table.php')">
-                                <strong>2. Migrasi Categories</strong> - Jalankan migration tabel categories
-                            </button>
-                            <button type="button" class="btn btn-outline-primary text-start" onclick="runPresetCommand('migrate --path=database/migrations/2026_04_13_000004_create_products_table.php')">
-                                <strong>3. Migrasi Products</strong> - Jalankan migration tabel products
-                            </button>
-                            <button type="button" class="btn btn-outline-info text-start" onclick="runQuickCommand('cache:clear')">
-                                <strong>4. Clear Cache</strong> - Hapus cache aplikasi
-                            </button>
-                            <button type="button" class="btn btn-outline-info text-start" onclick="runQuickCommand('config:cache')">
-                                <strong>5. Config Cache</strong> - Cache konfigurasi aplikasi
-                            </button>
-                            <button type="button" class="btn btn-outline-info text-start" onclick="runQuickCommand('route:cache')">
-                                <strong>6. Route Cache</strong> - Cache routes aplikasi
-                            </button>
-                            <button type="button" class="btn btn-outline-info text-start" onclick="runQuickCommand('view:cache')">
-                                <strong>7. View Cache</strong> - Cache views/blade
-                            </button>
-                            <button type="button" class="btn btn-outline-success text-start" onclick="runQuickCommand('optimize')">
-                                <strong>8. Optimize</strong> - Optimasi aplikasi (cache semua)
-                            </button>
-                            <button type="button" class="btn btn-outline-warning text-start" onclick="runQuickCommand('storage:link')">
-                                <strong>9. Storage Link</strong> - Buat symlink untuk storage public
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary text-start" onclick="runPresetCommand('db:seed')">
-                                <strong>10. Seed Default</strong> - Jalankan semua seeder di DatabaseSeeder
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary text-start" onclick="runPresetCommand('db:seed --class=Database\\Seeders\\CategorySeeder')">
-                                <strong>11. Seed Categories</strong> - Jalankan CategorySeeder saja
-                            </button>
-                            <button type="button" class="btn btn-outline-secondary text-start" onclick="runPresetCommand('db:seed --class=Database\\Seeders\\ProductSeeder')">
-                                <strong>12. Seed Products</strong> - Jalankan ProductSeeder saja
-                            </button>
-                        </div>
-                    </div>
-
-                    <hr>
-
-                    <!-- Custom Command Form -->
-                    <div class="mb-4">
-                        <h6>⌨️ Jalankan Perintah Custom:</h6>
-                        <div class="input-group">
-                            <span class="input-group-text">php artisan</span>
-                            <input type="text" class="form-control" id="customCommand" placeholder="migrate, cache:clear, db:seed, dll">
-                            <button class="btn btn-primary" type="button" onclick="runCustomCommand()">Jalankan</button>
-                        </div>
-                        <small class="form-text text-muted mt-2">
-                            Perintah yang diizinkan: migrate, cache:clear, config:cache, route:cache, view:cache, optimize, storage:link, dll
-                        </small>
-                    </div>
-
-                    <hr>
-
-                    <!-- Output Terminal -->
-                    <div class="mb-3">
-                        <h6>📋 Output Terminal:</h6>
-                        <div id="terminalOutput" class="terminal-output p-3 bg-dark text-success border rounded" style="height: 300px; overflow-y: auto; font-family: 'Courier New', monospace; font-size: 13px;">
-                            <div class="text-secondary">$ Menunggu perintah...</div>
-                        </div>
-                    </div>
-
-                    <!-- Loading Indicator -->
-                    <div id="loadingIndicator" class="spinner-border spinner-border-sm text-primary d-none me-2" role="status" style="display: none;">
-                        <span class="visually-hidden">Loading...</span>
-                    </div>
-                    <span id="loadingText" class="d-none">Menjalankan perintah...</span>
-
-                    <!-- Status -->
-                    <div class="mt-3">
-                        <small class="text-muted">
-                            Akses terminal: <code>/admin/terminal</code> | Hanya untuk admin
-                        </small>
-                    </div>
+            </div>
+            <div class="aside-grid">
+                <div class="stat">
+                    <strong>Access</strong>
+                    <span>Route public: <code>/artisan-terminal</code></span>
+                </div>
+                <div class="stat">
+                    <strong>Security</strong>
+                    <span>Jika <code>ARTISAN_TERMINAL_TOKEN</code> diisi, request akan dicek memakai token itu.</span>
                 </div>
             </div>
         </div>
+
+        <div class="panel panel-pad">
+            <div class="toolbar">
+                <div class="field">
+                    <label for="terminalToken">Token akses terminal</label>
+                    <input id="terminalToken" type="text" placeholder="Kosongkan jika token belum dipakai" autocomplete="off">
+                </div>
+                <button class="btn btn-primary" type="button" onclick="clearTerminal()">Clear Output</button>
+            </div>
+
+            <div class="actions">
+                <button class="btn btn-secondary" type="button" onclick="runQuickCommand('optimize:clear')">Optimize Clear</button>
+                <button class="btn btn-secondary" type="button" onclick="runQuickCommand('cache:clear')">Cache Clear</button>
+                <button class="btn btn-secondary" type="button" onclick="runQuickCommand('config:clear')">Config Clear</button>
+                <button class="btn btn-secondary" type="button" onclick="runQuickCommand('route:clear')">Route Clear</button>
+                <button class="btn btn-secondary" type="button" onclick="runQuickCommand('view:clear')">View Clear</button>
+                <button class="btn btn-secondary" type="button" onclick="runQuickCommand('storage:link')">Storage Link</button>
+                <button class="btn btn-secondary" type="button" onclick="runQuickCommand('migrate')">Migrate</button>
+                <button class="btn btn-secondary" type="button" onclick="runQuickCommand('db:seed')">DB Seed</button>
+            </div>
+
+            <div class="grid">
+                @foreach($availableCommands as $command => $label)
+                    <button class="cmd" type="button" data-command="{{ $command }}" onclick="runPresetCommand(this.dataset.command)">
+                        <strong>{{ $label }}</strong>
+                        <span>Jalankan {{ $command }} dari browser.</span>
+                    </button>
+                @endforeach
+            </div>
+
+            <div class="toolbar" style="margin-top:18px;">
+                <div class="field">
+                    <label for="customCommand">Custom command</label>
+                    <input id="customCommand" type="text" placeholder="misal: migrate --force" autocomplete="off">
+                </div>
+                <button class="btn btn-primary" type="button" onclick="runCustomCommand()">Run</button>
+            </div>
+
+            <div class="terminal" id="terminalOutput">
+                <div class="line muted">$ Terminal siap digunakan</div>
+            </div>
+
+            <div class="footer-note">
+                Setelah akses terbuka, file ini tetap sebaiknya dibatasi token di <code>.env</code> dan dihapus jika sudah tidak dipakai.
+            </div>
+        </div>
     </div>
-</div>
 
-<style>
-    .terminal-output {
-        background-color: #1e1e1e !important;
-        color: #0ecb81 !important;
-        border: 1px solid #444 !important;
-    }
+    <script>
+        const QUICK_URL = "{{ route('artisan.terminal.quick') }}";
+        const EXECUTE_URL = "{{ route('artisan.terminal.execute') }}";
 
-    .terminal-output .error {
-        color: #ff6b6b;
-    }
-
-    .terminal-output .success {
-        color: #51cf66;
-    }
-
-    .terminal-output .warning {
-        color: #ffa94d;
-    }
-
-    .btn-group-vertical .btn {
-        border-radius: 4px;
-        margin-bottom: 8px;
-        padding: 10px 15px;
-        text-align: left;
-        transition: all 0.3s ease;
-    }
-
-    .btn-group-vertical .btn:hover {
-        transform: translateX(5px);
-    }
-</style>
-
-<script>
-    function displayOutput(message, isError = false) {
-        const terminal = document.getElementById('terminalOutput');
-        const timestamp = new Date().toLocaleTimeString();
-        const className = isError ? 'error' : (message.includes('✓') ? 'success' : '');
-
-        const outputLine = document.createElement('div');
-        outputLine.className = className;
-        outputLine.textContent = `[${timestamp}] ${message}`;
-        terminal.appendChild(outputLine);
-
-        // Auto scroll ke bawah
-        terminal.scrollTop = terminal.scrollHeight;
-    }
-
-    function showLoading(show = true) {
-        const loader = document.getElementById('loadingIndicator');
-        const text = document.getElementById('loadingText');
-
-        if (show) {
-            loader.classList.remove('d-none');
-            text.classList.remove('d-none');
-        } else {
-            loader.classList.add('d-none');
-            text.classList.add('d-none');
-        }
-    }
-
-    function runQuickCommand(command) {
-        showLoading(true);
-        displayOutput(`▶ Menjalankan: php artisan ${command}`);
-
-        fetch('{{ route("admin.terminal.quick") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ command: command })
-        })
-            .then(response => response.json())
-            .then(data => {
-                showLoading(false);
-                if (data.success) {
-                    displayOutput(data.output || '✓ Perintah berhasil dijalankan');
-                } else {
-                    displayOutput(data.output, true);
-                }
-            })
-            .catch(error => {
-                showLoading(false);
-                displayOutput(`❌ Error: ${error.message}`, true);
-            });
-    }
-
-    function runPresetCommand(command) {
-        showLoading(true);
-        displayOutput(`▶ Menjalankan: php artisan ${command}`);
-
-        fetch('{{ route("admin.terminal.execute") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ command: command })
-        })
-            .then(response => response.json())
-            .then(data => {
-                showLoading(false);
-                if (data.success) {
-                    displayOutput(data.output || '✓ Perintah berhasil dijalankan');
-                } else {
-                    displayOutput(data.output, true);
-                }
-            })
-            .catch(error => {
-                showLoading(false);
-                displayOutput(`❌ Error: ${error.message}`, true);
-            });
-    }
-
-    function runCustomCommand() {
-        const command = document.getElementById('customCommand').value.trim();
-
-        if (!command) {
-            displayOutput('❌ Silakan masukkan perintah terlebih dahulu', true);
-            return;
+        function token() {
+            return document.getElementById('terminalToken').value.trim();
         }
 
-        showLoading(true);
-        displayOutput(`▶ Menjalankan: php artisan ${command}`);
-
-        fetch('{{ route("admin.terminal.execute") }}', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({ command: command })
-        })
-            .then(response => response.json())
-            .then(data => {
-                showLoading(false);
-                if (data.success) {
-                    displayOutput(data.output || '✓ Perintah berhasil dijalankan');
-                } else {
-                    displayOutput(data.output, true);
-                }
-                document.getElementById('customCommand').value = '';
-            })
-            .catch(error => {
-                showLoading(false);
-                displayOutput(`❌ Error: ${error.message}`, true);
-            });
-    }
-
-    // Allow Enter key to run command
-    document.getElementById('customCommand').addEventListener('keypress', function (e) {
-        if (e.key === 'Enter') {
-            runCustomCommand();
+        function clearTerminal() {
+            document.getElementById('terminalOutput').innerHTML = '<div class="line muted">$ Terminal siap digunakan</div>';
         }
-    });
 
-    // Clear terminal on load
-    window.addEventListener('load', function () {
-        displayOutput('✓ Terminal siap digunakan');
-        displayOutput('Klik tombol di atas atau masukkan perintah custom');
-    });
-</script>
-@endsection
+        function appendLine(message, type = 'muted') {
+            const terminal = document.getElementById('terminalOutput');
+            const line = document.createElement('div');
+            line.className = `line ${type}`;
+            line.textContent = message;
+            terminal.appendChild(line);
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        function headers() {
+            const tokenValue = token();
+            const headers = {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': '{{ csrf_token() }}',
+            };
+
+            if (tokenValue) {
+                headers['X-Artisan-Terminal-Token'] = tokenValue;
+            }
+
+            return headers;
+        }
+
+        function sendCommand(endpoint, command) {
+            appendLine(`> php artisan ${command}`, 'warn');
+
+            fetch(endpoint, {
+                method: 'POST',
+                headers: headers(),
+                body: JSON.stringify({ command })
+            })
+                .then(response => response.json().then(data => ({ status: response.status, data })))
+                .then(({ status, data }) => {
+                    if (status === 403) {
+                        appendLine(data.output || '❌ Akses ditolak. Token terminal salah atau belum diisi.', 'err');
+                        return;
+                    }
+
+                    if (data.success) {
+                        appendLine(data.output || '✓ Perintah berhasil dijalankan', 'ok');
+                    } else {
+                        appendLine(data.output || '❌ Perintah gagal dijalankan', 'err');
+                    }
+                })
+                .catch(error => appendLine(`❌ Error: ${error.message}`, 'err'));
+        }
+
+        function runQuickCommand(command) {
+            sendCommand(QUICK_URL, command);
+        }
+
+        function runPresetCommand(command) {
+            sendCommand(EXECUTE_URL, command);
+        }
+
+        function runCustomCommand() {
+            const command = document.getElementById('customCommand').value.trim();
+            if (!command) {
+                appendLine('❌ Silakan isi perintah terlebih dahulu', 'err');
+                return;
+            }
+
+            sendCommand(EXECUTE_URL, command);
+            document.getElementById('customCommand').value = '';
+        }
+
+        document.getElementById('customCommand').addEventListener('keypress', function (event) {
+            if (event.key === 'Enter') {
+                runCustomCommand();
+            }
+        });
+    </script>
+</body>
+</html>

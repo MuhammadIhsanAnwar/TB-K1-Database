@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
 use Symfony\Component\Console\Output\BufferedOutput;
@@ -58,6 +59,13 @@ class ArtisanTerminalController extends Controller
      */
     public function executeCommand(Request $request)
     {
+        if (! $this->authorizeTerminalAccess($request)) {
+            return response()->json([
+                'success' => false,
+                'output' => '❌ Akses terminal ditolak. Token tidak valid.'
+            ], 403);
+        }
+
         // Validasi perintah
         $request->validate([
             'command' => 'required|string',
@@ -115,6 +123,13 @@ class ArtisanTerminalController extends Controller
      */
     public function runQuickCommand(Request $request)
     {
+        if (! $this->authorizeTerminalAccess($request)) {
+            return response()->json([
+                'success' => false,
+                'output' => '❌ Akses terminal ditolak. Token tidak valid.'
+            ], 403);
+        }
+
         $request->validate([
             'command' => 'required|string|in:migrate,cache:clear,config:cache,route:cache,view:cache,optimize,storage:link,db:seed',
         ]);
@@ -185,5 +200,18 @@ class ArtisanTerminalController extends Controller
         }
 
         return $parameters;
+    }
+
+    private function authorizeTerminalAccess(Request $request): bool
+    {
+        $configuredToken = (string) Config::get('app.artisan_terminal_token', '');
+
+        if ($configuredToken === '') {
+            return true;
+        }
+
+        $providedToken = (string) $request->header('X-Artisan-Terminal-Token', $request->input('token', ''));
+
+        return hash_equals($configuredToken, $providedToken);
     }
 }
