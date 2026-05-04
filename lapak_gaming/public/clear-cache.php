@@ -19,6 +19,69 @@ require $autoloadFile;
 $app = require_once $bootstrapFile;
 $kernel = $app->make(Illuminate\Contracts\Console\Kernel::class);
 
+$fallbackResults = [];
+
+function removeDirectoryContents(string $path): array
+{
+    $result = [
+        'path' => $path,
+        'removed' => 0,
+        'errors' => [],
+    ];
+
+    if (!is_dir($path)) {
+        return $result;
+    }
+
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator($path, FilesystemIterator::SKIP_DOTS),
+        RecursiveIteratorIterator::CHILD_FIRST
+    );
+
+    foreach ($iterator as $item) {
+        try {
+            if ($item->isDir()) {
+                if (@rmdir($item->getPathname())) {
+                    $result['removed']++;
+                }
+            } else {
+                if (@unlink($item->getPathname())) {
+                    $result['removed']++;
+                }
+            }
+        } catch (Throwable $throwable) {
+            $result['errors'][] = $throwable->getMessage();
+        }
+    }
+
+    return $result;
+}
+
+function removeBootstrapCacheFiles(string $path): array
+{
+    $result = [
+        'path' => $path,
+        'removed' => 0,
+        'errors' => [],
+    ];
+
+    if (!is_dir($path)) {
+        return $result;
+    }
+
+    foreach (glob($path . '/*.php') ?: [] as $file) {
+        if (basename($file) === '.gitignore') {
+            continue;
+        }
+
+        if (@unlink($file)) {
+            $result['removed']++;
+        }
+    }
+
+    return $result;
+}
+
 $commands = [
     'optimize:clear',
     'cache:clear',
@@ -45,6 +108,24 @@ foreach ($commands as $command) {
         ];
     }
 }
+
+$fallbackResults[] = removeDirectoryContents($appRoot . '/storage/framework/cache');
+$fallbackResults[] = removeDirectoryContents($appRoot . '/storage/framework/views');
+$fallbackResults[] = removeBootstrapCacheFiles($appRoot . '/bootstrap/cache');
+
+$results[] = [
+    'command' => 'filesystem:fallback',
+    'success' => true,
+    'output' => implode("\n", array_map(function (array $result): string {
+        $line = sprintf('[OK] %s => removed %d item(s)', $result['path'], $result['removed']);
+
+        if (!empty($result['errors'])) {
+            $line .= ' | errors: ' . implode('; ', $result['errors']);
+        }
+
+        return $line;
+    }, $fallbackResults)),
+];
 
 ?><!DOCTYPE html>
 <html lang="id">
