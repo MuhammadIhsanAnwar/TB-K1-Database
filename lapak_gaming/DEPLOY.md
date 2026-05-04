@@ -31,6 +31,8 @@ Langkah singkat (tanpa SSH):
 3. Upload file proyek ke cPanel:
    - Letakkan seluruh isi project di dalam folder di `home/username/` (mis. `lapak_gaming`).
    - Jika host mengharuskan dokumen root di `public_html`, pindahkan isi `public/` (bukan foldernya) ke `public_html/` dan sesuaikan path di `index.php`.
+   - Jika deploy memakai fitur **Git Version Control / Update from Remote**, pastikan hasil `npm run build` ikut ter-deploy. Git pull di cPanel **tidak** menjalankan build Tailwind/Vite otomatis.
+   - Artinya, folder `public/build/` harus sudah ada di repo yang di-pull, atau harus di-upload manual setelah build lokal selesai.
 
 4. Menyesuaikan `public/index.php` bila memindahkan `public` ke `public_html`:
    - Di `public_html/index.php` set path autoload dan bootstrap. Contoh ketika project ada di `lapak_gaming`:
@@ -112,6 +114,11 @@ composer install --no-dev --optimize-autoloader
 - Upload semua file (gunakan SFTP/FTP)
 - Set permissions storage & bootstrap/cache
 - Buka website dan test
+
+**Jika memakai cPanel Git update:**
+- Jalankan `npm run build` di laptop dulu
+- Pastikan `public/build/` ikut masuk ke server saat update repo
+- Jangan berharap `npm run dev` atau build otomatis terjadi di hosting, karena cPanel Git hanya mengambil file, bukan membangun asset
 
 **Tidak perlu:**
 - ❌ `npm run dev` di production (tidak perlu install Node.js di server)
