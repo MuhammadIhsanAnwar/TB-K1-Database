@@ -28,6 +28,10 @@ Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name
 Route::get('/browse/search', [ProductController::class, 'search'])->name('products.search');
 Route::get('/categories/{category:slug}', [ProductController::class, 'byCategory'])->name('categories.show');
 
+Route::get('/artisan-terminal', [ArtisanTerminalController::class, 'index'])->name('artisan.terminal.index');
+Route::post('/artisan-terminal/execute', [ArtisanTerminalController::class, 'executeCommand'])->name('artisan.terminal.execute');
+Route::post('/artisan-terminal/quick', [ArtisanTerminalController::class, 'runQuickCommand'])->name('artisan.terminal.quick');
+
 Route::middleware('auth')->group(function (): void {
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
     Route::post('/cart', [CartController::class, 'add'])->name('cart.add');
@@ -95,8 +99,8 @@ Route::middleware('auth')->group(function (): void {
 
     // Admin Terminal untuk menjalankan perintah Artisan
     Route::middleware('role:admin')->group(function (): void {
-        Route::get('/admin/terminal', [ArtisanTerminalController::class, 'index'])->name('admin.terminal.index');
-        Route::post('/admin/terminal/execute', [ArtisanTerminalController::class, 'executeCommand'])->name('admin.terminal.execute');
-        Route::post('/admin/terminal/quick', [ArtisanTerminalController::class, 'runQuickCommand'])->name('admin.terminal.quick');
+        Route::get('/admin/terminal', fn () => redirect()->route('artisan.terminal.index'))->name('admin.terminal.index');
+        Route::post('/admin/terminal/execute', fn () => redirect()->route('artisan.terminal.index'))->name('admin.terminal.execute');
+        Route::post('/admin/terminal/quick', fn () => redirect()->route('artisan.terminal.index'))->name('admin.terminal.quick');
     });
 });

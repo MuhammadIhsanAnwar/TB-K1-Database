@@ -54,6 +54,8 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    'artisan_terminal_token' => env('ARTISAN_TERMINAL_TOKEN'),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
