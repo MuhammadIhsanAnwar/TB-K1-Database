@@ -7,7 +7,23 @@
     <title>@yield('title', 'Lapak Geming') — Marketplace Game Terpercaya</title>
     <meta name="description" content="@yield('meta_description', 'Beli item game, top up, akun, voucher dengan aman dan murah di Lapak Geming')">
 
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @if (file_exists(public_path('build/manifest.json')))
+        @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @else
+        {{-- Fallback production mode jika build Vite belum ikut ter-upload ke hosting --}}
+        <script src="https://cdn.tailwindcss.com"></script>
+        <script>
+            tailwind.config = {
+                theme: {
+                    extend: {
+                        colors: {
+                            violet: tailwind?.theme?.colors?.violet ?? {},
+                        },
+                    },
+                },
+            };
+        </script>
+    @endif
 </head>
 <body class="min-h-full bg-gray-950 text-gray-100 font-sans">
 
