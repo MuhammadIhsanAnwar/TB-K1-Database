@@ -1,69 +1,60 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Str;
 
-class Order extends Model
-{
-    use HasFactory;
-
-    public const STATUS_PENDING_PAYMENT = 'pending_payment';
-    public const STATUS_PAYMENT_UPLOADED = 'payment_uploaded';
-    public const STATUS_PROCESSING = 'processing';
-    public const STATUS_DELIVERED = 'delivered';
-    public const STATUS_COMPLETED = 'completed';
-    public const STATUS_DISPUTED = 'disputed';
-    public const STATUS_CANCELLED = 'cancelled';
-
+class Order extends Model {
     protected $fillable = [
-        'buyer_id',
-        'seller_id',
-        'invoice_number',
-        'status',
-        'subtotal',
-        'fee_amount',
-        'escrow_amount',
-        'grand_total',
-        'payment_method',
-        'payment_proof',
-        'delivery_notes',
-        'tracking_code',
-        'due_at',
-        'completed_at',
-        'disputed_at',
-        'metadata',
+        'order_code', 'user_id', 'subtotal', 'fee',
+        'total_price', 'status', 'payment_method',
+        'payment_proof', 'paid_at', 'completed_at', 'notes',
     ];
 
-    protected $casts = [
-        'subtotal' => 'decimal:2',
-        'fee_amount' => 'decimal:2',
-        'escrow_amount' => 'decimal:2',
-        'grand_total' => 'decimal:2',
-        'due_at' => 'datetime',
-        'completed_at' => 'datetime',
-        'disputed_at' => 'datetime',
-        'metadata' => 'array',
-    ];
-
-    public function buyer()
-    {
-        return $this->belongsTo(User::class, 'buyer_id');
+    protected function casts(): array {
+        return [
+            'paid_at' => 'datetime',
+            'completed_at' => 'datetime',
+            'subtotal'    => 'decimal:2',
+            'fee'         => 'decimal:2',
+            'total_price' => 'decimal:2',
+        ];
     }
 
-    public function seller()
-    {
-        return $this->belongsTo(User::class, 'seller_id');
+    protected static function boot() {
+        parent::boot();
+        static::creating(function($order) {
+            $order->order_code = 'LG-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6));
+        });
     }
 
-    public function items()
-    {
-        return $this->hasMany(OrderItem::class);
+    public function buyer()     { return $this->belongsTo(User::class, 'user_id'); }
+    public function items()     { return $this->hasMany(OrderItem::class); }
+
+    public function scopePending($q)    { return $q->where('status', 'pending'); }
+    public function scopeCompleted($q)  { return $q->where('status', 'completed'); }
+
+    public function getStatusLabelAttribute(): string {
+        return match($this->status) {
+            'pending'    => 'Menunggu Pembayaran',
+            'paid'       => 'Sudah Dibayar',
+            'processing' => 'Diproses Seller',
+            'completed'  => 'Selesai',
+            'cancelled'  => 'Dibatalkan',
+            'refunded'   => 'Dikembalikan',
+            default      => $this->status,
+        };
     }
 
-    public function messages()
-    {
-        return $this->hasMany(Message::class);
+    public function getStatusColorAttribute(): string {
+        return match($this->status) {
+            'pending'    => 'yellow',
+            'paid'       => 'blue',
+            'processing' => 'indigo',
+            'completed'  => 'green',
+            'cancelled'  => 'red',
+            'refunded'   => 'gray',
+            default      => 'gray',
+        };
     }
 }

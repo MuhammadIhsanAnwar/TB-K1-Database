@@ -1,97 +1,87 @@
 <?php
-
 namespace App\Models;
 
-use Illuminate\Contracts\Auth\MustVerifyEmail;
-use Database\Factories\UserFactory;
-use Illuminate\Database\Eloquent\Attributes\Fillable;
-use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-#[Fillable(['name', 'email', 'password'])]
-#[Hidden(['password', 'remember_token'])]
-class User extends Authenticatable implements MustVerifyEmail
-{
-    /** @use HasFactory<UserFactory> */
+class User extends Authenticatable {
     use HasFactory, Notifiable;
 
-    /**
-     * Attributes that can be mass assigned.
-     *
-     * @var array<int, string>
-     */
     protected $fillable = [
-        'name',
-        'email',
-        'password',
-        'role',
-        'phone',
-        'avatar',
-        'status',
+        'name', 'username', 'email', 'password', 'role',
+        'balance', 'avatar', 'phone', 'bio',
     ];
 
-    /**
-     * Hidden attributes for arrays and JSON.
-     *
-     * @var array<int, string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
+    protected $hidden = ['password', 'remember_token'];
 
-    /**
-     * Get the attributes that should be cast.
-     *
-     * @return array<string, string>
-     */
-    protected function casts(): array
-    {
+    protected function casts(): array {
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'balance' => 'decimal:2',
         ];
     }
 
-    public function wallet()
-    {
-        return $this->hasOne(Wallet::class);
-    }
+    // Scopes
+    public function scopeSeller($query) { return $query->where('role', 'seller'); }
+    public function scopeActive($query) { return $query->where('is_active', true); }
 
-    public function products()
-    {
-        return $this->hasMany(Product::class, 'seller_id');
+    // Relations
+    public function products() {
+        return $this->hasMany(Product::class);
     }
-
-    public function ordersAsBuyer()
-    {
-        return $this->hasMany(Order::class, 'buyer_id');
+    public function orders() { // sebagai buyer
+        return $this->hasMany(Order::class);
     }
-
-    public function ordersAsSeller()
-    {
-        return $this->hasMany(Order::class, 'seller_id');
+    public function soldItems() { // sebagai seller
+        return $this->hasMany(OrderItem::class, 'seller_id');
     }
-
-    public function messages()
-    {
-        return $this->hasMany(Message::class, 'sender_id');
-    }
-
-    public function reviews()
-    {
+    public function reviews() {
         return $this->hasMany(Review::class);
     }
-
-    public function notifications()
-    {
-        return $this->hasMany(MarketplaceNotification::class);
+    public function cart() {
+        return $this->hasMany(Cart::class);
+    }
+    public function transactions() {
+        return $this->hasMany(Transaction::class);
+    }
+    public function withdrawals() {
+        return $this->hasMany(Withdrawal::class);
     }
 
-    public function sellerLevel()
-    {
-        return $this->belongsTo(SellerLevel::class);
+    // Helpers
+    public function isSeller(): bool { return $this->role === 'seller'; }
+    public function isAdmin(): bool  { return $this->role === 'admin'; }
+    public function isBuyer(): bool  { return $this->role === 'buyer'; }
+
+    public function getAvatarUrlAttribute(): string {
+        return $this->avatar
+            ? asset('storage/' . $this->avatar)
+            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name) . '&background=6366f1&color=fff';
+    }
+
+    public function addBalance(float $amount, string $desc, ?int $orderId = null): void {
+        $this->increment('balance', $amount);
+        $this->transactions()->create([
+            'type' => 'credit',
+            'amount' => $amount,
+            'description' => $desc,
+            'order_id' => $orderId,
+            'balance_after' => $this->fresh()->balance,
+        ]);
+    }
+
+    public function deductBalance(float $amount, string $desc, ?int $orderId = null): bool {
+        if ($this->balance < $amount) return false;
+        $this->decrement('balance', $amount);
+        $this->transactions()->create([
+            'type' => 'debit',
+            'amount' => $amount,
+            'description' => $desc,
+            'order_id' => $orderId,
+            'balance_after' => $this->fresh()->balance,
+        ]);
+        return true;
     }
 }

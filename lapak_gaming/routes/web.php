@@ -14,10 +14,19 @@ use App\Http\Controllers\ChatController;
 use App\Http\Controllers\SetupController;
 use App\Http\Controllers\MigrationController;
 use App\Http\Controllers\ArtisanTerminalController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\CategoryController;
+use App\Http\Controllers\CartController;
+use App\Http\Controllers\OrderController;
+use App\Http\Controllers\Seller\SellerProductController;
+use App\Http\Controllers\Seller\SellerOrderController;
+use App\Http\Controllers\Admin\AdminController;
 
 Route::get('/', [MarketplaceController::class, 'home'])->name('home');
+Route::get('/products/type/{type}', [ProductController::class, 'byType'])->name('products.by-type');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
-Route::get('/browse/search', [MarketplaceController::class, 'search'])->name('products.search');
+Route::get('/browse/search', [ProductController::class, 'search'])->name('products.search');
+Route::get('/categories/{category:slug}', [ProductController::class, 'byCategory'])->name('categories.show');
 
 // Setup page untuk membuat admin pertama kali
 Route::get('/setup', [SetupController::class, 'index'])->name('setup.index');

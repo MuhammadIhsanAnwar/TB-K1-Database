@@ -14,23 +14,26 @@ class MarketplaceController extends Controller
     public function home(Request $request): View
     {
         $categories = Schema::hasTable('categories')
-            ? Category::query()->whereNull('parent_id')->with('children')->orderBy('sort_order')->get()
+            ? Category::query()->active()->whereNull('parent_id')->with('children')->orderBy('sort_order')->take(10)->get()
             : collect();
+
+        $popularProducts = Schema::hasTable('products')
+            ? Product::query()->active()->inStock()->popular()->with(['seller', 'category'])->take(12)->get()
+            : collect();
+
+        $topupProducts = Schema::hasTable('products')
+            ? Product::query()->active()->inStock()->ofType('topup')->with(['seller', 'category'])->take(8)->get()
+            : collect();
+
         $featuredProducts = Schema::hasTable('products')
-            ? Product::query()->published()->with(['seller', 'category'])->where('is_featured', true)->latest()->take(8)->get()
-            : collect();
-        $trendingProducts = Schema::hasTable('products')
-            ? Product::query()->published()->trending()->with(['seller', 'category'])->latest()->take(8)->get()
-            : collect();
-        $latestProducts = Schema::hasTable('products')
-            ? Product::query()->published()->with(['seller', 'category'])->latest()->take(12)->get()
+            ? Product::query()->active()->inStock()->where('is_featured', true)->with(['seller', 'category'])->latest()->take(8)->get()
             : collect();
 
         return view('marketplace.home', [
             'categories' => $categories,
+            'popularProducts' => $popularProducts,
+            'topupProducts' => $topupProducts,
             'featuredProducts' => $featuredProducts,
-            'trendingProducts' => $trendingProducts,
-            'latestProducts' => $latestProducts,
             'search' => $request->string('q')->toString(),
         ]);
     }
