@@ -28,6 +28,21 @@ Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name
 Route::get('/browse/search', [ProductController::class, 'search'])->name('products.search');
 Route::get('/categories/{category:slug}', [ProductController::class, 'byCategory'])->name('categories.show');
 
+Route::middleware('auth')->group(function (): void {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart', [CartController::class, 'add'])->name('cart.add');
+    Route::patch('/cart/{id}', [CartController::class, 'update'])->name('cart.update');
+    Route::delete('/cart/{id}', [CartController::class, 'remove'])->name('cart.remove');
+    Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
+
+    Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
+    Route::get('/orders/{order:order_code}', [OrderController::class, 'show'])->name('orders.show');
+    Route::post('/orders/{order:order_code}/pay', [OrderController::class, 'pay'])->name('orders.pay');
+    Route::post('/orders/{order:order_code}/complete', [OrderController::class, 'complete'])->name('orders.complete');
+    Route::post('/orders/{order:order_code}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
+    Route::post('/orders/{order:order_code}/proof', [OrderController::class, 'uploadProof'])->name('orders.proof');
+});
+
 // Setup page untuk membuat admin pertama kali
 Route::get('/setup', [SetupController::class, 'index'])->name('setup.index');
 Route::post('/setup/admin', [SetupController::class, 'storeAdmin'])->name('setup.storeAdmin');
