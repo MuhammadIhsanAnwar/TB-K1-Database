@@ -17,7 +17,7 @@
       <div class="w-8 h-8 rounded-lg bg-purple-600 flex items-center justify-center shadow-glow-sm">
         <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
       </div>
-      <span class="font-display font-bold text-lg text-white tracking-wide">{{ config('app.name', 'NexusMarket') }}</span>
+      <span class="font-display font-bold text-lg text-white tracking-wide">{{ config('app.name', 'Lapak Gaming') }}</span>
     </div>
     <button onclick="closeDrawer()" class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-750 transition-colors">
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -154,7 +154,7 @@
   <div class="absolute inset-0 bg-grid opacity-30"></div>
   <span class="relative">
     🎉 Ramadan Special: Up to <strong class="text-fuchsia-300">50% OFF</strong> on all top-up products — Use code
-    <strong class="text-yellow-300 bg-yellow-400/10 px-1.5 py-0.5 rounded border border-yellow-500/30">NEXUS50</strong>
+    <strong class="text-yellow-300 bg-yellow-400/10 px-1.5 py-0.5 rounded border border-yellow-500/30">LAPAK50</strong>
   </span>
   <button class="absolute right-3 top-1/2 -translate-y-1/2 text-purple-400 hover:text-white transition-colors" onclick="document.getElementById('announcement-bar').remove()">
     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
@@ -177,7 +177,7 @@
           <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
         </div>
         <span class="font-display font-extrabold text-xl text-white hidden sm:block tracking-wide">
-          {{ config('app.name_prefix', 'Nexus') }}<span class="text-purple-400">{{ config('app.name_suffix', 'Market') }}</span>
+          {{ config('app.name', 'Lapak Gaming') }}
         </span>
       </a>
 

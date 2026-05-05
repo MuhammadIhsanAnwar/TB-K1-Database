@@ -1,5 +1,5 @@
 @extends('layouts.app')
-@section('title', 'Lapak Geming — Marketplace Game Terpercaya Indonesia')
+@section('title', 'Lapak Gaming — Marketplace Game Terpercaya Indonesia')
 
 @section('content')
     {{-- HERO BANNER --}}
