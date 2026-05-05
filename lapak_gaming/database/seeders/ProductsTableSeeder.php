@@ -49,6 +49,7 @@ class ProductsTableSeeder extends Seeder
                         'delivery_content' => null,
                         'file_path' => null,
                         'type' => collect(['topup', 'item', 'akun', 'voucher', 'gamekey'])->random(),
+                        'status' => 'published',  // ✅ SET STATUS TO PUBLISHED
                     ];
 
                     // Ensure product has photo on any schema variant.

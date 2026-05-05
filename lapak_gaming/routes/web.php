@@ -21,6 +21,7 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Seller\SellerProductController;
 use App\Http\Controllers\Seller\SellerOrderController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\SeederController;
 
 Route::get('/', [MarketplaceController::class, 'home'])->name('home');
 Route::get('/products/type/{type}', [ProductController::class, 'byType'])->name('products.by-type');
