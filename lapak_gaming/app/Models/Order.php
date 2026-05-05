@@ -3,11 +3,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model {
+    public const STATUS_PENDING_PAYMENT = 'pending_payment';
+    public const STATUS_PAYMENT_UPLOADED = 'payment_uploaded';
+    public const STATUS_PROCESSING = 'processing';
+    public const STATUS_DELIVERED = 'delivered';
+    public const STATUS_COMPLETED = 'completed';
+    public const STATUS_DISPUTED = 'disputed';
+    public const STATUS_CANCELLED = 'cancelled';
+    public const STATUS_REFUNDED = 'refunded';
+
     protected $fillable = [
-        'order_code', 'user_id', 'subtotal', 'fee',
-        'total_price', 'status', 'payment_method',
+        'order_code', 'user_id', 'status', 'payment_method',
         'payment_proof', 'paid_at', 'completed_at', 'notes',
     ];
 
@@ -15,9 +24,6 @@ class Order extends Model {
         return [
             'paid_at' => 'datetime',
             'completed_at' => 'datetime',
-            'subtotal'    => 'decimal:2',
-            'fee'         => 'decimal:2',
-            'total_price' => 'decimal:2',
         ];
     }
 
@@ -30,31 +36,66 @@ class Order extends Model {
 
     public function buyer()     { return $this->belongsTo(User::class, 'user_id'); }
     public function items()     { return $this->hasMany(OrderItem::class); }
+    public function financial(): HasOne { return $this->hasOne(OrderFinancial::class); }
 
-    public function scopePending($q)    { return $q->where('status', 'pending'); }
+    public function scopePending($q)    { return $q->where('status', self::STATUS_PENDING_PAYMENT); }
     public function scopeCompleted($q)  { return $q->where('status', 'completed'); }
 
     public function getStatusLabelAttribute(): string {
         return match($this->status) {
-            'pending'    => 'Menunggu Pembayaran',
-            'paid'       => 'Sudah Dibayar',
-            'processing' => 'Diproses Seller',
-            'completed'  => 'Selesai',
-            'cancelled'  => 'Dibatalkan',
-            'refunded'   => 'Dikembalikan',
+            self::STATUS_PENDING_PAYMENT => 'Menunggu Pembayaran',
+            self::STATUS_PAYMENT_UPLOADED => 'Pembayaran Dikirim',
+            self::STATUS_PROCESSING => 'Diproses Seller',
+            self::STATUS_DELIVERED => 'Dikirim',
+            self::STATUS_COMPLETED => 'Selesai',
+            self::STATUS_DISPUTED => 'Sengketa',
+            self::STATUS_CANCELLED => 'Dibatalkan',
+            self::STATUS_REFUNDED => 'Dikembalikan',
             default      => $this->status,
         };
     }
 
     public function getStatusColorAttribute(): string {
         return match($this->status) {
-            'pending'    => 'yellow',
-            'paid'       => 'blue',
-            'processing' => 'indigo',
-            'completed'  => 'green',
-            'cancelled'  => 'red',
-            'refunded'   => 'gray',
+            self::STATUS_PENDING_PAYMENT => 'yellow',
+            self::STATUS_PAYMENT_UPLOADED => 'blue',
+            self::STATUS_PROCESSING => 'indigo',
+            self::STATUS_DELIVERED => 'sky',
+            self::STATUS_COMPLETED => 'green',
+            self::STATUS_DISPUTED => 'orange',
+            self::STATUS_CANCELLED => 'red',
+            self::STATUS_REFUNDED => 'gray',
             default      => 'gray',
         };
+    }
+
+    public function getSubtotalAttribute(): float
+    {
+        return (float) ($this->financial?->subtotal ?? 0);
+    }
+
+    public function getFeeAmountAttribute(): float
+    {
+        return (float) ($this->financial?->fee_amount ?? 0);
+    }
+
+    public function getFeeAttribute(): float
+    {
+        return $this->getFeeAmountAttribute();
+    }
+
+    public function getEscrowAmountAttribute(): float
+    {
+        return (float) ($this->financial?->escrow_amount ?? 0);
+    }
+
+    public function getGrandTotalAttribute(): float
+    {
+        return (float) ($this->financial?->grand_total ?? 0);
+    }
+
+    public function getTotalPriceAttribute(): float
+    {
+        return $this->getGrandTotalAttribute();
     }
 }

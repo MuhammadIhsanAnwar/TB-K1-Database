@@ -7,8 +7,23 @@
     <title>@yield('title', 'Lapak Geming') — Marketplace Game Terpercaya</title>
     <meta name="description" content="@yield('meta_description', 'Beli item game, top up, akun, voucher dengan aman dan murah di Lapak Geming')">
 
-    @if (file_exists(public_path('build/manifest.json')))
+    @php
+        $manifestPath = public_path('build/manifest.json');
+        $builtCssPath = collect(glob(public_path('build/assets/app-*.css')))
+            ->map(fn ($path) => 'build/assets/' . basename($path))
+            ->first();
+        $builtJsPath = collect(glob(public_path('build/assets/app-*.js')))
+            ->map(fn ($path) => 'build/assets/' . basename($path))
+            ->first();
+    @endphp
+
+    @if (file_exists($manifestPath))
         @vite(['resources/css/app.css', 'resources/js/app.js'])
+    @elseif ($builtCssPath)
+        <link rel="stylesheet" href="{{ asset($builtCssPath) }}">
+        @if ($builtJsPath)
+            <script src="{{ asset($builtJsPath) }}" defer></script>
+        @endif
     @else
         <link rel="stylesheet" href="{{ asset('css/fallback.css') }}">
     @endif

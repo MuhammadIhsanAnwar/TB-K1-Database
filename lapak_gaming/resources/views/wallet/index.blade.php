@@ -4,12 +4,12 @@
 
 @section('content')
     <div class="grid gap-6 lg:grid-cols-[.9fr_1.1fr]">
-        <section class="rounded-[2rem] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+        <section class="rounded-4xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
             <h1 class="text-2xl font-black">Wallet</h1>
             <div class="mt-4 rounded-[1.75rem] bg-slate-950 p-6 text-white dark:bg-white dark:text-slate-950">
                 <div class="text-sm text-slate-300 dark:text-slate-500">Balance</div>
-                <div class="mt-2 text-4xl font-black">Rp {{ number_format($wallet->balance, 0, ',', '.') }}</div>
-                <div class="mt-2 text-sm text-slate-300 dark:text-slate-500">Available: Rp {{ number_format($wallet->available_balance, 0, ',', '.') }}</div>
+                <div class="mt-2 text-4xl font-black">Rp {{ number_format($wallet?->balance ?? 0, 0, ',', '.') }}</div>
+                <div class="mt-2 text-sm text-slate-300 dark:text-slate-500">Available: Rp {{ number_format($wallet?->available_balance ?? 0, 0, ',', '.') }}</div>
             </div>
 
             <div class="mt-6 grid gap-3 sm:grid-cols-2">
@@ -28,10 +28,10 @@
             </div>
         </section>
 
-        <section class="rounded-[2rem] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+        <section class="rounded-4xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
             <h2 class="text-xl font-black">Transaction History</h2>
             <div class="mt-4 space-y-3">
-                @forelse ($wallet->transactions as $transaction)
+                @forelse (($wallet?->transactions ?? collect()) as $transaction)
                     <div class="rounded-2xl bg-slate-50 p-4 dark:bg-slate-950/40">
                         <div class="flex items-center justify-between text-sm">
                             <span class="font-bold">{{ $transaction->type }}</span>

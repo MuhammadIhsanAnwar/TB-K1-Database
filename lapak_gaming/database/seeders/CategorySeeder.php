@@ -1,42 +1,28 @@
 <?php
-
 namespace Database\Seeders;
 
-use App\Models\Category;
 use Illuminate\Database\Seeder;
+use App\Models\Category;
+use Illuminate\Support\Str;
 
 class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        $gaming = Category::create([
-            'name' => 'Gaming',
-            'slug' => 'gaming',
-            'description' => 'Item digital untuk game populer.',
-            'sort_order' => 1,
-        ]);
+        $names = [
+            'Top Up Game', 'Game Key', 'Roblox Games', 'Akun', 'Voucher',
+            'Koin Game', 'Item', 'Joki', 'Top Up Login', 'Streaming',
+            'Live Show', 'Pulsa dan Utilitas', 'Aplikasi dan Software', 'Steam Voucher',
+            'Growtopia DL', 'Steam Key', 'Fish It', 'Mobile Legends WDP', 'Free Fire Diamonds'
+        ];
 
-        Category::create([
-            'parent_id' => $gaming->id,
-            'name' => 'Top Up',
-            'slug' => 'top-up',
-            'description' => 'Voucher dan saldo game.',
-            'sort_order' => 1,
-        ]);
+        $unique = array_values(array_unique($names));
 
-        Category::create([
-            'parent_id' => $gaming->id,
-            'name' => 'Account',
-            'slug' => 'account',
-            'description' => 'Akun game siap pakai.',
-            'sort_order' => 2,
-        ]);
-
-        Category::create([
-            'name' => 'Software',
-            'slug' => 'software',
-            'description' => 'Lisensi digital dan tools produktivitas.',
-            'sort_order' => 2,
-        ]);
+        foreach ($unique as $i => $name) {
+            Category::firstOrCreate(
+                ['slug' => Str::slug($name)],
+                ['name' => $name, 'sort_order' => $i]
+            );
+        }
     }
 }

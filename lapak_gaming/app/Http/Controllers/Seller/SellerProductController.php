@@ -11,9 +11,10 @@ use Illuminate\Support\Str;
 class SellerProductController extends Controller {
     public function dashboard() {
         $seller = Auth::user();
+        $sellerProducts = Product::where('seller_id', $seller->id)->with('statistics');
         $stats = [
-            'total_products' => Product::where('user_id', $seller->id)->count(),
-            'total_sold'     => Product::where('user_id', $seller->id)->sum('sold_count'),
+            'total_products' => (clone $sellerProducts)->count(),
+            'total_sold'     => (clone $sellerProducts)->get()->sum('sold_count'),
             'balance'        => $seller->balance,
         ];
         $recentSales = \App\Models\OrderItem::where('seller_id', $seller->id)
@@ -22,8 +23,8 @@ class SellerProductController extends Controller {
     }
 
     public function index() {
-        $products = Product::where('user_id', Auth::id())
-            ->with('category')->latest()->paginate(15);
+        $products = Product::where('seller_id', Auth::id())
+            ->with(['category', 'statistics'])->latest()->paginate(15);
         return view('seller.products.index', compact('products'));
     }
 
@@ -47,7 +48,7 @@ class SellerProductController extends Controller {
             $validated['image'] = $request->file('image')->store('products', 'public');
         }
 
-        $validated['user_id'] = Auth::id();
+        $validated['seller_id'] = Auth::id();
         $validated['slug'] = Str::slug($validated['name']) . '-' . Str::random(4);
 
         Product::create($validated);
@@ -57,13 +58,13 @@ class SellerProductController extends Controller {
     }
 
     public function edit(Product $produk) {
-        abort_if($produk->user_id !== Auth::id(), 403);
+        abort_if($produk->seller_id !== Auth::id(), 403);
         $categories = Category::active()->get();
         return view('seller.products.edit', compact('produk', 'categories'));
     }
 
     public function update(Request $request, Product $produk) {
-        abort_if($produk->user_id !== Auth::id(), 403);
+        abort_if($produk->seller_id !== Auth::id(), 403);
 
         $validated = $request->validate([
             'name'        => 'required|string|max:255',
@@ -72,7 +73,7 @@ class SellerProductController extends Controller {
             'price'       => 'required|numeric|min:100',
             'stock'       => 'required|integer|min:0',
             'type'        => 'required|in:topup,item,akun,voucher,gamekey',
-            'status'      => 'required|in:active,inactive',
+            'status'      => 'required|in:draft,published,archived',
             'image'       => 'nullable|image|max:2048',
         ]);
 
@@ -87,8 +88,8 @@ class SellerProductController extends Controller {
     }
 
     public function destroy(Product $produk) {
-        abort_if($produk->user_id !== Auth::id(), 403);
-        $produk->update(['status' => 'inactive']);
-        return back()->with('success', 'Produk dinonaktifkan.');
+        abort_if($produk->seller_id !== Auth::id(), 403);
+        $produk->update(['status' => 'archived']);
+        return back()->with('success', 'Produk diarsipkan.');
     }
 }

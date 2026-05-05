@@ -1,15 +1,24 @@
 <?php
 namespace Database\Seeders;
 
-use App\Models\Category;
 use App\Models\User;
-use App\Models\Product;
+use App\Models\Wallet;
+use App\Models\WalletBalance;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 
 class DatabaseSeeder extends Seeder {
     public function run(): void {
+        $this->call(SellerLevelSeeder::class);
+
+        // bulk seed categories, users (buyers), sellers and products
+        $this->call([
+            CategorySeeder::class,
+            SellersTableSeeder::class,
+            UsersTableSeeder::class,
+            ProductsTableSeeder::class,
+        ]);
+
         // Admin
         User::create([
             'name' => 'Admin Lapak Geming',
@@ -24,46 +33,31 @@ class DatabaseSeeder extends Seeder {
             'email' => 'seller@lapakgeming.com',
             'password' => Hash::make('password123'),
             'role' => 'seller',
+        ]);
+
+        $sellerWallet = Wallet::create(['user_id' => $seller->id]);
+        $sellerWallet->balanceState()->create([
             'balance' => 500000,
+            'available_balance' => 500000,
+            'locked_balance' => 0,
         ]);
 
         // Demo Buyer
-        User::create([
+        $buyer = User::create([
             'name' => 'User Demo',
             'email' => 'user@lapakgeming.com',
             'password' => Hash::make('password123'),
             'role' => 'buyer',
-            'balance' => 200000,
         ]);
 
-        // Kategori
-        $games = [
-            'Mobile Legends', 'Free Fire', 'PUBG Mobile',
-            'Genshin Impact', 'Roblox', 'Valorant', 'Steam',
-        ];
-        foreach ($games as $game) {
-            Category::create([
-                'name' => $game,
-                'slug' => Str::slug($game),
-                'sort_order' => 0,
-            ]);
-        }
+        $buyerWallet = Wallet::create(['user_id' => $buyer->id]);
+        $buyerWallet->balanceState()->create([
+            'balance' => 200000,
+            'available_balance' => 200000,
+            'locked_balance' => 0,
+        ]);
 
-        // Produk contoh
-        $categories = Category::all();
-        $types = ['topup', 'item', 'akun', 'voucher', 'gamekey'];
-        foreach (range(1, 20) as $i) {
-            Product::create([
-                'user_id'     => $seller->id,
-                'category_id' => $categories->random()->id,
-                'name'        => 'Produk Game ' . $i,
-                'slug'        => 'produk-game-' . $i . '-' . Str::random(4),
-                'description' => 'Deskripsi produk game ' . $i,
-                'price'       => rand(5, 200) * 1000,
-                'stock'       => rand(10, 100),
-                'type'        => $types[array_rand($types)],
-                'status'      => 'active',
-            ]);
-        }
+        // Product/category bulk data is handled by:
+        // CategorySeeder, SellersTableSeeder, UsersTableSeeder, ProductsTableSeeder.
     }
 }

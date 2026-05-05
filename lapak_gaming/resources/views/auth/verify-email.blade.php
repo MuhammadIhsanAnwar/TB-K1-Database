@@ -3,7 +3,7 @@
 @section('title', 'Verify Email')
 
 @section('content')
-    <div class="mx-auto max-w-2xl rounded-[2rem] border border-slate-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900">
+    <div class="mx-auto max-w-2xl rounded-4xl border border-slate-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900">
         <h1 class="text-3xl font-black">Verifikasi Email</h1>
         <p class="mt-3 text-sm text-slate-500">Cek inbox dan klik link verifikasi. Jika belum menerima, kirim ulang.</p>
 

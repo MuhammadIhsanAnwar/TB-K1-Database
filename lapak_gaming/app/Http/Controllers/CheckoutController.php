@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Order;
+use App\Models\OrderFinancial;
 use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Wallet;
@@ -33,14 +34,17 @@ class CheckoutController extends Controller
                 'buyer_id' => $request->user()->id,
                 'seller_id' => $product->seller_id,
                 'invoice_number' => 'INV-'.now()->format('YmdHis').'-'.str_pad((string) random_int(1, 9999), 4, '0', STR_PAD_LEFT),
-                'status' => Order::STATUS_PENDING_PAYMENT,
+                'status' => 'pending_payment',
+                'payment_method' => $data['payment_method'] ?? 'wallet',
+                'due_at' => now()->addDays(2),
+                'metadata' => ['fee_percent' => 5],
+            ]);
+
+            $order->financial()->create([
                 'subtotal' => $subtotal,
                 'fee_amount' => $feeAmount,
                 'escrow_amount' => $subtotal,
                 'grand_total' => $grandTotal,
-                'payment_method' => $data['payment_method'] ?? 'wallet',
-                'due_at' => now()->addDays(2),
-                'metadata' => ['fee_percent' => 5],
             ]);
 
             OrderItem::create([
@@ -54,11 +58,16 @@ class CheckoutController extends Controller
             ]);
 
             $wallet = Wallet::firstOrCreate(['user_id' => $request->user()->id]);
+            $balanceState = $wallet->balanceState()->firstOrCreate([], [
+                'balance' => 0,
+                'available_balance' => 0,
+                'locked_balance' => 0,
+            ]);
 
-            if ($wallet->available_balance >= $grandTotal) {
-                $wallet->forceFill([
-                    'available_balance' => $wallet->available_balance - $grandTotal,
-                    'locked_balance' => $wallet->locked_balance + $grandTotal,
+            if ($balanceState->available_balance >= $grandTotal) {
+                $balanceState->forceFill([
+                    'available_balance' => (float) $balanceState->available_balance - $grandTotal,
+                    'locked_balance' => (float) $balanceState->locked_balance + $grandTotal,
                 ])->save();
 
                 WalletTransaction::create([
@@ -67,8 +76,8 @@ class CheckoutController extends Controller
                     'type' => 'escrow_hold',
                     'direction' => 'debit',
                     'amount' => $grandTotal,
-                    'balance_before' => $wallet->balance,
-                    'balance_after' => $wallet->balance,
+                    'balance_before' => $balanceState->balance,
+                    'balance_after' => $balanceState->balance,
                     'reference_type' => Order::class,
                     'reference_id' => $order->id,
                     'description' => 'Dana ditahan di escrow untuk invoice '.$order->invoice_number,
@@ -85,14 +94,20 @@ class CheckoutController extends Controller
 
         DB::transaction(function () use ($order): void {
             $order->forceFill([
-                'status' => Order::STATUS_COMPLETED,
+                'status' => 'completed',
                 'completed_at' => now(),
             ])->save();
 
             $sellerWallet = Wallet::firstOrCreate(['user_id' => $order->seller_id]);
-            $sellerWallet->forceFill([
-                'balance' => $sellerWallet->balance + $order->escrow_amount,
-                'available_balance' => $sellerWallet->available_balance + $order->escrow_amount,
+            $balanceState = $sellerWallet->balanceState()->firstOrCreate([], [
+                'balance' => 0,
+                'available_balance' => 0,
+                'locked_balance' => 0,
+            ]);
+
+            $balanceState->forceFill([
+                'balance' => (float) $balanceState->balance + $order->escrow_amount,
+                'available_balance' => (float) $balanceState->available_balance + $order->escrow_amount,
             ])->save();
         });
 
@@ -104,7 +119,7 @@ class CheckoutController extends Controller
         abort_unless($order->buyer_id === $request->user()->id, 403);
 
         $order->forceFill([
-            'status' => Order::STATUS_DISPUTED,
+                'status' => 'disputed',
             'disputed_at' => now(),
         ])->save();
 
@@ -116,7 +131,7 @@ class CheckoutController extends Controller
         abort_unless($order->seller_id === $request->user()->id, 403);
 
         $order->forceFill([
-            'status' => Order::STATUS_DELIVERED,
+                'status' => 'delivered',
         ])->save();
 
         return back()->with('success', 'Item digital ditandai sudah dikirim.');

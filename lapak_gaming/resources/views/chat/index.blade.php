@@ -2,7 +2,7 @@
 
 @php
     $invoiceNumber = data_get($order, 'invoice_number', '-');
-    $orderStatus = data_get($order, 'status', '-');
+    $orderStatus = data_get($order, 'status_label', data_get($order, 'status', '-'));
 @endphp
 
 @section('title', 'Chat Order '.$invoiceNumber)

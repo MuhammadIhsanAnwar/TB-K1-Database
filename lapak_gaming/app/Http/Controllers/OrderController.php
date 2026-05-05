@@ -47,7 +47,7 @@ class OrderController extends Controller {
 
     public function pay(Request $request, Order $order) {
         abort_if($order->user_id !== Auth::id(), 403);
-        abort_if($order->status !== 'pending', 422, 'Order sudah diproses.');
+        abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
 
         $request->validate([
             'payment_method' => 'required|in:balance,transfer,qris,dana,ovo,gopay',
@@ -56,12 +56,17 @@ class OrderController extends Controller {
 
         DB::transaction(function () use ($request, $order) {
             if ($request->payment_method === 'balance') {
+                /** @var \App\Models\User $user */
                 $user = Auth::user();
                 if ($user->balance < $order->total_price) {
                     throw new \Exception('Saldo tidak mencukupi!');
                 }
                 $user->deductBalance($order->total_price, "Pembayaran Order #{$order->order_code}", $order->id);
-                $order->update(['status' => 'paid', 'payment_method' => 'balance', 'paid_at' => now()]);
+                $order->update([
+                    'status' => Order::STATUS_PAYMENT_UPLOADED,
+                    'payment_method' => 'balance',
+                    'paid_at' => now(),
+                ]);
             } else {
                 $proof = null;
                 if ($request->hasFile('payment_proof')) {
@@ -70,7 +75,7 @@ class OrderController extends Controller {
                 $order->update([
                     'payment_method' => $request->payment_method,
                     'payment_proof'  => $proof,
-                    'status'         => 'paid',
+                    'status'         => Order::STATUS_PAYMENT_UPLOADED,
                     'paid_at'        => now(),
                 ]);
             }
@@ -90,18 +95,22 @@ class OrderController extends Controller {
 
             $order = Order::create([
                 'user_id'        => Auth::id(),
-                'subtotal'       => $subtotal,
-                'fee'            => $fee,
-                'total_price'    => $subtotal + $fee,
-                'status'         => 'pending',
+                'status'         => Order::STATUS_PENDING_PAYMENT,
                 'payment_method' => $request->payment_method,
+            ]);
+
+            $order->financial()->create([
+                'subtotal' => $subtotal,
+                'fee_amount' => $fee,
+                'escrow_amount' => $subtotal,
+                'grand_total' => $subtotal + $fee,
             ]);
 
             foreach ($cartItems as $item) {
                 OrderItem::create([
                     'order_id'      => $order->id,
                     'product_id'    => $item->product_id,
-                    'seller_id'     => $item->product->user_id,
+                    'seller_id'     => $item->product->seller_id,
                     'product_name'  => $item->product->name,
                     'price'         => $item->product->price,
                     'quantity'      => $item->quantity,
@@ -123,17 +132,28 @@ class OrderController extends Controller {
 
     public function complete(Order $order) {
         abort_if($order->user_id !== Auth::id(), 403);
-        abort_if(!in_array($order->status, ['processing', 'paid']), 422);
+        abort_if(!in_array($order->status, [Order::STATUS_PAYMENT_UPLOADED, Order::STATUS_PROCESSING], true), 422);
 
         DB::transaction(function () use ($order) {
-            $order->update(['status' => 'completed', 'completed_at' => now()]);
+            $order->update(['status' => Order::STATUS_COMPLETED, 'completed_at' => now()]);
 
             // Kredit saldo ke seller
             foreach ($order->items as $item) {
                 $sellerAmount = $item->subtotal * 0.95; // 95% ke seller, 5% platform
                 $item->seller->addBalance($sellerAmount, "Penjualan Order #{$order->order_code}", $order->id);
                 $item->update(['delivery_status' => 'received']);
-                $item->product->increment('sold_count', $item->quantity);
+
+                $statistics = $item->product->statistics()->firstOrCreate([], [
+                    'sold_count' => 0,
+                    'rating_average' => 0,
+                    'review_count' => 0,
+                    'views_count' => 0,
+                    'downloads_count' => 0,
+                ]);
+
+                $statistics->forceFill([
+                    'sold_count' => (int) $statistics->sold_count + $item->quantity,
+                ])->save();
             }
         });
 
@@ -143,7 +163,7 @@ class OrderController extends Controller {
 
     public function cancel(Order $order) {
         abort_if($order->user_id !== Auth::id(), 403);
-        abort_if(!in_array($order->status, ['pending', 'paid']), 422);
+        abort_if(!in_array($order->status, [Order::STATUS_PENDING_PAYMENT, Order::STATUS_PAYMENT_UPLOADED], true), 422);
 
         DB::transaction(function () use ($order) {
             // Kembalikan stok
@@ -151,10 +171,10 @@ class OrderController extends Controller {
                 $item->product->increment('stock', $item->quantity);
             }
             // Refund jika sudah bayar pakai saldo
-            if ($order->status === 'paid' && $order->payment_method === 'balance') {
+            if ($order->status === Order::STATUS_PAYMENT_UPLOADED && $order->payment_method === 'balance') {
                 $order->buyer->addBalance($order->total_price, "Refund Order #{$order->order_code}", $order->id);
             }
-            $order->update(['status' => 'cancelled']);
+            $order->update(['status' => Order::STATUS_CANCELLED]);
         });
 
         return redirect()->route('orders.index')->with('success', 'Order dibatalkan.');
@@ -164,7 +184,7 @@ class OrderController extends Controller {
         abort_if($order->user_id !== Auth::id(), 403);
         $request->validate(['payment_proof' => 'required|image|max:2048']);
         $path = $request->file('payment_proof')->store('payment_proofs', 'public');
-        $order->update(['payment_proof' => $path, 'status' => 'paid', 'paid_at' => now()]);
+        $order->update(['payment_proof' => $path, 'status' => Order::STATUS_PAYMENT_UPLOADED, 'paid_at' => now()]);
         return back()->with('success', 'Bukti pembayaran berhasil diupload.');
     }
 }

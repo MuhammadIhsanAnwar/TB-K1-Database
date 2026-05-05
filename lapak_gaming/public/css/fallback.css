@@ -1,3 +1,9 @@
+/* Fallback CSS for hosting without running Vite dev server.
+   This file imports the already-built Vite asset so Tailwind styles
+   are available when the manifest is missing or when the dev server
+   is not running. Generated from public/build assets.
+*/
+@import url('/build/assets/app-DlodQJU2.css');
 /*
  * Fallback stylesheet for hosting when Vite build assets are missing.
  * This is intentionally small but covers the main shell, navbar, dropdown,

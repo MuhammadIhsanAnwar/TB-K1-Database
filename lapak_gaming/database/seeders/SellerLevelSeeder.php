@@ -3,23 +3,22 @@
 namespace Database\Seeders;
 
 use App\Models\SellerLevel;
+use App\Models\SellerLevelBenefit;
 use Illuminate\Database\Seeder;
 
 class SellerLevelSeeder extends Seeder
 {
     public function run(): void
     {
-        SellerLevel::insert([
+        $levels = [
             [
                 'name' => 'Starter',
                 'minimum_orders' => 0,
                 'minimum_revenue' => 0,
                 'fee_percent' => 7,
                 'badge_color' => 'slate',
-                'benefits' => json_encode(['Dashboard dasar', 'Auto delivery']),
                 'auto_approve' => false,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'benefits' => ['Dashboard dasar', 'Auto delivery'],
             ],
             [
                 'name' => 'Pro',
@@ -27,10 +26,8 @@ class SellerLevelSeeder extends Seeder
                 'minimum_revenue' => 500000,
                 'fee_percent' => 5,
                 'badge_color' => 'emerald',
-                'benefits' => json_encode(['Statistik lanjutan', 'Prioritas moderasi']),
                 'auto_approve' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'benefits' => ['Statistik lanjutan', 'Prioritas moderasi'],
             ],
             [
                 'name' => 'Elite',
@@ -38,11 +35,24 @@ class SellerLevelSeeder extends Seeder
                 'minimum_revenue' => 5000000,
                 'fee_percent' => 3,
                 'badge_color' => 'amber',
-                'benefits' => json_encode(['Fee lebih rendah', 'Seller badge premium']),
                 'auto_approve' => true,
-                'created_at' => now(),
-                'updated_at' => now(),
+                'benefits' => ['Fee lebih rendah', 'Seller badge premium'],
             ],
-        ]);
+        ];
+
+        foreach ($levels as $levelData) {
+            $benefits = $levelData['benefits'];
+            unset($levelData['benefits']);
+
+            $level = SellerLevel::create($levelData);
+
+            foreach ($benefits as $index => $benefit) {
+                SellerLevelBenefit::create([
+                    'seller_level_id' => $level->id,
+                    'sort_order' => $index,
+                    'benefit' => $benefit,
+                ]);
+            }
+        }
     }
 }

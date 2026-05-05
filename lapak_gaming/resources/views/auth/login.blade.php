@@ -3,7 +3,7 @@
 @section('title', 'Login')
 
 @section('content')
-    <div class="mx-auto max-w-md rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+    <div class="mx-auto max-w-md rounded-4xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
         <h1 class="text-3xl font-black">Login</h1>
         <p class="mt-2 text-sm text-slate-500">Masuk untuk buyer, seller, atau admin.</p>
 

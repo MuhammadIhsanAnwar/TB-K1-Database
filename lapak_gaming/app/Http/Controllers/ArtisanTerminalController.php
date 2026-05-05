@@ -31,6 +31,7 @@ class ArtisanTerminalController extends Controller
     public function index()
     {
         $availableCommands = [
+            'fix-permissions' => 'Repair permissions for storage/bootstrap cache',
             'migrate' => 'php artisan migrate --force',
             'migrate:rollback' => 'php artisan migrate:rollback',
             'migrate:reset' => 'php artisan migrate:reset',
@@ -75,6 +76,7 @@ class ArtisanTerminalController extends Controller
 
         // Whitelist perintah yang diizinkan (keamanan)
         $allowedCommands = [
+            'fix-permissions',
             'migrate',
             'migrate:rollback',
             'migrate:reset',
@@ -163,6 +165,11 @@ class ArtisanTerminalController extends Controller
     {
         $commandParts = preg_split('/\s+/', trim($command)) ?: [];
         $commandName = array_shift($commandParts);
+
+        if ($commandName === 'fix-permissions') {
+            return $this->repairCachePermissions();
+        }
+
         $parameters = $this->parseOptions($commandParts);
 
         if (in_array($commandName, self::FORCE_COMMANDS, true)) {
@@ -213,5 +220,57 @@ class ArtisanTerminalController extends Controller
         $providedToken = (string) $request->header('X-Artisan-Terminal-Token', $request->input('token', ''));
 
         return hash_equals($configuredToken, $providedToken);
+    }
+
+    private function repairCachePermissions(): string
+    {
+        $appRoot = base_path();
+        $targets = [
+            $appRoot . '/storage',
+            $appRoot . '/storage/framework',
+            $appRoot . '/storage/framework/cache',
+            $appRoot . '/storage/framework/views',
+            $appRoot . '/bootstrap/cache',
+        ];
+
+        $report = [];
+
+        foreach ($targets as $target) {
+            $entries = [$target];
+
+            if (is_dir($target)) {
+                $iterator = new \RecursiveIteratorIterator(
+                    new \RecursiveDirectoryIterator($target, \FilesystemIterator::SKIP_DOTS),
+                    \RecursiveIteratorIterator::CHILD_FIRST
+                );
+
+                foreach ($iterator as $item) {
+                    $entries[] = $item->getPathname();
+                }
+            }
+
+            $changed = 0;
+            $failed = 0;
+
+            foreach ($entries as $entry) {
+                $mode = is_dir($entry) ? 0775 : 0664;
+
+                if (@chmod($entry, $mode)) {
+                    $changed++;
+                } else {
+                    $failed++;
+                }
+            }
+
+            $report[] = sprintf(
+                '[%s] %s => changed %d, failed %d',
+                $failed === 0 ? 'OK' : 'WARN',
+                $target,
+                $changed,
+                $failed
+            );
+        }
+
+        return implode("\n", $report);
     }
 }

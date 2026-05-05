@@ -237,6 +237,7 @@
             </div>
 
             <div class="actions">
+                <button class="btn btn-primary" type="button" onclick="runQuickCommand('fix-permissions')">Fix Permissions</button>
                 <button class="btn btn-secondary" type="button" onclick="runQuickCommand('optimize:clear')">Optimize Clear</button>
                 <button class="btn btn-secondary" type="button" onclick="runQuickCommand('cache:clear')">Cache Clear</button>
                 <button class="btn btn-secondary" type="button" onclick="runQuickCommand('config:clear')">Config Clear</button>

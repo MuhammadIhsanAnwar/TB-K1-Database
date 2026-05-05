@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\ProductStatistic;
 use Illuminate\Http\Request;
 
 class ProductController extends Controller {
@@ -32,8 +33,8 @@ class ProductController extends Controller {
             ->when($type, fn($q) => $q->where('type', $type))
             ->when($minPrice, fn($q) => $q->where('price', '>=', $minPrice))
             ->when($maxPrice, fn($q) => $q->where('price', '<=', $maxPrice))
-            ->when($sort === 'popular',  fn($q) => $q->orderByDesc('sold_count'))
-            ->when($sort === 'rating',   fn($q) => $q->orderByDesc('rating'))
+            ->when($sort === 'popular',  fn($q) => $q->popular())
+            ->when($sort === 'rating',   fn($q) => $q->topRated())
             ->when($sort === 'price_asc', fn($q) => $q->orderBy('price'))
             ->when($sort === 'price_desc', fn($q) => $q->orderByDesc('price'))
             ->with(['category', 'seller'])

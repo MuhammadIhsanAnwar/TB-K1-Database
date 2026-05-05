@@ -26,10 +26,16 @@ class WalletController extends Controller
         ]);
 
         $wallet = Wallet::firstOrCreate(['user_id' => $request->user()->id]);
-        $before = (float) $wallet->balance;
-        $wallet->forceFill([
+        $balanceState = $wallet->balanceState()->firstOrCreate([], [
+            'balance' => 0,
+            'available_balance' => 0,
+            'locked_balance' => 0,
+        ]);
+
+        $before = (float) $balanceState->balance;
+        $balanceState->forceFill([
             'balance' => $before + (float) $data['amount'],
-            'available_balance' => $wallet->available_balance + (float) $data['amount'],
+            'available_balance' => (float) $balanceState->available_balance + (float) $data['amount'],
         ])->save();
 
         WalletTransaction::create([
@@ -39,7 +45,7 @@ class WalletController extends Controller
             'direction' => 'credit',
             'amount' => $data['amount'],
             'balance_before' => $before,
-            'balance_after' => $wallet->balance,
+            'balance_after' => $balanceState->balance,
             'description' => 'Deposit wallet',
         ]);
 
@@ -53,15 +59,20 @@ class WalletController extends Controller
         ]);
 
         $wallet = Wallet::firstOrCreate(['user_id' => $request->user()->id]);
+        $balanceState = $wallet->balanceState()->firstOrCreate([], [
+            'balance' => 0,
+            'available_balance' => 0,
+            'locked_balance' => 0,
+        ]);
 
-        if ($wallet->available_balance < (float) $data['amount']) {
+        if ($balanceState->available_balance < (float) $data['amount']) {
             return back()->withErrors(['amount' => 'Saldo tidak cukup.']);
         }
 
-        $before = (float) $wallet->balance;
-        $wallet->forceFill([
+        $before = (float) $balanceState->balance;
+        $balanceState->forceFill([
             'balance' => $before - (float) $data['amount'],
-            'available_balance' => $wallet->available_balance - (float) $data['amount'],
+            'available_balance' => (float) $balanceState->available_balance - (float) $data['amount'],
         ])->save();
 
         WalletTransaction::create([
@@ -71,7 +82,7 @@ class WalletController extends Controller
             'direction' => 'debit',
             'amount' => $data['amount'],
             'balance_before' => $before,
-            'balance_after' => $wallet->balance,
+            'balance_after' => $balanceState->balance,
             'description' => 'Withdraw wallet',
         ]);
 

@@ -4,7 +4,7 @@
 
 @section('content')
     <div class="grid gap-6 lg:grid-cols-[1.2fr_.8fr]">
-        <section class="rounded-[2rem] border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
+        <section class="rounded-4xl border border-slate-200 bg-white p-8 shadow-sm dark:border-slate-800 dark:bg-slate-900">
             <div class="flex flex-wrap gap-2 text-xs font-bold uppercase tracking-[0.2em] text-slate-500">
                 <span>{{ $product->category?->name }}</span>
                 <span>•</span>
@@ -26,7 +26,7 @@
         </section>
 
         <aside class="space-y-6">
-            <div class="rounded-[2rem] bg-slate-950 p-6 text-white shadow-glow dark:bg-white dark:text-slate-950">
+            <div class="rounded-4xl bg-slate-950 p-6 text-white shadow-glow dark:bg-white dark:text-slate-950">
                 <div class="text-sm font-bold uppercase tracking-[0.2em] text-slate-300 dark:text-slate-500">Harga</div>
                 <div class="mt-3 text-4xl font-black">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
                 <div class="mt-2 text-sm text-slate-300 dark:text-slate-500">Stok tersedia: {{ $product->stock }}</div>
@@ -43,7 +43,7 @@
                 @endauth
             </div>
 
-            <div class="rounded-[2rem] border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+            <div class="rounded-4xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
                 <div class="text-sm font-bold uppercase tracking-[0.2em] text-slate-400">Seller</div>
                 <div class="mt-3 text-xl font-black">{{ $product->seller?->name }}</div>
                 <div class="mt-1 text-sm text-slate-500">Level: {{ $product->seller?->sellerLevel?->name ?? 'Starter' }}</div>

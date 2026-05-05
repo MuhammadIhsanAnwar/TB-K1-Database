@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\ProductStatistic;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Str;
@@ -27,7 +28,7 @@ class ProductSeeder extends Seeder
         ];
 
         foreach ($items as $item) {
-            Product::create([
+            $product = Product::create([
                 'seller_id' => $seller->id,
                 'category_id' => $category->id,
                 'name' => $item['name'],
@@ -41,6 +42,10 @@ class ProductSeeder extends Seeder
                 'is_featured' => $item['featured'],
                 'is_trending' => $item['trending'],
                 'status' => 'published',
+            ]);
+
+            $product->statistics()->create([
+                'sold_count' => random_int(0, 120),
                 'rating_average' => 4.8,
                 'review_count' => 18,
                 'views_count' => random_int(120, 4000),
