@@ -59,8 +59,13 @@ Route::get('/setup/migrate/status', [MigrationController::class, 'status'])->nam
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthController::class, 'createLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'storeLogin']);
+    
     Route::get('/register', [AuthController::class, 'createRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'storeRegister']);
+    
+    Route::get('/register/seller', [AuthController::class, 'createRegisterSeller'])->name('register.seller');
+    Route::post('/register/seller', [AuthController::class, 'storeRegisterSeller'])->name('register.seller.store');
+    
     Route::get('/forgot-password', [PasswordResetController::class, 'createLinkRequest'])->name('password.request');
     Route::post('/forgot-password', [PasswordResetController::class, 'storeLinkRequest'])->name('password.email');
     Route::get('/reset-password/{token}', [PasswordResetController::class, 'createReset'])->name('password.reset');
