@@ -148,7 +148,7 @@
                 </a>
 
                 {{-- Wishlist --}}
-                <a href="{{ route('wishlist.index') ?? '#' }}" class="hidden sm:flex p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors relative" title="Wishlist">
+                <a href="{{ Route::has('wishlist.index') ? route('wishlist.index') : '#' }}" class="hidden sm:flex p-2 rounded-lg text-gray-400 hover:text-white hover:bg-white/5 transition-colors relative" title="Wishlist">
                     <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
                     </svg>
@@ -253,10 +253,13 @@
                                     <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
                                     My Orders
                                 </a>
-                                <a href="{{ route('wishlist.index') ?? '#' }}" class="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
-                                    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-                                    Wishlist
-                                </a>
+                                <a href="{{ Route::has('wishlist.index') ? route('wishlist.index') : '#' }}"
+   class="flex items-center gap-2.5 px-4 py-2 text-sm text-gray-300 hover:bg-white/5 hover:text-white transition-colors">
+    <svg class="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/>
+    </svg>
+    Wishlist
+</a>
                             </div>
 
                             <div class="border-t py-1" style="border-color: rgba(255,255,255,0.06);">
