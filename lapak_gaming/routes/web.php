@@ -23,6 +23,21 @@ use App\Http\Controllers\Seller\SellerOrderController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\SeederController;
 
+
+Route::prefix('marketplace')->name('marketplace.')->group(function () {
+    
+    Route::get('/', [MarketplaceController::class, 'home'])->name('home');
+
+    Route::get('/browse', [MarketplaceController::class, 'browse'])->name('browse');
+
+    Route::get('/trending', [MarketplaceController::class, 'trending'])->name('trending');
+
+    Route::get('/deals', [MarketplaceController::class, 'deals'])->name('deals');
+
+    Route::get('/category/{slug}', [MarketplaceController::class, 'category'])->name('category');
+
+});
+
 Route::get('/', [MarketplaceController::class, 'home'])->name('home');
 Route::get('/products/type/{type}', [ProductController::class, 'byType'])->name('products.by-type');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
