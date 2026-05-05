@@ -26,15 +26,13 @@ class ProductFactory extends Factory
             'price' => fake()->numberBetween(5000, 2000000),
             'sale_price' => null,
             'stock' => fake()->numberBetween(1, 999),
-            'file_path' => null,
+            'file_path' => 'https://picsum.photos/seed/' . urlencode($slug) . '/800/600',
             'delivery_content' => null,
             'is_auto_delivery' => false,
             'is_featured' => false,
             'is_trending' => false,
-            'image' => 'https://picsum.photos/seed/' . urlencode($slug) . '/800/600',
-            'type' => 'digital',
+            'type' => 'item',
             'status' => 'published',
-            'meta' => null,
         ];
     }
 }

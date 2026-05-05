@@ -62,12 +62,14 @@ class Product extends Model {
 
     // Helpers
     public function getImageUrlAttribute(): string {
-        if ($this->image) {
+        $imagePath = $this->image ?? $this->file_path ?? null;
+
+        if ($imagePath) {
             // allow absolute URLs from seeders (picsum etc.)
-            if (str_starts_with($this->image, 'http://') || str_starts_with($this->image, 'https://')) {
-                return $this->image;
+            if (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) {
+                return $imagePath;
             }
-            return asset('storage/' . $this->image);
+            return asset('storage/' . $imagePath);
         }
 
         return asset('images/default-product.png');

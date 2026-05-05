@@ -9,23 +9,31 @@
 
     @php
         $manifestPath = public_path('build/manifest.json');
-        $builtCssPath = collect(glob(public_path('build/assets/app-*.css')))
-            ->map(fn ($path) => 'build/assets/' . basename($path))
-            ->first();
-        $builtJsPath = collect(glob(public_path('build/assets/app-*.js')))
-            ->map(fn ($path) => 'build/assets/' . basename($path))
-            ->first();
+        $cssFile = null;
+        $jsFile = null;
+        
+        // Try to read manifest.json
+        if (file_exists($manifestPath)) {
+            $manifest = json_decode(file_get_contents($manifestPath), true);
+            if (isset($manifest['resources/css/app.css']['file'])) {
+                $cssFile = 'build/' . $manifest['resources/css/app.css']['file'];
+            }
+            if (isset($manifest['resources/js/app.js']['file'])) {
+                $jsFile = 'build/' . $manifest['resources/js/app.js']['file'];
+            }
+        }
     @endphp
 
-    @if (file_exists($manifestPath))
-        @vite(['resources/css/app.css', 'resources/js/app.js'])
-    @elseif ($builtCssPath)
-        <link rel="stylesheet" href="{{ asset($builtCssPath) }}">
-        @if ($builtJsPath)
-            <script src="{{ asset($builtJsPath) }}" defer></script>
-        @endif
+    @if ($cssFile && file_exists(public_path($cssFile)))
+        <link rel="stylesheet" href="{{ asset($cssFile) }}">
+    @elseif (file_exists(public_path('css/app.css')))
+        <link rel="stylesheet" href="{{ asset('css/app.css') }}">
     @else
         <link rel="stylesheet" href="{{ asset('css/fallback.css') }}">
+    @endif
+
+    @if ($jsFile && file_exists(public_path($jsFile)))
+        <script src="{{ asset($jsFile) }}" defer></script>
     @endif
 </head>
 <body class="min-h-full bg-gray-950 text-gray-100 font-sans">
