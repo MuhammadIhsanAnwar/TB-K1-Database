@@ -1,327 +1,254 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="scroll-smooth">
 <head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    <title>{{ config('app.name', 'GameZone') }} — @yield('title', 'Digital Marketplace')</title>
-    <meta name="description" content="@yield('meta_description', 'Buy & sell game items, keys, accounts, and top-ups safely.')">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="csrf-token" content="{{ csrf_token() }}">
+  <title>@yield('title', config('app.name', 'NexusMarket')) — Gaming Marketplace</title>
 
-    {{-- Google Fonts: Outfit (display) + DM Sans (body) --}}
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800;900&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet">
+  {{-- Fonts --}}
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
 
-    {{-- Vite / Tailwind --}}
-    @vite(['resources/css/app.css', 'resources/js/app.js'])
-
-    {{-- Custom CSS vars & base overrides --}}
-    <style>
-        :root {
-            --brand-violet: #7c3aed;
-            --brand-violet-light: #8b5cf6;
-            --brand-violet-glow: rgba(124, 58, 237, 0.35);
-            --brand-amber: #f59e0b;
-            --brand-amber-light: #fbbf24;
-            --brand-green: #10b981;
-            --surface-0: #050509;
-            --surface-1: #0d0d18;
-            --surface-2: #12121f;
-            --surface-3: #1a1a2e;
-            --surface-card: #16162a;
-            --border-subtle: rgba(255,255,255,0.06);
-            --border-glow: rgba(124, 58, 237, 0.4);
+  {{-- Tailwind CDN (swap for Vite + tailwind.config.js in production) --}}
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Oxanium', 'sans-serif'],
+            body: ['DM Sans', 'sans-serif'],
+          },
+          colors: {
+            gray: {
+              950: '#0a0a0f', 925: '#0f0f17', 900: '#13131e',
+              850: '#18182a', 800: '#1e1e30', 750: '#252540',
+              700: '#2d2d50', 600: '#3a3a65',
+            },
+            purple: {
+              950: '#1a0030', 900: '#2d0060', 800: '#4a0095',
+              700: '#6600cc', 600: '#7c3aed', 500: '#8b5cf6',
+              400: '#a78bfa', 300: '#c4b5fd',
+            },
+            violet:  { 500: '#8b5cf6', 400: '#a78bfa' },
+            fuchsia: { 500: '#d946ef', 400: '#e879f9' },
+          },
+          boxShadow: {
+            'glow-sm':     '0 0 12px rgba(124,58,237,0.4)',
+            'glow':        '0 0 24px rgba(124,58,237,0.5)',
+            'glow-lg':     '0 0 40px rgba(124,58,237,0.6)',
+            'glow-fuchsia':'0 0 20px rgba(217,70,239,0.4)',
+          },
+          animation: {
+            'pulse-glow': 'pulseGlow 2s ease-in-out infinite',
+            'shimmer':    'shimmer 1.8s ease-in-out infinite',
+            'float':      'float 3s ease-in-out infinite',
+            'fade-in':    'fadeIn 0.2s ease-out',
+          },
+          keyframes: {
+            fadeIn:    { from: { opacity:'0', transform:'translateY(-8px)' }, to: { opacity:'1', transform:'translateY(0)' } },
+            pulseGlow: { '0%,100%':{ boxShadow:'0 0 12px rgba(124,58,237,0.4)' }, '50%':{ boxShadow:'0 0 28px rgba(124,58,237,0.8)' } },
+            shimmer:   { '0%':{ backgroundPosition:'-600px 0' }, '100%':{ backgroundPosition:'600px 0' } },
+            float:     { '0%,100%':{ transform:'translateY(0)' }, '50%':{ transform:'translateY(-6px)' } },
+          },
         }
+      }
+    }
+  </script>
 
-        * { box-sizing: border-box; }
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; background-color: #0a0a0f; }
+    h1,h2,h3,h4,h5,.font-display { font-family: 'Oxanium', sans-serif; }
 
-        html { background-color: var(--surface-0); }
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #13131e; }
+    ::-webkit-scrollbar-thumb { background: #4a0095; border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: #7c3aed; }
 
-        body {
-            font-family: 'DM Sans', system-ui, sans-serif;
-            background-color: var(--surface-0);
-            color: #e2e8f0;
-            min-height: 100vh;
-            -webkit-font-smoothing: antialiased;
-        }
+    /* Grid bg texture */
+    .bg-grid {
+      background-image: linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
 
-        h1, h2, h3, h4, h5, h6, .font-display {
-            font-family: 'Outfit', system-ui, sans-serif;
-        }
+    /* Gradient border card */
+    .card-glow { position: relative; }
+    .card-glow::before {
+      content: ''; position: absolute; inset: 0; border-radius: 0.75rem;
+      padding: 1px;
+      background: linear-gradient(135deg, rgba(124,58,237,0.3) 0%, transparent 50%, rgba(217,70,239,0.2) 100%);
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+    }
+    .card-glow:hover::before {
+      background: linear-gradient(135deg, rgba(124,58,237,0.7) 0%, rgba(139,92,246,0.4) 50%, rgba(217,70,239,0.5) 100%);
+    }
 
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; height: 6px; }
-        ::-webkit-scrollbar-track { background: var(--surface-1); }
-        ::-webkit-scrollbar-thumb { background: var(--brand-violet); border-radius: 99px; }
-        ::-webkit-scrollbar-thumb:hover { background: var(--brand-violet-light); }
+    /* Shimmer skeleton */
+    .skeleton {
+      background: linear-gradient(90deg, #1e1e30 25%, #252540 50%, #1e1e30 75%);
+      background-size: 600px 100%; animation: shimmer 1.8s infinite;
+    }
 
-        /* Glow utilities */
-        .glow-violet { box-shadow: 0 0 20px var(--brand-violet-glow); }
-        .glow-violet-sm { box-shadow: 0 0 10px rgba(124,58,237,0.3); }
-        .text-glow { text-shadow: 0 0 20px rgba(139,92,246,0.5); }
+    /* Dropdown */
+    .dropdown-panel { display: none; animation: fadeIn 0.18s ease-out; }
+    .dropdown-panel.open { display: block; }
 
-        /* Gradient text */
-        .gradient-text {
-            background: linear-gradient(135deg, #a78bfa 0%, #7c3aed 50%, #f59e0b 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-        }
+    /* Mobile drawer */
+    #mobile-drawer { transform: translateX(-100%); transition: transform 0.32s cubic-bezier(0.16,1,0.3,1); }
+    #mobile-drawer.open { transform: translateX(0); }
+    #drawer-overlay { opacity: 0; pointer-events: none; transition: opacity 0.3s ease; }
+    #drawer-overlay.open { opacity: 1; pointer-events: all; }
 
-        /* Noise texture overlay */
-        body::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 0;
-            opacity: 0.018;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
-            background-size: 200px 200px;
-        }
+    /* Navbar blur */
+    .navbar-blur { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
 
-        /* Card base */
-        .card-surface {
-            background: var(--surface-card);
-            border: 1px solid var(--border-subtle);
-            border-radius: 14px;
-            transition: border-color 0.2s, transform 0.2s, box-shadow 0.2s;
-        }
-        .card-surface:hover {
-            border-color: var(--border-glow);
-            transform: translateY(-2px);
-            box-shadow: 0 8px 32px rgba(0,0,0,0.5), 0 0 0 1px rgba(124,58,237,0.15);
-        }
+    /* Active nav link */
+    .nav-link-active { color: #a78bfa; }
+    .nav-link-active::after { content:''; display:block; height:2px; border-radius:99px; background:linear-gradient(90deg,#7c3aed,#d946ef); margin-top:2px; }
 
-        /* Primary button */
-        .btn-primary {
-            background: linear-gradient(135deg, #7c3aed, #5b21b6);
-            color: #fff;
-            border: none;
-            border-radius: 10px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.2s;
-            position: relative;
-            overflow: hidden;
-        }
-        .btn-primary::after {
-            content: '';
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(255,255,255,0.1), transparent);
-            opacity: 0;
-            transition: opacity 0.2s;
-        }
-        .btn-primary:hover::after { opacity: 1; }
-        .btn-primary:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(124,58,237,0.45); }
-        .btn-primary:active { transform: translateY(0); }
+    /* Category pill active */
+    .cat-pill-active { background:linear-gradient(135deg,#7c3aed,#6d28d9); color:#fff; box-shadow:0 0 16px rgba(124,58,237,0.5); }
 
-        /* Amber button */
-        .btn-amber {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #0d0d18;
-            border: none;
-            border-radius: 10px;
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.2s;
-        }
-        .btn-amber:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(245,158,11,0.4); }
+    /* Product card hover */
+    .product-card { transition: transform 0.22s cubic-bezier(0.34,1.56,0.64,1), box-shadow 0.22s ease; }
+    .product-card:hover { transform: translateY(-4px) scale(1.015); box-shadow: 0 12px 40px rgba(124,58,237,0.35); }
 
-        /* Input focus ring */
-        input:focus, select:focus, textarea:focus {
-            outline: none;
-            box-shadow: 0 0 0 2px rgba(124,58,237,0.5);
-        }
+    /* Badge pulse */
+    .badge-live { animation: pulseGlow 2s ease-in-out infinite; }
 
-        /* Page content above noise */
-        #app > * { position: relative; z-index: 1; }
+    /* Price gradient text */
+    .price-text { background:linear-gradient(135deg,#a78bfa,#d946ef); -webkit-background-clip:text; -webkit-text-fill-color:transparent; background-clip:text; }
 
-        /* Section heading */
-        .section-title {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            font-size: 1.5rem;
-            color: #f1f5f9;
-        }
+    /* Search focus glow */
+    #search-input:focus { box-shadow: 0 0 0 2px rgba(124,58,237,0.5), 0 0 20px rgba(124,58,237,0.2); }
 
-        /* Badge */
-        .badge-hot {
-            background: linear-gradient(135deg, #ef4444, #dc2626);
-            color: #fff;
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.625rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            padding: 2px 6px;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-        .badge-top {
-            background: linear-gradient(135deg, #f59e0b, #d97706);
-            color: #0d0d18;
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.625rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            padding: 2px 6px;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
-        .badge-new {
-            background: linear-gradient(135deg, #10b981, #059669);
-            color: #fff;
-            font-family: 'Outfit', sans-serif;
-            font-size: 0.625rem;
-            font-weight: 700;
-            letter-spacing: 0.05em;
-            padding: 2px 6px;
-            border-radius: 4px;
-            text-transform: uppercase;
-        }
+    /* Scroll-hide scrollbar for cat nav */
+    .cat-scroll { scrollbar-width: none; -ms-overflow-style: none; }
+    .cat-scroll::-webkit-scrollbar { display: none; }
 
-        /* Price color */
-        .price-tag {
-            font-family: 'Outfit', sans-serif;
-            font-weight: 700;
-            color: var(--brand-amber-light);
-        }
+    /* Notification dot */
+    .notif-dot { width:8px; height:8px; background:#d946ef; border-radius:50%; border:2px solid #0a0a0f; position:absolute; top:-1px; right:-1px; }
 
-        /* Star rating */
-        .stars { color: #f59e0b; }
+    /* Star rating */
+    .star-fill { color: #fbbf24; }
 
-        /* Divider */
-        .divider {
-            height: 1px;
-            background: var(--border-subtle);
-        }
+    /* Ribbon badge */
+    .ribbon {
+      position:absolute; top:12px; left:-4px;
+      background:linear-gradient(135deg,#d946ef,#7c3aed);
+      color:white; font-size:0.65rem; font-weight:700; letter-spacing:0.05em;
+      padding:2px 10px 2px 8px;
+      clip-path:polygon(0 0,100% 0,calc(100% - 6px) 50%,100% 100%,0 100%);
+      font-family:'Oxanium',sans-serif; text-transform:uppercase;
+    }
 
-        /* Trust badge strip */
-        .trust-strip {
-            background: linear-gradient(90deg, rgba(124,58,237,0.08), rgba(16,185,129,0.08));
-            border-top: 1px solid var(--border-subtle);
-            border-bottom: 1px solid var(--border-subtle);
-        }
+    /* Toggle switch */
+    .toggle-switch { width:36px; height:20px; background:#252540; border-radius:99px; position:relative; cursor:pointer; transition:background 0.2s; }
+    .toggle-switch.on { background:#7c3aed; }
+    .toggle-switch::after { content:''; position:absolute; width:14px; height:14px; background:white; border-radius:50%; top:3px; left:3px; transition:transform 0.2s; }
+    .toggle-switch.on::after { transform:translateX(16px); }
+  </style>
 
-        /* Animations */
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(16px); }
-            to   { opacity: 1; transform: translateY(0); }
-        }
-        @keyframes shimmer {
-            0%   { background-position: -200% center; }
-            100% { background-position: 200% center; }
-        }
-        @keyframes pulse-glow {
-            0%, 100% { box-shadow: 0 0 10px rgba(124,58,237,0.3); }
-            50%       { box-shadow: 0 0 25px rgba(124,58,237,0.6); }
-        }
-        .animate-fade-up { animation: fadeInUp 0.5s ease forwards; }
-        .animate-shimmer {
-            background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.08) 50%, transparent 100%);
-            background-size: 200% 100%;
-            animation: shimmer 2s infinite;
-        }
-
-        /* Mobile nav active */
-        .mobile-nav-open { transform: translateX(0) !important; }
-    </style>
-
-    @stack('styles')
+  @stack('styles')
 </head>
 
-<body class="antialiased">
+<body class="bg-gray-950 text-white min-h-screen bg-grid">
 
-{{-- Noise overlay is via CSS --}}
-<div id="app" class="flex flex-col min-h-screen">
+  {{-- Mobile Drawer Overlay --}}
+  <div id="drawer-overlay" class="fixed inset-0 bg-black/70 z-40 backdrop-blur-sm" onclick="closeDrawer()"></div>
 
-    {{-- ===== NAVBAR ===== --}}
-    @include('components.navbar')
+  {{-- Components --}}
+  @include('components.navbar')
 
-    {{-- ===== MAIN CONTENT ===== --}}
-    <main class="flex-1 relative z-10">
-        @if (session('success'))
-            <div class="max-w-7xl mx-auto px-4 pt-4">
-                <div class="flex items-center gap-3 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 rounded-xl px-4 py-3 text-sm font-medium">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
-                    </svg>
-                    {{ session('success') }}
-                </div>
-            </div>
-        @endif
+  {{-- Page Content --}}
+  @yield('content')
 
-        @if (session('error'))
-            <div class="max-w-7xl mx-auto px-4 pt-4">
-                <div class="flex items-center gap-3 bg-red-500/10 border border-red-500/30 text-red-400 rounded-xl px-4 py-3 text-sm font-medium">
-                    <svg class="w-4 h-4 flex-shrink-0" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/>
-                    </svg>
-                    {{ session('error') }}
-                </div>
-            </div>
-        @endif
+  {{-- Footer --}}
+  @include('components.footer')
 
-        @yield('content')
-    </main>
+  {{-- ═══ CORE JAVASCRIPT ═══ --}}
+  <script>
+    // ── Dropdown Manager ──────────────────────────────────
+    const dropdowns = ['cat-dropdown', 'notif-dropdown', 'cart-dropdown', 'user-dropdown'];
 
-    {{-- ===== FOOTER ===== --}}
-    @include('components.footer')
-
-</div>
-
-{{-- Mobile nav overlay --}}
-<div id="mobile-overlay" class="fixed inset-0 bg-black/70 backdrop-blur-sm z-40 hidden" onclick="closeMobileMenu()"></div>
-
-<script>
-    // Mobile menu toggle
-    function openMobileMenu() {
-        document.getElementById('mobile-menu').classList.add('mobile-nav-open');
-        document.getElementById('mobile-overlay').classList.remove('hidden');
-        document.body.style.overflow = 'hidden';
-    }
-    function closeMobileMenu() {
-        document.getElementById('mobile-menu').classList.remove('mobile-nav-open');
-        document.getElementById('mobile-overlay').classList.add('hidden');
-        document.body.style.overflow = '';
-    }
-
-    // User dropdown toggle
-    function toggleUserDropdown() {
-        const dd = document.getElementById('user-dropdown');
-        dd.classList.toggle('hidden');
-    }
-    document.addEventListener('click', function(e) {
-        const btn = document.getElementById('user-menu-btn');
-        const dd  = document.getElementById('user-dropdown');
-        if (btn && dd && !btn.contains(e.target) && !dd.contains(e.target)) {
-            dd.classList.add('hidden');
+    function toggleDropdown(id) {
+      const target = document.getElementById(id);
+      const isOpen = target.classList.contains('open');
+      dropdowns.forEach(ddId => {
+        const el = document.getElementById(ddId);
+        if (el) el.classList.remove('open');
+      });
+      const arrow = document.getElementById('cat-dropdown-arrow');
+      if (arrow) arrow.style.transform = '';
+      if (!isOpen) {
+        target.classList.add('open');
+        if (id === 'cat-dropdown' && arrow) {
+          arrow.style.transform = 'rotate(180deg)';
         }
+      }
+    }
+
+    // Close dropdowns on outside click
+    document.addEventListener('click', (e) => {
+      const isToggle = e.target.closest('[onclick^="toggleDropdown"]');
+      if (!isToggle) {
+        dropdowns.forEach(ddId => {
+          const el = document.getElementById(ddId);
+          if (el) el.classList.remove('open');
+        });
+        const arrow = document.getElementById('cat-dropdown-arrow');
+        if (arrow) arrow.style.transform = '';
+      }
     });
 
-    // Cart dropdown toggle
-    function toggleCartDropdown() {
-        const dd = document.getElementById('cart-dropdown');
-        if (dd) dd.classList.toggle('hidden');
-    }
-
-    // Category dropdown in navbar
-    function toggleCategoryDropdown() {
-        const dd = document.getElementById('cat-dropdown');
-        if (dd) dd.classList.toggle('hidden');
-    }
-    document.addEventListener('click', function(e) {
-        const btn = document.getElementById('cat-dropdown-btn');
-        const dd  = document.getElementById('cat-dropdown');
-        if (btn && dd && !btn.contains(e.target) && !dd.contains(e.target)) {
-            dd.classList.add('hidden');
-        }
+    // Stop dropdown-content clicks from bubbling up and closing the panel
+    dropdowns.forEach(ddId => {
+      const el = document.getElementById(ddId);
+      if (el) el.addEventListener('click', e => e.stopPropagation());
     });
-</script>
 
-@stack('scripts')
+    // ── Mobile Drawer ─────────────────────────────────────
+    function openDrawer() {
+      document.getElementById('mobile-drawer').classList.add('open');
+      document.getElementById('drawer-overlay').classList.add('open');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeDrawer() {
+      document.getElementById('mobile-drawer').classList.remove('open');
+      document.getElementById('drawer-overlay').classList.remove('open');
+      document.body.style.overflow = '';
+    }
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') {
+        closeDrawer();
+        dropdowns.forEach(ddId => {
+          const el = document.getElementById(ddId);
+          if (el) el.classList.remove('open');
+        });
+      }
+    });
+
+    // ── Category Pills ────────────────────────────────────
+    function setActiveCat(btn) {
+      document.querySelectorAll('.cat-pill').forEach(p => {
+        p.classList.remove('cat-pill-active', 'text-white');
+        p.classList.add('text-gray-400', 'border', 'border-gray-800');
+      });
+      btn.classList.add('cat-pill-active');
+      btn.classList.remove('text-gray-400', 'border', 'border-gray-800');
+    }
+  </script>
+
+  {{-- Page-level scripts injected here --}}
+  @stack('scripts')
+
 </body>
 </html>
