@@ -8,7 +8,15 @@ class UsersTableSeeder extends Seeder
 {
     public function run(): void
     {
-        // create 600 buyer users
-        User::factory()->count(600)->create();
+        // Create 600 buyer users if they don't exist
+        $existingBuyerCount = User::where('role', 'buyer')->count();
+        $buyersNeeded = 600 - $existingBuyerCount;
+        
+        if ($buyersNeeded > 0) {
+            User::factory()->count($buyersNeeded)->create();
+            $this->command->info("Created $buyersNeeded buyers");
+        } else {
+            $this->command->info("Database already has 600+ buyers, skipping...");
+        }
     }
 }

@@ -19,43 +19,55 @@ class DatabaseSeeder extends Seeder {
             ProductsTableSeeder::class,
         ]);
 
-        // Admin
-        User::create([
-            'name' => 'Admin Lapak Geming',
-            'email' => 'admin@lapakgeming.com',
-            'password' => Hash::make('password123'),
-            'role' => 'admin',
-        ]);
+        // Admin (only create if not exists)
+        $admin = User::firstOrCreate(
+            ['email' => 'admin@lapakgeming.com'],
+            [
+                'name' => 'Admin Lapak Geming',
+                'password' => Hash::make('password123'),
+                'role' => 'admin',
+            ]
+        );
 
-        // Demo Seller
-        $seller = User::create([
-            'name' => 'Seller Demo',
-            'email' => 'seller@lapakgeming.com',
-            'password' => Hash::make('password123'),
-            'role' => 'seller',
-        ]);
+        // Demo Seller (only create if not exists)
+        $seller = User::firstOrCreate(
+            ['email' => 'seller@lapakgeming.com'],
+            [
+                'name' => 'Seller Demo',
+                'password' => Hash::make('password123'),
+                'role' => 'seller',
+            ]
+        );
 
-        $sellerWallet = Wallet::create(['user_id' => $seller->id]);
-        $sellerWallet->balanceState()->create([
-            'balance' => 500000,
-            'available_balance' => 500000,
-            'locked_balance' => 0,
-        ]);
+        // Create wallet for seller if not exists
+        $sellerWallet = $seller->wallet ?? Wallet::create(['user_id' => $seller->id]);
+        if (!$sellerWallet->balanceState) {
+            $sellerWallet->balanceState()->create([
+                'balance' => 500000,
+                'available_balance' => 500000,
+                'locked_balance' => 0,
+            ]);
+        }
 
-        // Demo Buyer
-        $buyer = User::create([
-            'name' => 'User Demo',
-            'email' => 'user@lapakgeming.com',
-            'password' => Hash::make('password123'),
-            'role' => 'buyer',
-        ]);
+        // Demo Buyer (only create if not exists)
+        $buyer = User::firstOrCreate(
+            ['email' => 'user@lapakgeming.com'],
+            [
+                'name' => 'User Demo',
+                'password' => Hash::make('password123'),
+                'role' => 'buyer',
+            ]
+        );
 
-        $buyerWallet = Wallet::create(['user_id' => $buyer->id]);
-        $buyerWallet->balanceState()->create([
-            'balance' => 200000,
-            'available_balance' => 200000,
-            'locked_balance' => 0,
-        ]);
+        // Create wallet for buyer if not exists
+        $buyerWallet = $buyer->wallet ?? Wallet::create(['user_id' => $buyer->id]);
+        if (!$buyerWallet->balanceState) {
+            $buyerWallet->balanceState()->create([
+                'balance' => 200000,
+                'available_balance' => 200000,
+                'locked_balance' => 0,
+            ]);
+        }
 
         // Product/category bulk data is handled by:
         // CategorySeeder, SellersTableSeeder, UsersTableSeeder, ProductsTableSeeder.

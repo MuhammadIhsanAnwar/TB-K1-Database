@@ -16,9 +16,18 @@ class ProductsTableSeeder extends Seeder
         if ($categories->isEmpty()) return;
 
         $columns = array_flip(Schema::getColumnListing('products'));
+        $existingCount = Product::count();
+
+        // If products already exist, skip (avoid duplicates on re-seed)
+        if ($existingCount > 0) {
+            $this->command->info("Database already has $existingCount products, skipping...");
+            return;
+        }
 
         // For each seller, create one product per category (schema-adaptive for hosting)
         User::where('role', 'seller')->chunk(100, function ($sellers) use ($categories, $columns) {
+            $progressBar = $this->command->getOutput()->createProgressBar($sellers->count() * $categories->count());
+            
             foreach ($sellers as $seller) {
                 foreach ($categories as $category) {
                     $name = $category->name . ' - ' . fake()->words(3, true);
@@ -53,8 +62,12 @@ class ProductsTableSeeder extends Seeder
                     $payload = array_intersect_key($payload, $columns);
 
                     Product::create($payload);
+                    $progressBar->advance();
                 }
             }
+            $progressBar->finish();
         });
+        
+        $this->command->info("\nProducts seeding completed!");
     }
 }
