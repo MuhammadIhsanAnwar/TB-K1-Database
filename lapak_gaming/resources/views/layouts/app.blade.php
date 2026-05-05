@@ -32,6 +32,9 @@
         <link rel="stylesheet" href="{{ asset('css/fallback.css') }}">
     @endif
 
+    <!-- Tailwind overrides for missing utilities -->
+    <link rel="stylesheet" href="{{ asset('css/tailwind-overrides.css') }}">
+
     @if ($jsFile && file_exists(public_path($jsFile)))
         <script src="{{ asset($jsFile) }}" defer></script>
     @endif
