@@ -44,15 +44,24 @@ class SellerLevelSeeder extends Seeder
             $benefits = $levelData['benefits'];
             unset($levelData['benefits']);
 
-            $level = SellerLevel::create($levelData);
+            $level = SellerLevel::updateOrCreate(
+                ['name' => $levelData['name']],
+                $levelData
+            );
 
             foreach ($benefits as $index => $benefit) {
-                SellerLevelBenefit::create([
+                SellerLevelBenefit::updateOrCreate([
                     'seller_level_id' => $level->id,
                     'sort_order' => $index,
+                ], [
                     'benefit' => $benefit,
                 ]);
             }
+
+            // remove old benefit rows that are no longer defined
+            SellerLevelBenefit::where('seller_level_id', $level->id)
+                ->whereNotIn('sort_order', array_keys($benefits))
+                ->delete();
         }
     }
 }
