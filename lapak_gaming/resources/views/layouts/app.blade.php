@@ -38,6 +38,8 @@
     @if ($jsFile && file_exists(public_path($jsFile)))
         <script src="{{ asset($jsFile) }}" defer></script>
     @endif
+
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
 <body class="min-h-full bg-gray-950 text-gray-100 font-sans">
 
