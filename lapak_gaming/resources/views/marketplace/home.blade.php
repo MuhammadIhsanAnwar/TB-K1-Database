@@ -3,7 +3,8 @@
 
 @section('content')
     {{-- HERO BANNER --}}
-    <section class="bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-16">
+    <section class="bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-10">
+  <div class="max-w-7xl mx-auto px-4">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">
                 Marketplace Game <span class="text-cyan-400">Terpercaya</span>
@@ -24,7 +25,8 @@
     </section>
 
     {{-- SHORTCUT KATEGORI --}}
-    <section class="max-w-7xl mx-auto px-4 py-10">
+    <section class="bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-10">
+  <div class="max-w-7xl mx-auto px-4">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold text-white">Kategori Utama</h2>
             <a href="{{ route('products.search') }}" class="text-smtext-cyan-400 hover:text-cyan-300">Lihat Semua Produk →</a>
@@ -47,7 +49,8 @@
     </section>
 
     {{-- FITUR PRODUK --}}
-    <section class="max-w-7xl mx-auto px-4 pb-10">
+    <section class="bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-10">
+  <div class="max-w-7xl mx-auto px-4">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold text-white">Produk Terpopuler</h2>
             <a href="{{ route('products.search') }}" class="text-sm text-cyan-400 hover:text-cyan-300">Lihat Semua →</a>
@@ -63,7 +66,8 @@
 
     {{-- TOP UP SECTION --}}
     @if($topupProducts->isNotEmpty())
-    <section class="max-w-7xl mx-auto px-4 pb-10">
+    <section class="bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-10">
+  <div class="max-w-7xl mx-auto px-4">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold text-white">⚡ Top Up Game</h2>
             <a href="{{ route('products.by-type', 'topup') }}" class="text-sm text-cyan-400 hover:text-cyan-300">Lihat Semua Top Up →</a>
