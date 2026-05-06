@@ -24,6 +24,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\SeederController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\SettingsController;
+use App\Http\Controllers\ProfileController;
 
 
 Route::prefix('marketplace')->name('marketplace.')->group(function () {
@@ -70,6 +71,10 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
 });
 
 // Setup page untuk membuat admin pertama kali
