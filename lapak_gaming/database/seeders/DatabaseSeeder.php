@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder {
             CategorySeeder::class,
             SellersTableSeeder::class,
             UsersTableSeeder::class,
+            BuyerSeeder::class,
             ProfilesTableSeeder::class,
             ProductsTableSeeder::class,
         ]);

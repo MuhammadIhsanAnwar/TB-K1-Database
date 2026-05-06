@@ -25,6 +25,15 @@ class AuthController extends Controller
             'password' => ['required', 'string'],
         ]);
 
+        // Check if user exists and if email is verified
+        $user = User::where('email', $credentials['email'])->first();
+        
+        if ($user && !$user->email_verified_at) {
+            return back()->withErrors([
+                'email' => 'Silakan verifikasi email Anda terlebih dahulu sebelum login.',
+            ])->onlyInput('email');
+        }
+
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
             return back()->withErrors([
                 'email' => 'Email atau password tidak valid.',
@@ -112,9 +121,8 @@ class AuthController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect()->route('verification.notice');
+        // Don't auto-login, force email verification first
+        return redirect()->route('login')->with('status', 'Registrasi berhasil! Silakan cek email Anda untuk verifikasi akun.');
     }
 
     public function storeRegisterSeller(Request $request): RedirectResponse
@@ -172,9 +180,8 @@ class AuthController extends Controller
 
         event(new Registered($user));
 
-        Auth::login($user);
-
-        return redirect()->route('verification.notice');
+        // Don't auto-login, force email verification first
+        return redirect()->route('login')->with('status', 'Registrasi berhasil! Silakan cek email Anda untuk verifikasi akun.');
     }
 
     public function destroy(Request $request): RedirectResponse
