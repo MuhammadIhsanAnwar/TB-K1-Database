@@ -22,6 +22,8 @@ use App\Http\Controllers\Seller\SellerProductController;
 use App\Http\Controllers\Seller\SellerOrderController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\SeederController;
+use App\Http\Controllers\WishlistController;
+use App\Http\Controllers\SettingsController;
 
 
 Route::prefix('marketplace')->name('marketplace.')->group(function () {
@@ -61,6 +63,13 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/orders/{order:order_code}/complete', [OrderController::class, 'complete'])->name('orders.complete');
     Route::post('/orders/{order:order_code}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
     Route::post('/orders/{order:order_code}/proof', [OrderController::class, 'uploadProof'])->name('orders.proof');
+
+    Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist.index');
+    Route::post('/wishlist/{product}', [WishlistController::class, 'add'])->name('wishlist.add');
+    Route::delete('/wishlist/{product}', [WishlistController::class, 'remove'])->name('wishlist.remove');
+
+    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
 });
 
 // Setup page untuk membuat admin pertama kali
