@@ -21,24 +21,48 @@
             display: ['Oxanium', 'sans-serif'],
             body: ['DM Sans', 'sans-serif'],
           },
-          colors: {
-            gray: {
-              950: '#0a0a0f', 925: '#0f0f17', 900: '#13131e',
-              850: '#18182a', 800: '#1e1e30', 750: '#252540',
-              700: '#2d2d50', 600: '#3a3a65',
-            },
-            purple: {
-              950: '#1a0030', 900: '#2d0060', 800: '#4a0095',
-              700: '#6600cc', 600: '#7c3aed', 500: '#8b5cf6',
-              400: '#a78bfa', 300: '#c4b5fd',
-            },
-            violet:  { 500: '#8b5cf6', 400: '#a78bfa' },
-            fuchsia: { 500: '#d946ef', 400: '#e879f9' },
-          },
+         colors: {
+                gray: {
+                  950: '#0a0a0f',
+                  925: '#0f172a',
+                  900: '#111827',
+                  850: '#1f2937',
+                  800: '#1e293b',
+                  750: '#334155',
+                  700: '#475569',
+                  600: '#64748b',
+                },
+
+                /* GANTI UNGU → BIRU */
+                purple: {
+                  950: '#0c1a3a',
+                  900: '#1e3a8a',
+                  800: '#1e40af',
+                  700: '#1d4ed8',
+                  600: '#2563eb',
+                  500: '#3b82f6',
+                  400: '#60a5fa',
+                  300: '#93c5fd',
+                },
+
+                /* VIOLET JUGA JADI BIRU */
+                violet: {
+                  500: '#3b82f6',
+                  400: '#60a5fa'
+                },
+
+                /* FUCHSIA → ORANGE */
+                fuchsia: {
+                  500: '#f97316',
+                  400: '#fb923c'
+                },
+              }
           boxShadow: {
             'glow-sm':     '0 0 12px rgba(124,58,237,0.4)',
-            'glow':        '0 0 24px rgba(124,58,237,0.5)',
-            'glow-lg':     '0 0 40px rgba(124,58,237,0.6)',
+            boxShadow: {
+            'glow': '0 0 24px rgba(37,99,235,0.5)',
+            'glow-lg': '0 0 40px rgba(249,115,22,0.4)',
+          }
             'glow-fuchsia':'0 0 20px rgba(217,70,239,0.4)',
           },
           animation: {
@@ -84,8 +108,8 @@
 
     /* Grid bg texture */
     .bg-grid {
-      background-image: linear-gradient(rgba(124,58,237,0.04) 1px, transparent 1px),
-                        linear-gradient(90deg, rgba(124,58,237,0.04) 1px, transparent 1px);
+      background-image: linear-gradient(rgba(37,99,235,0.05) 1px, transparent 1px),
+                  linear-gradient(90deg, rgba(249,115,22,0.05) 1px, transparent 1px);
       background-size: 40px 40px;
     }
 
