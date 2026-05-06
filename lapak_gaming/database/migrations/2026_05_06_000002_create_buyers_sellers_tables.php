@@ -6,9 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         // Create buyers table
@@ -48,39 +45,24 @@ return new class extends Migration
 
             $table->index('email');
             $table->index('username');
-            
-            // Add foreign key with check if seller_levels exists
-            if (Schema::hasTable('seller_levels')) {
-                $table->foreign('seller_level_id')
-                    ->references('id')
-                    ->on('seller_levels')
-                    ->nullOnDelete();
-            }
         });
 
         // Add user_type to users table to maintain backward compatibility
-        if (Schema::hasTable('users')) {
+        if (Schema::hasTable('users') && !Schema::hasColumn('users', 'user_type')) {
             Schema::table('users', function (Blueprint $table) {
-                if (!Schema::hasColumn('users', 'user_type')) {
-                    $table->enum('user_type', ['buyer', 'seller', 'mixed'])->default('mixed')->after('role');
-                }
+                $table->enum('user_type', ['buyer', 'seller', 'mixed'])->default('mixed')->after('role');
             });
         }
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::dropIfExists('buyers');
         Schema::dropIfExists('sellers');
 
-        if (Schema::hasTable('users')) {
+        if (Schema::hasTable('users') && Schema::hasColumn('users', 'user_type')) {
             Schema::table('users', function (Blueprint $table) {
-                if (Schema::hasColumn('users', 'user_type')) {
-                    $table->dropColumn('user_type');
-                }
+                $table->dropColumn('user_type');
             });
         }
     }
