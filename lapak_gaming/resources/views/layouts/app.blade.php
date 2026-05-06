@@ -195,7 +195,8 @@
   @stack('styles')
 </head>
 
-<body class="bg-gradient-to-b from-blue-900 via-gray-900 to-orange-900 text-white min-h-screen">
+<body class="text-white min-h-screen">
+<div class="fixed inset-0 -z-10 bg-gradient-to-b from-blue-900 via-gray-900 to-orange-900"></div>
 
   {{-- Mobile Drawer Overlay --}}
   <div id="drawer-overlay" class="fixed inset-0 bg-black/70 z-40 backdrop-blur-sm" onclick="closeDrawer()"></div>
