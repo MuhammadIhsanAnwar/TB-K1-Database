@@ -40,7 +40,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('phone', 30)->nullable();
             $table->string('avatar')->nullable();
-            $table->foreignId('seller_level_id')->nullable()->constrained('seller_levels')->nullOnDelete();
+            $table->unsignedBigInteger('seller_level_id')->nullable();
             $table->enum('status', ['active', 'pending', 'suspended'])->default('active');
             $table->timestamp('suspended_at')->nullable();
             $table->rememberToken();
@@ -48,6 +48,14 @@ return new class extends Migration
 
             $table->index('email');
             $table->index('username');
+            
+            // Add foreign key with check if seller_levels exists
+            if (Schema::hasTable('seller_levels')) {
+                $table->foreign('seller_level_id')
+                    ->references('id')
+                    ->on('seller_levels')
+                    ->nullOnDelete();
+            }
         });
 
         // Add user_type to users table to maintain backward compatibility
