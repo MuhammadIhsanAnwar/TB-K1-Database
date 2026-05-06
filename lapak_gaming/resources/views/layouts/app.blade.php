@@ -143,7 +143,10 @@
     #drawer-overlay.open { opacity: 1; pointer-events: all; }
 
     /* Navbar blur */
-    .navbar-blur { backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); }
+    .navbar-blur {
+      backdrop-filter: blur(24px);
+      -webkit-backdrop-filter: blur(24px);
+}
 
     /* Active nav link */
     .nav-link-active { color: #a78bfa; }

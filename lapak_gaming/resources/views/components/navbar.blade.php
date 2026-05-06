@@ -162,7 +162,7 @@
 </div>
 
 {{-- ═══ STICKY NAVBAR ═══ --}}
-<header class="sticky top-0 z-30 navbar-blur bg-gray-950/80 border-b border-gray-800/60">
+<header class="sticky top-0 z-30 navbar-blur bg-transparent border-b-0">
   <div class="max-w-7xl mx-auto px-4 lg:px-6">
     <div class="flex items-center h-16 gap-3 lg:gap-6">
 
