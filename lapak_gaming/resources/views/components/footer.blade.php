@@ -1,6 +1,15 @@
-<footer class="border-t border-gray-800 bg-gray-950 py-8 mt-16">
-    <div class="max-w-7xl mx-auto px-4 text-center text-sm text-gray-500">
-        <p class="mb-2">© {{ date('Y') }} Lapak Gaming. Marketplace game aman dan terpercaya.</p>
-        <p>Semua hak cipta dilindungi. Transaksi digital lebih mudah, cepat, dan aman.</p>
+<footer class="mt-16 border-t border-white/5 bg-gradient-to-b from-transparent to-black/40 py-6">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+
+        <p class="text-sm text-gray-400">
+            © {{ date('Y') }} 
+            <span class="font-semibold bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">
+                Lapak Gaming
+            </span>
+        </p>
+
+        <p class="text-xs text-gray-500 mt-1">
+            Marketplace game aman, cepat, dan terpercaya.
+        </p>
     </div>
 </footer>
