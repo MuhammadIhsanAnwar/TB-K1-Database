@@ -64,10 +64,23 @@
     h1,h2,h3,h4,h5,.font-display { font-family: 'Oxanium', sans-serif; }
 
     /* Scrollbar */
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #13131e; }
-    ::-webkit-scrollbar-thumb { background: #4a0095; border-radius: 99px; }
-    ::-webkit-scrollbar-thumb:hover { background: #7c3aed; }
+    ::-webkit-scrollbar { width: 8px; height: 8px; }
+
+    ::-webkit-scrollbar-track { 
+     background: #020617; }
+
+    ::-webkit-scrollbar-thumb { 
+     background: linear-gradient(180deg, #06b6d4, #0891b2);
+    border-radius: 99px; 
+      }
+
+    ::-webkit-scrollbar-thumb:hover { 
+     background: linear-gradient(180deg, #22d3ee, #0e7490);
+      }
+
+      html {
+      scroll-behavior: smooth;
+      }
 
     /* Grid bg texture */
     .bg-grid {
