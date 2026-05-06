@@ -70,7 +70,7 @@
         <a href="{{ route('marketplace.trending') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white font-medium text-sm transition-all">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
           Trending
-          <span class="ml-auto text-xs bg-fuchsia-500/20 text-fuchsia-400 border border-fuchsia-600/30 px-1.5 py-0.5 rounded-full font-display">HOT</span>
+          <span class="ml-auto text-xs bg-orange-500/20 text-orange-400 border border-fuchsia-600/30 px-1.5 py-0.5 rounded-full font-display">HOT</span>
         </a>
       </li>
       <li>
@@ -142,7 +142,7 @@
         <p class="text-xs font-display font-semibold text-white">{{ config('app.name') }} Pro</p>
         <p class="text-xs text-gray-500 mt-0.5">Unlock all features</p>
       </div>
-      <a href="{{ route('subscription.upgrade') }}" class="text-xs bg-purple-600 hover:bg-purple-500 text-white px-3 py-1.5 rounded-lg font-display font-semibold transition-colors shadow-glow-sm">Upgrade</a>
+      <a href="{{ route('subscription.upgrade') }}" class="text-xs bg-gradient-to-r from-blue-500 to-orange-500 hover:from-blue-400 hover:to-orange-400 text-white px-3 py-1.5 rounded-lg font-display font-semibold transition-colors shadow-glow-sm">Upgrade</a>
     </div>
   </div>
   @endif
@@ -234,7 +234,7 @@
             class="w-full pl-10 pr-28 py-2.5 bg-gray-900 border border-gray-700 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-purple-600 transition-all" />
           <div class="absolute right-2 flex items-center gap-1">
             <kbd class="hidden xl:flex text-xs text-gray-600 bg-gray-800 border border-gray-700 px-1.5 py-0.5 rounded font-mono">⌘K</kbd>
-            <button class="bg-purple-600 hover:bg-purple-500 text-white text-xs font-display font-semibold px-3 py-1.5 rounded-lg transition-colors shadow-glow-sm hover:shadow-glow">Search</button>
+            <button class="bg-gradient-to-r from-blue-500 to-orange-500 hover:from-blue-400 hover:to-orange-400 text-white text-xs font-display font-semibold px-3 py-1.5 rounded-lg transition-colors shadow-glow-sm hover:shadow-glow">Search</button>
           </div>
         </div>
       </div>
@@ -419,7 +419,7 @@
         @else
         {{-- Guest: Login / Register --}}
         <a href="{{ route('login') }}" class="text-sm font-medium text-gray-400 hover:text-white transition-colors px-3 py-1.5">Login</a>
-        <a href="{{ route('register') }}" class="text-sm font-display font-semibold bg-purple-600 hover:bg-purple-500 text-white px-4 py-2 rounded-xl transition-colors shadow-glow-sm">Sign Up</a>
+        <a href="{{ route('register') }}" class="text-sm font-display font-semibold bg-gradient-to-r from-blue-500 to-orange-500 hover:from-blue-400 hover:to-orange-400 text-white px-4 py-2 rounded-xl transition-colors shadow-glow-sm">Sign Up</a>
         @endauth
 
       </div>
