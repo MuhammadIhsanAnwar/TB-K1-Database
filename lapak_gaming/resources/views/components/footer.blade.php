@@ -1,4 +1,4 @@
-<footer class="mt-16 border-t border-white/5 bg-gradient-to-b from-transparent to-black/40 py-6">
+<footer class="mt-16 border-white/5 bg-gradient-to-b from-transparent to-black/40 py-6 shadow-[0_-10px_40px_rgba(0,0,0,0.4)]">
     <div class="max-w-7xl mx-auto px-4 text-center">
 
         <p class="text-sm text-gray-400">
