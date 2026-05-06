@@ -3,7 +3,7 @@
 
 @section('content')
     {{-- HERO BANNER --}}
-    <section class="bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-10">
+    <section class="bg-gradient-to-b from-blue-900 via-gray-900 to-orange-900 py-16">
   <div class="max-w-7xl mx-auto px-4">
         <div class="max-w-7xl mx-auto px-4 text-center">
             <h1 class="text-4xl md:text-5xl font-bold mb-4 bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">
@@ -25,7 +25,7 @@
     </section>
 
     {{-- SHORTCUT KATEGORI --}}
-    <section class="bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-10">
+    <section class="bg-gradient-to-b from-blue-900 via-gray-900 to-orange-900 py-16">
   <div class="max-w-7xl mx-auto px-4">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold text-white">Kategori Utama</h2>
@@ -49,7 +49,7 @@
     </section>
 
     {{-- FITUR PRODUK --}}
-    <section class="bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-10">
+    <section class="bg-gradient-to-b from-blue-900 via-gray-900 to-orange-900 py-16">
   <div class="max-w-7xl mx-auto px-4">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold text-white">Produk Terpopuler</h2>
@@ -65,8 +65,8 @@
     </section>
 
     {{-- TOP UP SECTION --}}
-    @if($topupProducts->isNotEmpty())
-    <section class="bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-10">
+        @if($topupProducts->isNotEmpty())
+        <section class="bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-10">
   <div class="max-w-7xl mx-auto px-4">
         <div class="flex items-center justify-between mb-6">
             <h2 class="text-xl font-bold text-white">⚡ Top Up Game</h2>
