@@ -173,10 +173,10 @@
 
       {{-- Logo --}}
       <a href="{{ route('marketplace.home') }}" class="flex-none flex items-center gap-2.5 group">
-        <img src="{{ asset('images/LOGO LAPAK.png') }}" alt="Logo" class="w-9 h-9 object-contain">
-        <span class="font-display font-extrabold text-xl text-white hidden sm:block tracking-wide">
-          {{ config('app.name', 'Lapak Gaming') }}
-        </span>
+        <img src="{{ asset('images/LOGO LAPAK1.png') }}" alt="Logo" class="w-9 h-9 object-contain">
+       <img src="{{ asset('images/LOGO LAPAK.png') }}" 
+          alt="Logo" 
+        class="h-8 hidden sm:block">
       </a>
 
       {{-- Desktop Nav Links --}}
