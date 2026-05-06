@@ -254,7 +254,14 @@
         <div class="relative">
           <button onclick="toggleDropdown('notif-dropdown')" class="relative w-9 h-9 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-400 hover:text-white hover:border-purple-600 transition-all">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-            @if(Auth::user()->unread_notifications_count > 0)
+            @php
+              try {
+                $hasUnreadNotifications = Auth::user()->notifications()->whereNull('read_at')->count() > 0;
+              } catch (\Exception $e) {
+                $hasUnreadNotifications = false;
+              }
+            @endphp
+            @if($hasUnreadNotifications)
               <span class="notif-dot"></span>
             @endif
           </button>
@@ -265,7 +272,14 @@
             </div>
             <div class="divide-y divide-gray-800">
               {{-- Notifications would be injected via a view composer or passed from a shared middleware --}}
-              @forelse(Auth::user()->notifications->take(3) ?? [] as $notification)
+              @php
+                try {
+                  $notifications = Auth::user()->notifications()->take(3)->get();
+                } catch (\Exception $e) {
+                  $notifications = collect();
+                }
+              @endphp
+              @forelse($notifications as $notification)
               <div class="flex items-start gap-3 px-4 py-3 hover:bg-gray-800/50 transition-colors cursor-pointer {{ $notification->read_at ? 'opacity-60' : '' }}">
                 <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-none mt-0.5">
                   <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>

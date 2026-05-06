@@ -80,6 +80,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/subscription/upgrade', [SubscriptionController::class, 'upgrade'])->name('subscription.upgrade');
     Route::post('/subscription/upgrade', [SubscriptionController::class, 'store'])->name('subscription.store');
     Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
+
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 });
 
 // Setup page untuk membuat admin pertama kali
