@@ -11,16 +11,19 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('notifications', function (Blueprint $table) {
-            $table->uuid('id')->primary();
-            $table->string('type');
-            $table->morphs('notifiable');
-            $table->json('data');
-            $table->dateTime('read_at')->nullable();
-            $table->timestamps();
+        // Only create if the table does not already exist (avoid duplicate-create errors)
+        if (! Schema::hasTable('notifications')) {
+            Schema::create('notifications', function (Blueprint $table) {
+                $table->uuid('id')->primary();
+                $table->string('type');
+                $table->morphs('notifiable');
+                $table->json('data');
+                $table->dateTime('read_at')->nullable();
+                $table->timestamps();
 
-            $table->index(['notifiable_type', 'notifiable_id']);
-        });
+                $table->index(['notifiable_type', 'notifiable_id']);
+            });
+        }
     }
 
     /**
