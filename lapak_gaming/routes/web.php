@@ -25,6 +25,7 @@ use App\Http\Controllers\SeederController;
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\SubscriptionController;
 
 
 Route::prefix('marketplace')->name('marketplace.')->group(function () {
@@ -75,6 +76,10 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
     Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    Route::get('/subscription/upgrade', [SubscriptionController::class, 'upgrade'])->name('subscription.upgrade');
+    Route::post('/subscription/upgrade', [SubscriptionController::class, 'store'])->name('subscription.store');
+    Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
 });
 
 // Setup page untuk membuat admin pertama kali
