@@ -41,7 +41,7 @@ class MarketplaceController extends Controller
 
     public function search(Request $request): JsonResponse
     {
-        if (! Schema::hasTable('products')) {
+        if (!Schema::hasTable('products')) {
             return response()->json([
                 'data' => [],
                 'meta' => [
@@ -56,7 +56,7 @@ class MarketplaceController extends Controller
             ->published()
             ->with(['seller', 'category'])
             ->search($request->string('q')->toString())
-            ->when($request->filled('category'), fn ($query) => $query->whereHas('category', fn ($category) => $category->where('slug', $request->string('category'))))
+            ->when($request->filled('category'), fn($query) => $query->whereHas('category', fn($category) => $category->where('slug', $request->string('category'))))
             ->when($request->filled('sort'), function ($query) use ($request): void {
                 match ($request->string('sort')->toString()) {
                     'popular' => $query->orderByDesc('views_count'),
@@ -85,6 +85,22 @@ class MarketplaceController extends Controller
                 'last_page' => $products->lastPage(),
                 'total' => $products->total(),
             ],
+        ]);
+    }
+
+    public function trending(Request $request): View
+    {
+        $trendingProducts = schema::hasTable('products')
+            ? Product::query()
+                ->active()
+                ->inStock()
+                ->with(['seller', 'category'])
+                ->orderByDesc('views_count')
+                ->paginate(12)
+            : collect();
+        
+        return view('marketplace.trending', [
+            'products' => $trendingProducts,
         ]);
     }
 }
