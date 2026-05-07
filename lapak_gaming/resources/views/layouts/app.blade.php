@@ -193,6 +193,13 @@
     .toggle-switch.on { background:#7c3aed; }
     .toggle-switch::after { content:''; position:absolute; width:14px; height:14px; background:white; border-radius:50%; top:3px; left:3px; transition:transform 0.2s; }
     .toggle-switch.on::after { transform:translateX(16px); }
+
+    footer {
+    margin-top: 0 !important;
+    border-top: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
   </style>
 
   @stack('styles')
