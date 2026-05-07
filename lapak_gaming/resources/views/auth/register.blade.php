@@ -8,7 +8,7 @@
         background-image: none !important;
     }
 </style>
-<div class="relative overflow-hidden bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-16">
+<div class="relative overflow-hidden bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 min-h-screen pt-16">
 
     {{-- Background Effect --}}
     <div class="absolute inset-0 opacity-20"
