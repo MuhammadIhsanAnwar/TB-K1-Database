@@ -8,155 +8,7 @@
     - Auth::check(), Auth::user()
 --}}
 
-{{-- ═══ MOBILE SIDEBAR DRAWER ═══ --}}
-<aside id="mobile-drawer" x-show="mobileMenuOpen" x-cloak class="drawer-panel fixed top-0 left-0 h-full w-72 flex flex-col overflow-y-auto bg-elevated border-r border-default"
-      x-transition:enter="transition duration-300"
-      x-transition:enter-start="-translate-x-full"
-      x-transition:enter-end="translate-x-0"
-      x-transition:leave="transition duration-250"
-      x-transition:leave-start="translate-x-0"
-      x-transition:leave-end="-translate-x-full">
-
-  {{-- Drawer Header --}}
-  <div class="flex items-center justify-between p-4 border-b border-default">
-    <div class="flex items-center gap-2">
-      <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-orange-500 flex items-center justify-center shadow-glow-sm">
-        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
-      </div>
-      <span class="font-display font-bold text-lg text-white tracking-wide">{{ config('app.name', 'Lapak Gaming') }}</span>
-    </div>
-    <button @click="mobileMenuOpen = false" class="btn-icon bg-elevated border border-default text-gray-400 hover:text-white hover:bg-surface transition-colors">
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-    </button>
-  </div>
-
-  {{-- User info block --}}
-  @auth
-  <div class="p-4 border-b border-gray-800">
-    <div class="flex items-center gap-3 p-3 rounded-xl bg-gray-850 border border-gray-750">
-      <div class="w-10 h-10 rounded-full bg-gradient-to-br from-blue-600 to-orange-500 flex items-center justify-center font-display font-bold text-sm shadow-glow-sm">
-        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-      </div>
-      <div class="flex-1 min-w-0">
-        <div class="text-sm font-semibold text-white truncate">{{ Auth::user()->name }}</div>
-        <div class="text-xs text-gray-400 truncate">{{ Auth::user()->email }}</div>
-      </div>
-      @if(Auth::user()->is_pro ?? false)
-        <span class="text-xs bg-gradient-to-r from-blue-500 to-orange-500 text-white border border-orange-600/30 px-2 py-0.5 rounded-full font-display font-semibold">PRO</span>
-      @endif
-    </div>
-  </div>
-  @endauth
-
-  {{-- Drawer Search --}}
-  <div class="p-4 border-b border-gray-800">
-    <div class="relative">
-      <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-      <input type="text" placeholder="Search products..." class="w-full pl-9 pr-3 py-2.5 bg-gray-800 border border-gray-700 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-colors" />
-    </div>
-  </div>
-
-  {{-- Navigation --}}
-  <nav class="p-4 flex-1">
-    <p class="text-xs font-display font-semibold text-gray-600 uppercase tracking-widest mb-3 px-1">Navigation</p>
-    <ul class="space-y-1">
-      <li>
-        <a href="{{ route('marketplace.home') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl {{ request()->routeIs('marketplace.home') ? 'bg-blue-600/10 text-blue-400 border border-blue-700/30' : 'text-gray-400 hover:bg-gray-800 hover:text-white' }} font-medium text-sm transition-all">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/></svg>
-          Home
-        </a>
-      </li>
-      <li>
-        <a href="{{ route('marketplace.browse') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white font-medium text-sm transition-all">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
-          Browse All
-        </a>
-      </li>
-      <li>
-        <a href="{{ route('marketplace.trending') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white font-medium text-sm transition-all">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
-          Trending
-          <span class="ml-auto text-xs bg-orange-500/20 text-orange-400 border border-orange-600/30 px-1.5 py-0.5 rounded-full font-display">HOT</span>
-        </a>
-      </li>
-      <li>
-        <a href="{{ route('marketplace.deals') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white font-medium text-sm transition-all">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-          Deals
-          <span class="ml-auto text-xs bg-green-500/20 text-green-400 border border-green-600/30 px-1.5 py-0.5 rounded-full font-display">SALE</span>
-        </a>
-      </li>
-      @auth
-      <li>
-        <a href="{{ route('wishlist.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white font-medium text-sm transition-all">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z"/></svg>
-          Wishlist
-        </a>
-      </li>
-      @endauth
-    </ul>
-
-    {{-- Dynamic categories from controller --}}
-    @isset($categories)
-    <p class="text-xs font-display font-semibold text-gray-600 uppercase tracking-widest mb-3 mt-6 px-1">Categories</p>
-    <ul class="space-y-1">
-      @foreach($categories as $category)
-      <li>
-        <a href="{{ route('marketplace.category', $category->slug) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white text-sm transition-all">
-          {{ $category->icon ?? '' }} {{ $category->name }}
-        </a>
-      </li>
-      @endforeach
-    </ul>
-    @endisset
-
-    {{-- Account links --}}
-    @auth
-    <p class="text-xs font-display font-semibold text-gray-600 uppercase tracking-widest mb-3 mt-6 px-1">Account</p>
-    <ul class="space-y-1">
-      <li>
-        <a href="{{ route('profile.show') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white text-sm transition-all">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
-          Profile
-        </a>
-      </li>
-      <li>
-        <a href="{{ route('orders.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white text-sm transition-all">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
-          Order History
-        </a>
-      </li>
-      <li>
-        <form method="POST" action="{{ route('logout') }}">
-          @csrf
-          <button type="submit" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-gray-400 hover:bg-gray-800 hover:text-white text-sm transition-all">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
-            Sign Out
-          </button>
-        </form>
-      </li>
-    </ul>
-    @endauth
-  </nav>
-
-  {{-- Drawer Footer — Upgrade CTA --}}
-  @auth
-  @if(!(Auth::user()->is_pro ?? false))
-  <div class="p-4 border-t border-gray-800">
-    <div class="flex items-center justify-between px-3 py-3 rounded-xl bg-gray-850 border border-gray-750">
-      <div>
-        <p class="text-xs font-display font-semibold text-white">{{ config('app.name') }} Pro</p>
-        <p class="text-xs text-gray-500 mt-0.5">Unlock all features</p>
-      </div>
-      <a href="{{ route('subscription.upgrade') }}" class="text-xs bg-gradient-to-r from-blue-500 to-orange-500 hover:from-blue-400 hover:to-orange-400 text-white px-3 py-1.5 rounded-lg font-display font-semibold transition-colors shadow-glow-sm">Upgrade</a>
-    </div>
-  </div>
-  @endif
-  @endauth
-</aside>
-
-{{-- ═══ ANNOUNCEMENT BAR ═══ --}}
-<div x-data="{ visible: true }" x-show="visible" x-transition class="bg-gradient-to-r from-blue-900/60 via-cyan-800/40 to-orange-900/60 border-b border-orange-800/30 text-center py-2 px-4 text-xs text-orange-200 font-body relative overflow-hidden">
+<div x-data="{ visible: true }" x-show="visible" x-transition class="glass-card border border-default bg-elevated/90 text-center py-2 px-4 text-xs text-orange-200 relative overflow-hidden">
   <div class="absolute inset-0 bg-grid opacity-30"></div>
   <span class="relative">
     🎉 Ramadan Special: Up to <strong class="text-orange-300">50% OFF</strong> on all top-up products — Use code
@@ -168,7 +20,7 @@
 </div>
 
 {{-- ═══ STICKY NAVBAR ═══ --}}
-<header class="sticky top-0 z-40 navbar-blur bg-elevated-70 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
+<header class="sticky top-0 z-40 navbar-gaming navbar-blur bg-elevated-70 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
   <div class="max-w-7xl mx-auto px-4 lg:px-6">
     <div class="flex items-center h-16 gap-3 lg:gap-6">
 
@@ -249,7 +101,7 @@
       <div class="flex-none flex items-center gap-1 sm:gap-2 ml-auto lg:ml-0">
 
         {{-- Mobile search icon --}}
-        <button class="md:hidden w-9 h-9 rounded-xl bg-elevated border border-default flex items-center justify-center text-muted hover:text-white hover:border-primary transition-all">
+        <button class="md:hidden w-9 h-9 rounded-xl bg-elevated border border-default flex items-center justify-center text-secondary hover:text-white hover:border-primary transition-all">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </button>
 
@@ -284,23 +136,23 @@
                 }
               @endphp
               @forelse($notifications as $notification)
-              <div class="flex items-start gap-3 px-4 py-3 hover:bg-gray-800/50 transition-colors cursor-pointer {{ $notification->read_at ? 'opacity-60' : '' }}">
+              <div class="flex items-start gap-3 px-4 py-3 hover:bg-surface/70 transition-colors cursor-pointer {{ $notification->read_at ? 'opacity-60' : '' }}">
                 <div class="w-8 h-8 rounded-full bg-green-500/20 flex items-center justify-center flex-none mt-0.5">
                   <svg class="w-4 h-4 text-green-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
                 </div>
                 <div>
                   <div class="text-sm font-medium text-white">{{ $notification->data['title'] ?? '' }}</div>
-                  <div class="text-xs text-gray-400 mt-0.5">{{ $notification->data['body'] ?? '' }}</div>
+                  <div class="text-xs text-secondary mt-0.5">{{ $notification->data['body'] ?? '' }}</div>
                 </div>
                 @if(!$notification->read_at)
                   <div class="w-2 h-2 rounded-full bg-blue-500 flex-none mt-1.5 ml-auto"></div>
                 @endif
               </div>
               @empty
-              <div class="px-4 py-6 text-center text-xs text-gray-500">No notifications yet.</div>
+              <div class="px-4 py-6 text-center text-xs text-secondary">No notifications yet.</div>
               @endforelse
             </div>
-            <div class="px-4 py-3 border-t border-gray-800">
+            <div class="px-4 py-3 border-t border-default">
               <a href="{{ route('notifications.index') }}" class="text-xs text-center text-cyan-400 hover:text-cyan-300 block transition-colors">View all notifications</a>
             </div>
           </div>
@@ -316,8 +168,8 @@
             @endif
           </button>
           <div x-show="open" x-cloak x-transition class="absolute top-full right-0 mt-2 w-80 bg-elevated border border-default rounded-2xl shadow-xl overflow-hidden z-50">
-            <div class="flex items-center justify-between px-4 py-3 border-b border-gray-800">
-              <span class="font-display font-semibold text-sm text-white">Cart <span class="text-gray-500 font-normal">({{ $cartCount }} items)</span></span>
+            <div class="flex items-center justify-between px-4 py-3 border-b border-default">
+              <span class="font-display font-semibold text-sm text-white">Cart <span class="text-secondary font-normal">({{ $cartCount }} items)</span></span>
               <span class="text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer">Clear all</span>
             </div>
             {{-- Cart items rendered via view composer / cart service --}}

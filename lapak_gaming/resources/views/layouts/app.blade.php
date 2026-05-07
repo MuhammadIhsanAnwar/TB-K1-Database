@@ -34,7 +34,7 @@
 
     {{-- Mobile Drawer --}}
     <div class="drawer-overlay lg:hidden" id="drawerOverlay" @click="mobileMenuOpen = false" :class="{ 'active': mobileMenuOpen }"></div>
-   
+    @include('components.mobile-drawer')
 
     {{-- Flash Messages --}}
     @if(session('success') || session('error') || session('info'))
@@ -72,7 +72,7 @@
     <div id="toast-container" class="fixed top-20 right-4 z-80 flex flex-col gap-2 w-80 pointer-events-none" aria-live="polite"></div>
 
     {{-- Main Content --}}
-    <main class="relative z-10 pb-nav lg:pb-0">
+    <main class="relative z-10 min-h-screen pb-28 lg:pb-0">
         @yield('content')
     </main>
 
