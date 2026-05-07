@@ -95,7 +95,7 @@ class MarketplaceController extends Controller
                 ->active()
                 ->inStock()
                 ->with(['seller', 'category'])
-                ->orderByDesc('views_count')
+                ->orderByDesc('id')
                 ->paginate(12)
             : collect();
         
