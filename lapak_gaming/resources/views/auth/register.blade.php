@@ -57,7 +57,7 @@
         </section>
 
         {{-- RIGHT SIDE --}}
-        <section class="rounded-[2rem] bg-white p-6 shadow-2xl shadow-black/10 dark:bg-slate-900 sm:p-8">
+        <section class="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl shadow-black/20 backdrop-blur-xl sm:p-8">
 
             <div class="flex items-center justify-between gap-4">
 
