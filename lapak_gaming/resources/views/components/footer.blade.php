@@ -1,5 +1,5 @@
-<footer class="py-6 -mt-1">
-    <div class="max-w-7xl mx-auto px-4 text-center">
+<footer class="bg-transparent py-6 text-center">
+    <div class="max-w-7xl mx-auto px-4">
         <p class="text-sm text-gray-300">
             © {{ date('Y') }} Lapak Gaming. Marketplace game aman dan terpercaya.
         </p>
