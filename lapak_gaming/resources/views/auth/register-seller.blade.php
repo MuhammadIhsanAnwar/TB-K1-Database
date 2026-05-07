@@ -28,11 +28,11 @@
                 </dl>
             </section>
 
-            <section class="rounded-[2rem] border border-white/5 bg-white/5 backdrop-blur-xl p-6 shadow-2xl sm:p-8">
+            <section class="rounded-[2rem] bg-black/20 p-6 backdrop-blur-xl shadow-none border border-white/5 sm:p-8">
                 <div class="flex items-center justify-between gap-4">
                     <div>
-                        <h2 class="text-3xl font-black text-slate-950 dark:text-white">Daftar Penjual</h2>
-                        <p class="mt-2 text-sm text-slate-500 dark:text-slate-400">Isi data akun, profil toko, dan alamat bisnis.</p>
+                        <h2 class="text-3xl font-black text-white"> Penjual</h2>
+                        <p class="mt-2 text-sm text-gray-400">Isi data akun, profil toko, dan alamat bisnis.</p>
                     </div>
                     <div class="hidden rounded-2xl bg-amber-100 px-4 py-2 text-xs font-semibold text-amber-700 dark:bg-amber-900 dark:text-amber-200 md:block">
                         Seller
@@ -183,4 +183,14 @@
             </div>
         </div>
     </div>
+    <style>
+    footer {
+        border-top: none !important;
+        background: transparent !important;
+    }
+
+    body.bg-grid {
+        background-image: none !important;
+    }
+</style>
 @endsection
