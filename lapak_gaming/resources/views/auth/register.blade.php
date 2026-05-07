@@ -4,11 +4,28 @@
 
 @section('content')
 <style>
+    /* Menghilangkan background grid bawaan */
     body.bg-grid {
         background-image: none !important;
     }
+
+    /* Memastikan body memiliki warna dasar gelap yang senada dengan orange-900 */
+    body {
+        background-color: #210d04 !important;
+    }
+
+    /* Menghapus garis pembatas, background, dan margin pada footer */
+    footer, .footer {
+        border-top: none !important;
+        background: transparent !important;
+        margin-top: 0 !important;
+        padding-top: 2rem !important;
+        padding-bottom: 2rem !important;
+        box-shadow: none !important;
+    }
 </style>
-<div class="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-16">
+
+<div class="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 pt-16 pb-8">
 
     {{-- Background Effect --}}
     <div class="absolute inset-0 opacity-20"
@@ -256,10 +273,4 @@
 
     </div>
 </div>
-<style>
-    footer {
-        border-top: none !important;
-        background: transparent !important;
-    }
-</style>
 @endsection
