@@ -137,7 +137,7 @@
     font-family: 'Oxanium', sans-serif;
     font-weight: 600;
     font-size: 0.875rem;
-    letter-radius: 0.02em;
+    letter-spacing: 0.02em;
     border-radius: var(--radius-btn);
     background: var(--glass-bg);
     color: var(--text-primary);
@@ -442,4 +442,24 @@
   /* line clamp */
   .line-clamp-1 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 1; -webkit-box-orient: vertical; }
   .line-clamp-2 { overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
+}
+
+
+/* ─── Navbar Blur ───────────────────────────── */
+.navbar-blur {
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+}
+
+/* ─── Dropdown ──────────────────────────────── */
+.dropdown-panel {
+    display: none;
+}
+
+.dropdown-panel.hidden {
+    display: none;
+}
+
+.dropdown-panel:not(.hidden) {
+    display: block;
 }

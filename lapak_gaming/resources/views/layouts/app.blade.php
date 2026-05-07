@@ -34,7 +34,7 @@
 
     {{-- Mobile Drawer --}}
     <div class="drawer-overlay lg:hidden" id="drawerOverlay" @click="mobileMenuOpen = false" :class="{ 'active': mobileMenuOpen }"></div>
-    @include('components.mobile-drawer')
+   
 
     {{-- Flash Messages --}}
     @if(session('success') || session('error') || session('info'))
