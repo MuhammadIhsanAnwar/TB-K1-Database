@@ -1,150 +1,88 @@
 import './bootstrap';
-import Cropper from 'cropperjs';
-import 'cropperjs/dist/cropper.css';
+import Alpine from 'alpinejs';
+import focus from '@alpinejs/focus';
 
-const registerForm = document.querySelector('[data-register-form]');
+Alpine.plugin(focus);
+window.Alpine = Alpine;
 
-if (registerForm) {
-	const photoInput = registerForm.querySelector('[data-photo-input]');
-	const previewImage = registerForm.querySelector('[data-photo-preview]');
-	const photoError = registerForm.querySelector('[data-photo-error]');
-	const cropModal = document.querySelector('[data-crop-modal]');
-	const cropImage = document.querySelector('[data-crop-image]');
-	const cropSaveButton = document.querySelector('[data-crop-save]');
-	const cropCancelButton = document.querySelector('[data-crop-cancel]');
-	const cropResetButton = document.querySelector('[data-crop-reset]');
-
-	let cropper = null;
-	let selectedFile = null;
-
-	const hideModal = () => {
-		cropModal.classList.add('hidden');
-		cropModal.classList.remove('flex');
-	};
-
-	const showError = (message) => {
-		if (!photoError) {
-			return;
-		}
-
-		photoError.textContent = message;
-		photoError.classList.remove('hidden');
-	};
-
-	const clearError = () => {
-		if (!photoError) {
-			return;
-		}
-
-		photoError.textContent = '';
-		photoError.classList.add('hidden');
-	};
-
-	const setPreview = (source) => {
-		previewImage.src = source;
-	};
-
-	const destroyCropper = () => {
-		if (cropper) {
-			cropper.destroy();
-			cropper = null;
-		}
-	};
-
-	const createCropper = () => {
-		destroyCropper();
-
-		cropper = new Cropper(cropImage, {
-			aspectRatio: 1,
-			viewMode: 1,
-			dragMode: 'move',
-			autoCropArea: 1,
-			background: false,
-			responsive: true,
-			scalable: false,
-			zoomable: true,
-		});
-	};
-
-	const openCropper = (file) => {
-		const reader = new FileReader();
-
-		reader.onload = () => {
-			cropImage.src = reader.result;
-			cropModal.classList.remove('hidden');
-			cropModal.classList.add('flex');
-			createCropper();
-		};
-
-		reader.readAsDataURL(file);
-	};
-
-	photoInput.addEventListener('change', () => {
-		clearError();
-
-		const file = photoInput.files?.[0];
-
-		if (!file) {
-			selectedFile = null;
-			return;
-		}
-
-		if (file.size > 5 * 1024 * 1024) {
-			photoInput.value = '';
-			selectedFile = null;
-			showError('Ukuran foto tidak boleh lebih dari 5MB.');
-			return;
-		}
-
-		if (!file.type.startsWith('image/')) {
-			photoInput.value = '';
-			selectedFile = null;
-			showError('File harus berupa gambar.');
-			return;
-		}
-
-		selectedFile = file;
-		openCropper(file);
-	});
-
-	cropSaveButton.addEventListener('click', () => {
-		if (!cropper || !selectedFile) {
-			return;
-		}
-
-		cropper.getCroppedCanvas({
-			width: 512,
-			height: 512,
-			imageSmoothingQuality: 'high',
-		}).toBlob((blob) => {
-			if (!blob) {
-				showError('Gagal memproses gambar.');
-				return;
-			}
-
-			const croppedFile = new File([blob], selectedFile.name, {
-				type: 'image/jpeg',
-				lastModified: Date.now(),
-			});
-
-			const dataTransfer = new DataTransfer();
-			dataTransfer.items.add(croppedFile);
-			photoInput.files = dataTransfer.files;
-
-			setPreview(URL.createObjectURL(croppedFile));
-			clearError();
-			destroyCropper();
-			hideModal();
-		}, 'image/jpeg', 0.92);
-	});
-
-	const closeCropper = () => {
-		selectedFile = null;
-		photoInput.value = '';
-		destroyCropper();
-		hideModal();
-	};
-
-	cropCancelButton.addEventListener('click', closeCropper);
-	cropResetButton.addEventListener('click', createCropper);
+// ─── Navbar scroll shadow ─────────────────────────────
+const navbar = document.querySelector('.navbar-gaming');
+if (navbar) {
+    const onScroll = () => {
+        navbar.classList.toggle('scrolled', window.scrollY > 10);
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll();
 }
+
+// ─── Countdown timers ────────────────────────────────
+document.querySelectorAll('[data-countdown]').forEach(el => {
+    const endTime = new Date(el.dataset.countdown).getTime();
+    const tick = () => {
+        const now = Date.now();
+        const diff = Math.max(0, endTime - now);
+        const h = Math.floor(diff / 3600000);
+        const m = Math.floor((diff % 3600000) / 60000);
+        const s = Math.floor((diff % 60000) / 1000);
+        const pad = n => String(n).padStart(2, '0');
+        const hEl = el.querySelector('[data-h]');
+        const mEl = el.querySelector('[data-m]');
+        const sEl = el.querySelector('[data-s]');
+        if (hEl) hEl.textContent = pad(h);
+        if (mEl) mEl.textContent = pad(m);
+        if (sEl) sEl.textContent = pad(s);
+        if (diff > 0) requestAnimationFrame(tick);
+    };
+    tick();
+});
+
+// ─── Toast System ────────────────────────────────────
+window.showToast = function (message, type = 'success') {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const icons = {
+        success: `<svg class="w-5 h-5 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>`,
+        error:   `<svg class="w-5 h-5 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>`,
+        info:    `<svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>`,
+    };
+    const colors = {
+        success: 'border-green-500/30 bg-green-950/80',
+        error:   'border-red-500/30 bg-red-950/80',
+        info:    'border-cyan-500/30 bg-cyan-950/80',
+    };
+
+    const toast = document.createElement('div');
+    toast.className = `flex items-center gap-3 rounded-xl border px-4 py-3 text-sm font-medium text-white backdrop-blur-xl shadow-xl ${colors[type] || colors.info} transition-all duration-300 translate-y-0 opacity-100`;
+    toast.innerHTML = `${icons[type] || icons.info}<span>${message}</span>`;
+
+    container.appendChild(toast);
+
+    // animate out after 3.5s
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transform = 'translateX(100%)';
+        setTimeout(() => toast.remove(), 350);
+    }, 3500);
+};
+
+// ─── Intersection Observer – slide-up on scroll ──────
+const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+        if (entry.isIntersecting) {
+            entry.target.style.opacity = '1';
+            entry.target.style.transform = 'translateY(0)';
+            observer.unobserve(entry.target);
+        }
+    });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('[data-reveal]').forEach(el => {
+    el.style.opacity = '0';
+    el.style.transform = 'translateY(20px)';
+    el.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+    observer.observe(el);
+});
+
+// ─── Init Alpine ─────────────────────────────────────
+Alpine.start();
