@@ -16,7 +16,7 @@
     <div class="relative mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
 
         {{-- LEFT SIDE --}}
-        <section class="rounded-[2rem] border border-white/10 bg-white/5 p-8 text-white shadow-2xl backdrop-blur-xl">
+        <section class="rounded-[2rem] border border-transparent bg-white/5 p-8 text-white shadow-2xl backdrop-blur-xl">
 
             <span class="inline-flex rounded-full border border-blue-400/30 bg-blue-400/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-blue-200">
                 Akun Baru
@@ -57,7 +57,7 @@
         </section>
 
         {{-- RIGHT SIDE --}}
-        <section class="rounded-[2rem] border border-white/10 bg-white/5 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
+        <section class="rounded-[2rem] border border-transparent bg-white/5 p-6 shadow-2xl backdrop-blur-xl sm:p-8">
 
             <div class="flex items-center justify-between gap-4">
 
