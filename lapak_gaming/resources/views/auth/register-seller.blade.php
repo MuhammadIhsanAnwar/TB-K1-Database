@@ -3,7 +3,7 @@
 @section('title', 'Register Seller')
 
 @section('content')
-    <div class="relative overflow-hidden bg-gradient-to-br from-amber-950 via-slate-900 to-orange-950 py-12">
+    <div class="relative min-h-screen overflow-hidden bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-16">
         <div class="absolute inset-0 opacity-20" aria-hidden="true"
              style="background-image: radial-gradient(circle at 20% 20%, rgba(217,119,6,.45), transparent 25%), radial-gradient(circle at 80% 10%, rgba(249,115,22,.35), transparent 20%), radial-gradient(circle at 50% 80%, rgba(217,119,6,.25), transparent 24%);">
         </div>

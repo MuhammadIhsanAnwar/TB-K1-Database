@@ -1,4 +1,4 @@
-<footer class="bg-transparent border-0 shadow-none">
+<footer class="bg-transparent py-6 text-center text-gray-400">
     <div class="max-w-7xl mx-auto px-4">
         <p class="text-sm text-gray-300">
             © {{ date('Y') }} Lapak Gaming. Marketplace game aman dan terpercaya.
