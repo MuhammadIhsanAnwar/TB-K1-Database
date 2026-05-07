@@ -45,7 +45,7 @@
         x-transition:leave="transition ease-in duration-300"
         x-transition:leave-start="opacity-100 translate-y-0"
         x-transition:leave-end="opacity-0 -translate-y-2"
-        class="fixed top-20 right-4 z-[150] max-w-sm"
+        class="fixed top-20 right-4 z-80 max-w-sm"
     >
         @if(session('success'))
         <div class="flex items-start gap-3 rounded-xl border border-green-500/30 bg-green-950/90 px-4 py-3 text-sm text-white backdrop-blur-xl shadow-xl">
@@ -69,7 +69,7 @@
     @endif
 
     {{-- Toast Container --}}
-    <div id="toast-container" class="fixed top-20 right-4 z-[150] flex flex-col gap-2 w-80 pointer-events-none" aria-live="polite"></div>
+    <div id="toast-container" class="fixed top-20 right-4 z-80 flex flex-col gap-2 w-80 pointer-events-none" aria-live="polite"></div>
 
     {{-- Main Content --}}
     <main class="relative z-10 pb-nav lg:pb-0">

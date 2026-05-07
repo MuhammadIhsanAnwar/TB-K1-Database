@@ -9,17 +9,23 @@
 --}}
 
 {{-- ═══ MOBILE SIDEBAR DRAWER ═══ --}}
-<aside id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 bg-gray-900 border-r border-gray-800 z-50 flex flex-col overflow-y-auto">
+<aside id="mobile-drawer" x-show="mobileMenuOpen" x-cloak class="drawer-panel fixed top-0 left-0 h-full w-72 flex flex-col overflow-y-auto bg-elevated border-r border-default"
+      x-transition:enter="transition duration-300"
+      x-transition:enter-start="-translate-x-full"
+      x-transition:enter-end="translate-x-0"
+      x-transition:leave="transition duration-250"
+      x-transition:leave-start="translate-x-0"
+      x-transition:leave-end="-translate-x-full">
 
   {{-- Drawer Header --}}
-  <div class="flex items-center justify-between p-4 border-b border-gray-800">
+  <div class="flex items-center justify-between p-4 border-b border-default">
     <div class="flex items-center gap-2">
       <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-600 to-orange-500 flex items-center justify-center shadow-glow-sm">
         <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
       </div>
       <span class="font-display font-bold text-lg text-white tracking-wide">{{ config('app.name', 'Lapak Gaming') }}</span>
     </div>
-    <button onclick="closeDrawer()" class="w-8 h-8 rounded-lg bg-gray-800 flex items-center justify-center text-gray-400 hover:text-white hover:bg-gray-750 transition-colors">
+    <button @click="mobileMenuOpen = false" class="btn-icon bg-elevated border border-default text-gray-400 hover:text-white hover:bg-surface transition-colors">
       <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
     </button>
   </div>
@@ -150,24 +156,24 @@
 </aside>
 
 {{-- ═══ ANNOUNCEMENT BAR ═══ --}}
-<div id="announcement-bar" class="bg-gradient-to-r from-blue-900/60 via-cyan-800/40 to-orange-900/60 border-b border-orange-800/30 text-center py-2 px-4 text-xs text-orange-200 font-body relative overflow-hidden">
+<div x-data="{ visible: true }" x-show="visible" x-transition class="bg-gradient-to-r from-blue-900/60 via-cyan-800/40 to-orange-900/60 border-b border-orange-800/30 text-center py-2 px-4 text-xs text-orange-200 font-body relative overflow-hidden">
   <div class="absolute inset-0 bg-grid opacity-30"></div>
   <span class="relative">
     🎉 Ramadan Special: Up to <strong class="text-orange-300">50% OFF</strong> on all top-up products — Use code
     <strong class="text-yellow-300 bg-yellow-400/10 px-1.5 py-0.5 rounded border border-yellow-500/30">LAPAK50</strong>
   </span>
-  <button class="absolute right-3 top-1/2 -translate-y-1/2 text-orange-400 hover:text-white transition-colors" onclick="document.getElementById('announcement-bar').remove()">
+  <button @click="visible = false" class="absolute right-3 top-1/2 -translate-y-1/2 text-orange-400 hover:text-white transition-colors">
     <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
   </button>
 </div>
 
 {{-- ═══ STICKY NAVBAR ═══ --}}
-<header class="sticky top-0 z-30 navbar-blur bg-gray-950/40 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
+<header class="sticky top-0 z-40 navbar-blur bg-elevated-70 backdrop-blur-xl shadow-[0_4px_30px_rgba(0,0,0,0.4)]">
   <div class="max-w-7xl mx-auto px-4 lg:px-6">
     <div class="flex items-center h-16 gap-3 lg:gap-6">
 
       {{-- Hamburger (mobile only) --}}
-      <button onclick="openDrawer()" class="flex-none lg:hidden w-9 h-9 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-400 hover:text-white hover:border-blue-500 transition-all">
+      <button @click="mobileMenuOpen = true" class="flex-none lg:hidden w-9 h-9 rounded-xl bg-elevated border border-default flex items-center justify-center text-gray-400 hover:text-white hover:border-primary transition-all">
         <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
       </button>
 
@@ -186,28 +192,28 @@
         </a>
 
         {{-- Categories Mega Dropdown --}}
-        <div class="relative" id="cat-dropdown-wrapper">
-          <button onclick="toggleDropdown('cat-dropdown')" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-400 hover:text-white hover:bg-gray-800 transition-all">
+        <div x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false" class="relative">
+          <button @click.prevent="open = !open" :aria-expanded="open.toString()" class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-secondary hover:text-white hover:bg-surface transition-all">
             Categories
-            <svg class="w-3.5 h-3.5 transition-transform duration-200" id="cat-dropdown-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <svg class="w-3.5 h-3.5 transition-transform duration-200" :class="{ 'rotate-180': open }" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div id="cat-dropdown" class="dropdown-panel absolute top-full left-0 mt-2 w-64 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl overflow-hidden z-50">
+          <div x-show="open" x-cloak x-transition class="absolute top-full left-0 mt-2 w-64 bg-elevated border border-default rounded-2xl shadow-xl overflow-hidden z-50">
             <div class="p-2">
-              <p class="text-xs font-display font-semibold text-gray-600 uppercase tracking-widest px-3 py-2">Popular Games</p>
+              <p class="text-xs font-display font-semibold text-secondary uppercase tracking-widest px-3 py-2">Popular Games</p>
               @isset($categories)
                 @foreach($categories->take(5) as $category)
-                <a href="{{ route('marketplace.category', $category->slug) }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl hover:bg-gray-800 transition-colors group">
+                <a href="{{ route('marketplace.category', $category->slug) }}" class="dropdown-item text-white hover:bg-surface transition-colors group">
                   <span class="text-lg">{{ $category->icon ?? '🎮' }}</span>
                   <div>
-                    <div class="text-sm font-medium text-white group-hover:text-blue-400 transition-colors">{{ $category->name }}</div>
-                    <div class="text-xs text-gray-500">{{ $category->subtitle ?? '' }}</div>
+                    <div class="text-sm font-medium text-white group-hover:text-primary transition-colors">{{ $category->name }}</div>
+                    <div class="text-xs text-muted">{{ $category->subtitle ?? '' }}</div>
                   </div>
-                  <span class="ml-auto text-xs text-gray-600">{{ number_format($category->product_count ?? 0) }} items</span>
+                  <span class="ml-auto text-xs text-secondary">{{ number_format($category->product_count ?? 0) }} items</span>
                 </a>
                 @endforeach
               @endisset
-              <div class="border-t border-gray-800 mt-2 pt-2">
-                <a href="{{ route('marketplace.browse') }}" class="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs text-blue-400 hover:bg-blue-600/10 transition-colors font-medium">
+              <div class="border-t border-default mt-2 pt-2">
+                <a href="{{ route('marketplace.browse') }}" class="flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl text-xs text-primary hover:bg-primary/10 transition-colors font-medium">
                   View all categories
                   <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
                 </a>
@@ -231,7 +237,7 @@
         <div class="relative w-full flex items-center">
           <svg class="absolute left-3.5 w-4 h-4 text-gray-500 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           <input id="search-input" type="text" placeholder="Search games, top-up, vouchers..."
-            class="w-full pl-10 pr-28 py-2.5 bg-gray-900 border border-gray-700 rounded-xl text-sm text-white placeholder-gray-500 focus:outline-none focus:border-blue-500 transition-all" />
+            class="w-full pl-10 pr-28 py-2.5 bg-surface border border-default rounded-xl text-sm text-white placeholder-muted focus:outline-none focus:border-primary transition-all" />
           <div class="absolute right-2 flex items-center gap-1">
             <kbd class="hidden xl:flex text-xs text-gray-600 bg-gray-800 border border-gray-700 px-1.5 py-0.5 rounded font-mono">⌘K</kbd>
             <button class="bg-gradient-to-r from-blue-500 to-orange-500 hover:from-blue-400 hover:to-orange-400 text-white text-xs font-display font-semibold px-3 py-1.5 rounded-lg transition-colors shadow-glow-sm hover:shadow-glow">Search</button>
@@ -243,14 +249,14 @@
       <div class="flex-none flex items-center gap-1 sm:gap-2 ml-auto lg:ml-0">
 
         {{-- Mobile search icon --}}
-        <button class="md:hidden w-9 h-9 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-400 hover:text-white hover:border-blue-500 transition-all">
+        <button class="md:hidden w-9 h-9 rounded-xl bg-elevated border border-default flex items-center justify-center text-muted hover:text-white hover:border-primary transition-all">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         </button>
 
         @auth
         {{-- Notifications --}}
-        <div class="relative">
-          <button onclick="toggleDropdown('notif-dropdown')" class="relative w-9 h-9 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-400 hover:text-white hover:border-blue-500 transition-all">
+        <div x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false" class="relative">
+          <button @click.prevent="open = !open" :aria-expanded="open.toString()" class="relative w-9 h-9 rounded-xl bg-elevated border border-default flex items-center justify-center text-gray-400 hover:text-white hover:border-primary transition-all">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
             @php
               try {
@@ -263,7 +269,7 @@
               <span class="notif-dot"></span>
             @endif
           </button>
-          <div id="notif-dropdown" class="dropdown-panel absolute top-full right-0 mt-2 w-80 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl overflow-hidden z-50">
+          <div x-show="open" x-cloak x-transition class="absolute top-full right-0 mt-2 w-80 bg-elevated border border-default rounded-2xl shadow-xl overflow-hidden z-50">
             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-800">
               <span class="font-display font-semibold text-sm text-white">Notifications</span>
               <span class="text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer">Mark all read</span>
@@ -301,15 +307,15 @@
         </div>
 
         {{-- Cart --}}
-        <div class="relative">
-          <button onclick="toggleDropdown('cart-dropdown')" class="relative w-9 h-9 rounded-xl bg-gray-800 border border-gray-700 flex items-center justify-center text-gray-400 hover:text-white hover:border-cyan-500 transition-all">
+        <div x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false" class="relative">
+          <button @click.prevent="open = !open" :aria-expanded="open.toString()" class="relative w-9 h-9 rounded-xl bg-elevated border border-default flex items-center justify-center text-gray-400 hover:text-white hover:border-cyan-500 transition-all">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
             @php $cartCount = session('cart_count', 0); @endphp
             @if($cartCount > 0)
             <span class="absolute -top-1 -right-1 bg-cyan-600 rounded-full text-white font-display font-bold flex items-center justify-center leading-none" style="width:18px;height:18px;font-size:10px">{{ $cartCount }}</span>
             @endif
           </button>
-          <div id="cart-dropdown" class="dropdown-panel absolute top-full right-0 mt-2 w-80 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl overflow-hidden z-50">
+          <div x-show="open" x-cloak x-transition class="absolute top-full right-0 mt-2 w-80 bg-elevated border border-default rounded-2xl shadow-xl overflow-hidden z-50">
             <div class="flex items-center justify-between px-4 py-3 border-b border-gray-800">
               <span class="font-display font-semibold text-sm text-white">Cart <span class="text-gray-500 font-normal">({{ $cartCount }} items)</span></span>
               <span class="text-xs text-cyan-400 hover:text-cyan-300 cursor-pointer">Clear all</span>
@@ -352,15 +358,15 @@
         </div>
 
         {{-- User Account Dropdown --}}
-        <div class="relative">
-          <button onclick="toggleDropdown('user-dropdown')" class="flex items-center gap-2 pl-1 pr-2 sm:pr-3 py-1 rounded-xl bg-gray-800 border border-gray-700 hover:border-cyan-500 transition-all group">
+        <div x-data="{ open: false }" @keydown.escape.window="open = false" @click.outside="open = false" class="relative">
+          <button @click.prevent="open = !open" :aria-expanded="open.toString()" class="flex items-center gap-2 pl-1 pr-2 sm:pr-3 py-1 rounded-xl bg-elevated border border-default hover:border-cyan-500 transition-all group">
             <div class="w-7 h-7 rounded-lg bg-gradient-to-br from-cyan-600 to-blue-500 flex items-center justify-center font-display font-bold text-xs text-white shadow-glow-sm">
               {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
             </div>
-            <span class="hidden sm:block text-sm font-medium text-gray-300 group-hover:text-white transition-colors max-w-20 truncate">{{ explode(' ', Auth::user()->name)[0] }}</span>
+            <span class="hidden sm:block text-sm font-medium text-secondary group-hover:text-white transition-colors max-w-20 truncate">{{ explode(' ', Auth::user()->name)[0] }}</span>
             <svg class="w-3 h-3 text-gray-500 hidden sm:block" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
           </button>
-          <div id="user-dropdown" class="dropdown-panel absolute top-full right-0 mt-2 w-64 bg-gray-900 border border-gray-800 rounded-2xl shadow-2xl overflow-hidden z-50">
+          <div x-show="open" x-cloak x-transition class="absolute top-full right-0 mt-2 w-64 bg-elevated border border-default rounded-2xl shadow-xl overflow-hidden z-50">
             <div class="p-4 border-b border-gray-800 bg-gradient-to-br from-cyan-900/20 to-gray-900">
               <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-full bg-gradient-to-br from-cyan-600 to-blue-500 flex items-center justify-center font-display font-bold text-sm shadow-glow">
