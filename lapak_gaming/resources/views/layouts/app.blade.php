@@ -281,10 +281,10 @@
     function setActiveCat(btn) {
       document.querySelectorAll('.cat-pill').forEach(p => {
         p.classList.remove('cat-pill-active', 'text-white');
-        p.classList.add('text-gray-400', 'border', 'border-gray-800');
+        p.classList.add('text-gray-400', 'border', );
       });
       btn.classList.add('cat-pill-active');
-      btn.classList.remove('text-gray-400', 'border', 'border-gray-800');
+      btn.classList.remove('text-gray-400', 'border',);
     }
   </script>
 
