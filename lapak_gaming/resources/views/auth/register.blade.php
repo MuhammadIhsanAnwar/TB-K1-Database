@@ -251,4 +251,10 @@
 
     </div>
 </div>
+<style>
+    footer {
+        border-top: none !important;
+        background: transparent !important;
+    }
+</style>
 @endsection
