@@ -218,7 +218,9 @@
   @yield('content')
 
   {{-- Footer --}}
-  @include('components.footer')
+  <div class="-mt-1 border-0 shadow-none">
+    @include('components.footer')
+</div>
 
   {{-- ═══ CORE JAVASCRIPT ═══ --}}
   <script>
