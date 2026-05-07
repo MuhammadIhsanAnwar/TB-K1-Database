@@ -9,7 +9,7 @@
         </div>
 
         <div class="relative mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
-            <section class="rounded-[2rem] border border-white/10 bg-white/10 p-8 text-white shadow-2xl shadow-black/20 backdrop-blur-xl">
+            <section class="rounded-[2rem] bg-white/5 backdrop-blur-xl p-6 shadow-2xl sm:p-8">
                 <span class="inline-flex rounded-full border border-amber-400/30 bg-amber-400/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-amber-200">Akun Penjual</span>
                 <h1 class="mt-6 text-4xl font-black leading-tight">Mulai berjualan di Lapak Geming dengan modal minimal.</h1>
                 <p class="mt-4 max-w-xl text-sm leading-6 text-slate-300">
@@ -28,7 +28,7 @@
                 </dl>
             </section>
 
-            <section class="rounded-[2rem] border border-slate-200 bg-white p-6 shadow-2xl shadow-black/10 dark:border-slate-800 dark:bg-slate-900 sm:p-8">
+            <section class="rounded-[2rem] border border-white/5 bg-white/5 backdrop-blur-xl p-6 shadow-2xl sm:p-8">
                 <div class="flex items-center justify-between gap-4">
                     <div>
                         <h2 class="text-3xl font-black text-slate-950 dark:text-white">Daftar Penjual</h2>
