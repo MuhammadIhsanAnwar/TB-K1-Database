@@ -198,7 +198,7 @@
   @stack('styles')
 </head>
 
-<body class="text-white min-h-screen">
+<body class="@yield('body-class', 'bg-gray-950 text-white min-h-screen bg-grid')">
 <div class="fixed inset-0 -z-10 bg-gradient-to-b from-blue-900 via-gray-900 to-orange-900"></div>
 
   {{-- Mobile Drawer Overlay --}}

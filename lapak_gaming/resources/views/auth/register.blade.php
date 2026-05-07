@@ -3,6 +3,11 @@
 @section('title', 'Register')
 
 @section('content')
+<style>
+    body.bg-grid {
+        background-image: none !important;
+    }
+</style>
 <div class="relative overflow-hidden bg-gradient-to-br from-blue-900 via-gray-900 to-orange-900 py-16">
 
     {{-- Background Effect --}}
