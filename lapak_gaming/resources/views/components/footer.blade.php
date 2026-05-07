@@ -1,13 +1,11 @@
-<footer class="mt-16 bg-transparent py-6">
+<footer class="bg-transparent py-6">
     <div class="max-w-7xl mx-auto px-4 text-center">
         <p class="text-sm text-gray-400">
-            © {{ date('Y') }} 
-            <span class="font-semibold bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">
-                Lapak Gaming
-            </span>
+            © {{ date('Y') }} Lapak Gaming. Marketplace game aman dan terpercaya.
         </p>
-        <p class="text-xs text-gray-500 mt-1">
-            Marketplace game aman, cepat, dan terpercaya.
+
+        <p class="mt-1 text-xs text-gray-500">
+            Transaksi digital lebih mudah, cepat, dan aman.
         </p>
     </div>
 </footer>
