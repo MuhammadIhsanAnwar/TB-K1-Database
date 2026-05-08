@@ -156,10 +156,14 @@ class AuthController extends Controller
         $googlePhone = $this->resolveGooglePhone($googleUser->token ?? null);
         $googleAvatarPath = $this->storeGoogleAvatar($googleUser->getAvatar(), (string) $googleUser->getId());
 
+        // Find existing user by google_id or email
         $user = User::where('google_id', $googleUser->getId())->first()
             ?? User::where('email', $googleUser->getEmail())->first();
 
+        $isNewUser = false;
+
         if (! $user) {
+            // Create new user without email verification
             $user = User::create([
                 'name' => $googleUser->getName() ?: $googleUser->getNickname() ?: 'Pengguna Google',
                 'email' => $googleUser->getEmail(),
@@ -169,11 +173,21 @@ class AuthController extends Controller
                 'google_id' => $googleUser->getId(),
                 'phone' => $googlePhone,
                 'avatar' => $googleAvatarPath,
+                // email_verified_at remains null - requires verification
             ]);
+            
+            $user->profile()->create([
+                'gender' => 'other',
+                'birth_date' => null,
+                'phone' => $googlePhone,
+                'avatar_path' => $googleAvatarPath,
+            ]);
+
+            $isNewUser = true;
         } else {
+            // Link existing user with Google account
             $user->forceFill([
                 'google_id' => $user->google_id ?: $googleUser->getId(),
-                'email_verified_at' => $user->email_verified_at ?: now(),
                 'phone' => $user->phone ?: $googlePhone,
                 'avatar' => $user->avatar ?: $googleAvatarPath,
             ])->save();
@@ -185,6 +199,19 @@ class AuthController extends Controller
             ]);
         }
 
+        // Check if email is verified
+        if (! $user->email_verified_at) {
+            // For new users, send verification email
+            if ($isNewUser) {
+                event(new Registered($user));
+            }
+
+            // Redirect to verification notice
+            Auth::login($user);
+            return redirect()->route('verification.notice');
+        }
+
+        // Email is verified, proceed with normal login
         Auth::login($user, true);
         $request->session()->regenerate();
 
