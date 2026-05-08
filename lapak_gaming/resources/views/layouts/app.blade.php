@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="description" content="Lapak Gaming — Marketplace top-up, item, akun & voucher game terpercaya Indonesia.">
-  <link rel="icon" type="image/png" href="{{ asset('images/LOGO%20LAPAK1.png') }}">
-  <link rel="apple-touch-icon" href="{{ asset('images/LOGO%20LAPAK1.png') }}">
+  <link rel="icon" type="image/png" href="{{ asset('storage/logo/logo.png') }}">
+  <link rel="apple-touch-icon" href="{{ asset('storage/logo/logo.png') }}">
   <title>@yield('title', config('app.name', 'Lapak Gaming')) — Marketplace Game Terpercaya</title>
 
   {{-- Fonts --}}

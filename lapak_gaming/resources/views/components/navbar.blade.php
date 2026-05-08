@@ -11,12 +11,7 @@
   {{-- Drawer Header --}}
   <div class="flex items-center justify-between p-4" style="border-bottom:1px solid #1E2D45;">
     <a href="{{ route('marketplace.home') }}" class="flex items-center gap-2.5">
-      <div class="w-8 h-8 rounded-lg flex items-center justify-center shadow-glow-sm"
-           style="background:linear-gradient(135deg,#2563eb,#f97316);">
-        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
-      </div>
+      <img src="{{ asset('storage/logo/logo.png') }}" alt="Lapak Gaming" class="w-8 h-8 rounded-lg object-contain bg-white/5 p-1 shadow-glow-sm">
       <span class="font-display font-bold text-base text-white tracking-wide">{{ config('app.name', 'Lapak Gaming') }}</span>
     </a>
     <button onclick="closeDrawer()" aria-label="Close menu"
@@ -204,12 +199,7 @@
 
     {{-- Logo --}}
     <a href="{{ route('marketplace.home') }}" class="flex items-center gap-2 shrink-0 group">
-      <div class="w-8 h-8 rounded-lg flex items-center justify-center transition-transform group-hover:scale-105"
-           style="background:linear-gradient(135deg,#2563eb,#f97316);box-shadow:0 0 12px rgba(37,99,235,0.35);">
-        <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
-      </div>
+      <img src="{{ asset('storage/logo/logo.png') }}" alt="Lapak Gaming" class="w-8 h-8 rounded-lg object-contain bg-white/5 p-1 transition-transform group-hover:scale-105" style="box-shadow:0 0 12px rgba(37,99,235,0.35);">
       <span class="font-display font-bold text-white text-base hidden sm:block">{{ config('app.name', 'Lapak Gaming') }}</span>
     </a>
 
@@ -233,7 +223,7 @@
             @foreach($categories as $cat)
             <a href="{{ route('categories.show', $cat->slug) }}"
                class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-colors"
-               style="hover:background:#162032;">
+              >
               <span class="text-base">{{ $cat->icon ?? '🎮' }}</span>
               <span class="truncate">{{ $cat->name }}</span>
             </a>
@@ -339,7 +329,7 @@
             ] as $link)
             <a href="{{ route($link['route']) }}"
                class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-all"
-               style="hover:background:#162032;">
+              >
               <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $link['icon'] }}"/></svg>
               {{ $link['label'] }}
             </a>

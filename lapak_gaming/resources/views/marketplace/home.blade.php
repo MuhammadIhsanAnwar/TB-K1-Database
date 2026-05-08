@@ -54,7 +54,7 @@
 
         <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
           <a href="{{ route('products.search') }}" class="btn-primary px-6 py-3.5 rounded-xl text-base">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <img src="{{ asset('storage/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
             Mulai Belanja
           </a>
           <a href="{{ route('marketplace.trending') }}" class="btn-ghost px-6 py-3.5 rounded-xl text-base">
@@ -165,14 +165,13 @@
   <div class="max-w-7xl mx-auto px-4">
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
       @foreach([
-        ['type'=>'topup', 'icon'=>'⚡','label'=>'Top Up','desc'=>'Langsung ke akun','color'=>'rgba(37,99,235,0.12)','border'=>'rgba(37,99,235,0.3)','badge'=>'Tercepat'],
-        ['type'=>'joki',  'icon'=>'🏆','label'=>'Jasa Joki','desc'=>'Naik rank dijamin','color'=>'rgba(249,115,22,0.08)','border'=>'rgba(249,115,22,0.25)','badge'=>'Populer'],
-        ['type'=>'akun',  'icon'=>'👤','label'=>'Akun Game','desc'=>'Ready stock','color'=>'rgba(139,92,246,0.08)','border'=>'rgba(139,92,246,0.25)','badge'=>''],
-        ['type'=>'item',  'icon'=>'⚔️','label'=>'Item & Skin','desc'=>'Harga termurah','color'=>'rgba(16,185,129,0.08)','border'=>'rgba(16,185,129,0.25)','badge'=>''],
+        ['type'=>'topup', 'icon'=>'⚡','label'=>'Top Up','desc'=>'Langsung ke akun','class'=>'bg-blue-500/10 border-blue-500/30','badge'=>'Tercepat'],
+        ['type'=>'joki',  'icon'=>'🏆','label'=>'Jasa Joki','desc'=>'Naik rank dijamin','class'=>'bg-orange-500/10 border-orange-500/25','badge'=>'Populer'],
+        ['type'=>'akun',  'icon'=>'👤','label'=>'Akun Game','desc'=>'Ready stock','class'=>'bg-purple-500/10 border-purple-500/25','badge'=>''],
+        ['type'=>'item',  'icon'=>'⚔️','label'=>'Item & Skin','desc'=>'Harga termurah','class'=>'bg-emerald-500/10 border-emerald-500/25','badge'=>''],
       ] as $qt)
       <a href="{{ route('products.by-type', $qt['type']) }}"
-         class="flex items-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-card"
-         style="background:{{ $qt['color'] }};border:1px solid {{ $qt['border'] }};">
+        class="flex items-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-card {{ $qt['class'] }}">
         <span class="text-3xl shrink-0">{{ $qt['icon'] }}</span>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
@@ -224,7 +223,7 @@
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-lg flex items-center justify-center"
              style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
-          <svg class="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+          <img src="{{ asset('storage/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
         </div>
         <div>
           <h2 class="font-display font-bold text-lg text-white">⚡ Top Up Kilat</h2>

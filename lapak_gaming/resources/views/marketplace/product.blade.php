@@ -1,16 +1,31 @@
 @extends('layouts.app')
-@section('title', $product->name . ' — Lapak Gaming')
+
+@php
+  $productName = data_get($product, 'name', 'Produk');
+  $productCategory = data_get($product, 'category');
+  $productSeller = data_get($product, 'seller');
+  $productRating = data_get($product, 'rating_average', 0);
+  $productReviews = data_get($product, 'reviews', collect());
+  $productPrice = data_get($product, 'price', 0);
+  $productStock = data_get($product, 'stock', '∞');
+@endphp
+
+@section('title', $productName . ' — Lapak Gaming')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 py-10">
+<div class="max-w-7xl mx-auto px-4 py-10" id="product-page" data-base-price="{{ data_get($product, 'price', 0) }}">
 
   {{-- Breadcrumb --}}
   <nav class="flex items-center gap-2 text-xs text-slate-500 mb-8">
     <a href="{{ route('marketplace.home') }}" class="hover:text-slate-300 transition-colors">Beranda</a>
     <span>/</span>
-    <a href="{{ route('categories.show', $product->category?->slug ?? '#') }}" class="hover:text-slate-300 transition-colors">{{ $product->category?->name ?? 'Produk' }}</a>
+    @if($productCategory)
+      <a href="{{ route('categories.show', $productCategory->slug) }}" class="hover:text-slate-300 transition-colors">{{ $productCategory->name }}</a>
+    @else
+      <span class="text-slate-300">Produk</span>
+    @endif
     <span>/</span>
-    <span class="text-slate-300 truncate max-w-xs">{{ $product->name }}</span>
+    <span class="text-slate-300 truncate max-w-xs">{{ $productName }}</span>
   </nav>
 
   <div class="grid lg:grid-cols-[1fr_380px] gap-8">
@@ -22,21 +37,21 @@
       <div class="card p-6 sm:p-8">
         {{-- Meta --}}
         <div class="flex flex-wrap items-center gap-2 mb-4">
-          @if($product->category)
-            <span class="badge badge-blue">{{ $product->category->name }}</span>
+          @if($productCategory)
+            <span class="badge badge-blue">{{ $productCategory->name }}</span>
           @endif
-          @if(($product->type ?? '') === 'topup')
+          @if((data_get($product, 'type', '') === 'topup'))
             <span class="badge badge-orange">⚡ Top Up</span>
           @endif
-          @if($product->seller)
+          @if($productSeller)
             <span class="badge" style="background:rgba(30,45,69,0.8);color:#94a3b8;border:1px solid #1E2D45;">
-              Oleh {{ $product->seller->name }}
+              Oleh {{ $productSeller->name }}
             </span>
           @endif
         </div>
 
         <h1 class="font-display text-2xl sm:text-3xl font-extrabold text-white leading-snug mb-4">
-          {{ $product->name }}
+          {{ $productName }}
         </h1>
 
         {{-- Stats bar --}}
@@ -45,27 +60,27 @@
             <svg class="w-4 h-4 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
               <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
             </svg>
-            <span class="font-semibold text-white">{{ number_format($product->rating_average ?? 0, 1) }}</span>
-            <span class="text-slate-500">({{ $product->review_count ?? 0 }} review)</span>
+            <span class="font-semibold text-white">{{ number_format($productRating, 1) }}</span>
+            <span class="text-slate-500">({{ data_get($product, 'review_count', 0) }} review)</span>
           </div>
           <div class="flex items-center gap-1.5">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"/></svg>
-            {{ number_format($product->views_count ?? 0) }} dilihat
+            {{ number_format(data_get($product, 'views_count', 0)) }} dilihat
           </div>
           <div class="flex items-center gap-1.5">
             <svg class="w-4 h-4 text-emerald-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/></svg>
-            <span class="text-emerald-400 font-medium">{{ number_format($product->sold_count ?? 0) }} terjual</span>
+            <span class="text-emerald-400 font-medium">{{ number_format(data_get($product, 'sold_count', 0)) }} terjual</span>
           </div>
         </div>
 
         {{-- Delivery info --}}
-        @if($product->delivery_content)
+        @if(data_get($product, 'delivery_content'))
         <div class="rounded-xl p-4 mb-6" style="background:#090E1A;border:1px dashed #1E2D45;">
           <div class="flex items-center gap-2 mb-2">
-            <svg class="w-4 h-4 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+            <img src="{{ asset('storage/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
             <span class="text-xs font-display font-semibold text-brand-400 uppercase tracking-wide">Digital Delivery</span>
           </div>
-          <p class="text-sm text-slate-300 leading-relaxed">{{ $product->delivery_content }}</p>
+          <p class="text-sm text-slate-300 leading-relaxed">{{ data_get($product, 'delivery_content') }}</p>
         </div>
         @endif
 
@@ -73,7 +88,7 @@
         <div>
           <h2 class="font-display font-semibold text-white mb-3">Deskripsi Produk</h2>
           <div class="text-sm text-slate-400 leading-relaxed">
-            {{ $product->description ?? 'Tidak ada deskripsi.' }}
+            {{ data_get($product, 'description', 'Tidak ada deskripsi.') }}
           </div>
         </div>
       </div>
@@ -85,18 +100,17 @@
           <div class="flex items-center gap-2">
             <div class="flex gap-0.5">
               @for($i=1;$i<=5;$i++)
-                <svg class="w-4 h-4 {{ $i <= round($product->rating_average ?? 0) ? 'text-amber-400' : 'text-slate-700' }}" viewBox="0 0 20 20" fill="currentColor">
+                <svg class="w-4 h-4 {{ $i <= round($productRating) ? 'text-amber-400' : 'text-slate-700' }}" viewBox="0 0 20 20" fill="currentColor">
                   <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
                 </svg>
               @endfor
             </div>
-            <span class="font-display font-bold text-white">{{ number_format($product->rating_average ?? 0, 1) }}</span>
-            <span class="text-sm text-slate-500">({{ $product->review_count ?? 0 }})</span>
+            <span class="font-display font-bold text-white">{{ number_format($productRating, 1) }}</span>
+            <span class="text-sm text-slate-500">({{ data_get($product, 'review_count', 0) }})</span>
           </div>
         </div>
 
-        @php $reviews = $product->reviews ?? collect(); @endphp
-        @forelse($reviews->take(5) as $review)
+        @forelse($productReviews->take(5) as $review)
         <div class="py-4" style="border-bottom:1px solid #1E2D45;">
           <div class="flex items-center gap-3 mb-2">
             <div class="w-8 h-8 rounded-full flex items-center justify-center font-bold text-xs"
@@ -134,23 +148,23 @@
         <div class="card-glow-border p-6 mb-4">
           <div class="text-xs font-display font-semibold text-slate-500 uppercase tracking-wider mb-2">Harga Produk</div>
           <div class="font-display text-3xl font-extrabold text-white mb-1">
-            Rp {{ number_format($product->price, 0, ',', '.') }}
+            Rp {{ number_format($productPrice, 0, ',', '.') }}
           </div>
           <div class="text-xs text-slate-500 mb-5">
-            Stok: <span class="text-white font-medium">{{ $product->stock ?? '∞' }}</span>
+            Stok: <span class="text-white font-medium">{{ $productStock }}</span>
           </div>
 
           @auth
             <form method="POST" action="{{ route('checkout.store') }}" class="space-y-3">
               @csrf
-              <input type="hidden" name="product_id" value="{{ $product->id }}">
+              <input type="hidden" name="product_id" value="{{ data_get($product, 'id') }}">
 
               {{-- Quantity --}}
               <div>
                 <label class="text-xs text-slate-400 mb-1.5 block">Jumlah</label>
                 <div class="flex items-center gap-3">
                   <button type="button" onclick="changeQty(-1)" class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-slate-300 hover:text-white transition-colors" style="background:#162032;border:1px solid #1E2D45;">−</button>
-                  <input type="number" id="qty-input" name="quantity" min="1" max="{{ $product->stock ?? 999 }}" value="1"
+                      <input type="number" id="qty-input" name="quantity" min="1" max="{{ data_get($product, 'stock', 999) }}" value="1"
                          class="input text-center w-16 py-2 text-sm rounded-xl" />
                   <button type="button" onclick="changeQty(1)" class="w-9 h-9 rounded-xl flex items-center justify-center font-bold text-slate-300 hover:text-white transition-colors" style="background:#162032;border:1px solid #1E2D45;">+</button>
                 </div>
@@ -160,7 +174,7 @@
               <div class="rounded-xl px-4 py-3 flex items-center justify-between" style="background:#090E1A;">
                 <span class="text-xs text-slate-400">Total</span>
                 <span id="total-price" class="font-display font-bold text-white text-sm">
-                  Rp {{ number_format($product->price, 0, ',', '.') }}
+                  Rp {{ number_format($productPrice, 0, ',', '.') }}
                 </span>
               </div>
 
@@ -186,18 +200,18 @@
         </div>
 
         {{-- Seller info card --}}
-        @if($product->seller)
+        @if($productSeller)
         <div class="card p-5">
           <div class="text-xs font-display font-semibold text-slate-500 uppercase tracking-wider mb-3">Penjual</div>
           <div class="flex items-center gap-3 mb-4">
             <div class="w-11 h-11 rounded-xl flex items-center justify-center font-display font-bold"
                  style="background:linear-gradient(135deg,#2563eb,#f97316);">
-              {{ strtoupper(substr($product->seller->name ?? 'S', 0, 2)) }}
+              {{ strtoupper(substr($productSeller->name ?? 'S', 0, 2)) }}
             </div>
             <div>
-              <div class="font-semibold text-white text-sm">{{ $product->seller->name }}</div>
+              <div class="font-semibold text-white text-sm">{{ $productSeller->name }}</div>
               <div class="text-xs text-slate-400 mt-0.5">
-                Level: <span class="text-brand-400">{{ $product->seller->sellerLevel?->name ?? 'Starter' }}</span>
+                Level: <span class="text-brand-400">{{ $productSeller->sellerLevel?->name ?? 'Starter' }}</span>
               </div>
             </div>
           </div>
@@ -205,8 +219,8 @@
             @foreach([
               ['label'=>'Order Rate','value'=>'99.2%'],
               ['label'=>'Respons','value'=>'< 3 mnt'],
-              ['label'=>'Bergabung','value'=>$product->seller->created_at?->format('M Y') ?? '-'],
-              ['label'=>'Total Produk','value'=>$product->seller->products_count ?? '-'],
+              ['label'=>'Bergabung','value'=>$productSeller->created_at?->format('M Y') ?? '-'],
+              ['label'=>'Total Produk','value'=>$productSeller->products_count ?? '-'],
             ] as $si)
             <div class="rounded-xl p-3 text-center" style="background:#090E1A;">
               <div class="text-[10px] text-slate-500">{{ $si['label'] }}</div>
@@ -214,7 +228,7 @@
             </div>
             @endforeach
           </div>
-          <a href="{{ route('chat.index') }}?seller={{ $product->seller->id }}"
+          <a href="{{ route('chat.index') }}?seller={{ $productSeller->id }}"
              class="btn-ghost w-full py-2.5 rounded-xl text-sm text-center">
             💬 Chat Penjual
           </a>
@@ -257,7 +271,8 @@
 
 @push('scripts')
 <script>
-  const basePrice = {{ $product->price }};
+  const productPage = document.getElementById('product-page');
+  const basePrice = Number(productPage?.dataset.basePrice || 0);
   const qtyInput = document.getElementById('qty-input');
   const totalEl = document.getElementById('total-price');
 

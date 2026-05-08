@@ -111,7 +111,7 @@
                 <div class="flex gap-4">
                     <div class="flex-shrink-0">
                         <div class="flex items-center justify-center h-12 w-12 rounded-md bg-purple-500/20 text-purple-400">
-                            <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+                            <img src="{{ asset('storage/logo/logo.png') }}" alt="Lapak Gaming" class="h-6 w-6 rounded-sm object-contain bg-white/10 p-0.5">
                         </div>
                     </div>
                     <div>
