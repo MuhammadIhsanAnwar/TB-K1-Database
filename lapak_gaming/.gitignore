@@ -1,1 +1,3 @@
 /storage/logs/*.log
+bootstrap/cache/.gitignore
+storage/logs/.gitignore
