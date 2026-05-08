@@ -2,8 +2,9 @@
 
 namespace Database\Seeders;
 
-use App\Models\Buyer;
+use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Hash;
 
 class BuyerSeeder extends Seeder
 {
@@ -12,44 +13,46 @@ class BuyerSeeder extends Seeder
      */
     public function run(): void
     {
-        // Create 450 verified buyers (random data)
-        Buyer::factory(450)->create();
+        // Create sample buyers with specific data (already covered by UsersTableSeeder)
+        // This seeder can add premium or demo buyers if needed
+        
+        // Create some sample verified buyers with specific data
+        User::firstOrCreate(
+            ['email' => 'ahmad@example.com'],
+            [
+                'name' => 'Ahmad Pembeli',
+                'email_verified_at' => now(),
+                'password' => Hash::make('Password123!'),
+                'phone' => '081234567890',
+                'role' => 'buyer',
+                'status' => 'active',
+            ]
+        );
 
-        // Create 50 unverified buyers (pending email verification)
-        Buyer::factory(50)->unverified()->create();
+        User::firstOrCreate(
+            ['email' => 'siti@example.com'],
+            [
+                'name' => 'Siti Pembeli',
+                'email_verified_at' => now(),
+                'password' => Hash::make('Password123!'),
+                'phone' => '081234567891',
+                'role' => 'buyer',
+                'status' => 'active',
+            ]
+        );
 
-        // Create some sample buyers with specific data
-        Buyer::create([
-            'name' => 'Ahmad Pembeli',
-            'username' => 'ahmad_pembeli',
-            'email' => 'ahmad@example.com',
-            'email_verified_at' => now(),
-            'password' => bcrypt('Password123!'),
-            'phone' => '081234567890',
-            'avatar' => null,
-            'status' => 'active',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'budi@example.com'],
+            [
+                'name' => 'Budi Pembeli',
+                'email_verified_at' => null,
+                'password' => Hash::make('Password123!'),
+                'phone' => '081234567892',
+                'role' => 'buyer',
+                'status' => 'active',
+            ]
+        );
 
-        Buyer::create([
-            'name' => 'Siti Pembeli',
-            'username' => 'siti_pembeli',
-            'email' => 'siti@example.com',
-            'email_verified_at' => now(),
-            'password' => bcrypt('Password123!'),
-            'phone' => '081234567891',
-            'avatar' => null,
-            'status' => 'active',
-        ]);
-
-        Buyer::create([
-            'name' => 'Budi Pembeli',
-            'username' => 'budi_pembeli',
-            'email' => 'budi@example.com',
-            'email_verified_at' => null,
-            'password' => bcrypt('Password123!'),
-            'phone' => '081234567892',
-            'avatar' => null,
-            'status' => 'active',
-        ]);
+        $this->command->info('Sample buyers seeding completed!');
     }
 }
