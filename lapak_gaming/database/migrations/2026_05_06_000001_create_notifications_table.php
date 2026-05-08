@@ -20,8 +20,6 @@ return new class extends Migration
                 $table->json('data');
                 $table->dateTime('read_at')->nullable();
                 $table->timestamps();
-
-                $table->index(['notifiable_type', 'notifiable_id']);
             });
         }
     }
