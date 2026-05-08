@@ -54,7 +54,7 @@
 
         <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
           <a href="{{ route('products.search') }}" class="btn-primary px-6 py-3.5 rounded-xl text-base">
-            <img src="{{ url('storage/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
+            <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
             Mulai Belanja
           </a>
           <a href="{{ route('marketplace.trending') }}" class="btn-ghost px-6 py-3.5 rounded-xl text-base">
@@ -223,7 +223,7 @@
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-lg flex items-center justify-center"
              style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
-          <img src="{{ url('storage/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
+          <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
         </div>
         <div>
           <h2 class="font-display font-bold text-lg text-white">⚡ Top Up Kilat</h2>

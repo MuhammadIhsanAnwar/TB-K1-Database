@@ -91,7 +91,7 @@
             </div>
 
             <div class="mb-8 flex items-center gap-4 rounded-2xl border border-white/10 bg-black/20 p-4">
-                <img src="{{ url('storage/logo/logo.png') }}" alt="Lapak Gaming" class="h-14 w-14 rounded-2xl object-contain bg-white/5 p-1 shadow-lg" />
+                <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-14 w-14 rounded-2xl object-contain bg-white/5 p-1 shadow-lg" />
                 <div>
                     <p class="text-sm font-semibold text-white">Gunakan logo resmi Lapak Gaming</p>
                     <p class="text-xs text-slate-400">Tampilan konsisten di seluruh website.</p>

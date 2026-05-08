@@ -111,7 +111,7 @@
                 <div class="flex gap-4">
                     <div class="flex-shrink-0">
                         <div class="flex items-center justify-center h-12 w-12 rounded-md bg-purple-500/20 text-purple-400">
-                            <img src="{{ url('storage/logo/logo.png') }}" alt="Lapak Gaming" class="h-6 w-6 rounded-sm object-contain bg-white/10 p-0.5">
+                            <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-6 w-6 rounded-sm object-contain bg-white/10 p-0.5">
                         </div>
                     </div>
                     <div>

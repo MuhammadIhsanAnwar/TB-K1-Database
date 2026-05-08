@@ -16,7 +16,7 @@
     {{-- Logo --}}
     <div class="text-center mb-8">
       <a href="{{ route('marketplace.home') }}" class="inline-flex items-center gap-2.5 mb-5">
-        <img src="{{ url('storage/logo/logo.png') }}" alt="Lapak Gaming" class="w-10 h-10 rounded-xl object-contain bg-white/5 p-1" style="box-shadow:0 0 20px rgba(37,99,235,0.4);">
+        <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="w-10 h-10 rounded-xl object-contain bg-white/5 p-1" style="box-shadow:0 0 20px rgba(37,99,235,0.4);">
         <span class="font-display font-bold text-xl text-white">{{ config('app.name', 'Lapak Gaming') }}</span>
       </a>
       <h1 class="font-display text-2xl font-extrabold text-white mb-2">Selamat Datang Kembali</h1>
