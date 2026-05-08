@@ -96,6 +96,8 @@ Route::get('/setup/migrate/status', [MigrationController::class, 'status'])->nam
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthController::class, 'createLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'storeLogin']);
+
+    Route::get('/auth/google', [AuthController::class, 'google'])->name('google.auth');
     
     Route::get('/register', [AuthController::class, 'createRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'storeRegister']);
@@ -108,6 +110,11 @@ Route::middleware('guest')->group(function (): void {
     Route::get('/reset-password/{token}', [PasswordResetController::class, 'createReset'])->name('password.reset');
     Route::post('/reset-password', [PasswordResetController::class, 'storeReset'])->name('password.update');
 });
+
+// Public activation route (used by activation link in email) — uses signed URL
+Route::get('/activate/{id}/{hash}', [VerificationController::class, 'activate'])
+    ->name('activation.activate')
+    ->middleware('signed');
 
 Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');

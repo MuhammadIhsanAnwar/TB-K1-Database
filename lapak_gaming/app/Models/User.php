@@ -8,13 +8,14 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use App\Models\UserAddress;
 use App\Models\UserProfile;
+use App\Notifications\CustomVerifyEmail;
 
 class User extends Authenticatable implements MustVerifyEmail {
     use HasFactory, Notifiable;
 
     protected $fillable = [
         'name', 'username', 'email', 'password', 'role',
-        'status', 'seller_level_id', 'suspended_at',
+        'status', 'seller_level_id', 'suspended_at', 'google_id',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -140,5 +141,11 @@ class User extends Authenticatable implements MustVerifyEmail {
             'balance_after' => $balanceState->balance,
         ]);
         return true;
+    }
+
+    // Override to send our custom activation email (works for logged-out clicks)
+    public function sendEmailVerificationNotification()
+    {
+        $this->notify(new CustomVerifyEmail());
     }
 }

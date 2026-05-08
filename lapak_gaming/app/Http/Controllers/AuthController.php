@@ -8,8 +8,10 @@ use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
+use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
 {
@@ -71,6 +73,22 @@ class AuthController extends Controller
 
     public function storeRegister(Request $request): RedirectResponse
     {
+        $messages = [
+            'username.required' => 'Username wajib diisi.',
+            'username.unique' => 'Username sudah digunakan, coba yang lain.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password wajib diisi.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min' => 'Password minimal :min karakter.',
+            'password.*' => 'Password harus mengandung huruf besar, huruf kecil, angka, dan simbol.',
+            'profile_photo.required' => 'Foto profil wajib diunggah.',
+            'profile_photo.image' => 'File yang diunggah harus berupa gambar.',
+            'profile_photo.max' => 'Ukuran foto maksimal 5MB.',
+            'postal_code.regex' => 'Kode pos harus 5 digit angka.',
+        ];
+
         $data = $request->validate([
             'username' => ['required', 'string', 'max:50', 'unique:users,username'],
             'name' => ['required', 'string', 'max:255'],
@@ -86,7 +104,7 @@ class AuthController extends Controller
             'full_address' => ['required', 'string', 'max:1000'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
-        ]);
+        ], $messages);
 
         $user = DB::transaction(function () use ($request, $data) {
             $user = User::create([
@@ -127,6 +145,22 @@ class AuthController extends Controller
 
     public function storeRegisterSeller(Request $request): RedirectResponse
     {
+        $messages = [
+            'username.required' => 'Username wajib diisi.',
+            'username.unique' => 'Username sudah digunakan, coba yang lain.',
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'email.unique' => 'Email sudah terdaftar.',
+            'password.required' => 'Password wajib diisi.',
+            'password.confirmed' => 'Konfirmasi password tidak cocok.',
+            'password.min' => 'Password minimal :min karakter.',
+            'password.*' => 'Password harus mengandung huruf besar, huruf kecil, angka, dan simbol.',
+            'profile_photo.required' => 'Foto profil wajib diunggah.',
+            'profile_photo.image' => 'File yang diunggah harus berupa gambar.',
+            'profile_photo.max' => 'Ukuran foto maksimal 5MB.',
+            'postal_code.regex' => 'Kode pos harus 5 digit angka.',
+        ];
+
         $data = $request->validate([
             'username' => ['required', 'string', 'max:50', 'unique:users,username'],
             'name' => ['required', 'string', 'max:255'],
@@ -143,7 +177,7 @@ class AuthController extends Controller
             'full_address' => ['required', 'string', 'max:1000'],
             'email' => ['required', 'email', 'max:255', 'unique:users,email'],
             'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
-        ]);
+        ], $messages);
 
         $user = DB::transaction(function () use ($request, $data) {
             $user = User::create([
@@ -182,6 +216,87 @@ class AuthController extends Controller
 
         // Don't auto-login, force email verification first
         return redirect()->route('login')->with('status', 'Registrasi berhasil! Silakan cek email Anda untuk verifikasi akun.');
+    }
+
+    public function google(Request $request): RedirectResponse
+    {
+        if ($request->has('code') || $request->has('error')) {
+            return $this->handleGoogleCallback($request);
+        }
+
+        return redirect()->away(Socialite::driver('google')->redirect()->getTargetUrl());
+    }
+
+    protected function handleGoogleCallback(Request $request): RedirectResponse
+    {
+        if ($request->filled('error')) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Login Google dibatalkan atau gagal diproses.',
+            ]);
+        }
+
+        try {
+            $googleUser = Socialite::driver('google')->user();
+        } catch (\Throwable $exception) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Gagal mengambil data akun Google. Silakan coba lagi.',
+            ]);
+        }
+
+        $user = User::where('google_id', $googleUser->getId())->first();
+
+        if (! $user) {
+            $user = User::where('email', $googleUser->getEmail())->first();
+        }
+
+        if (! $user) {
+            $user = User::create([
+                'name' => $googleUser->getName() ?: $googleUser->getNickname() ?: 'Pengguna Google',
+                'username' => $this->generateUniqueUsername($googleUser->getName() ?: $googleUser->getNickname() ?: $googleUser->getEmail()),
+                'email' => $googleUser->getEmail(),
+                'password' => Str::random(40),
+                'role' => 'buyer',
+                'status' => 'active',
+                'google_id' => $googleUser->getId(),
+            ]);
+        } else {
+            $user->forceFill([
+                'google_id' => $user->google_id ?: $googleUser->getId(),
+                'email_verified_at' => $user->email_verified_at ?: now(),
+            ])->save();
+        }
+
+        if ($user->status === 'suspended') {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Akun Anda sedang disuspend.',
+            ]);
+        }
+
+        Auth::login($user, true);
+        $request->session()->regenerate();
+
+        return redirect()->intended(match ($user?->role) {
+            'seller' => route('seller.dashboard'),
+            'admin' => route('admin.dashboard'),
+            default => route('buyer.dashboard'),
+        });
+    }
+
+    protected function generateUniqueUsername(string $seed): string
+    {
+        $base = Str::slug(Str::before($seed, '@')) ?: 'google-user';
+        $base = Str::limit($base, 40, '');
+
+        $username = $base;
+        $counter = 1;
+
+        while (User::where('username', $username)->exists()) {
+            $suffix = '-' . $counter;
+            $username = Str::limit($base, 50 - strlen($suffix), '') . $suffix;
+            $counter++;
+        }
+
+        return $username;
     }
 
     public function destroy(Request $request): RedirectResponse
