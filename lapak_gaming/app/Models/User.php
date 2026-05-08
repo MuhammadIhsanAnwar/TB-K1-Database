@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use App\Models\UserAddress;
 use App\Models\UserProfile;
 use App\Notifications\CustomVerifyEmail;
 
@@ -14,8 +13,8 @@ class User extends Authenticatable implements MustVerifyEmail {
     use HasFactory, Notifiable;
 
     protected $fillable = [
-        'name', 'username', 'email', 'password', 'role',
-        'status', 'seller_level_id', 'suspended_at', 'google_id',
+        'name', 'email', 'password', 'role',
+        'status', 'seller_level_id', 'suspended_at', 'google_id', 'phone', 'avatar',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -54,11 +53,6 @@ class User extends Authenticatable implements MustVerifyEmail {
         return $this->hasOne(UserProfile::class);
     }
 
-    public function address(): HasOne
-    {
-        return $this->hasOne(UserAddress::class);
-    }
-
     public function transactions() {
         return $this->hasMany('App\\Models\\Transaction');
     }
@@ -69,21 +63,21 @@ class User extends Authenticatable implements MustVerifyEmail {
     public function isBuyer(): bool  { return $this->role === 'buyer'; }
 
     public function getAvatarUrlAttribute(): string {
-        $avatarPath = $this->profile?->avatar_path ?? $this->attributes['avatar'] ?? null;
+        $avatarPath = $this->attributes['avatar'] ?? $this->profile?->avatar_path ?? null;
 
         return $avatarPath
-            ? asset('storage/' . $avatarPath)
-            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name ?: $this->username ?: $this->email) . '&background=6366f1&color=fff';
+            ? (filter_var($avatarPath, FILTER_VALIDATE_URL) ? $avatarPath : asset('storage/' . $avatarPath))
+            : 'https://ui-avatars.com/api/?name=' . urlencode($this->name ?: $this->email) . '&background=6366f1&color=fff';
     }
 
     public function getAvatarAttribute(): ?string
     {
-        return $this->profile?->avatar_path ?? $this->attributes['avatar'] ?? null;
+        return $this->attributes['avatar'] ?? $this->profile?->avatar_path ?? null;
     }
 
     public function getPhoneAttribute(): ?string
     {
-        return $this->profile?->phone ?? $this->attributes['phone'] ?? null;
+        return $this->attributes['phone'] ?? $this->profile?->phone ?? null;
     }
 
     public function getBioAttribute(): ?string

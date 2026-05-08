@@ -102,12 +102,6 @@
       </div>
     </div>
 
-    {{-- Seller link --}}
-    <div class="text-center mt-5">
-      <a href="{{ route('register.seller') }}" class="text-xs text-slate-500 hover:text-slate-300 transition-colors">
-        Ingin berjualan? <span class="text-accent-400">Daftar sebagai Seller →</span>
-      </a>
-    </div>
   </div>
 </div>
 @endsection

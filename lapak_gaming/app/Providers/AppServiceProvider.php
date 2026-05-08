@@ -5,6 +5,7 @@ namespace App\Providers;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
+use Illuminate\Support\Facades\Schema;
 use App\Models\Category;
 
 class AppServiceProvider extends ServiceProvider
@@ -27,6 +28,15 @@ class AppServiceProvider extends ServiceProvider
             URL::forceScheme('https');
         }
 
-        View::share('categories', Category::all());
+        // Hanya share categories jika table sudah ada
+        if (Schema::hasTable('categories')) {
+            try {
+                View::share('categories', Category::all());
+            } catch (\Exception $e) {
+                View::share('categories', collect());
+            }
+        } else {
+            View::share('categories', collect());
+        }
     }
 }

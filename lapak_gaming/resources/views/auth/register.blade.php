@@ -300,18 +300,6 @@
 
                         <label class="block">
 
-                            <span class="mb-2 block text-sm font-semibold text-gray-300">Username</span>
-
-                            <input name="username" type="text" value="{{ old('username') }}" placeholder="username gamer" class="{{ $inputClass }}" />
-
-                            @error('username') <p class="mt-2 text-sm text-red-400">{{ $message }}</p> @enderror
-
-                        </label>
-
-
-
-                        <label class="block">
-
                             <span class="mb-2 block text-sm font-semibold text-gray-300">Nama Lengkap</span>
 
                             <input name="name" type="text" value="{{ old('name') }}" placeholder="Nama lengkap" class="{{ $inputClass }}" />
@@ -407,90 +395,9 @@
                     </div>
 
                 </div>
-
-
-
-                {{-- ADDRESS --}}
-
-                <div class="grid gap-4 sm:grid-cols-2">
-
-
-
-                    <label class="block">
-
-                        <span class="mb-2 block text-sm font-semibold text-gray-300">Provinsi</span>
-
-                        <input name="province" type="text" value="{{ old('province') }}" class="{{ $inputClass }}" />
-
-                    </label>
-
-
-
-                    <label class="block">
-
-                        <span class="mb-2 block text-sm font-semibold text-gray-300">Kabupaten/Kota</span>
-
-                        <input name="regency" type="text" value="{{ old('regency') }}" class="{{ $inputClass }}" />
-
-                    </label>
-
-
-
-                    <label class="block">
-
-                        <span class="mb-2 block text-sm font-semibold text-gray-300">Kecamatan</span>
-
-                        <input name="district" type="text" value="{{ old('district') }}" class="{{ $inputClass }}" />
-
-                    </label>
-
-
-
-                    <label class="block">
-
-                        <span class="mb-2 block text-sm font-semibold text-gray-300">Kelurahan/Desa</span>
-
-                        <input name="village" type="text" value="{{ old('village') }}" class="{{ $inputClass }}" />
-
-                    </label>
-
-
-
-                    <label class="block sm:col-span-2 sm:max-w-xs">
-
-                        <span class="mb-2 block text-sm font-semibold text-gray-300">Kode Pos</span>
-
-                        <input name="postal_code" type="text" value="{{ old('postal_code') }}" class="{{ $inputClass }}" />
-
-                    </label>
-
-
-
-                    <label class="block sm:col-span-2">
-
-                        <span class="mb-2 block text-sm font-semibold text-gray-300">Alamat Lengkap</span>
-
-
-
-                        <textarea
-
-                            name="full_address"
-
-                            rows="4"
-
-                            class="w-full rounded-3xl border border-white/10 bg-black/20 px-4 py-3 text-white outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-500/20 placeholder:text-gray-500">{{ old('full_address') }}</textarea>
-
-                    </label>
-
-
-
-                </div>
-
-
-
                 {{-- BUTTON --}}
 
-                <button class="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-orange-500 px-4 py-3 font-bold text-white transition hover:scale-[1.01] hover:opacity-90 shadow-lg shadow-blue-500/10">
+                <button type="submit" class="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-orange-500 px-4 py-3 font-bold text-white transition hover:scale-[1.01] hover:opacity-90 shadow-lg shadow-blue-500/10">
 
                     Buat Akun
 
@@ -520,9 +427,6 @@
 
             </div>
 
-            <div class="mt-3 text-sm text-gray-400">
-                Ingin berjualan? <a href="{{ route('register.seller') }}" class="font-bold text-blue-400 hover:text-orange-400">Daftar sebagai penjual</a>
-            </div>
 
             <script>
                 (function () {
@@ -586,15 +490,3 @@
 </div>
 
 <style>
-
-    footer {
-
-        border-top: none !important;
-
-        background: transparent !important;
-
-    }
-
-</style>
-
-@endsection
