@@ -11,7 +11,7 @@
   {{-- Drawer Header --}}
   <div class="flex items-center justify-between p-4" style="border-bottom:1px solid #1E2D45;">
     <a href="{{ route('marketplace.home') }}" class="flex items-center gap-2.5">
-      <img src="{{ asset('storage/logo/logo.png') }}" alt="Lapak Gaming" class="w-8 h-8 rounded-lg object-contain bg-white/5 p-1 shadow-glow-sm">
+      <img src="{{ url('storage/logo/logo.png') }}" alt="Lapak Gaming" class="w-8 h-8 rounded-lg object-contain bg-white/5 p-1 shadow-glow-sm">
       <span class="font-display font-bold text-base text-white tracking-wide">{{ config('app.name', 'Lapak Gaming') }}</span>
     </a>
     <button onclick="closeDrawer()" aria-label="Close menu"
@@ -199,7 +199,7 @@
 
     {{-- Logo --}}
     <a href="{{ route('marketplace.home') }}" class="flex items-center gap-2 shrink-0 group">
-      <img src="{{ asset('storage/logo/logo.png') }}" alt="Lapak Gaming" class="w-8 h-8 rounded-lg object-contain bg-white/5 p-1 transition-transform group-hover:scale-105" style="box-shadow:0 0 12px rgba(37,99,235,0.35);">
+      <img src="{{ url('storage/logo/logo.png') }}" alt="Lapak Gaming" class="w-8 h-8 rounded-lg object-contain bg-white/5 p-1 transition-transform group-hover:scale-105" style="box-shadow:0 0 12px rgba(37,99,235,0.35);">
       <span class="font-display font-bold text-white text-base hidden sm:block">{{ config('app.name', 'Lapak Gaming') }}</span>
     </a>
 

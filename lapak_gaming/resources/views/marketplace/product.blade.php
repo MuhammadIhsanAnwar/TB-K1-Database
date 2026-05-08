@@ -77,7 +77,7 @@
         @if(data_get($product, 'delivery_content'))
         <div class="rounded-xl p-4 mb-6" style="background:#090E1A;border:1px dashed #1E2D45;">
           <div class="flex items-center gap-2 mb-2">
-            <img src="{{ asset('storage/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
+            <img src="{{ url('storage/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
             <span class="text-xs font-display font-semibold text-brand-400 uppercase tracking-wide">Digital Delivery</span>
           </div>
           <p class="text-sm text-slate-300 leading-relaxed">{{ data_get($product, 'delivery_content') }}</p>

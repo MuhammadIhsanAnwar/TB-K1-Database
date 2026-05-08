@@ -7,7 +7,7 @@
       {{-- Brand column --}}
       <div class="lg:col-span-2">
         <a href="{{ route('marketplace.home') }}" class="flex items-center gap-2.5 mb-4">
-          <img src="{{ asset('storage/logo/logo.png') }}" alt="Lapak Gaming" class="w-9 h-9 rounded-xl object-contain bg-white/5 p-1" style="box-shadow:0 0 16px rgba(37,99,235,0.35);">
+          <img src="{{ url('storage/logo/logo.png') }}" alt="Lapak Gaming" class="w-9 h-9 rounded-xl object-contain bg-white/5 p-1" style="box-shadow:0 0 16px rgba(37,99,235,0.35);">
           <span class="font-display font-bold text-xl text-white">{{ config('app.name', 'Lapak Gaming') }}</span>
         </a>
         <p class="text-sm text-slate-400 leading-relaxed max-w-xs">
