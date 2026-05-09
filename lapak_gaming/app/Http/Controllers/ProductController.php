@@ -59,7 +59,7 @@ class ProductController extends Controller
 
     public function byType(string $type)
     {
-        $products = Product::active()->ofType($type)
+        $products = Product::active()->inStock()->ofType($type)
             ->with(['category', 'seller'])
             ->paginate(20);
 
