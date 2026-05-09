@@ -143,34 +143,28 @@
   }
 
    /* ── Scroll Reveal Animation ───────────────────────────── */
-  .reveal-card {
+  /* ── Clean Reveal Animation ───────────────────────────── */
+.reveal-card {
   opacity: 0;
-  transform:
-    translateY(45px)
-    scale(0.96);
-
-  filter: blur(10px);
-
+  transform: translateY(30px);
   transition:
-    opacity 1s cubic-bezier(.22,1,.36,1),
-    transform 1s cubic-bezier(.22,1,.36,1),
-    filter 1s cubic-bezier(.22,1,.36,1);
-
-  will-change:
-    opacity,
-    transform,
-    filter;
+    opacity 0.7s ease-out,
+    transform 0.7s ease-out;
+  will-change: opacity, transform;
 }
 
 .reveal-card.show {
   opacity: 1;
-
-  transform:
-    translateY(0)
-    scale(1);
-
-  filter: blur(0);
+  transform: translateY(0);
 }
+
+/* delay */
+.reveal-delay-1 { transition-delay: .05s; }
+.reveal-delay-2 { transition-delay: .10s; }
+.reveal-delay-3 { transition-delay: .15s; }
+.reveal-delay-4 { transition-delay: .20s; }
+.reveal-delay-5 { transition-delay: .25s; }
+.reveal-delay-6 { transition-delay: .30s; }
 </style>
 @endpush
 
