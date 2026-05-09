@@ -379,7 +379,7 @@
         ['type'=>'item', 'icon'=>'⚔️','label'=>'Item & Skin','desc'=>'Harga termurah','class'=>'bg-emerald-500/10 border-emerald-500/25','badge'=>''],
       ] as $qt)
       <a href="{{ route('products.by-type', $qt['type']) }}"
-         class="flex items-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-card {{ $qt['class'] }}">
+   class="reveal-card reveal-delay-{{ ($loop->index % 4) + 1 }} flex items-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-card {{ $qt['class'] }}">
         <span class="text-3xl shrink-0">{{ $qt['icon'] }}</span>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
