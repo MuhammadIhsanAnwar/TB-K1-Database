@@ -59,7 +59,12 @@ class ProductController extends Controller
 
     public function byType(string $type)
     {
-        $products = Product::active()->inStock()->ofType($type)
+        // Kita buang ->ofType() yang kaku, ganti dengan where() memakai 'LIKE'
+        // Jadi kalau URL-nya /type/joki, dia akan menampilkan semua yang "mengandung" kata joki
+        $products = Product::query()
+            ->active()
+            // ->inStock() // (Opsional: Hapus/comment ini kalau joki stoknya 0)
+            ->where('type', 'LIKE', '%' . $type . '%')
             ->with(['category', 'seller'])
             ->paginate(20);
 
