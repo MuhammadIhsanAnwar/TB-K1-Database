@@ -13,6 +13,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
+use Laravel\Socialite\Two\InvalidStateException;
 use Laravel\Socialite\Facades\Socialite;
 
 class AuthController extends Controller
@@ -131,7 +132,7 @@ class AuthController extends Controller
         $googleProvider = Socialite::driver('google');
 
         if (method_exists($googleProvider, 'setScopes')) {
-            $googleProvider->{'setScopes'}(['openid', 'profile', 'email', 'https://www.googleapis.com/auth/user.phonenumbers.read']);
+            $googleProvider->{'setScopes'}(['openid', 'profile', 'email']);
         }
 
         return redirect()->away($googleProvider->redirect()->getTargetUrl());
@@ -147,6 +148,20 @@ class AuthController extends Controller
 
         try {
             $googleUser = Socialite::driver('google')->user();
+        } catch (InvalidStateException $exception) {
+            try {
+                $googleProvider = Socialite::driver('google');
+
+                if (method_exists($googleProvider, 'stateless')) {
+                    $googleProvider = $googleProvider->{'stateless'}();
+                }
+
+                $googleUser = $googleProvider->user();
+            } catch (\Throwable $innerException) {
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Login Google gagal karena sesi tidak cocok. Silakan coba lagi.',
+                ]);
+            }
         } catch (\Throwable $exception) {
             return redirect()->route('login')->withErrors([
                 'email' => 'Gagal mengambil data akun Google. Silakan coba lagi.',
