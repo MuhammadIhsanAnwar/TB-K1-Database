@@ -233,11 +233,11 @@
       </div>
 
       <a href="{{ route('marketplace.trending') }}"
-   class="nav-link trend-item flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors
-   {{ request()->routeIs('marketplace.trending') ? 'text-brand-400 active' : 'text-slate-400 hover:text-white' }}">
-  Trending
-  <span class="badge badge-orange">HOT</span>
-</a>
+        class="nav-link flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium
+        {{ request()->routeIs('marketplace.trending') ? 'active' : '' }}">
+        Trending
+        <span class="badge badge-orange">HOT</span>
+      </a>
   </nav>
 
     {{-- Search Bar (center, desktop) --}}
