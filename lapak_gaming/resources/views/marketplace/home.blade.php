@@ -219,7 +219,7 @@
 
         {{-- Ambient glow --}}
         <div class="robot-glow-blue absolute rounded-full pointer-events-none"
-             style="width:290px;height:290px;z-index:1;background:radial-gradient(circle,rgba(37,99,235,0.38) 0%,transparent 70%);filter:blur(54px);"></div>
+             style="width:290px;height:290px;z-index:1;background:radial-gradient(circle,rgba(37,99,235,0.38) 0%,transparent 70%);filter:blur(24px);"></div>
         <div class="robot-glow-orange absolute pointer-events-none"
              style="width:200px;height:200px;top:58%;left:58%;z-index:1;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,0.22) 0%,transparent 70%);filter:blur(44px);transform:translate(-50%,-50%);"></div>
 
@@ -505,6 +505,9 @@
 <script type="module" src="https://unpkg.com/@splinetool/viewer/build/spline-viewer.js"></script>
 
 <script>
+
+if (window.innerWidth < 1024) return;
+
 (function () {
   'use strict';
 
@@ -566,6 +569,24 @@ function tick() {
 
   rafId = requestAnimationFrame(tick);
 }
+document.addEventListener("visibilitychange", () => {
+
+  if (document.hidden) {
+
+    animationRunning = false;
+
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+    }
+
+  } else {
+
+    animationRunning = true;
+    tick();
+
+  }
+
+});
 
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
