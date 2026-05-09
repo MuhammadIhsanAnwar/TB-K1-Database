@@ -129,20 +129,7 @@
   pointer-events: none;
 }
 
-  #robot-cursor-glow {
-    position: absolute;
-    width: 320px; height: 320px;
-    border-radius: 50%;
-    background: radial-gradient(circle,rgba(37,99,235,0.18) 0%,transparent 65%);
-    pointer-events: none;
-    transform: translate(-50%,-50%);
-    transition: left 0.22s ease-out, top 0.22s ease-out;
-    z-index: 0;
 
-    /* OPTIMASI */
-  will-change: transform;
-  transition: transform 0.04s linear;
-  }
 
   #spline-logo-cover {
     position: absolute;
@@ -221,8 +208,7 @@
            id="hero-robot-wrapper"
            style="width:500px;height:540px;">
 
-        {{-- Cursor glow blob --}}
-        <div id="robot-cursor-glow"></div>
+      
 
         {{-- Decorative rings --}}
         <div class="ring-cw absolute rounded-full pointer-events-none" style="width:455px;height:455px;z-index:2;border:1px solid rgba(37,99,235,0.18);border-top-color:rgba(96,165,250,0.60);border-right-color:rgba(37,99,235,0.38);"></div>
@@ -527,7 +513,7 @@
   /* ── DOM refs ───────────────────────── */
   const heroSection    = document.getElementById('hero-section');
   const robotWrapper   = document.getElementById('hero-robot-wrapper');
-  const sceneContainer = document.getElementById('robot-scene-container');
+  const splineRobot = document.getElementById('spline-robot');
   const splineEl       = document.getElementById('spline-robot');
   const loader         = document.getElementById('robot-loader');
   
@@ -605,12 +591,12 @@
     const rotX  = -currentY * 11;
     const scale = isHover ? 1.025 : 1;
 
-    sceneContainer.style.transform = `
-      perspective(1200px)
-      rotateX(${rotX}deg)
-      rotateY(${rotY}deg)
-      scale(${scale})
-    `;
+   splineRobot.style.transform = `
+  perspective(1200px)
+  rotateX(${rotX}deg)
+  rotateY(${rotY}deg)
+  scale(${scale})
+`;
 
     rafId = requestAnimationFrame(tick);
   }
@@ -684,14 +670,7 @@
       1
     );
 
-    if (cursorGlow) {
-
-      const wr = robotWrapper.getBoundingClientRect();
-
-      cursorGlow.style.left = (e.clientX - wr.left) + 'px';
-      cursorGlow.style.top  = (e.clientY - wr.top) + 'px';
-
-    }
+    
 
   });
 
