@@ -515,118 +515,110 @@
 --}}
 <script type="module" src="https://unpkg.com/@splinetool/viewer/build/spline-viewer.js"></script>
 
+<script type="module" src="https://unpkg.com/@splinetool/viewer/build/spline-viewer.js"></script>
+
 <script>
-
-if (window.innerWidth < 1024) return;
-
 (function () {
   'use strict';
 
-  /* ── DOM refs ─────────────────────────────────────────────── */
-  var heroSection    = document.getElementById('hero-section');
-  var robotWrapper   = document.getElementById('hero-robot-wrapper');
-  var sceneContainer = document.getElementById('robot-scene-container');
-  var splineEl       = document.getElementById('spline-robot');
-  var loader         = document.getElementById('robot-loader');
-  var cursorGlow     = document.getElementById('robot-cursor-glow');
+  // stop total di mobile
+  if (window.innerWidth < 1024) return;
 
-  /* ── Hide loader on Spline ready ─────────────────────────── */
-function hideLoader() {
-  if (!loader) return;
+  /* ── DOM refs ───────────────────────── */
+  const heroSection    = document.getElementById('hero-section');
+  const robotWrapper   = document.getElementById('hero-robot-wrapper');
+  const sceneContainer = document.getElementById('robot-scene-container');
+  const splineEl       = document.getElementById('spline-robot');
+  const loader         = document.getElementById('robot-loader');
+  const cursorGlow     = document.getElementById('robot-cursor-glow');
 
-  loader.classList.add('loader-hidden');
-
-  setTimeout(function () {
-
-    // BENAR-BENAR HILANG
-    loader.remove();
-
-  }, 700);
-}
-
- if (splineEl) {
-
-  // loader hilang otomatis setelah 5 detik
-  setTimeout(function () {
-    hideLoader();
-  }, 5000);
-
-}
-
-
-
-  // fallback kalau spline gagal load
-  setTimeout(hideLoader, 12000);
-}
-
-  /* ── Abort early on mobile (no robot wrapper rendered) ─────── */
   if (!heroSection || !robotWrapper || !sceneContainer) return;
 
-  /* ── Math helpers ─────────────────────────────────────────── */
-  function lerp(a, b, t)         { return a + (b - a) * t; }
-  function clamp(v, lo, hi)      { return v < lo ? lo : v > hi ? hi : v; }
+  /* ── Loader ─────────────────────────── */
+  function hideLoader() {
 
-  /* ── Tilt state ───────────────────────────────────────────── */
-  var targetX  = 0, targetY  = 0;
-  var currentX = 0, currentY = 0;
-  var isHover  = false;
-  var hasMouseInHero = false;
+    if (!loader) return;
 
-  /* ── Animation loop (runs at 60fps) ──────────────────────── */
-  let animationRunning = false;
-let rafId = null;
+    loader.classList.add('loader-hidden');
 
-function tick() {
-  if (!animationRunning) return;
+    setTimeout(() => {
 
-  var tx = hasMouseInHero ? targetX : 0;
-  var ty = hasMouseInHero ? targetY : 0;
+      loader.style.display = 'none';
+      loader.remove();
 
-  currentX = lerp(currentX, tx, 0.055);
-  currentY = lerp(currentY, ty, 0.055);
+    }, 700);
+  }
 
-  var rotY  = currentX * 18;
-  var rotX  = -currentY * 11;
-  var scale = isHover ? 1.025 : 1.0;
+  // hide otomatis setelah spline ready
+  if (splineEl) {
 
-  sceneContainer.style.transform =
-    `perspective(1200px)
-     rotateX(${rotX}deg)
-     rotateY(${rotY}deg)
-     scale(${scale})`;
+    splineEl.addEventListener('load', () => {
+      hideLoader();
+    });
 
-  rafId = requestAnimationFrame(tick);
-}
-document.addEventListener("visibilitychange", () => {
-
-  if (document.hidden) {
-
-    animationRunning = false;
-
-    if (rafId) {
-      cancelAnimationFrame(rafId);
-    }
-
-  } else {
-
-    animationRunning = true;
-    tick();
+    // fallback max 5 detik
+    setTimeout(() => {
+      hideLoader();
+    }, 5000);
 
   }
 
-});
+  // fallback terakhir kalau gagal load
+  setTimeout(() => {
+    hideLoader();
+  }, 12000);
 
-const observer = new IntersectionObserver((entries) => {
-  entries.forEach(entry => {
+  /* ── Helpers ────────────────────────── */
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
 
-    if (entry.isIntersecting) {
+  function clamp(v, lo, hi) {
+    return Math.max(lo, Math.min(hi, v));
+  }
 
-      if (!animationRunning) {
-        animationRunning = true;
-        tick();
-      }
+  /* ── Tilt State ─────────────────────── */
+  let targetX = 0;
+  let targetY = 0;
 
-    } else {
+  let currentX = 0;
+  let currentY = 0;
+
+  let isHover = false;
+  let hasMouseInHero = false;
+
+  let animationRunning = false;
+  let rafId = null;
+
+  /* ── Animation Loop ─────────────────── */
+  function tick() {
+
+    if (!animationRunning) return;
+
+    const tx = hasMouseInHero ? targetX : 0;
+    const ty = hasMouseInHero ? targetY : 0;
+
+    currentX = lerp(currentX, tx, 0.055);
+    currentY = lerp(currentY, ty, 0.055);
+
+    const rotY  = currentX * 18;
+    const rotX  = -currentY * 11;
+    const scale = isHover ? 1.025 : 1;
+
+    sceneContainer.style.transform = `
+      perspective(1200px)
+      rotateX(${rotX}deg)
+      rotateY(${rotY}deg)
+      scale(${scale})
+    `;
+
+    rafId = requestAnimationFrame(tick);
+  }
+
+  /* ── Pause ketika tab tidak aktif ───── */
+  document.addEventListener('visibilitychange', () => {
+
+    if (document.hidden) {
 
       animationRunning = false;
 
@@ -634,61 +626,123 @@ const observer = new IntersectionObserver((entries) => {
         cancelAnimationFrame(rafId);
       }
 
+    } else {
+
+      animationRunning = true;
+      tick();
+
     }
 
   });
-}, {
-  threshold: 0.15
-});
 
-observer.observe(robotWrapper);
+  /* ── Pause ketika robot tidak terlihat ─ */
+  const observer = new IntersectionObserver((entries) => {
 
-  /* ── Mouse move: track position + update cursor glow ──────── */
-  heroSection.addEventListener('mousemove', function (e) {
+    entries.forEach(entry => {
+
+      if (entry.isIntersecting) {
+
+        if (!animationRunning) {
+          animationRunning = true;
+          tick();
+        }
+
+      } else {
+
+        animationRunning = false;
+
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+        }
+
+      }
+
+    });
+
+  }, {
+    threshold: 0.15
+  });
+
+  observer.observe(robotWrapper);
+
+  /* ── Mouse Move ─────────────────────── */
+  heroSection.addEventListener('mousemove', (e) => {
+
     hasMouseInHero = true;
 
-    /* Tilt target: normalise to -1..1 from section centre */
-    var hr = heroSection.getBoundingClientRect();
-    targetX = clamp((e.clientX - (hr.left + hr.width  / 2)) / (hr.width  / 2), -1, 1);
-    targetY = clamp((e.clientY - (hr.top  + hr.height / 2)) / (hr.height / 2), -1, 1);
+    const hr = heroSection.getBoundingClientRect();
 
-    /* Cursor glow: position relative to robot wrapper */
+    targetX = clamp(
+      (e.clientX - (hr.left + hr.width / 2)) / (hr.width / 2),
+      -1,
+      1
+    );
+
+    targetY = clamp(
+      (e.clientY - (hr.top + hr.height / 2)) / (hr.height / 2),
+      -1,
+      1
+    );
+
     if (cursorGlow) {
-      var wr = robotWrapper.getBoundingClientRect();
+
+      const wr = robotWrapper.getBoundingClientRect();
+
       cursorGlow.style.left = (e.clientX - wr.left) + 'px';
-      cursorGlow.style.top  = (e.clientY - wr.top ) + 'px';
+      cursorGlow.style.top  = (e.clientY - wr.top) + 'px';
+
     }
+
   });
 
-  heroSection.addEventListener('mouseleave', function () {
+  heroSection.addEventListener('mouseleave', () => {
+
     hasMouseInHero = false;
+
     targetX = 0;
     targetY = 0;
+
   });
 
-  robotWrapper.addEventListener('mouseenter', function () { isHover = true;  });
-  robotWrapper.addEventListener('mouseleave', function () { isHover = false; });
+  robotWrapper.addEventListener('mouseenter', () => {
+    isHover = true;
+  });
 
-  /* ── Start the loop ───────────────────────────────────────── */
+  robotWrapper.addEventListener('mouseleave', () => {
+    isHover = false;
+  });
+
+  /* ── Start Loop ─────────────────────── */
+  animationRunning = true;
   tick();
 
-  /* ── FAQ toggle (original logic preserved) ───────────────── */
+  /* ── FAQ ────────────────────────────── */
   window.toggleFaq = function (index) {
-    var content = document.getElementById('faq-' + index);
-    var icon    = document.getElementById('icon-' + index);
-    var isOpen  = content.style.maxHeight !== '0px' && content.style.maxHeight !== '';
 
-    document.querySelectorAll('[id^="faq-"]').forEach(function (el) {
+    const content = document.getElementById('faq-' + index);
+    const icon    = document.getElementById('icon-' + index);
+
+    const isOpen =
+      content.style.maxHeight !== '0px' &&
+      content.style.maxHeight !== '';
+
+    document.querySelectorAll('[id^="faq-"]').forEach(el => {
       el.style.maxHeight = '0px';
     });
-    document.querySelectorAll('[id^="icon-"]').forEach(function (el) {
+
+    document.querySelectorAll('[id^="icon-"]').forEach(el => {
       el.style.transform = 'rotate(0deg)';
     });
 
     if (!isOpen) {
-      content.style.maxHeight = content.scrollHeight + 'px';
-      icon.style.transform    = 'rotate(180deg)';
+
+      content.style.maxHeight =
+        content.scrollHeight + 'px';
+
+      icon.style.transform = 'rotate(180deg)';
+
     }
+
   };
 
 })();
