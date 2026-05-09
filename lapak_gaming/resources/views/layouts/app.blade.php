@@ -457,57 +457,71 @@
       }
     }
 
-    /* ═══ NAVBAR ACTIVE SLIDE ═══ */
+    /* ═══ PREMIUM NAVBAR UNDERLINE ═══ */
 
       .nav-link {
         position: relative;
-        transition: color .25s ease;
+        transition:
+          color .35s ease,
+          transform .35s ease;
       }
 
       /* garis bawah */
       .nav-link::after {
         content: "";
         position: absolute;
-        left: 12px;
-        bottom: -4px;
-        width: calc(100% - 24px);
-        height: 2px;
+
+        left: 14px;
+        bottom: -5px;
+
+        width: calc(100% - 28px);
+        height: 2.5px;
+
         border-radius: 999px;
 
-        background: currentColor;
+        /* mengikuti warna tema */
+        background: linear-gradient(
+          90deg,
+          #2563eb,
+          #3b82f6,
+          #60a5fa
+        );
 
-        transform: scaleX(0);
+        box-shadow:
+          0 0 10px rgba(37,99,235,.45),
+          0 0 18px rgba(59,130,246,.25);
+
+        transform: scaleX(0) translateY(2px);
         transform-origin: center;
 
-        transition:
-          transform .3s cubic-bezier(.22,1,.36,1),
-          opacity .25s ease;
-
         opacity: 0;
+
+        transition:
+          transform .45s cubic-bezier(.22,1,.36,1),
+          opacity .35s ease;
       }
 
       /* menu aktif */
       .nav-link.active::after {
-        transform: scaleX(1);
+        transform: scaleX(1) translateY(0);
         opacity: 1;
       }
 
-      /* saat hover menu lain */
-      .nav-link:hover::after {
-        transform: scaleX(1);
-        opacity: 1;
-      }
-
-      /* sembunyikan garis active saat navbar dihover */
+      /* saat hover navbar */
       nav:hover .nav-link.active::after {
-        transform: scaleX(0);
+        transform: scaleX(.4) translateY(2px);
         opacity: 0;
       }
 
-      /* tampilkan garis pada menu yang disorot */
-      nav .nav-link:hover::after {
-        transform: scaleX(1);
+      /* menu yang disorot */
+      .nav-link:hover::after {
+        transform: scaleX(1) translateY(0);
         opacity: 1;
+      }
+
+      /* sedikit efek hover */
+      .nav-link:hover {
+        transform: translateY(-1px);
       }
   </style>
 
