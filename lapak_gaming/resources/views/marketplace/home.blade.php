@@ -141,6 +141,29 @@
     pointer-events: none;
     z-index: 28;
   }
+
+   /* ── Scroll Reveal Animation ───────────────────────────── */
+  .reveal-card {
+    opacity: 0;
+    transform: translateY(35px) scale(0.96);
+    transition:
+      opacity 0.8s ease,
+      transform 0.8s ease;
+    will-change: opacity, transform;
+  }
+
+  .reveal-card.show {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+
+  .reveal-delay-1 { transition-delay: .1s; }
+  .reveal-delay-2 { transition-delay: .2s; }
+  .reveal-delay-3 { transition-delay: .3s; }
+  .reveal-delay-4 { transition-delay: .4s; }
+  .reveal-delay-5 { transition-delay: .5s; }
+  .reveal-delay-6 { transition-delay: .6s; }
+
 </style>
 @endpush
 
@@ -317,7 +340,8 @@
     </div>
     <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
       @foreach($categories as $cat)
-      <a href="{{ route('categories.show', $cat->slug) }}" class="cat-btn flex flex-col items-center gap-2.5 p-3 group">
+      <a href="{{ route('categories.show', $cat->slug) }}" 
+        class="cat-btn reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }} flex flex-col items-center gap-2.5 p-3 group">
         <div class="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110"
              style="background:#162032;">
           @if($cat->image)
@@ -380,7 +404,11 @@
     </div>
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
       @forelse($popularProducts as $product)
-        @include('components.product-card', ['product' => $product])
+        <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
+  <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
+  @include('components.product-card', ['product' => $product])
+</div>
+</div>
       @empty
         <div class="col-span-full py-16 text-center">
           <div class="text-4xl mb-4">🎮</div>
@@ -717,7 +745,33 @@ splineRobot.style.transform = `
 
   };
 
+  document.addEventListener('DOMContentLoaded', () => {
+
+  const reveals = document.querySelectorAll('.reveal-card');
+
+  const observer = new IntersectionObserver((entries) => {
+
+    entries.forEach(entry => {
+
+      if (entry.isIntersecting) {
+
+        entry.target.classList.add('show');
+
+      }
+
+    });
+
+  }, {
+    threshold: 0.12
+  });
+
+  reveals.forEach(el => observer.observe(el));
+
+});
+
 })();
+
+
 </script>
 @endpush
 

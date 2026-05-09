@@ -17,6 +17,22 @@
   {{-- Tailwind CDN --}}
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
+
+    const reveals = document.querySelectorAll(
+        '.reveal, .reveal-left, .reveal-right'
+    );
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, {
+        threshold: 0.15
+    });
+
+    reveals.forEach((el) => observer.observe(el));
     tailwind.config = {
       theme: {
         extend: {
@@ -376,6 +392,46 @@
     .data-table td { padding:0.875rem 1rem; border-bottom:1px solid rgba(30,45,69,0.5); font-size:0.9rem; }
     .data-table tr:last-child td { border-bottom:none; }
     .data-table tbody tr:hover { background:rgba(22,32,50,0.5); }
+
+    /* ── Scroll reveal ───────────────────────────────────────────── */
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        transition:
+            opacity 0.8s ease,
+            transform 0.8s ease;
+    }
+
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .reveal-left {
+        opacity: 0;
+        transform: translateX(-40px);
+        transition:
+            opacity 0.8s ease,
+            transform 0.8s ease;
+    }
+
+    .reveal-left.active {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .reveal-right {
+        opacity: 0;
+        transform: translateX(40px);
+        transition:
+            opacity 0.8s ease,
+            transform 0.8s ease;
+    }
+
+    .reveal-right.active {
+        opacity: 1;
+        transform: translateX(0);
+    }
   </style>
 
   @stack('styles')
