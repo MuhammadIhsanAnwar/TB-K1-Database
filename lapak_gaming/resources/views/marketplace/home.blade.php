@@ -115,8 +115,19 @@
   .corner-bracket.bl { bottom:22px; left:22px;  border-bottom:2px solid #60a5fa; border-left:2px solid #60a5fa; }
   .corner-bracket.br { bottom:22px; right:22px; border-bottom:2px solid #60a5fa; border-right:2px solid #60a5fa; }
 
-  #robot-loader { transition: opacity 0.6s ease-out; }
-  #robot-loader.loader-hidden { opacity: 0; pointer-events: none; }
+  #robot-loader {
+  opacity: 1;
+  filter: blur(0px);
+  transition:
+    opacity .7s ease,
+    filter .7s ease;
+}
+
+#robot-loader.loader-hidden {
+  opacity: 0;
+  filter: blur(10px);
+  pointer-events: none;
+}
 
   #robot-cursor-glow {
     position: absolute;
@@ -520,11 +531,18 @@ if (window.innerWidth < 1024) return;
   var cursorGlow     = document.getElementById('robot-cursor-glow');
 
   /* ── Hide loader on Spline ready ─────────────────────────── */
-  function hideLoader() {
-    if (!loader) return;
-    loader.classList.add('loader-hidden');
-    setTimeout(function () { if (loader) loader.style.display = 'none'; }, 650);
-  }
+function hideLoader() {
+  if (!loader) return;
+
+  loader.classList.add('loader-hidden');
+
+  setTimeout(function () {
+
+    // BENAR-BENAR HILANG
+    loader.remove();
+
+  }, 700);
+}
 
  if (splineEl) {
 
