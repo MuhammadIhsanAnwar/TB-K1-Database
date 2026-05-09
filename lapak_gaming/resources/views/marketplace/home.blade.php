@@ -283,60 +283,69 @@
     </div>
   </div>
 </section>
-{{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- FAQ SECTION (ACCORDION)                                     --}}
-{{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="pb-20">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="space-y-3">
-      
-      @foreach([
-        ['q' => 'Marketplace Games Terbesar dan Terlengkap', 'a' => 'Lapak Gaming adalah marketplace destinasi utama bagi para gamers untuk yang mencari kenyamanan dan keandalan dalam bertransaksi digital. Dengan berbagai produk digital yang tersedia, mulai dari top-up game, item, akun hingga voucher digital, Lapak Gaming menyediakan solusi lengkap untuk kebutuhan hiburan dan gaya hidup digital Anda.'],
-        ['q' => 'Apa itu Lapak Gaming?', 'a' => 'Kami adalah platform perantara (escrow) yang menjamin keamanan transaksi antara penjual dan pembeli produk game di Indonesia. Semua transaksi dilindungi oleh sistem garansi kami.'],
-        ['q' => 'Top-Up Game Terlengkap', 'a' => 'Nikmati layanan top up berbagai game populer seperti Mobile Legends, Free Fire, Genshin Impact, dan ratusan game lainnya dengan proses instan dan harga yang sangat bersaing.'],
-        ['q' => 'Voucher Digital untuk Berbagai Kebutuhan', 'a' => 'Selain kebutuhan gaming, kami juga menyediakan voucher digital untuk berbagai layanan populer lainnya guna mendukung segala aktivitas hiburan Anda setiap hari.'],
-      ] as $index => $faq)
-      <div class="faq-item group">
-        <button onclick="toggleFaq({{ $index }})" 
-                class="w-full flex items-center justify-between p-5 text-left bg-gray-900/50 border border-gray-800 rounded-2xl hover:border-brand-500/50 transition-all duration-300">
-          <span class="font-display font-bold text-white text-sm md:text-base">{{ $faq['q'] }}</span>
-          <svg id="icon-{{ $index }}" class="w-5 h-5 text-slate-500 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-          </svg>
-        </button>
-        <div id="faq-{{ $index }}" class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
-          <div class="p-5 text-sm text-slate-400 leading-relaxed border-x border-b border-gray-800 rounded-b-2xl -mt-2 bg-gray-900/30">
-            {{ $faq['a'] }}
-          </div>
-        </div>
-      </div>
-      @endforeach
 
-    </div>
-  </div>
+{{-- FAQ SECTION --}}
+<section class="pb-20">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="space-y-3">
+            
+            @php
+            $faqs = [
+                [
+                    'q' => 'Marketplace Games Terbesar dan Terlengkap',
+                    'a' => 'Lapak Gaming adalah marketplace destinasi utama bagi para gamers untuk yang mencari kenyamanan dan keandalan dalam bertransaksi digital. Dengan berbagai produk digital yang tersedia, Lapak Gaming menyediakan solusi lengkap untuk kebutuhan hiburan Anda.'
+                ],
+                [
+                    'q' => 'Apa itu Lapak Gaming?',
+                    'a' => 'Kami adalah platform perantara (escrow) yang menjamin keamanan transaksi antara penjual dan pembeli produk game di Indonesia. Semua transaksi dilindungi oleh sistem garansi kami.'
+                ],
+                [
+                    'q' => 'Top-Up Game Terlengkap',
+                    'a' => 'Nikmati layanan top up berbagai game populer seperti Mobile Legends, Free Fire, dan Genshin Impact dengan proses instan dan harga yang sangat bersaing.'
+                ],
+                [
+                    'q' => 'Voucher Digital untuk Berbagai Kebutuhan',
+                    'a' => 'Selain kebutuhan gaming, kami juga menyediakan voucher digital untuk berbagai layanan populer lainnya guna mendukung segala aktivitas hiburan Anda setiap hari.'
+                ]
+            ];
+            @endphp
+
+            @foreach($faqs as $index => $faq)
+            <div class="faq-item group">
+                <button onclick="toggleFaq({{ $index }})" 
+                        class="w-full flex items-center justify-between p-5 text-left bg-gray-900/50 border border-gray-800 rounded-2xl hover:border-blue-500/50 transition-all duration-300">
+                    <span class="font-display font-bold text-white text-sm md:text-base">{{ $faq['q'] }}</span>
+                    <svg id="icon-{{ $index }}" class="w-5 h-5 text-slate-500 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                    </svg>
+                </button>
+                <div id="faq-{{ $index }}" class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+                    <div class="p-5 text-sm text-slate-400 leading-relaxed border-x border-b border-gray-800 rounded-b-2xl -mt-2 bg-gray-900/30">
+                        {{ $faq['a'] }}
+                    </div>
+                </div>
+            </div>
+            @endforeach
+
+        </div>
+    </div>
 </section>
 
 @push('scripts')
 <script>
-  function toggleFaq(index) {
-    const content = document.getElementById(`faq-${index}`);
-    const icon = document.getElementById(`icon-${index}`);
-    
-    // Cek apakah sedang terbuka
-    const isOpen = content.style.maxHeight !== '0px' && content.style.maxHeight !== '';
+    function toggleFaq(index) {
+        const content = document.getElementById(`faq-${index}`);
+        const icon = document.getElementById(`icon-${index}`);
+        const isOpen = content.style.maxHeight !== '0px' && content.style.maxHeight !== '';
 
-    // Tutup semua FAQ dulu (opsional, jika ingin hanya 1 yang terbuka)
-    // document.querySelectorAll('[id^="faq-"]').forEach(el => el.style.maxHeight = '0px');
-    // document.querySelectorAll('[id^="icon-"]').forEach(el => el.style.transform = 'rotate(0deg)');
-
-    if (isOpen) {
-      content.style.maxHeight = '0px';
-      icon.style.transform = 'rotate(0deg)';
-    } else {
-      content.style.maxHeight = content.scrollHeight + "px";
-      icon.style.transform = 'rotate(180deg)';
-    }
-  }
+        if (isOpen) {
+            content.style.maxHeight = '0px';
+            icon.style.transform = 'rotate(0deg)';
+        } else {
+            content.style.maxHeight = content.scrollHeight + "px";
+            icon.style.transform = 'rotate(180deg)';
+        }
+    }
 </script>
 @endpush
 @endsection
