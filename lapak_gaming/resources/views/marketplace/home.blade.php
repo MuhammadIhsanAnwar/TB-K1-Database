@@ -542,27 +542,30 @@
   var hasMouseInHero = false;
 
   /* ── Animation loop (runs at 60fps) ──────────────────────── */
-  function tick() {
-    var tx = hasMouseInHero ? targetX : 0;
-    var ty = hasMouseInHero ? targetY : 0;
+  let animationRunning = false;
+let rafId = null;
 
-    /* Ease toward target / centre */
-    currentX = lerp(currentX, tx, 0.055);
-    currentY = lerp(currentY, ty, 0.055);
+function tick() {
+  if (!animationRunning) return;
 
-    /* Map to rotation angles */
-    var rotY  =  currentX * 18;   /* ±18° horizontal */
-    var rotX  = -currentY * 11;   /* ±11° vertical   */
-    var scale = isHover ? 1.025 : 1.0;
+  var tx = hasMouseInHero ? targetX : 0;
+  var ty = hasMouseInHero ? targetY : 0;
 
-    sceneContainer.style.transform =
-      'perspective(1200px) ' +
-      'rotateX(' + rotX.toFixed(3) + 'deg) ' +
-      'rotateY(' + rotY.toFixed(3) + 'deg) ' +
-      'scale('   + scale           + ')';
+  currentX = lerp(currentX, tx, 0.055);
+  currentY = lerp(currentY, ty, 0.055);
 
-    requestAnimationFrame(tick);
-  }
+  var rotY  = currentX * 18;
+  var rotX  = -currentY * 11;
+  var scale = isHover ? 1.025 : 1.0;
+
+  sceneContainer.style.transform =
+    `perspective(1200px)
+     rotateX(${rotX}deg)
+     rotateY(${rotY}deg)
+     scale(${scale})`;
+
+  rafId = requestAnimationFrame(tick);
+}
 
   /* ── Mouse move: track position + update cursor glow ──────── */
   heroSection.addEventListener('mousemove', function (e) {
