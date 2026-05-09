@@ -25,10 +25,9 @@
                 </div>
 
                 {{-- Pagination (Tombol Next/Prev Halaman) --}}
-                <div class="mt-10 flex justify-center">
-                    {{ $products->links() }} 
+                <div class="mt-14 flex justify-center pagination-wrapper">
+                    {{ $products->links() }}
                 </div>
-
             @else
                 {{-- Tampilan jika produk kosong --}}
                 <div class="col-span-full text-center text-gray-400 py-20 bg-gray-900 rounded-3xl border border-gray-800">

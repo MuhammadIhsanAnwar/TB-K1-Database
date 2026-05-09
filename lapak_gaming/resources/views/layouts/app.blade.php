@@ -547,6 +547,98 @@
         .reveal-delay-4 { transition-delay: .2s; }
         .reveal-delay-5 { transition-delay: .25s; }
         .reveal-delay-6 { transition-delay: .3s; }
+
+        /* =========================
+            PREMIUM PAGINATION
+            ========================= */
+
+          .pagination{
+            display:flex;
+            align-items:center;
+            gap:10px;
+            flex-wrap:wrap;
+          }
+
+          .pagination .page-item{
+            list-style:none;
+          }
+
+          .pagination .page-link{
+            min-width:42px;
+            height:42px;
+
+            display:flex;
+            align-items:center;
+            justify-content:center;
+
+            padding:0 14px;
+
+            border-radius:14px;
+
+            background:rgba(17,24,39,.75);
+
+            border:1px solid rgba(59,130,246,.12);
+
+            color:#cbd5e1;
+
+            font-size:.95rem;
+            font-weight:600;
+
+            transition:
+              transform .25s ease,
+              background .25s ease,
+              border-color .25s ease,
+              color .25s ease,
+              box-shadow .25s ease;
+
+            backdrop-filter:blur(10px);
+          }
+
+          /* hover */
+          .pagination .page-link:hover{
+            transform:translateY(-2px);
+
+            background:rgba(37,99,235,.14);
+
+            border-color:rgba(59,130,246,.45);
+
+            color:white;
+
+            box-shadow:
+              0 0 0 1px rgba(59,130,246,.15),
+              0 8px 20px rgba(37,99,235,.18);
+          }
+
+          /* active page */
+          .pagination .page-item.active .page-link{
+            background:linear-gradient(
+              135deg,
+              rgba(37,99,235,.95),
+              rgba(59,130,246,.9)
+            );
+
+            border-color:transparent;
+
+            color:white;
+
+            box-shadow:
+              0 10px 24px rgba(37,99,235,.35);
+          }
+
+          /* disabled */
+          .pagination .page-item.disabled .page-link{
+            opacity:.35;
+            cursor:not-allowed;
+            transform:none;
+            box-shadow:none;
+          }
+
+          /* next prev */
+          .pagination .page-link[rel="next"],
+          .pagination .page-link[rel="prev"]{
+            padding:0 18px;
+            font-size:.9rem;
+          }
   </style>
 
   @stack('styles')
