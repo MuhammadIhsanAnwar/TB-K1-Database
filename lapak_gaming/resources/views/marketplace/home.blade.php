@@ -527,9 +527,19 @@ if (window.innerWidth < 1024) return;
   }
 
   if (splineEl) {
-    splineEl.addEventListener('load', hideLoader);
-    setTimeout(hideLoader, 9000); /* safety fallback */
-  }
+
+  splineEl.addEventListener('load', function () {
+
+    // tunggu 3 detik setelah robot selesai load
+    setTimeout(function () {
+      hideLoader();
+    }, 3000);
+
+  });
+
+  // fallback kalau spline gagal load
+  setTimeout(hideLoader, 12000);
+}
 
   /* ── Abort early on mobile (no robot wrapper rendered) ─────── */
   if (!heroSection || !robotWrapper || !sceneContainer) return;
