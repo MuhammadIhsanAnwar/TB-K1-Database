@@ -3,15 +3,135 @@
 
 @push('styles')
 <style>
-  .hero-glow { background: radial-gradient(ellipse 70% 60% at 50% -10%, rgba(37,99,235,0.25), transparent 70%); }
-  .cat-btn { background:#0D1421;border:1px solid #1E2D45;border-radius:14px;transition:all 0.2s; }
-  .cat-btn:hover { border-color:rgba(37,99,235,0.5);background:rgba(37,99,235,0.08);transform:translateY(-2px); }
-  .topup-card { background:#0D1421;border:1px solid #1E2D45;border-radius:14px;overflow:hidden;transition:all 0.2s; }
-  .topup-card:hover { border-color:rgba(37,99,235,0.5);transform:translateY(-3px);box-shadow:0 12px 32px rgba(0,0,0,0.5); }
-  .section-grid-3col { grid-template-columns:repeat(3,1fr); }
-  .scale-108 { transform:scale(1.08); }
-  @keyframes heroFloat { 0%,100%{transform:translateY(0) rotate(0deg)}50%{transform:translateY(-12px) rotate(2deg)} }
-  .hero-float { animation: heroFloat 6s ease-in-out infinite; }
+  /* ── Hero Background Glow ─────────────────────────────────── */
+  .hero-glow {
+    background: radial-gradient(ellipse 70% 60% at 50% -10%, rgba(37,99,235,0.25), transparent 70%);
+  }
+
+  /* ── Category Buttons ─────────────────────────────────────── */
+  .cat-btn {
+    background: #0D1421;
+    border: 1px solid #1E2D45;
+    border-radius: 14px;
+    transition: all 0.2s;
+  }
+  .cat-btn:hover {
+    border-color: rgba(37,99,235,0.5);
+    background: rgba(37,99,235,0.08);
+    transform: translateY(-2px);
+  }
+
+  /* ── Topup Cards ──────────────────────────────────────────── */
+  .topup-card {
+    background: #0D1421;
+    border: 1px solid #1E2D45;
+    border-radius: 14px;
+    overflow: hidden;
+    transition: all 0.2s;
+  }
+  .topup-card:hover {
+    border-color: rgba(37,99,235,0.5);
+    transform: translateY(-3px);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+  }
+
+  /* ══════════════════════════════════════════════════════════
+     3D ROBOT — animations & layout
+  ══════════════════════════════════════════════════════════ */
+  #hero-robot-wrapper {
+    transform-style: preserve-3d;
+  }
+
+  #robot-scene-container {
+    width: 100%;
+    height: 100%;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 0.05s linear;
+  }
+
+  spline-viewer {
+    width: 100%;
+    height: 100%;
+    background: transparent !important;
+  }
+
+  spline-viewer::part(logo) { display: none !important; }
+
+  @keyframes robotGlow1 {
+    0%, 100% { opacity: 0.28; transform: scale(1); }
+    50%       { opacity: 0.50; transform: scale(1.10); }
+  }
+  @keyframes robotGlow2 {
+    0%, 100% { opacity: 0.15; transform: scale(1) translate(-50%,-50%); }
+    50%       { opacity: 0.32; transform: scale(1.15) translate(-50%,-50%); }
+  }
+  .robot-glow-blue   { animation: robotGlow1 4.0s ease-in-out infinite; }
+  .robot-glow-orange { animation: robotGlow2 5.5s ease-in-out infinite 1.2s; }
+
+  @keyframes ringCW  { to { transform: rotate(360deg); } }
+  @keyframes ringCCW { to { transform: rotate(-360deg); } }
+  .ring-cw  { animation: ringCW  22s linear infinite; }
+  .ring-ccw { animation: ringCCW 16s linear infinite; }
+
+  @keyframes badgeFloat {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-7px); }
+  }
+  .badge-float-a { animation: badgeFloat 4.0s ease-in-out infinite; }
+  .badge-float-b { animation: badgeFloat 5.2s ease-in-out infinite 1.5s; }
+  .badge-float-c { animation: badgeFloat 4.7s ease-in-out infinite 0.8s; }
+
+  @keyframes scanSweep {
+    0%   { top: 14%; opacity: 0; }
+    6%   { opacity: 1; }
+    94%  { opacity: 1; }
+    100% { top: 86%; opacity: 0; }
+  }
+  .scan-line {
+    position: absolute;
+    left: 12%; right: 12%;
+    height: 1px;
+    background: linear-gradient(90deg,transparent 0%,rgba(37,99,235,0.55) 20%,rgba(147,197,253,0.9) 50%,rgba(37,99,235,0.55) 80%,transparent 100%);
+    animation: scanSweep 7s ease-in-out infinite 2.5s;
+    pointer-events: none;
+    z-index: 25;
+  }
+
+  .corner-bracket {
+    position: absolute;
+    width: 20px; height: 20px;
+    opacity: 0.45;
+    pointer-events: none;
+    z-index: 26;
+  }
+  .corner-bracket.tl { top:22px;  left:22px;    border-top:2px solid #60a5fa; border-left:2px solid #60a5fa; }
+  .corner-bracket.tr { top:22px;  right:22px;   border-top:2px solid #60a5fa; border-right:2px solid #60a5fa; }
+  .corner-bracket.bl { bottom:22px; left:22px;  border-bottom:2px solid #60a5fa; border-left:2px solid #60a5fa; }
+  .corner-bracket.br { bottom:22px; right:22px; border-bottom:2px solid #60a5fa; border-right:2px solid #60a5fa; }
+
+  #robot-loader { transition: opacity 0.6s ease-out; }
+  #robot-loader.loader-hidden { opacity: 0; pointer-events: none; }
+
+  #robot-cursor-glow {
+    position: absolute;
+    width: 320px; height: 320px;
+    border-radius: 50%;
+    background: radial-gradient(circle,rgba(37,99,235,0.18) 0%,transparent 65%);
+    pointer-events: none;
+    transform: translate(-50%,-50%);
+    transition: left 0.22s ease-out, top 0.22s ease-out;
+    z-index: 0;
+  }
+
+  #spline-logo-cover {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 130px; height: 44px;
+    background: linear-gradient(135deg,transparent 35%,#060A12 100%);
+    pointer-events: none;
+    z-index: 28;
+  }
 </style>
 @endpush
 
@@ -20,17 +140,16 @@
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- HERO SECTION                                               --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="relative overflow-hidden pt-10 pb-16">
+<section class="relative overflow-hidden pt-10 pb-16" id="hero-section">
   <div class="hero-glow absolute inset-0 pointer-events-none"></div>
 
-  {{-- Decorative orbs --}}
   <div class="absolute top-10 right-1/4 w-64 h-64 rounded-full pointer-events-none opacity-10"
        style="background:radial-gradient(circle,#2563eb,transparent 70%);filter:blur(40px);"></div>
   <div class="absolute bottom-0 left-1/3 w-48 h-48 rounded-full pointer-events-none opacity-10"
        style="background:radial-gradient(circle,#f97316,transparent 70%);filter:blur(36px);"></div>
 
   <div class="max-w-7xl mx-auto px-4">
-    <div class="flex flex-col lg:flex-row items-center gap-12">
+    <div class="flex flex-col lg:flex-row items-center gap-8 xl:gap-12">
 
       {{-- Left: Copy --}}
       <div class="flex-1 text-center lg:text-left animate-fade-up">
@@ -62,7 +181,6 @@
           </a>
         </div>
 
-        {{-- Trust stats --}}
         <div class="flex flex-wrap gap-6 mt-10 justify-center lg:justify-start">
           @foreach([
             ['num'=>'500K+','label'=>'Pengguna Aktif'],
@@ -78,53 +196,101 @@
         </div>
       </div>
 
-      {{-- Right: Floating game card mockup --}}
-      <div class="hidden lg:block flex-shrink-0 relative w-80">
-        <div class="hero-float">
-          {{-- Main card --}}
-          <div class="rounded-2xl p-5 relative overflow-hidden"
-               style="background:linear-gradient(135deg,#0D1421,#162032);border:1px solid #1E2D45;box-shadow:0 24px 64px rgba(0,0,0,0.6);">
-            <div class="absolute top-0 right-0 w-32 h-32 rounded-full opacity-20"
-                 style="background:radial-gradient(circle,#2563eb,transparent);filter:blur(20px);"></div>
-            <div class="flex items-center gap-3 mb-5">
-              <div class="w-12 h-12 rounded-xl flex items-center justify-center text-2xl"
-                   style="background:#1E2D45;">🎮</div>
-              <div>
-                <div class="font-display font-bold text-white text-sm">Mobile Legends</div>
-                <div class="text-xs text-slate-400">1000 Diamond</div>
-              </div>
-              <span class="ml-auto badge badge-green">Live</span>
-            </div>
-            <div class="rounded-xl p-4 mb-4" style="background:#090E1A;">
-              <div class="text-xs text-slate-500 mb-1">Harga Terbaik</div>
-              <div class="font-display font-bold text-2xl text-white">Rp 149.000</div>
-              <div class="text-xs text-emerald-400 mt-1">↓ 15% lebih murah dari toko resmi</div>
-            </div>
-            <div class="grid grid-cols-2 gap-2 text-xs">
-              <div class="rounded-lg p-2.5 text-center" style="background:#090E1A;">
-                <div class="text-slate-400">Rating</div>
-                <div class="font-bold text-amber-400">⭐ 4.9</div>
-              </div>
-              <div class="rounded-lg p-2.5 text-center" style="background:#090E1A;">
-                <div class="text-slate-400">Terjual</div>
-                <div class="font-bold text-white">12.4K</div>
-              </div>
-            </div>
-            <button class="w-full mt-4 btn-primary py-3 rounded-xl text-sm">Beli Sekarang →</button>
-          </div>
+      {{-- Right: 3D Robot AI Assistant --}}
+      <div class="hidden lg:flex flex-shrink-0 items-center justify-center relative"
+           id="hero-robot-wrapper"
+           style="width:500px;height:540px;">
 
-          {{-- Floating mini cards --}}
-          <div class="absolute -top-4 -right-4 rounded-xl px-3 py-2 text-xs font-bold"
-               style="background:#0D1421;border:1px solid rgba(16,185,129,0.4);color:#34d399;box-shadow:0 4px 16px rgba(0,0,0,0.5);">
-            ✓ Pembayaran Berhasil
-          </div>
-          <div class="absolute -bottom-4 -left-4 rounded-xl px-3 py-2 text-xs"
-               style="background:#0D1421;border:1px solid rgba(37,99,235,0.4);box-shadow:0 4px 16px rgba(0,0,0,0.5);">
-            <span class="text-slate-400">Saldo Wallet</span>
-            <span class="font-display font-bold text-white ml-1">Rp 250K</span>
+        {{-- Cursor glow blob --}}
+        <div id="robot-cursor-glow"></div>
+
+        {{-- Decorative rings --}}
+        <div class="ring-cw absolute rounded-full pointer-events-none" style="width:455px;height:455px;z-index:2;border:1px solid rgba(37,99,235,0.18);border-top-color:rgba(96,165,250,0.60);border-right-color:rgba(37,99,235,0.38);"></div>
+        <div class="ring-ccw absolute rounded-full pointer-events-none" style="width:398px;height:398px;z-index:2;border:1px dashed rgba(96,165,250,0.10);"></div>
+
+        {{-- Ambient glow --}}
+        <div class="robot-glow-blue absolute rounded-full pointer-events-none"
+             style="width:290px;height:290px;z-index:1;background:radial-gradient(circle,rgba(37,99,235,0.38) 0%,transparent 70%);filter:blur(54px);"></div>
+        <div class="robot-glow-orange absolute pointer-events-none"
+             style="width:200px;height:200px;top:58%;left:58%;z-index:1;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,0.22) 0%,transparent 70%);filter:blur(44px);transform:translate(-50%,-50%);"></div>
+
+        {{-- Loading skeleton --}}
+        <div id="robot-loader" class="absolute inset-0 flex items-center justify-center" style="z-index:30;">
+          <div class="flex flex-col items-center gap-4">
+            <div class="relative w-20 h-20">
+              <div class="absolute inset-0 rounded-full border-2 border-brand-500/20 border-t-brand-400 animate-spin"></div>
+              <div class="absolute inset-2 rounded-full border border-brand-500/10 border-b-accent-400/50"
+                   style="animation:spin 2s linear infinite reverse;"></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <svg class="w-7 h-7" style="color:rgba(96,165,250,0.5);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+                </svg>
+              </div>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <span class="text-[10px] tracking-[0.25em] uppercase font-display" style="color:rgba(96,165,250,0.6);">Initializing AI</span>
+              <div class="flex gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-400/50 animate-bounce" style="animation-delay:0.0s;"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-400/50 animate-bounce" style="animation-delay:0.2s;"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-400/50 animate-bounce" style="animation-delay:0.4s;"></span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+
+        {{-- ★ Spline 3D Robot ★ --}}
+        <div id="robot-scene-container" style="z-index:20;">
+          <spline-viewer
+            id="spline-robot"
+            url="https://prod.spline.design/8b9b5100-4168-4401-8f66-2d5ab24026fb/scene.splinecode"
+          ></spline-viewer>
+        </div>
+
+        {{-- Spline branding cover --}}
+        <div id="spline-logo-cover"></div>
+
+        {{-- Scan line --}}
+        <div class="scan-line"></div>
+
+        {{-- Corner brackets --}}
+        <div class="corner-bracket tl"></div>
+        <div class="corner-bracket tr"></div>
+        <div class="corner-bracket bl"></div>
+        <div class="corner-bracket br"></div>
+
+        {{-- Badge: AI Online --}}
+        <div class="badge-float-a absolute z-30" style="top:28px;right:-8px;">
+          <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2.5 backdrop-blur-md"
+               style="background:rgba(9,14,26,0.88);border:1px solid rgba(16,185,129,0.45);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 14px rgba(16,185,129,0.18);">
+            <span class="relative flex h-2 w-2">
+              <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+              <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
+            </span>
+            <span class="text-emerald-300 text-xs font-semibold font-display tracking-wide">AI Online</span>
+          </div>
+        </div>
+
+        {{-- Badge: Daily transactions --}}
+        <div class="badge-float-b absolute z-30" style="bottom:96px;left:-20px;">
+          <div class="rounded-2xl px-4 py-2.5 backdrop-blur-md"
+               style="background:rgba(9,14,26,0.88);border:1px solid rgba(37,99,235,0.45);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 14px rgba(37,99,235,0.18);">
+            <div class="text-[10px] tracking-[0.18em] uppercase font-display mb-0.5" style="color:rgba(96,165,250,0.6);">Transaksi Hari Ini</div>
+            <div class="font-display font-bold text-white text-lg leading-none">12.847</div>
+          </div>
+        </div>
+
+        {{-- Badge: Rating --}}
+        <div class="badge-float-c absolute z-30" style="bottom:44px;right:-4px;">
+          <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2 backdrop-blur-md"
+               style="background:rgba(9,14,26,0.88);border:1px solid rgba(249,115,22,0.38);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 12px rgba(249,115,22,0.14);">
+            <span style="font-size:14px;">⭐</span>
+            <span class="font-display font-bold text-white text-sm">4.9</span>
+            <span class="text-slate-500 text-xs">Rating</span>
+          </div>
+        </div>
+
+      </div>{{-- /right robot --}}
+
     </div>
   </div>
 </section>
@@ -165,13 +331,13 @@
   <div class="max-w-7xl mx-auto px-4">
     <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
       @foreach([
-        ['type'=>'topup', 'icon'=>'⚡','label'=>'Top Up','desc'=>'Langsung ke akun','class'=>'bg-blue-500/10 border-blue-500/30','badge'=>'Tercepat'],
-        ['type'=>'joki',  'icon'=>'🏆','label'=>'Jasa Joki','desc'=>'Naik rank dijamin','class'=>'bg-orange-500/10 border-orange-500/25','badge'=>'Populer'],
-        ['type'=>'akun',  'icon'=>'👤','label'=>'Akun Game','desc'=>'Ready stock','class'=>'bg-purple-500/10 border-purple-500/25','badge'=>''],
-        ['type'=>'item',  'icon'=>'⚔️','label'=>'Item & Skin','desc'=>'Harga termurah','class'=>'bg-emerald-500/10 border-emerald-500/25','badge'=>''],
+        ['type'=>'topup','icon'=>'⚡','label'=>'Top Up','desc'=>'Langsung ke akun','class'=>'bg-blue-500/10 border-blue-500/30','badge'=>'Tercepat'],
+        ['type'=>'joki', 'icon'=>'🏆','label'=>'Jasa Joki','desc'=>'Naik rank dijamin','class'=>'bg-orange-500/10 border-orange-500/25','badge'=>'Populer'],
+        ['type'=>'akun', 'icon'=>'👤','label'=>'Akun Game','desc'=>'Ready stock','class'=>'bg-purple-500/10 border-purple-500/25','badge'=>''],
+        ['type'=>'item', 'icon'=>'⚔️','label'=>'Item & Skin','desc'=>'Harga termurah','class'=>'bg-emerald-500/10 border-emerald-500/25','badge'=>''],
       ] as $qt)
       <a href="{{ route('products.by-type', $qt['type']) }}"
-        class="flex items-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-card {{ $qt['class'] }}">
+         class="flex items-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-card {{ $qt['class'] }}">
         <span class="text-3xl shrink-0">{{ $qt['icon'] }}</span>
         <div class="flex-1 min-w-0">
           <div class="flex items-center gap-2">
@@ -180,7 +346,9 @@
           </div>
           <span class="text-xs text-slate-400">{{ $qt['desc'] }}</span>
         </div>
-        <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
       </a>
       @endforeach
     </div>
@@ -218,7 +386,6 @@
 @if($topupProducts->isNotEmpty())
 <section class="pb-14">
   <div class="max-w-7xl mx-auto px-4">
-    {{-- Section header --}}
     <div class="flex items-center justify-between mb-6">
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-lg flex items-center justify-center"
@@ -232,7 +399,6 @@
       </div>
       <a href="{{ route('products.by-type', 'topup') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Semua Top Up →</a>
     </div>
-
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
       @foreach($topupProducts as $product)
         @include('components.product-card', ['product' => $product])
@@ -254,105 +420,188 @@
       <span class="badge badge-blue mb-4">Kenapa Lapak Gaming?</span>
       <h2 class="font-display font-bold text-2xl sm:text-3xl text-white mb-3">Platform terpercaya untuk<br>semua kebutuhan gaming-mu</h2>
       <p class="text-slate-400 text-sm max-w-lg mx-auto mb-8">Bergabung dengan jutaan gamer Indonesia yang sudah percaya transaksi mereka bersama kami.</p>
-
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8">
         @foreach([
-          ['icon'=>'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
-            'label'=>'Escrow Aman','sub'=>'Dana terlindungi'],
-          ['icon'=>'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
-            'label'=>'Proses Cepat','sub'=>'< 5 menit selesai'],
-          ['icon'=>'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z',
-            'label'=>'Rating Tinggi','sub'=>'4.9 dari 5 bintang'],
-          ['icon'=>'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z',
-            'label'=>'Support 24/7','sub'=>'Siap bantu kapanpun'],
+          ['icon'=>'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z','label'=>'Escrow Aman','sub'=>'Dana terlindungi'],
+          ['icon'=>'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z','label'=>'Proses Cepat','sub'=>'< 5 menit selesai'],
+          ['icon'=>'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z','label'=>'Rating Tinggi','sub'=>'4.9 dari 5 bintang'],
+          ['icon'=>'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z','label'=>'Support 24/7','sub'=>'Siap bantu kapanpun'],
         ] as $vp)
         <div class="flex flex-col items-center text-center">
           <div class="w-10 h-10 rounded-xl flex items-center justify-center mb-3"
                style="background:rgba(37,99,235,0.12);border:1px solid rgba(37,99,235,0.25);">
-            <svg class="w-5 h-5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $vp['icon'] }}"/></svg>
+            <svg class="w-5 h-5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $vp['icon'] }}"/>
+            </svg>
           </div>
           <div class="text-sm font-semibold text-white">{{ $vp['label'] }}</div>
           <div class="text-xs text-slate-500 mt-0.5">{{ $vp['sub'] }}</div>
         </div>
         @endforeach
       </div>
-
-      <a href="{{ route('register') }}" class="btn-primary px-8 py-3.5 rounded-xl text-base">
-        Daftar Gratis Sekarang →
-      </a>
+      <a href="{{ route('register') }}" class="btn-primary px-8 py-3.5 rounded-xl text-base">Daftar Gratis Sekarang →</a>
     </div>
   </div>
 </section>
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- FAQ SECTION (ACCORDION)                                     --}}
+{{-- FAQ SECTION (ACCORDION)                                     --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="pb-20">
-    <div class="max-w-7xl mx-auto px-4">
-        <div class="space-y-3">
-            
-            @php
-            $faqs = [
-                [
-                    'q' => 'Marketplace Games Terbesar dan Terlengkap',
-                    'a' => 'Lapak Gaming adalah marketplace destinasi utama bagi para gamers untuk yang mencari kenyamanan dan keandalan dalam bertransaksi digital. Dengan berbagai produk digital yang tersedia, Lapak Gaming menyediakan solusi lengkap untuk kebutuhan hiburan Anda.'
-                ],
-                [
-                    'q' => 'Apa itu Lapak Gaming?',
-                    'a' => 'Kami adalah platform perantara (escrow) yang menjamin keamanan transaksi antara penjual dan pembeli produk game di Indonesia. Semua transaksi dilindungi oleh sistem garansi kami.'
-                ],
-                [
-                    'q' => 'Top-Up Game Terlengkap',
-                    'a' => 'Nikmati layanan top up berbagai game populer seperti Mobile Legends, Free Fire, dan Genshin Impact dengan proses instan dan harga yang sangat bersaing.'
-                ],
-                [
-                    'q' => 'Voucher Digital untuk Berbagai Kebutuhan',
-                    'a' => 'Selain kebutuhan gaming, kami juga menyediakan voucher digital untuk berbagai layanan populer lainnya guna mendukung segala aktivitas hiburan Anda setiap hari.'
-                ]
-            ];
-            @endphp
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="space-y-3">
+      @php
+      $faqs = [
+        ['q'=>'Marketplace Games Terbesar dan Terlengkap','a'=>'Lapak Gaming adalah marketplace destinasi utama bagi para gamers untuk yang mencari kenyamanan dan keandalan dalam bertransaksi digital. Dengan berbagai produk digital yang tersedia, Lapak Gaming menyediakan solusi lengkap untuk kebutuhan hiburan Anda.'],
+        ['q'=>'Apa itu Lapak Gaming?','a'=>'Kami adalah platform perantara (escrow) yang menjamin keamanan transaksi antara penjual dan pembeli produk game di Indonesia. Semua transaksi dilindungi oleh sistem garansi kami.'],
+        ['q'=>'Top-Up Game Terlengkap','a'=>'Nikmati layanan top up berbagai game populer seperti Mobile Legends, Free Fire, dan Genshin Impact dengan proses instan dan harga yang sangat bersaing.'],
+        ['q'=>'Voucher Digital untuk Berbagai Kebutuhan','a'=>'Selain kebutuhan gaming, kami juga menyediakan voucher digital untuk berbagai layanan populer lainnya guna mendukung segala aktivitas hiburan Anda setiap hari.'],
+      ];
+      @endphp
 
-            @foreach($faqs as $index => $faq)
-            <div class="faq-item group">
-                <button onclick="toggleFaq({{ $index }})" 
-                        class="w-full flex items-center justify-between p-5 text-left bg-gray-900/50 border border-gray-800 rounded-2xl hover:border-blue-500/50 transition-all duration-300">
-                    <span class="font-display font-bold text-white text-sm md:text-base">{{ $faq['q'] }}</span>
-                    <svg id="icon-{{ $index }}" class="w-5 h-5 text-slate-500 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
-                    </svg>
-                </button>
-                <div id="faq-{{ $index }}" class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
-                    <div class="p-5 text-sm text-slate-400 leading-relaxed border-x border-b border-gray-800 rounded-b-2xl -mt-2 bg-gray-900/30">
-                        {{ $faq['a'] }}
-                    </div>
-                </div>
-            </div>
-            @endforeach
+      @foreach($faqs as $index => $faq)
+      <div class="faq-item group">
+        <button onclick="toggleFaq({{ $index }})"
+                class="w-full flex items-center justify-between p-5 text-left bg-gray-900/50 border border-gray-800 rounded-2xl hover:border-blue-500/50 transition-all duration-300">
+          <span class="font-display font-bold text-white text-sm md:text-base">{{ $faq['q'] }}</span>
+          <svg id="icon-{{ $index }}" class="w-5 h-5 text-slate-500 transition-transform duration-300"
+               fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+          </svg>
+        </button>
+        <div id="faq-{{ $index }}" class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
+          <div class="p-5 text-sm text-slate-400 leading-relaxed border-x border-b border-gray-800 rounded-b-2xl -mt-2 bg-gray-900/30">
+            {{ $faq['a'] }}
+          </div>
         </div>
+      </div>
+      @endforeach
     </div>
+  </div>
 </section>
 
 @push('scripts')
+{{--
+  ══════════════════════════════════════════════════════════════
+  SPLINE 3D VIEWER + CURSOR TRACKING
+  - Loaded as ES module from CDN (no npm install, no Vite changes)
+  - spline-viewer web component renders automatically
+  - Cursor tracking: lerp-based rAF loop, perspective tilt
+  - Loading skeleton hidden on 'load' event or 9s timeout
+  ══════════════════════════════════════════════════════════════
+--}}
+<script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
+
 <script>
-    function toggleFaq(index) {
-        const content = document.getElementById(`faq-${index}`);
-        const icon = document.getElementById(`icon-${index}`);
+(function () {
+  'use strict';
 
-        // Cek apakah sedang terbuka
-        const isOpen = content.style.maxHeight !== '0px' && content.style.maxHeight !== '';
+  /* ── DOM refs ─────────────────────────────────────────────── */
+  var heroSection    = document.getElementById('hero-section');
+  var robotWrapper   = document.getElementById('hero-robot-wrapper');
+  var sceneContainer = document.getElementById('robot-scene-container');
+  var splineEl       = document.getElementById('spline-robot');
+  var loader         = document.getElementById('robot-loader');
+  var cursorGlow     = document.getElementById('robot-cursor-glow');
 
-        // Tutup semua FAQ dulu (opsional, jika ingin hanya 1 yang terbuka)
-        document.querySelectorAll('[id^="faq-"]').forEach(el => el.style.maxHeight = '0px');
-        document.querySelectorAll('[id^="icon-"]').forEach(el => el.style.transform = 'rotate(0deg)');
+  /* ── Hide loader on Spline ready ─────────────────────────── */
+  function hideLoader() {
+    if (!loader) return;
+    loader.classList.add('loader-hidden');
+    setTimeout(function () { if (loader) loader.style.display = 'none'; }, 650);
+  }
 
-        if (isOpen) {
-            content.style.maxHeight = '0px';
-            icon.style.transform = 'rotate(0deg)';
-        } else {
-            content.style.maxHeight = content.scrollHeight + "px";
-            icon.style.transform = 'rotate(180deg)';
-        }
+  if (splineEl) {
+    splineEl.addEventListener('load', hideLoader);
+    setTimeout(hideLoader, 9000); /* safety fallback */
+  }
+
+  /* ── Abort early on mobile (no robot wrapper rendered) ─────── */
+  if (!heroSection || !robotWrapper || !sceneContainer) return;
+
+  /* ── Math helpers ─────────────────────────────────────────── */
+  function lerp(a, b, t)         { return a + (b - a) * t; }
+  function clamp(v, lo, hi)      { return v < lo ? lo : v > hi ? hi : v; }
+
+  /* ── Tilt state ───────────────────────────────────────────── */
+  var targetX  = 0, targetY  = 0;
+  var currentX = 0, currentY = 0;
+  var isHover  = false;
+  var hasMouseInHero = false;
+
+  /* ── Animation loop (runs at 60fps) ──────────────────────── */
+  function tick() {
+    var tx = hasMouseInHero ? targetX : 0;
+    var ty = hasMouseInHero ? targetY : 0;
+
+    /* Ease toward target / centre */
+    currentX = lerp(currentX, tx, 0.055);
+    currentY = lerp(currentY, ty, 0.055);
+
+    /* Map to rotation angles */
+    var rotY  =  currentX * 18;   /* ±18° horizontal */
+    var rotX  = -currentY * 11;   /* ±11° vertical   */
+    var scale = isHover ? 1.025 : 1.0;
+
+    sceneContainer.style.transform =
+      'perspective(1200px) ' +
+      'rotateX(' + rotX.toFixed(3) + 'deg) ' +
+      'rotateY(' + rotY.toFixed(3) + 'deg) ' +
+      'scale('   + scale           + ')';
+
+    requestAnimationFrame(tick);
+  }
+
+  /* ── Mouse move: track position + update cursor glow ──────── */
+  heroSection.addEventListener('mousemove', function (e) {
+    hasMouseInHero = true;
+
+    /* Tilt target: normalise to -1..1 from section centre */
+    var hr = heroSection.getBoundingClientRect();
+    targetX = clamp((e.clientX - (hr.left + hr.width  / 2)) / (hr.width  / 2), -1, 1);
+    targetY = clamp((e.clientY - (hr.top  + hr.height / 2)) / (hr.height / 2), -1, 1);
+
+    /* Cursor glow: position relative to robot wrapper */
+    if (cursorGlow) {
+      var wr = robotWrapper.getBoundingClientRect();
+      cursorGlow.style.left = (e.clientX - wr.left) + 'px';
+      cursorGlow.style.top  = (e.clientY - wr.top ) + 'px';
     }
+  });
+
+  heroSection.addEventListener('mouseleave', function () {
+    hasMouseInHero = false;
+    targetX = 0;
+    targetY = 0;
+  });
+
+  robotWrapper.addEventListener('mouseenter', function () { isHover = true;  });
+  robotWrapper.addEventListener('mouseleave', function () { isHover = false; });
+
+  /* ── Start the loop ───────────────────────────────────────── */
+  tick();
+
+  /* ── FAQ toggle (original logic preserved) ───────────────── */
+  window.toggleFaq = function (index) {
+    var content = document.getElementById('faq-' + index);
+    var icon    = document.getElementById('icon-' + index);
+    var isOpen  = content.style.maxHeight !== '0px' && content.style.maxHeight !== '';
+
+    document.querySelectorAll('[id^="faq-"]').forEach(function (el) {
+      el.style.maxHeight = '0px';
+    });
+    document.querySelectorAll('[id^="icon-"]').forEach(function (el) {
+      el.style.transform = 'rotate(0deg)';
+    });
+
+    if (!isOpen) {
+      content.style.maxHeight = content.scrollHeight + 'px';
+      icon.style.transform    = 'rotate(180deg)';
+    }
+  };
+
+})();
 </script>
 @endpush
+
 @endsection
