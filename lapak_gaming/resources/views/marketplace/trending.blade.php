@@ -17,10 +17,11 @@
             @if($products->count() > 0)
                 {{-- Grid mengikuti halaman utama: 2 kolom di HP, 3 di Tablet, 6 di Desktop --}}
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                    @foreach($products as $product)
-                        {{-- Memanggil komponen card yang sama dengan halaman utama --}}
-                        @include('components.product-card', ['product' => $product])
-                    @endforeach
+                @foreach($products as $product)
+                <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
+                    @include('components.product-card', ['product' => $product])
+                </div>
+                 @endforeach
                 </div>
 
                 {{-- Pagination (Tombol Next/Prev Halaman) --}}
@@ -39,4 +40,27 @@
 
         </div>
     </section>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+
+            const reveals = document.querySelectorAll(".reveal-card");
+
+            const observer = new IntersectionObserver((entries) => {
+
+                entries.forEach(entry => {
+
+                    if(entry.isIntersecting){
+                        entry.target.classList.add("show");
+                    }
+
+                });
+
+            }, {
+                threshold: 0.12
+            });
+
+            reveals.forEach((el) => observer.observe(el));
+
+        });
+</script>
 @endsection

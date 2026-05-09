@@ -524,7 +524,29 @@
         transform: translateY(-1px);
       }
 
-      
+      /* Smooth Reveal Animation */
+        .reveal-card{
+          opacity: 0;
+          transform: translateY(45px);
+          transition:
+            opacity .7s ease,
+            transform .7s cubic-bezier(.22,1,.36,1);
+
+          will-change: opacity, transform;
+        }
+
+        .reveal-card.show{
+          opacity: 1;
+          transform: translateY(0);
+        }
+
+        /* Delay */
+        .reveal-delay-1 { transition-delay: .05s; }
+        .reveal-delay-2 { transition-delay: .1s; }
+        .reveal-delay-3 { transition-delay: .15s; }
+        .reveal-delay-4 { transition-delay: .2s; }
+        .reveal-delay-5 { transition-delay: .25s; }
+        .reveal-delay-6 { transition-delay: .3s; }
   </style>
 
   @stack('styles')
