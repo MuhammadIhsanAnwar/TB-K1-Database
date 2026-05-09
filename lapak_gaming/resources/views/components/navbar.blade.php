@@ -238,7 +238,6 @@
         Trending
         <span class="badge badge-orange">HOT</span>
       </a>
-        <span class="badge badge-orange">HOT</span>
   </nav>
 
     {{-- Search Bar (center, desktop) --}}
