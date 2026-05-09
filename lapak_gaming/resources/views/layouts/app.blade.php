@@ -644,17 +644,16 @@
               GAMING ANIMATED BACKGROUND
             ═══════════════════════════════════════ */
 
-      #gaming-bg{
-          position: fixed;
-          inset: 0;
-          z-index: -1;
-          overflow: hidden;
-          background:
-              radial-gradient(circle at top left, rgba(37,99,235,.12), transparent 35%),
-              radial-gradient(circle at bottom right, rgba(249,115,22,.10), transparent 35%),
-              #060A12;
-      }
-
+          #gaming-bg{
+              position: fixed;
+              inset: 0;
+              z-index: -1;
+              overflow: hidden;
+              background:
+                  radial-gradient(circle at top left, rgba(37,99,235,.18), transparent 40%),
+                  radial-gradient(circle at bottom right, rgba(249,115,22,.14), transparent 40%),
+                  #060A12;
+          }
       /* ELEMENT GAMING */
       .gaming-particle{
           position: absolute;
@@ -702,6 +701,18 @@
           width:2px;
           height:14px;
           left:6px;
+      }
+
+      /* glow tambahan */
+      .gaming-particle::after{
+          content:'';
+          position:absolute;
+          inset:-8px;
+          border-radius:999px;
+          background:transparent;
+          box-shadow:
+              0 0 20px rgba(37,99,235,.15),
+              0 0 35px rgba(249,115,22,.08);
       }
 
       @keyframes floatParticle{
@@ -877,9 +888,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const bg = document.getElementById('gaming-bg');
 
-    const types = ['line', 'square', 'plus'];
+    const types = [
+        'line',
+        'square',
+        'plus'
+    ];
 
-    for(let i = 0; i < 45; i++){
+    for(let i = 0; i < 120; i++){
 
         const particle = document.createElement('span');
 
@@ -891,14 +906,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
         particle.style.left = Math.random() * 100 + 'vw';
 
+        particle.style.top = Math.random() * 100 + 'vh';
+
         particle.style.animationDuration =
-            (Math.random() * 10 + 12) + 's';
+            (Math.random() * 10 + 8) + 's';
 
         particle.style.animationDelay =
-            Math.random() * 8 + 's';
+            Math.random() * 5 + 's';
 
         particle.style.opacity =
-            Math.random() * 0.5 + 0.2;
+            Math.random() * 0.6 + 0.15;
+
+        /* ukuran random */
+        const scale = (Math.random() * 1.4 + 0.6);
+
+        particle.style.transform =
+            `scale(${scale}) rotate(${Math.random() * 360}deg)`;
 
         bg.appendChild(particle);
     }
