@@ -526,16 +526,16 @@ if (window.innerWidth < 1024) return;
     setTimeout(function () { if (loader) loader.style.display = 'none'; }, 650);
   }
 
-  if (splineEl) {
+ if (splineEl) {
 
-  splineEl.addEventListener('load', function () {
+  // loader hilang otomatis setelah 5 detik
+  setTimeout(function () {
+    hideLoader();
+  }, 5000);
 
-    // tunggu 3 detik setelah robot selesai load
-    setTimeout(function () {
-      hideLoader();
-    }, 3000);
+}
 
-  });
+
 
   // fallback kalau spline gagal load
   setTimeout(hideLoader, 12000);
