@@ -255,9 +255,14 @@
 
           <h1 class="font-display text-4xl font-extrabold text-white leading-tight mb-4 tracking-tight">
             Bergabung dengan<br>
-            <span class="text-transparent bg-clip-text" style="background:linear-gradient(135deg,#60a5fa,#fb923c);">
-              Jutaan Gamer
-            </span>
+            <span
+  class="inline-block bg-clip-text text-transparent"
+  style="
+    background-image: linear-gradient(135deg,#60a5fa,#fb923c);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;">
+  Jutaan Gamer
+</span>
           </h1>
           <p class="text-slate-400 text-sm leading-relaxed mb-8">
             Marketplace top-up, item, akun & voucher game terpercaya. Transaksi aman, cepat, dan terjamin.
