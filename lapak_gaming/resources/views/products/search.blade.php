@@ -20,7 +20,6 @@
         <div class="reveal-card reveal-delay-{{ ($index % 6) + 1 }}">
             @include('components.product-card', ['product' => $product])
         </div>
-         @endforeach
         @empty
             <div class="col-span-full rounded-3xl border border-gray-800 bg-gray-900 p-12 text-center text-gray-400">
                 Tidak ada produk ditemukan. Coba kata kunci lain atau lihat semua produk.
