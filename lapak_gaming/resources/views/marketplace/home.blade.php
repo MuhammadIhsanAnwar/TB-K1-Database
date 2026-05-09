@@ -76,8 +76,10 @@
 
   @keyframes ringCW  { to { transform: rotate(360deg); } }
   @keyframes ringCCW { to { transform: rotate(-360deg); } }
-  .ring-cw  { animation: ringCW  22s linear infinite; }
-  .ring-ccw { animation: ringCCW 16s linear infinite; }
+  .ring-cw,
+.ring-ccw {
+  animation: none !important;
+}
 
   @keyframes badgeFloat {
     0%, 100% { transform: translateY(0px); }
@@ -587,12 +589,11 @@
 
     const rotY  = currentX * 18;
     const rotX  = -currentY * 11;
-    const scale = isHover ? 1.025 : 1;
+    const scale = 1;
 
-   splineRobot.style.transform = `
-  perspective(1200px)
-  rotateX(${rotX}deg)
-  rotateY(${rotY}deg)
+  robotWrapper.style.transform = 'none';
+
+splineRobot.style.transform = `
   scale(${scale})
 `;
 
@@ -681,13 +682,7 @@
 
   });
 
-  robotWrapper.addEventListener('mouseenter', () => {
-    isHover = true;
-  });
-
-  robotWrapper.addEventListener('mouseleave', () => {
-    isHover = false;
-  });
+ 
 
   /* ── Start Loop ─────────────────────── */
   animationRunning = true;
