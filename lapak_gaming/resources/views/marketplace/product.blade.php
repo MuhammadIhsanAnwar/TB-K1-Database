@@ -228,10 +228,23 @@
             </div>
             @endforeach
           </div>
-          <a href="{{ route('chat.index') }}?seller={{ $productSeller->id }}"
-             class="btn-ghost w-full py-2.5 rounded-xl text-sm text-center">
-            💬 Chat Penjual
-          </a>
+          @auth
+            @if($userOrder)
+             <a href="{{ route('chat.index', $userOrder) }}" 
+              class="btn-ghost w-full py-2.5 rounded-xl text-sm text-center">
+              💬 Chat Penjual
+             </a>
+            @else
+              <span class="btn-ghost w-full py-2.5 rounded-xl text-sm text-center opacity-50 cursor-not-allowed" 
+                title="Beli produk ini dulu untuk chat dengan penjual">
+                💬 Chat Penjual
+              </span>
+            @endif
+          @else
+            <a href="{{ route('login') }}" 
+            class="btn-ghost w-full py-2.5 rounded-xl text-sm text-center"> 
+            💬 Chat Penjual</a>
+          @endauth
         </div>
         @endif
 

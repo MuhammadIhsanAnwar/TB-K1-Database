@@ -6,10 +6,14 @@ use App\Models\Category;
 use App\Models\ProductStatistic;
 use Illuminate\Http\Request;
 
-class ProductController extends Controller {
-    public function show(string $slug) {
+class ProductController extends Controller
+{
+    public function show(string $slug)
+    {
         $product = Product::where('slug', $slug)->with([
-            'seller', 'category', 'reviews.user',
+            'seller',
+            'category',
+            'reviews.user',
         ])->firstOrFail();
 
         $relatedProducts = Product::active()->inStock()
@@ -17,13 +21,23 @@ class ProductController extends Controller {
             ->where('id', '!=', $product->id)
             ->take(6)->get();
 
-        return view('marketplace.product', compact('product', 'relatedProducts'));
+        // Cek apakah user yang login punya order untuk produk ini
+        $userOrder = null;
+        if (auth()->check()) {
+            $userOrder = \App\Models\Order::where('buyer_id', auth()->id())
+                ->whereHas('items', fn($q) => $q->where('product_id', $product->id))
+                ->latest()
+                ->first();
+        }
+
+        return view('marketplace.product', compact('product', 'relatedProducts', 'userOrder'));
     }
 
-    public function search(Request $request) {
+    public function search(Request $request)
+    {
         $query = $request->input('q', '');
-        $type  = $request->input('type');
-        $sort  = $request->input('sort', 'popular');
+        $type = $request->input('type');
+        $sort = $request->input('sort', 'popular');
         $minPrice = $request->input('min_price');
         $maxPrice = $request->input('max_price');
 
@@ -33,8 +47,8 @@ class ProductController extends Controller {
             ->when($type, fn($q) => $q->where('type', $type))
             ->when($minPrice, fn($q) => $q->where('price', '>=', $minPrice))
             ->when($maxPrice, fn($q) => $q->where('price', '<=', $maxPrice))
-            ->when($sort === 'popular',  fn($q) => $q->popular())
-            ->when($sort === 'rating',   fn($q) => $q->topRated())
+            ->when($sort === 'popular', fn($q) => $q->popular())
+            ->when($sort === 'rating', fn($q) => $q->topRated())
             ->when($sort === 'price_asc', fn($q) => $q->orderBy('price'))
             ->when($sort === 'price_desc', fn($q) => $q->orderByDesc('price'))
             ->with(['category', 'seller'])
@@ -43,7 +57,8 @@ class ProductController extends Controller {
         return view('products.search', compact('products', 'query'));
     }
 
-    public function byType(string $type) {
+    public function byType(string $type)
+    {
         $products = Product::active()->inStock()->ofType($type)
             ->with(['category', 'seller'])
             ->paginate(20);
