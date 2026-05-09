@@ -245,7 +245,7 @@
         <div id="robot-scene-container" style="z-index:20;">
           <spline-viewer
             id="spline-robot"
-            url="https://prod.spline.design/8b9b5100-4168-4401-8f66-2d5ab24026fb/scene.splinecode"
+            url="https://my.spline.design/nexbotbyaximoriscopycopy-Hcvco65pRWqThK31dcH9LeLP/"
           ></spline-viewer>
         </div>
 
