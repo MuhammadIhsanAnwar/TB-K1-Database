@@ -490,7 +490,7 @@
   - Loading skeleton hidden on 'load' event or 9s timeout
   ══════════════════════════════════════════════════════════════
 --}}
-<script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.82/build/spline-viewer.js"></script>
+<script type="module" src="https://unpkg.com/@splinetool/viewer/build/spline-viewer.js"></script>
 
 <script>
 (function () {
