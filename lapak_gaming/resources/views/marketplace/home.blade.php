@@ -127,6 +127,10 @@
     transform: translate(-50%,-50%);
     transition: left 0.22s ease-out, top 0.22s ease-out;
     z-index: 0;
+
+    /* OPTIMASI */
+  will-change: transform;
+  transition: transform 0.04s linear;
   }
 
   #spline-logo-cover {
