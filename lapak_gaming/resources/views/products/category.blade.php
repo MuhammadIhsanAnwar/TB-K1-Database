@@ -13,9 +13,12 @@
         </a>
     </div>
 
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        @forelse($products as $product)
+   <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+    @forelse($products as $index => $product)
+
+        <div class="reveal-card reveal-delay-{{ ($index % 6) + 1 }}">
             @include('components.product-card', ['product' => $product])
+        </div>
         @empty
             <div class="col-span-full rounded-3xl border border-gray-800 bg-gray-900 p-12 text-center text-gray-400">
                 Belum ada produk dalam kategori ini.

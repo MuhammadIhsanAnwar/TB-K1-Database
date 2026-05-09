@@ -769,6 +769,22 @@
       document.body.appendChild(toast);
       setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity 0.3s'; setTimeout(()=>toast.remove(), 300); }, 3500);
     }
+
+    document.addEventListener("DOMContentLoaded", () => {
+    const reveals = document.querySelectorAll(".reveal-card");
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add("show");
+            }
+        });
+    }, {
+        threshold: 0.12
+    });
+
+    reveals.forEach((el) => observer.observe(el));
+});
   </script>
 
   @stack('scripts')
