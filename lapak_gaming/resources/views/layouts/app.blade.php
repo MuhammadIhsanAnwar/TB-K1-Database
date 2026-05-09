@@ -639,12 +639,58 @@
             padding:0 18px;
             font-size:.9rem;
           }
+
+          /* ═══════════════════════════════════════
+              GAMING ANIMATED BACKGROUND
+            ═══════════════════════════════════════ */
+
+    #gaming-bg{
+        position:fixed;
+        inset:0;
+        z-index:-1;
+        overflow:hidden;
+        background:
+            radial-gradient(circle at top left, rgba(37,99,235,.12), transparent 35%),
+            radial-gradient(circle at bottom right, rgba(249,115,22,.10), transparent 35%),
+            #060A12;
+    }
+
+    .gaming-particle{
+        position:absolute;
+        width:3px;
+        height:3px;
+        border-radius:999px;
+        background:rgba(255,255,255,.7);
+        animation:floatParticle linear infinite;
+    }
+
+    @keyframes floatParticle{
+        from{
+            transform:translateY(100vh) scale(0.8);
+            opacity:0;
+        }
+
+        10%{
+            opacity:.7;
+        }
+
+        90%{
+            opacity:.7;
+        }
+
+        to{
+            transform:translateY(-120px) scale(1.2);
+            opacity:0;
+        }
+    }
   </style>
 
   @stack('styles')
 </head>
 
 <body class="page-bg text-slate-200 min-h-screen">
+
+<div id="gaming-bg"></div>
 
   {{-- Ambient top glow --}}
   <div class="pointer-events-none fixed top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-600/60 to-transparent z-50"></div>
@@ -784,6 +830,34 @@
     });
 
     reveals.forEach((el) => observer.observe(el));
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+
+    const bg = document.getElementById('gaming-bg');
+
+    for(let i = 0; i < 60; i++){
+
+        const particle = document.createElement('span');
+
+        particle.classList.add('gaming-particle');
+
+        const size = Math.random() * 4 + 2;
+
+        particle.style.width = `${size}px`;
+        particle.style.height = `${size}px`;
+
+        particle.style.left = Math.random() * 100 + 'vw';
+
+        particle.style.animationDuration = (Math.random() * 12 + 10) + 's';
+
+        particle.style.animationDelay = Math.random() * 10 + 's';
+
+        particle.style.opacity = Math.random();
+
+        bg.appendChild(particle);
+    }
+
 });
   </script>
 
