@@ -57,6 +57,8 @@
     width: 100%;
     height: 100%;
     background: transparent !important;
+    display: block;
+
   }
 
   spline-viewer::part(logo) { display: none !important; }
