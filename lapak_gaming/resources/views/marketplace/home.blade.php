@@ -455,7 +455,7 @@
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="pb-14">
   <div class="max-w-7xl mx-auto px-4">
-    <div class="rounded-2xl p-8 sm:p-12 relative overflow-hidden text-center"
+    <div class="reveal-card reveal-delay-2 rounded-2xl p-8 sm:p-12 relative overflow-hidden text-center"
          style="background:linear-gradient(135deg,rgba(37,99,235,0.15) 0%,rgba(249,115,22,0.08) 100%);border:1px solid rgba(37,99,235,0.25);">
       <div class="absolute inset-0 pointer-events-none"
            style="background:radial-gradient(ellipse 60% 50% at 50% 100%,rgba(37,99,235,0.1),transparent);"></div>
