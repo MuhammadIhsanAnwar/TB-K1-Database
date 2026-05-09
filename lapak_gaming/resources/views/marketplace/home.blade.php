@@ -44,7 +44,10 @@
 
   #robot-scene-container {
     width: 100%;
-    height: 100%;
+  height: 540px;
+  min-height: 540px;
+  position: relative;
+  z-index: 20;
     transform-style: preserve-3d;
     will-change: transform;
     transition: transform 0.05s linear;
