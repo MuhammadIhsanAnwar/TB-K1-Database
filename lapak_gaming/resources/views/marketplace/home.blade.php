@@ -530,7 +530,7 @@
   const sceneContainer = document.getElementById('robot-scene-container');
   const splineEl       = document.getElementById('spline-robot');
   const loader         = document.getElementById('robot-loader');
-  const cursorGlow     = document.getElementById('robot-cursor-glow');
+  
 
   if (!heroSection || !robotWrapper || !sceneContainer) return;
 
