@@ -405,6 +405,7 @@
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
       @forelse($popularProducts as $product)
         <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
+  <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
   @include('components.product-card', ['product' => $product])
 </div>
 </div>
