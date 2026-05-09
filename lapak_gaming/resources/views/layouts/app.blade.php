@@ -457,16 +457,11 @@
       }
     }
 
-    /* ═══ NAVBAR SLIDING UNDERLINE ═══ */
+    /* ═══ NAVBAR ACTIVE SLIDE ═══ */
 
       .nav-link {
         position: relative;
-        color: #94a3b8;
-        transition: color .3s ease;
-      }
-
-      .nav-link:hover {
-        color: white;
+        transition: color .25s ease;
       }
 
       /* garis bawah */
@@ -477,29 +472,42 @@
         bottom: -4px;
         width: calc(100% - 24px);
         height: 2px;
-
-        background: linear-gradient(90deg, #2563eb, #60a5fa);
-
         border-radius: 999px;
 
+        background: currentColor;
+
         transform: scaleX(0);
-        transform-origin: left;
+        transform-origin: center;
 
-        transition: transform .35s cubic-bezier(.22,1,.36,1);
-      }
+        transition:
+          transform .3s cubic-bezier(.22,1,.36,1),
+          opacity .25s ease;
 
-      /* saat hover */
-      .nav-link:hover::after {
-        transform: scaleX(1);
+        opacity: 0;
       }
 
       /* menu aktif */
-      .nav-link.active {
-        color: white;
-      }
-
       .nav-link.active::after {
         transform: scaleX(1);
+        opacity: 1;
+      }
+
+      /* saat hover menu lain */
+      .nav-link:hover::after {
+        transform: scaleX(1);
+        opacity: 1;
+      }
+
+      /* sembunyikan garis active saat navbar dihover */
+      nav:hover .nav-link.active::after {
+        transform: scaleX(0);
+        opacity: 0;
+      }
+
+      /* tampilkan garis pada menu yang disorot */
+      nav .nav-link:hover::after {
+        transform: scaleX(1);
+        opacity: 1;
       }
   </style>
 
