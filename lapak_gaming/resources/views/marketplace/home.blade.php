@@ -501,8 +501,6 @@
 --}}
 <script type="module" src="https://unpkg.com/@splinetool/viewer/build/spline-viewer.js"></script>
 
-<script type="module" src="https://unpkg.com/@splinetool/viewer/build/spline-viewer.js"></script>
-
 <script>
 (function () {
   'use strict';
@@ -518,7 +516,7 @@
   const loader         = document.getElementById('robot-loader');
   
 
-  if (!heroSection || !robotWrapper || !sceneContainer) return;
+  if (!heroSection || !robotWrapper || !splineEl) return;
 
   /* ── Loader ─────────────────────────── */
   function hideLoader() {
