@@ -177,7 +177,7 @@
 
 {{-- ═══ STICKY TOP NAVBAR ═══ --}}
 <header id="main-navbar"
-  class="sticky top-0 z-30 navbar-blur"
+  class="sticky top-0 z-30 navbar-blur reveal-navbar"
   style="background:rgba(6,10,18,0.85);border-bottom:1px solid rgba(30,45,69,0.6);">
 
  

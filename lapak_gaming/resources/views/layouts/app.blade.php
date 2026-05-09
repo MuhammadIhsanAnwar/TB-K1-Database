@@ -432,6 +432,30 @@
         opacity: 1;
         transform: translateX(0);
     }
+
+    /* ═══ Premium Navbar Reveal ═══ */
+    .reveal-navbar {
+      opacity: 0;
+      transform: translateY(-20px) scale(0.98);
+      animation: navbarReveal 0.8s cubic-bezier(.22,1,.36,1) forwards;
+    }
+
+    @keyframes navbarReveal {
+      0% {
+        opacity: 0;
+        transform: translateY(-20px) scale(0.98);
+      }
+
+      60% {
+        opacity: 1;
+        transform: translateY(4px) scale(1);
+      }
+
+      100% {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
   </style>
 
   @stack('styles')
