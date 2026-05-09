@@ -73,7 +73,7 @@
       <div>
         <h4 class="font-display font-semibold text-white text-sm mb-4">Tentang Kami</h4>
         <ul class="space-y-2.5">
-          @foreach(['Pusat Bantuan','Cara Bertransaksi','Kebijakan Privasi','Syarat & Ketentuan','Kontak Kami','Kebijakan Privasi'] as $item)
+          @foreach(['Tentang Lapak Gaming','Hubungi Kami','Kebijakan Privasi','Kebijakan Pengembalian Dana','Syarat & Ketentuan'] as $item)
           <li><a href="#" class="text-sm text-slate-400 hover:text-white transition-colors">{{ $item }}</a></li>
           @endforeach
         </ul>
