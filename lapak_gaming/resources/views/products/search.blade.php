@@ -9,7 +9,7 @@
             <p class="text-sm text-gray-400 mt-2">Menemukan {{ $products->total() }} produk untuk "{{ $query }}".</p>
         </div>
         <form action="{{ route('products.search') }}" method="GET" class="flex gap-2 w-full md:w-auto">
-            <input type="text" name="q" value="{{ $query }}" placeholder="Cari produk..." class="w-full md:w-80 bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-violet-500">
+            <input type="text" name="q" value="{{ $query }}" placeholder="Cari produk..." class="w-full md:w-80 bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500">
     <button type="submit" class="btn-primary px-5 rounded-xl text-white transition-all duration-300 hover:scale-[1.03]">   Cari</button>
         </form>
     </div>
