@@ -284,7 +284,9 @@
   </div>
 </section>
 
-{{-- FAQ SECTION --}}
+{{-- ═══════════════════════════════════════════════════════════ --}}
+{{-- FAQ SECTION (ACCORDION)                                     --}}
+{{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="pb-20">
     <div class="max-w-7xl mx-auto px-4">
         <div class="space-y-3">
