@@ -57,9 +57,22 @@ class ProductController extends Controller
         return view('products.search', compact('products', 'query'));
     }
 
-    public function byType(string $type)
+public function byType(string $type)
     {
-        $products = Product::active()->inStock()->ofType($type)
+        $products = Product::query()
+            ->active()
+            // ->inStock() // PASTIKAN BARIS INI DIHAPUS / DI-COMMENT. Jasa Joki biasanya stoknya 0.
+            ->where(function ($query) use ($type) {
+                // 1. Cari berdasarkan kolom type (Pencarian utama)
+                $query->where('type', 'LIKE', "%{$type}%")
+                      // 2. Backup: Kalau kolom type kosong/salah, cari dari Nama Produk
+                      ->orWhere('name', 'LIKE', "%{$type}%")
+                      // 3. Backup: Cari dari Nama Kategorinya
+                      ->orWhereHas('category', function ($q) use ($type) {
+                          $q->where('slug', 'LIKE', "%{$type}%")
+                            ->orWhere('name', 'LIKE', "%{$type}%");
+                      });
+            })
             ->with(['category', 'seller'])
             ->paginate(20);
 
