@@ -640,49 +640,90 @@
             font-size:.9rem;
           }
 
-          /* ═══════════════════════════════════════
+         /* ═══════════════════════════════════════
               GAMING ANIMATED BACKGROUND
             ═══════════════════════════════════════ */
 
-    #gaming-bg{
-        position:fixed;
-        inset:0;
-        z-index:-1;
-        overflow:hidden;
-        background:
-            radial-gradient(circle at top left, rgba(37,99,235,.12), transparent 35%),
-            radial-gradient(circle at bottom right, rgba(249,115,22,.10), transparent 35%),
-            #060A12;
-    }
+      #gaming-bg{
+          position: fixed;
+          inset: 0;
+          z-index: -1;
+          overflow: hidden;
+          background:
+              radial-gradient(circle at top left, rgba(37,99,235,.12), transparent 35%),
+              radial-gradient(circle at bottom right, rgba(249,115,22,.10), transparent 35%),
+              #060A12;
+      }
 
-    .gaming-particle{
-        position:absolute;
-        width:3px;
-        height:3px;
-        border-radius:999px;
-        background:rgba(255,255,255,.7);
-        animation:floatParticle linear infinite;
-    }
+      /* ELEMENT GAMING */
+      .gaming-particle{
+          position: absolute;
+          opacity: .45;
+          animation: floatParticle linear infinite;
+          filter: drop-shadow(0 0 8px rgba(37,99,235,.35));
+      }
 
-    @keyframes floatParticle{
-        from{
-            transform:translateY(100vh) scale(0.8);
-            opacity:0;
-        }
+      /* garis neon */
+      .gaming-particle.line{
+          width: 2px;
+          height: 80px;
+          background: linear-gradient(
+              to bottom,
+              transparent,
+              rgba(37,99,235,.9),
+              transparent
+          );
+          transform: rotate(25deg);
+      }
 
-        10%{
-            opacity:.7;
-        }
+      /* kotak futuristik */
+      .gaming-particle.square{
+          width: 12px;
+          height: 12px;
+          border: 1px solid rgba(249,115,22,.7);
+          transform: rotate(45deg);
+      }
 
-        90%{
-            opacity:.7;
-        }
+      /* plus cyber */
+      .gaming-particle.plus::before,
+      .gaming-particle.plus::after{
+          content:'';
+          position:absolute;
+          background:rgba(37,99,235,.85);
+      }
 
-        to{
-            transform:translateY(-120px) scale(1.2);
-            opacity:0;
-        }
-    }
+      .gaming-particle.plus::before{
+          width:14px;
+          height:2px;
+          top:6px;
+      }
+
+      .gaming-particle.plus::after{
+          width:2px;
+          height:14px;
+          left:6px;
+      }
+
+      @keyframes floatParticle{
+
+          from{
+              transform: translateY(110vh);
+              opacity:0;
+          }
+
+          10%{
+              opacity:.5;
+          }
+
+          90%{
+              opacity:.5;
+          }
+
+          to{
+              transform: translateY(-120px);
+              opacity:0;
+          }
+      }
   </style>
 
   @stack('styles')
@@ -836,24 +877,28 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const bg = document.getElementById('gaming-bg');
 
-    for(let i = 0; i < 60; i++){
+    const types = ['line', 'square', 'plus'];
+
+    for(let i = 0; i < 45; i++){
 
         const particle = document.createElement('span');
 
         particle.classList.add('gaming-particle');
 
-        const size = Math.random() * 4 + 2;
+        const type = types[Math.floor(Math.random() * types.length)];
 
-        particle.style.width = `${size}px`;
-        particle.style.height = `${size}px`;
+        particle.classList.add(type);
 
         particle.style.left = Math.random() * 100 + 'vw';
 
-        particle.style.animationDuration = (Math.random() * 12 + 10) + 's';
+        particle.style.animationDuration =
+            (Math.random() * 10 + 12) + 's';
 
-        particle.style.animationDelay = Math.random() * 10 + 's';
+        particle.style.animationDelay =
+            Math.random() * 8 + 's';
 
-        particle.style.opacity = Math.random();
+        particle.style.opacity =
+            Math.random() * 0.5 + 0.2;
 
         bg.appendChild(particle);
     }
