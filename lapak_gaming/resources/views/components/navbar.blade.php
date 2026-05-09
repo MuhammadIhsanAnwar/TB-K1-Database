@@ -180,14 +180,7 @@
   class="sticky top-0 z-30 navbar-blur"
   style="background:rgba(6,10,18,0.85);border-bottom:1px solid rgba(30,45,69,0.6);">
 
-  {{-- Announcement bar --}}
-  <div id="announcement-bar" class="text-center text-xs py-1.5 px-4 font-medium"
-       style="background:linear-gradient(90deg,rgba(37,99,235,0.2),rgba(249,115,22,0.15),rgba(37,99,235,0.2));border-bottom:1px solid rgba(37,99,235,0.15);">
-    <span class="text-slate-300">⚡ Promo Flash Sale aktif — hemat hingga 70%!</span>
-    <a href="{{ route('marketplace.trending') }}" class="ml-2 text-brand-400 hover:text-brand-300 font-semibold">Lihat →</a>
-    <button onclick="document.getElementById('announcement-bar').remove()" class="ml-3 text-slate-500 hover:text-slate-300">×</button>
-  </div>
-
+ 
   <div class="max-w-7xl mx-auto px-4 h-14 flex items-center gap-4">
 
     {{-- Hamburger (mobile) --}}
