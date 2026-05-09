@@ -216,17 +216,11 @@
           <div class="p-2 grid grid-cols-2 gap-1">
             @foreach($categories as $cat)
             <a href="{{ route('categories.show', $cat->slug) }}"
-              class="category-hover flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-all duration-300">
-
-                <span class="text-base transition-transform duration-300 group-hover:scale-110">
-                    {{ $cat->icon ?? '🎮' }}
-                </span>
-
-                <span class="truncate">
-                    {{ $cat->name }}
-                </span>
+               class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-colors"
+              >
+              <span class="text-base">{{ $cat->icon ?? '🎮' }}</span>
+              <span class="truncate">{{ $cat->name }}</span>
             </a>
-@endforeach
             @endforeach
           </div>
           @endisset
