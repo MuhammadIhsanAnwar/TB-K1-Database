@@ -246,9 +246,12 @@
         {{-- ★ Spline 3D Robot ★ --}}
         <div id="robot-scene-container" style="z-index:20;">
           <spline-viewer
-            id="spline-robot"
-            url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode"
-          ></spline-viewer>
+  id="spline-robot"
+  loading="eager"
+  events-target="global"
+  loading-anim-type="spinner-big-dark"
+  url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode"
+></spline-viewer>
         </div>
 
         {{-- Spline branding cover --}}
