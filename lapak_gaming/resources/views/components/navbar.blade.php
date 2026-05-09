@@ -198,10 +198,11 @@
 
     {{-- Desktop nav links --}}
     <nav class="hidden lg:flex items-center gap-1 ml-2">
-      <a href="{{ route('marketplace.home') }}"
-         class="px-3 py-1.5 rounded-lg text-sm font-medium transition-colors {{ request()->routeIs('marketplace.home') ? 'text-brand-400 nav-active' : 'text-slate-400 hover:text-white' }}">
-        Beranda
-      </a>
+        <a href="{{ route('marketplace.home') }}"
+            class="nav-link px-3 py-1.5 rounded-lg text-sm font-medium
+            {{ request()->routeIs('marketplace.home') ? 'active' : '' }}">
+            Beranda
+          </a>
 
       {{-- Categories Dropdown --}}
       <div class="relative">
@@ -232,11 +233,13 @@
       </div>
 
       <a href="{{ route('marketplace.trending') }}"
-         class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white transition-colors {{ request()->routeIs('marketplace.trending') ? 'text-brand-400 nav-active' : '' }}">
+        class="nav-link flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium
+        {{ request()->routeIs('marketplace.trending') ? 'active' : '' }}">
         Trending
         <span class="badge badge-orange">HOT</span>
       </a>
-    </nav>
+        <span class="badge badge-orange">HOT</span>
+  </nav>
 
     {{-- Search Bar (center, desktop) --}}
     <form action="{{ route('products.search') }}" method="GET" class="hidden md:flex flex-1 max-w-md mx-auto">

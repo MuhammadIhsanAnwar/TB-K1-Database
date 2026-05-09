@@ -456,6 +456,51 @@
         transform: translateY(0) scale(1);
       }
     }
+
+    /* ═══ NAVBAR SLIDING UNDERLINE ═══ */
+
+      .nav-link {
+        position: relative;
+        color: #94a3b8;
+        transition: color .3s ease;
+      }
+
+      .nav-link:hover {
+        color: white;
+      }
+
+      /* garis bawah */
+      .nav-link::after {
+        content: "";
+        position: absolute;
+        left: 12px;
+        bottom: -4px;
+        width: calc(100% - 24px);
+        height: 2px;
+
+        background: linear-gradient(90deg, #2563eb, #60a5fa);
+
+        border-radius: 999px;
+
+        transform: scaleX(0);
+        transform-origin: left;
+
+        transition: transform .35s cubic-bezier(.22,1,.36,1);
+      }
+
+      /* saat hover */
+      .nav-link:hover::after {
+        transform: scaleX(1);
+      }
+
+      /* menu aktif */
+      .nav-link.active {
+        color: white;
+      }
+
+      .nav-link.active::after {
+        transform: scaleX(1);
+      }
   </style>
 
   @stack('styles')
