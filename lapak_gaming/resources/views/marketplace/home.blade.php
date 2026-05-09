@@ -567,6 +567,33 @@ function tick() {
   rafId = requestAnimationFrame(tick);
 }
 
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+
+    if (entry.isIntersecting) {
+
+      if (!animationRunning) {
+        animationRunning = true;
+        tick();
+      }
+
+    } else {
+
+      animationRunning = false;
+
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+
+    }
+
+  });
+}, {
+  threshold: 0.15
+});
+
+observer.observe(robotWrapper);
+
   /* ── Mouse move: track position + update cursor glow ──────── */
   heroSection.addEventListener('mousemove', function (e) {
     hasMouseInHero = true;
