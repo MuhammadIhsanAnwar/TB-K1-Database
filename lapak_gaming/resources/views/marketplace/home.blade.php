@@ -328,7 +328,6 @@
                 </div>
             </div>
             @endforeach
-
         </div>
     </div>
 </section>
@@ -339,6 +338,10 @@
         const content = document.getElementById(`faq-${index}`);
         const icon = document.getElementById(`icon-${index}`);
         const isOpen = content.style.maxHeight !== '0px' && content.style.maxHeight !== '';
+
+        // Tutup semua FAQ dulu (opsional, jika ingin hanya 1 yang terbuka)
+        document.querySelectorAll('[id^="faq-"]').forEach(el => el.style.maxHeight = '0px');
+        document.querySelectorAll('[id^="icon-"]').forEach(el => el.style.transform = 'rotate(0deg)');
 
         if (isOpen) {
             content.style.maxHeight = '0px';
