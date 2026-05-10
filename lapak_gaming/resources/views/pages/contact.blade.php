@@ -35,7 +35,7 @@
                 <h3 class="text-lg font-display font-bold text-white mb-1 ml-2">Email Support</h3>
                 <p class="text-slate-400 text-sm mb-4 ml-2">Satu-satunya jalur resmi untuk bantuan kendala transaksi & pelaporan akun.</p>
                 <a href="mailto:support@lapakgaming.com" class="text-blue-400 font-semibold text-sm group-hover:text-blue-300 flex items-center gap-2 ml-2">
-                    support@lapakgaming.com 
+                    administrator@lapakgaming.neoverse.my.id
                     <span class="opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">→</span>
                 </a>
             </div>
