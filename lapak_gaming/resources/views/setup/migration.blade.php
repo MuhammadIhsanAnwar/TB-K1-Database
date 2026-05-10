@@ -273,6 +273,20 @@
             consoleOutput.scrollTop = consoleOutput.scrollHeight;
         }
 
+        async function parseJsonResponse(response) {
+            const raw = await response.text();
+
+            try {
+                return JSON.parse(raw);
+            } catch (error) {
+                return {
+                    success: false,
+                    message: 'Server mengembalikan respons non-JSON.',
+                    output: raw.slice(0, 400),
+                };
+            }
+        }
+
         function runMigration() {
             consoleOutput.classList.add('show');
             migrateBtn.disabled = true;
@@ -287,10 +301,11 @@
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             })
-                .then(response => response.json())
+                .then(parseJsonResponse)
                 .then(data => {
                     spinner.style.display = 'none';
 
@@ -342,8 +357,12 @@
 
         // Cek status database saat halaman pertama kali dimuat
         window.addEventListener('load', function () {
-            fetch('{{ route("setup.migrate.status") }}')
-                .then(response => response.json())
+            fetch('{{ route("setup.migrate.status") }}', {
+                headers: {
+                    'Accept': 'application/json',
+                }
+            })
+                .then(parseJsonResponse)
                 .then(data => {
                     if (data.tables_exist) {
                         addOutput('✓ Tabel database sudah ada', 'success');

@@ -503,8 +503,8 @@
 
       @foreach($faqs as $index => $faq)
       <div class="faq-item group">
-        <button onclick="toggleFaq({{ $index }})"
-                class="w-full flex items-center justify-between p-5 text-left bg-gray-900/50 border border-gray-800 rounded-2xl hover:border-blue-500/50 transition-all duration-300">
+        <button type="button" data-faq-index="{{ $index }}"
+          class="js-faq-toggle w-full flex items-center justify-between p-5 text-left bg-gray-900/50 border border-gray-800 rounded-2xl hover:border-blue-500/50 transition-all duration-300">
           <span class="font-display font-bold text-white text-sm md:text-base">{{ $faq['q'] }}</span>
           <svg id="icon-{{ $index }}" class="w-5 h-5 text-slate-500 transition-transform duration-300"
                fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -749,6 +749,15 @@ splineRobot.style.transform = `
   };
 
   document.addEventListener('DOMContentLoaded', () => {
+
+  document.querySelectorAll('.js-faq-toggle').forEach((button) => {
+    button.addEventListener('click', () => {
+      const index = Number(button.getAttribute('data-faq-index'));
+      if (!Number.isNaN(index)) {
+        window.toggleFaq(index);
+      }
+    });
+  });
 
   const reveals = document.querySelectorAll('.reveal-card');
 

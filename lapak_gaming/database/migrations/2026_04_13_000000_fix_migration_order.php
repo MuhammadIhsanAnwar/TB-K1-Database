@@ -31,38 +31,22 @@ return new class extends Migration
                 // Drop foreign key jika ada
                 try {
                     if (Schema::hasColumn('users', 'seller_level_id')) {
-                        // Cek apakah constraint sudah ada
-                        $sm = Schema::getConnection()->getDoctrineSchemaManager();
-                        $indexes = $sm->listTableForeignKeys('users');
-                        $hasFK = false;
-                        
-                        foreach ($indexes as $index) {
-                            if ($index->getLocalColumns()[0] === 'seller_level_id') {
-                                $hasFK = true;
-                                break;
-                            }
-                        }
-                        
-                        // Jika constraint sudah ada, drop dulu
-                        if ($hasFK) {
-                            // Gunakan raw SQL untuk drop constraint yang error
-                            Schema::getConnection()->statement('ALTER TABLE users DROP FOREIGN KEY users_seller_level_id_foreign');
-                        }
+                        $table->dropForeign(['seller_level_id']);
                     }
-                } catch (\Exception $e) {
+                } catch (\Throwable $e) {
                     // Ignore jika constraint tidak ada
                 }
             });
 
             // 3. Add constraint dengan benar setelah seller_levels sudah pasti ada
             Schema::table('users', function (Blueprint $table) {
-                if (Schema::hasColumn('users', 'seller_level_id') && !Schema::hasColumn('users', '_constraint_added')) {
+                if (Schema::hasColumn('users', 'seller_level_id')) {
                     try {
                         $table->foreign('seller_level_id')
                             ->references('id')
                             ->on('seller_levels')
                             ->nullOnDelete();
-                    } catch (\Exception $e) {
+                    } catch (\Throwable $e) {
                         // Constraint sudah ada
                     }
                 }
@@ -78,7 +62,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             try {
                 $table->dropConstrainedForeignId('seller_level_id');
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 // Ignore jika constraint tidak ada
             }
         });

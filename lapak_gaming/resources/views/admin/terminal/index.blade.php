@@ -300,6 +300,7 @@
             const tokenValue = token();
             const headers = {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
                 'X-CSRF-TOKEN': '{{ csrf_token() }}',
             };
 
@@ -318,7 +319,21 @@
                 headers: headers(),
                 body: JSON.stringify({ command })
             })
-                .then(response => response.json().then(data => ({ status: response.status, data })))
+                .then(async response => {
+                    const raw = await response.text();
+                    let data;
+
+                    try {
+                        data = JSON.parse(raw);
+                    } catch (error) {
+                        data = {
+                            success: false,
+                            output: '❌ Server mengembalikan respons non-JSON. ' + raw.slice(0, 300),
+                        };
+                    }
+
+                    return { status: response.status, data };
+                })
                 .then(({ status, data }) => {
                     if (status === 403) {
                         appendLine(data.output || '❌ Akses ditolak. Token terminal salah atau belum diisi.', 'err');

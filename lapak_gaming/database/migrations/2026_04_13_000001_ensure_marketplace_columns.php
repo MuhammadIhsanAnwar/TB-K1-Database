@@ -56,30 +56,16 @@ return new class extends Migration
             }
         });
 
-        // Step 2: Add foreign key constraint if it doesn't exist
         if (Schema::hasColumn('users', 'seller_level_id')) {
             try {
-                $sm = Schema::getConnection()->getDoctrineSchemaManager();
-                $indexes = $sm->listTableForeignKeys('users');
-                $hasFK = false;
-
-                foreach ($indexes as $index) {
-                    if (!empty($index->getLocalColumns()) && $index->getLocalColumns()[0] === 'seller_level_id') {
-                        $hasFK = true;
-                        break;
-                    }
-                }
-
-                if (!$hasFK) {
-                    Schema::table('users', function (Blueprint $table) {
-                        $table->foreign('seller_level_id')
-                            ->references('id')
-                            ->on('seller_levels')
-                            ->nullOnDelete();
-                    });
-                }
-            } catch (\Exception $e) {
-                // Foreign key already exists or other issue - continue
+                Schema::table('users', function (Blueprint $table) {
+                    $table->foreign('seller_level_id')
+                        ->references('id')
+                        ->on('seller_levels')
+                        ->nullOnDelete();
+                });
+            } catch (\Throwable $e) {
+                // Foreign key may already exist or table may not be ready.
             }
         }
     }
@@ -95,16 +81,8 @@ return new class extends Migration
 
         Schema::table('users', function (Blueprint $table) {
             try {
-                $sm = Schema::getConnection()->getDoctrineSchemaManager();
-                $indexes = $sm->listTableForeignKeys('users');
-
-                foreach ($indexes as $index) {
-                    if (!empty($index->getLocalColumns()) && $index->getLocalColumns()[0] === 'seller_level_id') {
-                        $table->dropForeign(['seller_level_id']);
-                        break;
-                    }
-                }
-            } catch (\Exception $e) {
+                $table->dropForeign(['seller_level_id']);
+            } catch (\Throwable $e) {
                 // Constraint doesn't exist
             }
 

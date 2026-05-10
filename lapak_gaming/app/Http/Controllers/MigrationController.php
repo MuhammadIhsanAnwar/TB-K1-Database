@@ -31,7 +31,7 @@ class MigrationController extends Controller
                 'output' => $output,
                 'redirect' => route('setup.index')
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $errorMsg = $e->getMessage();
             
             // Handle duplicate column error (partial migrate)
@@ -49,7 +49,7 @@ class MigrationController extends Controller
                         'output' => $output,
                         'redirect' => route('setup.index')
                     ]);
-                } catch (\Exception $retryError) {
+                } catch (\Throwable $retryError) {
                     return response()->json([
                         'success' => false,
                         'message' => '❌ Migrasi masih gagal. Coba reset database.',
@@ -75,7 +75,7 @@ class MigrationController extends Controller
                         'output' => $output,
                         'redirect' => route('setup.index')
                     ]);
-                } catch (\Exception $resetError) {
+                } catch (\Throwable $resetError) {
                     return response()->json([
                         'success' => false,
                         'message' => '❌ Migrasi gagal: ' . $resetError->getMessage(),

@@ -55,28 +55,14 @@ return new class extends Migration
                 $table->timestamp('suspended_at')->nullable();
             }
 
-            // Step 2: Add foreign key constraint if needed
             if (Schema::hasColumn('users', 'seller_level_id')) {
                 try {
-                    $sm = Schema::getConnection()->getDoctrineSchemaManager();
-                    $indexes = $sm->listTableForeignKeys('users');
-                    $hasFK = false;
-                    
-                    foreach ($indexes as $index) {
-                        if (!empty($index->getLocalColumns()) && $index->getLocalColumns()[0] === 'seller_level_id') {
-                            $hasFK = true;
-                            break;
-                        }
-                    }
-                    
-                    if (!$hasFK) {
-                        $table->foreign('seller_level_id')
-                            ->references('id')
-                            ->on('seller_levels')
-                            ->nullOnDelete();
-                    }
-                } catch (\Exception $e) {
-                    // Foreign key might already exist or seller_levels table might not exist yet
+                    $table->foreign('seller_level_id')
+                        ->references('id')
+                        ->on('seller_levels')
+                        ->nullOnDelete();
+                } catch (\Throwable $e) {
+                    // Foreign key may already exist or table may not be ready.
                 }
             }
         });
@@ -87,7 +73,7 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             try {
                 $table->dropConstrainedForeignId('seller_level_id');
-            } catch (\Exception $e) {
+            } catch (\Throwable $e) {
                 // Constraint might not exist
             }
         });

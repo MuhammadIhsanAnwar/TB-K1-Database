@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Config;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\Validator;
 use Symfony\Component\Console\Output\BufferedOutput;
 
 class ArtisanTerminalController extends Controller
@@ -67,10 +68,17 @@ class ArtisanTerminalController extends Controller
             ], 403);
         }
 
-        // Validasi perintah
-        $request->validate([
-            'command' => 'required|string',
+        $validator = Validator::make($request->all(), [
+            'command' => ['required', 'string'],
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'output' => '❌ Input command tidak valid.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
         $command = $this->normalizeCommand($request->input('command'));
 
@@ -112,7 +120,7 @@ class ArtisanTerminalController extends Controller
                 'success' => true,
                 'output' => $result ?: '✓ Perintah berhasil dijalankan (tanpa output)'
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
                 'output' => "❌ Error: " . $e->getMessage()
@@ -132,9 +140,17 @@ class ArtisanTerminalController extends Controller
             ], 403);
         }
 
-        $request->validate([
-            'command' => 'required|string|in:migrate,cache:clear,config:cache,route:cache,view:cache,optimize,storage:link,db:seed',
+        $validator = Validator::make($request->all(), [
+            'command' => ['required', 'string', 'in:migrate,cache:clear,config:cache,route:cache,view:cache,optimize,storage:link,db:seed'],
         ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'output' => '❌ Command quick action tidak valid.',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
 
         $command = $request->input('command');
 
@@ -145,7 +161,7 @@ class ArtisanTerminalController extends Controller
                 'success' => true,
                 'output' => $result ?: '✓ Perintah berhasil dijalankan'
             ]);
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             return response()->json([
                 'success' => false,
                 'output' => "❌ Error: " . $e->getMessage()
