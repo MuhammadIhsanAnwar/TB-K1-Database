@@ -39,21 +39,6 @@
                     <span class="opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">→</span>
                 </a>
             </div>
-
-            {{-- Kartu WhatsApp --}}
-            <div class="group bg-gray-925/80 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 hover:border-green-500 hover:shadow-[0_8px_30px_rgba(34,197,94,0.15)] hover:-translate-y-1.5 transition-all duration-300 cursor-pointer card-glow">
-                <div class="w-12 h-12 bg-green-500/10 rounded-xl flex items-center justify-center mb-5 group-hover:bg-green-500/20 transition-colors duration-300">
-                    <svg class="w-6 h-6 text-green-400 group-hover:scale-110 group-hover:-rotate-6 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-display font-bold text-white mb-1">WhatsApp CS</h3>
-                <p class="text-slate-400 text-sm mb-4 line-clamp-2">Respon super cepat. (Jam Kerja: 08:00 - 22:00 WIB).</p>
-                <a href="#" class="text-green-400 font-semibold text-sm group-hover:text-green-300 flex items-center gap-2">
-                    +62 812-3456-7890
-                    <span class="opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">→</span>
-                </a>
-            </div>
         </div>
 
         {{-- Kolom Kanan: Form (Porsi 3 kolom) --}}
