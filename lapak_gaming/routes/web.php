@@ -157,3 +157,4 @@ Route::get('/hubungi-kami', [PageController::class, 'contact'])->name('contact')
 Route::get('/aturan-penggunaan', [PageController::class, 'terms'])->name('terms');
 Route::get('/kebijakan-privasi', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/kebijakan-pengembalian-dana', [PageController::class, 'refund'])->name('refund');
+Route::get('/tentang-kami', [PageController::class, 'about'])->name('about');
