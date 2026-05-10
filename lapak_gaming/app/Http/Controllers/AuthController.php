@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -96,7 +95,10 @@ class AuthController extends Controller
         ], $messages);
 
         $user = DB::transaction(function () use ($request, $data) {
-            $avatarPath = $request->file('profile_photo')->store('user-avatars', 'public');
+            $photo = $request->file('profile_photo');
+            $avatarFilename = Str::uuid()->toString() . '.' . $photo->getClientOriginalExtension();
+            Storage::disk('public_app_public')->putFileAs('user-avatars', $photo, $avatarFilename);
+            $avatarPath = 'app/public/user-avatars/' . $avatarFilename;
 
             $user = User::create([
                 'name' => $data['name'],
@@ -118,7 +120,7 @@ class AuthController extends Controller
             return $user;
         });
 
-        event(new Registered($user));
+        $user->sendEmailVerificationNotification();
 
         return redirect()->route('login')->with('status', 'Registrasi berhasil! Silakan cek email Anda untuk verifikasi akun.');
     }
@@ -170,6 +172,8 @@ class AuthController extends Controller
 
         $googlePhone = $this->resolveGooglePhone($googleUser->token ?? null);
         $googleAvatarPath = $this->storeGoogleAvatar($googleUser->getAvatar(), (string) $googleUser->getId());
+        $googleProfilePhone = $googlePhone ?: '-';
+        $googleProfileBirthDate = '2000-01-01';
 
         // Find existing user by google_id or email
         $user = User::where('google_id', $googleUser->getId())->first()
@@ -193,8 +197,9 @@ class AuthController extends Controller
             
             $user->profile()->create([
                 'gender' => 'other',
-                'birth_date' => null,
-                'phone' => $googlePhone,
+                // Provide safe defaults for legacy schemas where these columns are NOT NULL.
+                'birth_date' => $googleProfileBirthDate,
+                'phone' => $googleProfilePhone,
                 'avatar_path' => $googleAvatarPath,
             ]);
 
@@ -218,7 +223,7 @@ class AuthController extends Controller
         if (! $user->email_verified_at) {
             // For new users, send verification email
             if ($isNewUser) {
-                event(new Registered($user));
+                $user->sendEmailVerificationNotification();
             }
 
             // Redirect to verification notice
@@ -273,10 +278,10 @@ class AuthController extends Controller
                 return null;
             }
 
-            $avatarPath = 'user-avatars/google-' . $googleId . '.jpg';
-            Storage::disk('public')->put($avatarPath, $response->body());
+            $avatarRelativePath = 'user-avatars/google-' . $googleId . '.jpg';
+            Storage::disk('public_app_public')->put($avatarRelativePath, $response->body());
 
-            return $avatarPath;
+            return 'app/public/' . $avatarRelativePath;
         } catch (\Throwable $exception) {
             return null;
         }
