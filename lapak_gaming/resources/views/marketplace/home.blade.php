@@ -102,7 +102,9 @@
     0%, 100% { transform: translateY(0px); }
     50%       { transform: translateY(-7px); }
   }
-  animation: none !important;
+  .badge-float-a { animation: badgeFloat 4.0s ease-in-out infinite; }
+  .badge-float-b { animation: badgeFloat 5.2s ease-in-out infinite 1.5s; }
+  .badge-float-c { animation: badgeFloat 4.7s ease-in-out infinite 0.8s; }
 
   @keyframes scanSweep {
     0%   { top: 14%; opacity: 0; }
@@ -292,16 +294,15 @@ img,
         </div>
 
         {{-- ★ Spline 3D Robot ★ --}}
-        <div class="robot-video-wrapper">
-    <video
-        autoplay
-        muted
-        loop
-        playsinline
-        class="robot-video">
-        <source src="{{ asset('videos/robot.webm') }}" type="video/webm">
-    </video>
-</div>
+        <div id="robot-scene-container" style="z-index:20;">
+          <spline-viewer
+            id="spline-robot"
+            loading="lazy"
+            events-target="global"
+            loading-anim-type="spinner-big-dark"
+            url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode"
+            ></spline-viewer>
+        </div>
 
         {{-- Spline branding cover --}}
         <div id="spline-logo-cover"></div>
