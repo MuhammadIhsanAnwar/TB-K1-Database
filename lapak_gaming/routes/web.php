@@ -155,4 +155,4 @@ Route::middleware('auth')->group(function (): void {
 // Halaman Bantuan
 Route::get('/hubungi-kami', [PageController::class, 'contact'])->name('contact');
 Route::get('/aturan-penggunaan', [PageController::class, 'terms'])->name('terms');
-
+Route::get('/kebijakan-privasi', [PageController::class, 'privacy'])->name('privacy');
