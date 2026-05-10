@@ -77,7 +77,6 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         {{-- Kolom Kanan: Form (Porsi 3 kolom) --}}
@@ -131,7 +130,6 @@
                 </form>
             </div>
         </div>
-
     </div>
 </div>
 @endsection
