@@ -25,7 +25,7 @@
                 </div>
                 <h3 class="text-lg font-bold text-white mb-1">Email Support</h3>
                 <p class="text-slate-400 text-sm mb-3">Untuk bantuan kendala transaksi & akun.</p>
-                <a href="mailto:support@lapakgaming.com" class="text-blue-400 font-medium hover:text-blue-300">support@lapakgaming.com</a>
+                <a href="mailto:support@lapakgaming.com" class="text-blue-400 font-medium hover:text-blue-300">administrator@lapakgaming.neoverse.my.id</a>
             </div>
 
             <div class="bg-gray-900/50 border border-gray-800 rounded-2xl p-6 hover:border-green-500/50 transition-colors">
