@@ -43,7 +43,120 @@
     box-shadow: 0 6px 16px rgba(0,0,0,0.3);
   }
 
-  
+  /* ══════════════════════════════════════════════════════════
+     3D ROBOT — animations & layout
+  ══════════════════════════════════════════════════════════ */
+  #hero-robot-wrapper {
+    transform-style: preserve-3d;
+  }
+
+  #robot-scene-container {
+  width: 100%;
+  height: 420px;
+  min-height: 420px;
+  position: relative;
+  z-index: 20;
+    transform-style: preserve-3d;
+    will-change: transform;
+    transition: transform 0.05s linear;
+  }
+
+  spline-viewer {
+    width: 100%;
+    height: 100%;
+    background: transparent !important;
+    display: block;
+
+  }
+
+  spline-viewer::part(logo) { display: none !important; }
+
+  @keyframes robotGlow1 {
+    0%, 100% { opacity: 0.28; transform: scale(1); }
+    50%       { opacity: 0.50; transform: scale(1.10); }
+  }
+  @keyframes robotGlow2 {
+    0%, 100% { opacity: 0.15; transform: scale(1) translate(-50%,-50%); }
+    50%       { opacity: 0.32; transform: scale(1.15) translate(-50%,-50%); }
+  }
+  .robot-glow-blue {
+  width: 180px !important;
+  height: 180px !important;
+  filter: blur(14px) !important;
+}
+
+.robot-glow-orange {
+  width: 140px !important;
+  height: 140px !important;
+  filter: blur(18px) !important;
+}
+
+  @keyframes ringCW  { to { transform: rotate(360deg); } }
+  @keyframes ringCCW { to { transform: rotate(-360deg); } }
+  .ring-cw,
+.ring-ccw {
+  animation: none !important;
+}
+
+  @keyframes badgeFloat {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-7px); }
+  }
+  animation: none !important;
+
+  @keyframes scanSweep {
+    0%   { top: 14%; opacity: 0; }
+    6%   { opacity: 1; }
+    94%  { opacity: 1; }
+    100% { top: 86%; opacity: 0; }
+  }
+  .scan-line {
+    position: absolute;
+    left: 12%; right: 12%;
+    height: 1px;
+    background: linear-gradient(90deg,transparent 0%,rgba(37,99,235,0.55) 20%,rgba(147,197,253,0.9) 50%,rgba(37,99,235,0.55) 80%,transparent 100%);
+    animation: scanSweep 7s ease-in-out infinite 2.5s;
+    pointer-events: none;
+    z-index: 25;
+  }
+
+  .corner-bracket {
+    position: absolute;
+    width: 20px; height: 20px;
+    opacity: 0.45;
+    pointer-events: none;
+    z-index: 26;
+  }
+  .corner-bracket.tl { top:22px;  left:22px;    border-top:2px solid #60a5fa; border-left:2px solid #60a5fa; }
+  .corner-bracket.tr { top:22px;  right:22px;   border-top:2px solid #60a5fa; border-right:2px solid #60a5fa; }
+  .corner-bracket.bl { bottom:22px; left:22px;  border-bottom:2px solid #60a5fa; border-left:2px solid #60a5fa; }
+  .corner-bracket.br { bottom:22px; right:22px; border-bottom:2px solid #60a5fa; border-right:2px solid #60a5fa; }
+
+  #robot-loader {
+  opacity: 1;
+  filter: blur(0px);
+  transition:
+    opacity .7s ease,
+    filter .7s ease;
+}
+
+#robot-loader.loader-hidden {
+  opacity: 0;
+  filter: blur(10px);
+  pointer-events: none;
+}
+
+
+
+  #spline-logo-cover {
+    position: absolute;
+    bottom: 0; right: 0;
+    width: 130px; height: 44px;
+    background: linear-gradient(135deg,transparent 35%,#060A12 100%);
+    pointer-events: none;
+    z-index: 28;
+  }
+
    /* ── Scroll Reveal Animation ───────────────────────────── */
   /* ── Clean Reveal Animation ───────────────────────────── */
   .reveal-card {
@@ -70,68 +183,6 @@
   opacity: 0.92;
   will-change: auto !important;
 }
-
-img,
-.reveal-card,
-.topup-card,
-.cat-btn {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
-
-/* ══════════════════════════════════════════════════════════
-   LIGHTWEIGHT ROBOT
-══════════════════════════════════════════════════════════ */
-
-#hero-robot-wrapper {
-  position: relative;
-}
-
-/* Glow */
-.robot-glow-blue {
-  width: 180px;
-  height: 180px;
-  filter: blur(14px);
-}
-
-.robot-glow-orange {
-  width: 140px;
-  height: 140px;
-  filter: blur(18px);
-}
-
-/* Robot Video */
-.robot-video {
-  width: 340px;
-  height: 340px;
-  object-fit: contain;
-  opacity: .95;
-
-  transform: translateZ(0);
-  backface-visibility: hidden;
-  will-change: auto;
-}
-
-/* ── Scroll Reveal Animation ───────────────────────────── */
-
-.reveal-card {
-  opacity: 1;
-  transform: none;
-  transition: transform .3s ease;
-}
-
-.reveal-card.show {
-  opacity: 1;
-  transform: translateY(0);
-}
-
-/* delay */
-.reveal-delay-1 { transition-delay: .05s; }
-.reveal-delay-2 { transition-delay: .10s; }
-.reveal-delay-3 { transition-delay: .15s; }
-.reveal-delay-4 { transition-delay: .20s; }
-.reveal-delay-5 { transition-delay: .25s; }
-.reveal-delay-6 { transition-delay: .30s; }
 
 img,
 .reveal-card,
@@ -199,55 +250,59 @@ img,
         </div>
       </div>
 
-      {{-- Right: Lightweight Robot --}}
-<div class="hidden xl:flex flex-shrink-0 items-center justify-center relative"
-     id="hero-robot-wrapper"
-     style="width:420px;height:460px;">
+      {{-- Right: 3D Robot AI Assistant --}}
+      <div class="hidden xl:flex flex-shrink-0 items-center justify-center relative"
+            id="hero-robot-wrapper"
+            style="width:420px;height:460px;">
 
-    {{-- Ambient glow --}}
-    <div class="robot-glow-blue absolute rounded-full pointer-events-none"
-         style="background:radial-gradient(circle,rgba(37,99,235,0.22) 0%,transparent 70%);">
-    </div>
+      
 
-    <div class="robot-glow-orange absolute pointer-events-none"
-         style="top:58%;left:58%;border-radius:50%;
-         background:radial-gradient(circle,rgba(249,115,22,0.14) 0%,transparent 70%);
-         transform:translate(-50%,-50%);">
-    </div>
+        {{-- Decorative rings --}}
+        <div class="ring-cw absolute rounded-full pointer-events-none" style="width:455px;height:455px;z-index:2;border:1px solid rgba(37,99,235,0.18);border-top-color:rgba(96,165,250,0.60);border-right-color:rgba(37,99,235,0.38);"></div>
+        <div class="ring-ccw absolute rounded-full pointer-events-none" style="width:398px;height:398px;z-index:2;border:1px dashed rgba(96,165,250,0.10);"></div>
 
-    {{-- Robot Video --}}
-    <div class="relative z-20 flex items-center justify-center">
-        <video
-            autoplay
-            muted
-            loop
-            playsinline
-            preload="metadata"
-            class="robot-video">
+        {{-- Ambient glow --}}
+        <div class="robot-glow-blue absolute rounded-full pointer-events-none"
+             style="width:290px;height:290px;z-index:1;background:radial-gradient(circle,rgba(37,99,235,0.38) 0%,transparent 70%);filter:blur(24px);"></div>
+        <div class="robot-glow-orange absolute pointer-events-none"
+             style="width:200px;height:200px;top:58%;left:58%;z-index:1;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,0.22) 0%,transparent 70%);filter:blur(24px);transform:translate(-50%,-50%);"></div>
 
-            <source src="{{ asset('videos/robot.webm') }}" type="video/webm">
-
-        </video>
-    </div>
-
-    {{-- Badge --}}
-    <div class="absolute z-30 top-8 right-0">
-        <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2.5 backdrop-blur-sm"
-             style="background:rgba(9,14,26,0.88);
-             border:1px solid rgba(16,185,129,0.45);">
-
-            <span class="relative flex h-2 w-2">
-                <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-400"></span>
-            </span>
-
-            <span class="text-emerald-300 text-xs font-semibold font-display tracking-wide">
-                AI Online
-            </span>
-
+        {{-- Loading skeleton --}}
+        <div id="robot-loader" class="absolute inset-0 flex items-center justify-center" style="z-index:30;">
+          <div class="flex flex-col items-center gap-3">
+            <div class="relative w-20 h-20">
+              <div class="absolute inset-0 rounded-full border-2 border-brand-500/20 border-t-brand-400 animate-spin"></div>
+              <div class="absolute inset-2 rounded-full border border-brand-500/10 border-b-accent-400/50"
+                   style="animation:spin 2s linear infinite reverse;"></div>
+              <div class="absolute inset-0 flex items-center justify-center">
+                <svg class="w-7 h-7" style="color:rgba(96,165,250,0.5);" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/>
+                </svg>
+              </div>
+            </div>
+            <div class="flex flex-col items-center gap-2">
+              <span class="text-[10px] tracking-[0.25em] uppercase font-display" style="color:rgba(96,165,250,0.6);">Initializing AI</span>
+              <div class="flex gap-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-400/50 animate-bounce" style="animation-delay:0.0s;"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-400/50 animate-bounce" style="animation-delay:0.2s;"></span>
+                <span class="w-1.5 h-1.5 rounded-full bg-brand-400/50 animate-bounce" style="animation-delay:0.4s;"></span>
+              </div>
+            </div>
+          </div>
         </div>
-    </div>
 
+        {{-- ★ Spline 3D Robot ★ --}}
+        <div class="robot-video-wrapper">
+    <video
+        autoplay
+        muted
+        loop
+        playsinline
+        class="robot-video">
+        <source src="{{ asset('videos/robot.webm') }}" type="video/webm">
+    </video>
 </div>
+
         {{-- Spline branding cover --}}
         <div id="spline-logo-cover"></div>
 
@@ -497,33 +552,224 @@ img,
   - Loading skeleton hidden on 'load' event or 9s timeout
   ══════════════════════════════════════════════════════════════
 --}}
+<script type="module" src="https://unpkg.com/@splinetool/viewer/build/spline-viewer.js"></script>
+
 <script>
-  <script>
-function toggleFaq(index) {
+(function () {
+  'use strict';
+
+  // stop total di mobile
+  if (window.innerWidth < 1024) return;
+
+  /* ── DOM refs ───────────────────────── */
+  const heroSection    = document.getElementById('hero-section');
+  const robotWrapper   = document.getElementById('hero-robot-wrapper');
+  const splineRobot = document.getElementById('spline-robot');
+  const splineEl       = document.getElementById('spline-robot');
+  const loader         = document.getElementById('robot-loader');
+  
+
+  if (!heroSection || !robotWrapper || !splineEl) return;
+
+  /* ── Loader ─────────────────────────── */
+  function hideLoader() {
+
+    if (!loader) return;
+
+    loader.classList.add('loader-hidden');
+
+    setTimeout(() => {
+
+      loader.style.display = 'none';
+      loader.remove();
+
+    }, 700);
+  }
+
+  // hide otomatis setelah spline ready
+  if (splineEl) {
+
+    splineEl.addEventListener('load', () => {
+      hideLoader();
+    });
+
+    // fallback max 5 detik
+    setTimeout(() => {
+      hideLoader();
+    }, 5000);
+
+  }
+
+  // fallback terakhir kalau gagal load
+  setTimeout(() => {
+    hideLoader();
+  }, 12000);
+
+  /* ── Helpers ────────────────────────── */
+  function lerp(a, b, t) {
+    return a + (b - a) * t;
+  }
+
+  function clamp(v, lo, hi) {
+    return Math.max(lo, Math.min(hi, v));
+  }
+
+  /* ── Tilt State ─────────────────────── */
+  let targetX = 0;
+  let targetY = 0;
+
+  let currentX = 0;
+  let currentY = 0;
+
+  let isHover = false;
+  let hasMouseInHero = false;
+
+  let animationRunning = false;
+  let rafId = null;
+
+  /* ── Animation Loop ─────────────────── */
+  function tick() {
+
+    if (!animationRunning) return;
+
+    const tx = hasMouseInHero ? targetX : 0;
+    const ty = hasMouseInHero ? targetY : 0;
+
+    currentX = lerp(currentX, tx, 0.055);
+    currentY = lerp(currentY, ty, 0.055);
+
+    const rotY  = currentX * 18;
+    const rotX  = -currentY * 11;
+    const scale = 1;
+
+  robotWrapper.style.transform = 'none';
+
+splineRobot.style.transform = `
+  scale(${scale})
+`;
+
+    rafId = requestAnimationFrame(tick);
+  }
+
+  /* ── Pause ketika tab tidak aktif ───── */
+  document.addEventListener('visibilitychange', () => {
+
+    if (document.hidden) {
+
+      animationRunning = false;
+
+      if (rafId) {
+        cancelAnimationFrame(rafId);
+      }
+
+    } else {
+
+      animationRunning = true;
+      tick();
+
+    }
+
+  });
+
+  /* ── Pause ketika robot tidak terlihat ─ */
+  const observer = new IntersectionObserver((entries) => {
+
+    entries.forEach(entry => {
+
+      if (entry.isIntersecting) {
+
+        if (!animationRunning) {
+          animationRunning = true;
+          tick();
+        }
+
+      } else {
+
+        animationRunning = false;
+
+        if (rafId) {
+          cancelAnimationFrame(rafId);
+        }
+
+      }
+
+    });
+
+  }, {
+    threshold: 0.15
+  });
+
+  observer.observe(robotWrapper);
+
+  /* ── Mouse Move ─────────────────────── */
+  heroSection.addEventListener('mouseleave', (e) => {
+
+    hasMouseInHero = true;
+
+    const hr = heroSection.getBoundingClientRect();
+
+    targetX = clamp(
+      (e.clientX - (hr.left + hr.width / 2)) / (hr.width / 2),
+      -1,
+      1
+    );
+
+    targetY = clamp(
+      (e.clientY - (hr.top + hr.height / 2)) / (hr.height / 2),
+      -1,
+      1
+    );
+
+    
+
+  });
+
+  heroSection.addEventListener('mouseleave', () => {
+
+    hasMouseInHero = false;
+
+    targetX = 0;
+    targetY = 0;
+
+  });
+
+ 
+
+  /* ── Start Loop ─────────────────────── */
+  // animation dimatikan biar ringan
+
+  /* ── FAQ ────────────────────────────── */
+  window.toggleFaq = function (index) {
 
     const content = document.getElementById('faq-' + index);
     const icon    = document.getElementById('icon-' + index);
 
     const isOpen =
-        content.style.maxHeight !== '0px' &&
-        content.style.maxHeight !== '';
+      content.style.maxHeight !== '0px' &&
+      content.style.maxHeight !== '';
 
     document.querySelectorAll('[id^="faq-"]').forEach(el => {
-        el.style.maxHeight = '0px';
+      el.style.maxHeight = '0px';
     });
 
     document.querySelectorAll('[id^="icon-"]').forEach(el => {
-        el.style.transform = 'rotate(0deg)';
+      el.style.transform = 'rotate(0deg)';
     });
 
     if (!isOpen) {
 
-        content.style.maxHeight =
-            content.scrollHeight + 'px';
+      content.style.maxHeight =
+        content.scrollHeight + 'px';
 
-        icon.style.transform = 'rotate(180deg)';
+      icon.style.transform = 'rotate(180deg)';
+
     }
-}
+
+  };
+
+})();
+
+
 </script>
 @endpush
 
