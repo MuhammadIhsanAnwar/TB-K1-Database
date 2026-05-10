@@ -58,7 +58,7 @@
             <ul class="space-y-3 text-slate-400 text-sm md:text-base leading-relaxed ml-2">
                 <li class="flex gap-3"><span class="text-orange-500 mt-0.5 shrink-0">▹</span> Pembeli wajib bertransaksi melalui prosedur transaksi yang telah ditetapkan oleh Lapak Gaming. Pembeli melakukan pembayaran dengan menggunakan metode pembayaran yang sebelumnya telah dipilih oleh Pembeli.</li>
                 <li class="flex gap-3"><span class="text-orange-500 mt-0.5 shrink-0">▹</span> Saat melakukan pembelian Produk, Pembeli menyetujui bahwa Pembeli bertanggung jawab untuk membaca, memahami, dan menyetujui informasi/deskripsi keseluruhan Produk sebelum membuat komitmen untuk membeli.</li>
-                <li class="flex gap-3"><span class="text-orange-500 mt-0.5 shrink-0">▹</span> Semua transaksi menggunakan sistem <em class="text-white font-medium">Escrow</em> (Rekening Bersama). Dana akan diteruskan ke Penjual hanya setelah Pembeli mengonfirmasi pesanan telah diterima dengan baik.</li>
+                <li class="flex gap-3"><span class="text-orange-500 mt-0.5 shrink-0">▹</span> Semua transaksi menggunakan sistem Escrow (Rekening Bersama). Dana akan diteruskan ke Penjual hanya setelah Pembeli mengonfirmasi pesanan telah diterima dengan baik.</li>
             </ul>
         </div>
 
