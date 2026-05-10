@@ -29,8 +29,11 @@ use App\Http\Controllers\SubscriptionController;
 
 
 Route::prefix('marketplace')->name('marketplace.')->group(function () {
-    
+
     Route::get('/', [MarketplaceController::class, 'home'])->name('home');
+    Route::get('/hubungi-kami', function () {
+        return view('pages.contact');
+    })->name('contact');
 
     Route::get('/browse', [MarketplaceController::class, 'browse'])->name('browse');
 
@@ -98,10 +101,10 @@ Route::middleware('guest')->group(function (): void {
     Route::post('/login', [AuthController::class, 'storeLogin']);
 
     Route::get('/auth/google', [AuthController::class, 'google'])->name('google.auth');
-    
+
     Route::get('/register', [AuthController::class, 'createRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'storeRegister']);
-    
+
     Route::get('/forgot-password', [PasswordResetController::class, 'createLinkRequest'])->name('password.request');
     Route::post('/forgot-password', [PasswordResetController::class, 'storeLinkRequest'])->name('password.email');
     Route::get('/reset-password/{token}', [PasswordResetController::class, 'createReset'])->name('password.reset');
@@ -145,8 +148,8 @@ Route::middleware('auth')->group(function (): void {
 
     // Admin Terminal untuk menjalankan perintah Artisan
     Route::middleware('role:admin')->group(function (): void {
-        Route::get('/admin/terminal', fn () => redirect()->route('artisan.terminal.index'))->name('admin.terminal.index');
-        Route::post('/admin/terminal/execute', fn () => redirect()->route('artisan.terminal.index'))->name('admin.terminal.execute');
-        Route::post('/admin/terminal/quick', fn () => redirect()->route('artisan.terminal.index'))->name('admin.terminal.quick');
+        Route::get('/admin/terminal', fn() => redirect()->route('artisan.terminal.index'))->name('admin.terminal.index');
+        Route::post('/admin/terminal/execute', fn() => redirect()->route('artisan.terminal.index'))->name('admin.terminal.execute');
+        Route::post('/admin/terminal/quick', fn() => redirect()->route('artisan.terminal.index'))->name('admin.terminal.quick');
     });
 });
