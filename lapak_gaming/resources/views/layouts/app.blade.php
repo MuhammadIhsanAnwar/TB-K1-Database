@@ -640,101 +640,7 @@
             font-size:.9rem;
           }
 
-         /* ═══════════════════════════════════════
-              GAMING ANIMATED BACKGROUND
-            ═══════════════════════════════════════ */
-
-          #gaming-bg{
-              position: fixed;
-              inset: 0;
-              z-index: -1;
-              overflow: hidden;
-              background:
-                  radial-gradient(circle at top left, rgba(37,99,235,.18), transparent 40%),
-                  radial-gradient(circle at bottom right, rgba(249,115,22,.14), transparent 40%),
-                  #060A12;
-          }
-      /* ELEMENT GAMING */
-      .gaming-particle{
-          position: absolute;
-          opacity: .45;
-          animation: floatParticle linear infinite;
-          filter: drop-shadow(0 0 8px rgba(37,99,235,.35));
-      }
-
-      /* garis neon */
-      .gaming-particle.line{
-          width: 2px;
-          height: 80px;
-          background: linear-gradient(
-              to bottom,
-              transparent,
-              rgba(37,99,235,.9),
-              transparent
-          );
-          transform: rotate(25deg);
-      }
-
-      /* kotak futuristik */
-      .gaming-particle.square{
-          width: 12px;
-          height: 12px;
-          border: 1px solid rgba(249,115,22,.7);
-          transform: rotate(45deg);
-      }
-
-      /* plus cyber */
-      .gaming-particle.plus::before,
-      .gaming-particle.plus::after{
-          content:'';
-          position:absolute;
-          background:rgba(37,99,235,.85);
-      }
-
-      .gaming-particle.plus::before{
-          width:14px;
-          height:2px;
-          top:6px;
-      }
-
-      .gaming-particle.plus::after{
-          width:2px;
-          height:14px;
-          left:6px;
-      }
-
-      /* glow tambahan */
-      .gaming-particle::after{
-          content:'';
-          position:absolute;
-          inset:-8px;
-          border-radius:999px;
-          background:transparent;
-          box-shadow:
-              0 0 20px rgba(37,99,235,.15),
-              0 0 35px rgba(249,115,22,.08);
-      }
-
-      @keyframes floatParticle{
-
-          from{
-              transform: translateY(110vh);
-              opacity:0;
-          }
-
-          10%{
-              opacity:.5;
-          }
-
-          90%{
-              opacity:.5;
-          }
-
-          to{
-              transform: translateY(-120px);
-              opacity:0;
-          }
-      }
+         
   </style>
 
   @stack('styles')
@@ -742,7 +648,6 @@
 
 <body class="page-bg text-slate-200 min-h-screen">
 
-<div id="gaming-bg"></div>
 
   {{-- Ambient top glow --}}
   <div class="pointer-events-none fixed top-0 left-0 right-0 h-px bg-gradient-to-r from-transparent via-brand-600/60 to-transparent z-50"></div>
@@ -882,51 +787,7 @@
     });
 
     reveals.forEach((el) => observer.observe(el));
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-
-    const bg = document.getElementById('gaming-bg');
-
-    const types = [
-        'line',
-        'square',
-        'plus'
-    ];
-
-    for(let i = 0; i < 120; i++){
-
-        const particle = document.createElement('span');
-
-        particle.classList.add('gaming-particle');
-
-        const type = types[Math.floor(Math.random() * types.length)];
-
-        particle.classList.add(type);
-
-        particle.style.left = Math.random() * 100 + 'vw';
-
-        particle.style.top = Math.random() * 100 + 'vh';
-
-        particle.style.animationDuration =
-            (Math.random() * 10 + 8) + 's';
-
-        particle.style.animationDelay =
-            Math.random() * 5 + 's';
-
-        particle.style.opacity =
-            Math.random() * 0.6 + 0.15;
-
-        /* ukuran random */
-        const scale = (Math.random() * 1.4 + 0.6);
-
-        particle.style.transform =
-            `scale(${scale}) rotate(${Math.random() * 360}deg)`;
-
-        bg.appendChild(particle);
-    }
-
-});
+}); 
   </script>
 
   @stack('scripts')
