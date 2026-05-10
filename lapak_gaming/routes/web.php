@@ -42,13 +42,6 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
 
 });
 
-Route::get('/hubungi-kami', function () {
-    return view('pages.contact');
-})->name('contact');
-Route::get('/aturan-penggunaan', function () {
-    return view('pages.terms');
-})->name('terms');
-
 Route::get('/', [MarketplaceController::class, 'home'])->name('home');
 Route::get('/products/type/{type}', [ProductController::class, 'byType'])->name('products.by-type');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
@@ -157,3 +150,12 @@ Route::middleware('auth')->group(function (): void {
         Route::post('/admin/terminal/quick', fn() => redirect()->route('artisan.terminal.index'))->name('admin.terminal.quick');
     });
 });
+
+// Halaman Bantuan
+Route::get('/hubungi-kami', function () {
+    return view('pages.contact');
+})->name('contact');
+Route::get('/aturan-penggunaan', function () {
+    return view('pages.terms');
+})->name('terms');
+
