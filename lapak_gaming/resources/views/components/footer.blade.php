@@ -77,7 +77,7 @@
           <li><a href="#" class="text-sm text-slate-400 hover:text-white transition-colors">Syarat & Ketentuan</a></li>
           <li><a href="{{ route('contact') }}" class="text-sm text-slate-400 hover:text-white transition-colors">Hubungi Kami</a></li>
           <li><a href="{{ route('terms') }}" class="text-sm text-slate-400 hover:text-white transition-colors">Aturan Penggunaan</a></li>
-          <li><a href="#" class="text-sm text-slate-400 hover:text-white transition-colors">Kebijakan Privasi</a></li>
+          <li><a href="{{ route('privacy') }}" class="text-sm text-slate-400 hover:text-white transition-colors">Kebijakan Privasi</a></li>
           <li><a href="#" class="text-sm text-slate-400 hover:text-white transition-colors">Kebijakan Pengembalian Dana</a></li>
         </ul>
       </div>
