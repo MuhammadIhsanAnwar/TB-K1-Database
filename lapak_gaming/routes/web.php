@@ -26,6 +26,7 @@ use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionController;
+use App\Http\Controllers\PageController;
 
 
 Route::prefix('marketplace')->name('marketplace.')->group(function () {
@@ -152,10 +153,6 @@ Route::middleware('auth')->group(function (): void {
 });
 
 // Halaman Bantuan
-Route::get('/hubungi-kami', function () {
-    return view('pages.contact');
-})->name('contact');
-Route::get('/aturan-penggunaan', function () {
-    return view('pages.terms');
-})->name('terms');
+Route::get('/hubungi-kami', [PageController::class, 'contact'])->name('contact');
+Route::get('/aturan-penggunaan', [PageController::class, 'terms'])->name('terms');
 
