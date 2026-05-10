@@ -25,10 +25,11 @@
   @auth
   <div class="p-4" style="border-bottom:1px solid #1E2D45;">
     <div class="flex items-center gap-3 p-3 rounded-xl" style="background:#162032;border:1px solid #1E2D45;">
-      <div class="w-10 h-10 rounded-full flex items-center justify-center font-display font-bold text-sm shrink-0"
-           style="background:linear-gradient(135deg,#2563eb,#f97316);">
-        {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-      </div>
+       <img src="{{ Auth::user()->avatar_url }}"
+         alt="Foto profil {{ Auth::user()->name }}"
+         class="w-10 h-10 rounded-full object-cover shrink-0"
+         style="background:#162032;border:1px solid #1E2D45;"
+         onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=2563eb&color=fff';">
       <div class="flex-1 min-w-0">
         <div class="text-sm font-semibold text-white truncate">{{ Auth::user()->name }}</div>
         <div class="text-xs text-slate-400 truncate">{{ Auth::user()->email }}</div>
@@ -301,10 +302,11 @@
       {{-- User Dropdown --}}
       <div class="relative">
         <button onclick="toggleDropdown('user-dropdown')" class="flex items-center gap-2 pl-2 pr-3 py-1.5 rounded-xl transition-colors" style="background:#162032;border:1px solid #1E2D45;" aria-label="User menu">
-          <div class="w-7 h-7 rounded-full flex items-center justify-center font-display font-bold text-xs"
-               style="background:linear-gradient(135deg,#2563eb,#f97316);">
-            {{ strtoupper(substr(Auth::user()->name, 0, 2)) }}
-          </div>
+          <img src="{{ Auth::user()->avatar_url }}"
+            alt="Foto profil {{ Auth::user()->name }}"
+            class="w-7 h-7 rounded-full object-cover"
+            style="background:#162032;border:1px solid #1E2D45;"
+            onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name={{ urlencode(Auth::user()->name) }}&background=2563eb&color=fff';">
           <span class="hidden sm:block text-sm font-medium text-slate-200 max-w-[80px] truncate">{{ Auth::user()->name }}</span>
           <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
         </button>
