@@ -32,7 +32,7 @@
   .topup-card:hover {
     border-color: rgba(37,99,235,0.5);
     transform: translateY(-3px);
-    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -177,9 +177,9 @@
   <div class="hero-glow absolute inset-0 pointer-events-none"></div>
 
   <div class="absolute top-10 right-1/4 w-64 h-64 rounded-full pointer-events-none opacity-10"
-       style="background:radial-gradient(circle,#2563eb,transparent 70%);filter:blur(40px);"></div>
+       style="background:radial-gradient(circle,#2563eb,transparent 70%);filter:blur(24px);;"></div>
   <div class="absolute bottom-0 left-1/3 w-48 h-48 rounded-full pointer-events-none opacity-10"
-       style="background:radial-gradient(circle,#f97316,transparent 70%);filter:blur(36px);"></div>
+       style="background:radial-gradient(circle,#f97316,transparent 70%);filter:blur(24px);;"></div>
 
   <div class="max-w-7xl mx-auto px-4">
     <div class="flex flex-col lg:flex-row items-center gap-8 xl:gap-12">
@@ -206,7 +206,7 @@
 
         <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
           <a href="{{ route('products.search') }}" class="btn-primary px-6 py-3.5 rounded-xl text-base">
-            <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
+            <img loading = "lazy" src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
             Mulai Belanja
           </a>
           <a href="{{ route('marketplace.trending') }}" class="btn-ghost px-6 py-3.5 rounded-xl text-base">
@@ -244,7 +244,7 @@
         <div class="robot-glow-blue absolute rounded-full pointer-events-none"
              style="width:290px;height:290px;z-index:1;background:radial-gradient(circle,rgba(37,99,235,0.38) 0%,transparent 70%);filter:blur(24px);"></div>
         <div class="robot-glow-orange absolute pointer-events-none"
-             style="width:200px;height:200px;top:58%;left:58%;z-index:1;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,0.22) 0%,transparent 70%);filter:blur(44px);transform:translate(-50%,-50%);"></div>
+             style="width:200px;height:200px;top:58%;left:58%;z-index:1;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,0.22) 0%,transparent 70%);filter:blur(24px);transform:translate(-50%,-50%);"></div>
 
         {{-- Loading skeleton --}}
         <div id="robot-loader" class="absolute inset-0 flex items-center justify-center" style="z-index:30;">
@@ -346,7 +346,7 @@
         <div class="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110"
              style="background:#162032;">
           @if($cat->image)
-            <img src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="w-10 h-10 object-cover rounded-lg">
+            <img loading="lazy" src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="w-10 h-10 object-cover rounded-lg">
           @else
             <span class="text-2xl">{{ $cat->icon ?? '🎮' }}</span>
           @endif
@@ -406,9 +406,7 @@
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
       @forelse($popularProducts as $product)
         <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
-  <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
-  @include('components.product-card', ['product' => $product])
-</div>
+    @include('components.product-card', ['product' => $product])
 </div>
       @empty
         <div class="col-span-full py-16 text-center">
@@ -430,7 +428,7 @@
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-lg flex items-center justify-center"
              style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
-          <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
+          <img loading="lazy" src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
         </div>
         <div>
           <h2 class="font-display font-bold text-lg text-white">⚡ Top Up Kilat</h2>
@@ -757,10 +755,9 @@ splineRobot.style.transform = `
     entries.forEach(entry => {
 
       if (entry.isIntersecting) {
-
         entry.target.classList.add('show');
-
-      }
+        observer.unobserve(entry.target);
+}
 
     });
 
