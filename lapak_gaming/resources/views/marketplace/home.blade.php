@@ -13,7 +13,11 @@
     background: #0D1421;
     border: 1px solid #1E2D45;
     border-radius: 14px;
-    transition: all 0.2s;
+    transition:
+    transform .25s ease,
+    border-color .25s ease,
+    background .25s ease,
+    box-shadow .25s ease;
   }
   .cat-btn:hover {
     border-color: rgba(37,99,235,0.5);
@@ -27,7 +31,11 @@
     border: 1px solid #1E2D45;
     border-radius: 14px;
     overflow: hidden;
-    transition: all 0.2s;
+    transition:
+    transform .25s ease,
+    border-color .25s ease,
+    background .25s ease,
+    box-shadow .25s ease;
   }
   .topup-card:hover {
     border-color: rgba(37,99,235,0.5);
@@ -94,9 +102,7 @@
     0%, 100% { transform: translateY(0px); }
     50%       { transform: translateY(-7px); }
   }
-  .badge-float-a { animation: badgeFloat 4.0s ease-in-out infinite; }
-  .badge-float-b { animation: badgeFloat 5.2s ease-in-out infinite 1.5s; }
-  .badge-float-c { animation: badgeFloat 4.7s ease-in-out infinite 0.8s; }
+  animation: none !important;
 
   @keyframes scanSweep {
     0%   { top: 14%; opacity: 0; }
@@ -153,13 +159,10 @@
 
    /* ── Scroll Reveal Animation ───────────────────────────── */
   /* ── Clean Reveal Animation ───────────────────────────── */
-.reveal-card {
-  opacity: 0;
-  transform: translateY(30px);
-  transition:
-    opacity 0.7s ease-out,
-    transform 0.7s ease-out;
-  will-change: opacity, transform;
+  .reveal-card {
+  opacity: 1;
+  transform: none;
+  transition: transform .3s ease;
 }
 
 .reveal-card.show {
@@ -180,6 +183,14 @@
   opacity: 0.92;
   will-change: auto !important;
 }
+
+img,
+.reveal-card,
+.topup-card,
+.cat-btn {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
 </style>
 @endpush
 
@@ -190,11 +201,6 @@
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="relative overflow-hidden pt-10 pb-16" id="hero-section">
   <div class="hero-glow absolute inset-0 pointer-events-none"></div>
-
-  <div class="absolute top-10 right-1/4 w-64 h-64 rounded-full pointer-events-none opacity-10"
-       style="background:radial-gradient(circle,#2563eb,transparent 70%);filter:blur(24px);;"></div>
-  <div class="absolute bottom-0 left-1/3 w-48 h-48 rounded-full pointer-events-none opacity-10"
-       style="background:radial-gradient(circle,#f97316,transparent 70%);filter:blur(24px);;"></div>
 
   <div class="max-w-7xl mx-auto px-4">
     <div class="flex flex-col lg:flex-row items-center gap-8 xl:gap-12">
@@ -263,7 +269,7 @@
 
         {{-- Loading skeleton --}}
         <div id="robot-loader" class="absolute inset-0 flex items-center justify-center" style="z-index:30;">
-          <div class="flex flex-col items-center gap-4">
+          <div class="flex flex-col items-center gap-3">
             <div class="relative w-20 h-20">
               <div class="absolute inset-0 rounded-full border-2 border-brand-500/20 border-t-brand-400 animate-spin"></div>
               <div class="absolute inset-2 rounded-full border border-brand-500/10 border-b-accent-400/50"
@@ -310,7 +316,7 @@
 
         {{-- Badge: AI Online --}}
         <div class="badge-float-a absolute z-30" style="top:28px;right:-8px;">
-          <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2.5 backdrop-blur-md"
+          <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2.5 backdrop-blur-sm"
                style="background:rgba(9,14,26,0.88);border:1px solid rgba(16,185,129,0.45);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 14px rgba(16,185,129,0.18);">
             <span class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -322,7 +328,7 @@
 
         {{-- Badge: Daily transactions --}}
         <div class="badge-float-b absolute z-30" style="bottom:96px;left:-20px;">
-          <div class="rounded-2xl px-4 py-2.5 backdrop-blur-md"
+          <div class="rounded-2xl px-4 py-2.5 backdrop-blur-sm"
                style="background:rgba(9,14,26,0.88);border:1px solid rgba(37,99,235,0.45);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 14px rgba(37,99,235,0.18);">
             <div class="text-[10px] tracking-[0.18em] uppercase font-display mb-0.5" style="color:rgba(96,165,250,0.6);">Transaksi Hari Ini</div>
             <div class="font-display font-bold text-white text-lg leading-none">12.847</div>
@@ -331,7 +337,7 @@
 
         {{-- Badge: Rating --}}
         <div class="badge-float-c absolute z-30" style="bottom:44px;right:-4px;">
-          <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2 backdrop-blur-md"
+          <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2 backdrop-blur-sm"
                style="background:rgba(9,14,26,0.88);border:1px solid rgba(249,115,22,0.38);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 12px rgba(249,115,22,0.14);">
             <span style="font-size:14px;">⭐</span>
             <span class="font-display font-bold text-white text-sm">4.9</span>
@@ -380,7 +386,7 @@
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="pb-14">
   <div class="max-w-7xl mx-auto px-4">
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
       @foreach([
         ['type'=>'topup','icon'=>'⚡','label'=>'Top Up','desc'=>'Langsung ke akun','class'=>'bg-blue-500/10 border-blue-500/30','badge'=>'Tercepat'],
         ['type'=>'joki', 'icon'=>'🏆','label'=>'Jasa Joki','desc'=>'Naik rank dijamin','class'=>'bg-orange-500/10 border-orange-500/25','badge'=>'Populer'],
@@ -418,7 +424,7 @@
       </div>
       <a href="{{ route('products.search') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Lihat semua →</a>
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
       @forelse($popularProducts as $product)
         <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
     @include('components.product-card', ['product' => $product])
@@ -452,7 +458,7 @@
       </div>
       <a href="{{ route('products.by-type', 'topup') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Semua Top Up →</a>
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
       @foreach($topupProducts as $product)
         <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
   @include('components.product-card', ['product' => $product])
@@ -475,7 +481,7 @@
       <span class="badge badge-blue mb-4">Kenapa Lapak Gaming?</span>
       <h2 class="font-display font-bold text-2xl sm:text-3xl text-white mb-3">Platform terpercaya untuk<br>semua kebutuhan gaming-mu</h2>
       <p class="text-slate-400 text-sm max-w-lg mx-auto mb-8">Bergabung dengan jutaan gamer Indonesia yang sudah percaya transaksi mereka bersama kami.</p>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto mb-8">
         @foreach([
           ['icon'=>'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z','label'=>'Escrow Aman','sub'=>'Dana terlindungi'],
           ['icon'=>'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z','label'=>'Proses Cepat','sub'=>'< 5 menit selesai'],
@@ -759,29 +765,6 @@ splineRobot.style.transform = `
     }
 
   };
-
-  document.addEventListener('DOMContentLoaded', () => {
-
-  const reveals = document.querySelectorAll('.reveal-card');
-
-  const observer = new IntersectionObserver((entries) => {
-
-    entries.forEach(entry => {
-
-      if (entry.isIntersecting) {
-        entry.target.classList.add('show');
-        observer.unobserve(entry.target);
-}
-
-    });
-
-  }, {
-    threshold: 0.12
-  });
-
-  reveals.forEach(el => observer.observe(el));
-
-});
 
 })();
 
