@@ -32,13 +32,16 @@ class CustomVerifyEmail extends Notification
     public function toMail($notifiable)
     {
         $url = $this->verificationUrl($notifiable);
+        $appName = (string) Config::get('app.name', 'Lapak Gaming');
+        $logoUrl = url('storage/app/public/logo/logo.png');
 
         return (new MailMessage)
             ->subject('Aktivasi Akun Anda')
-            ->greeting('Halo ' . ($notifiable->name ?? $notifiable->email))
-            ->line('Terima kasih telah mendaftar. Silakan klik tombol di bawah untuk mengaktifkan akun Anda dan menyelesaikan pendaftaran.')
-            ->action('Aktivasi Akun', $url)
-            ->line('Jika Anda tidak merasa melakukan pendaftaran ini, abaikan email ini.')
-            ->salutation('Salam, Tim ' . Config::get('app.name'));
+            ->markdown('emails.verify-email', [
+                'url' => $url,
+                'recipientName' => $notifiable->name ?? $notifiable->email,
+                'appName' => $appName,
+                'logoUrl' => $logoUrl,
+            ]);
     }
 }

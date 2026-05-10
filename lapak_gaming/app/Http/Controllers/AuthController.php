@@ -179,8 +179,6 @@ class AuthController extends Controller
         $user = User::where('google_id', $googleUser->getId())->first()
             ?? User::where('email', $googleUser->getEmail())->first();
 
-        $isNewUser = false;
-
         if (! $user) {
             // Create new user without email verification
             $user = User::create([
@@ -202,8 +200,6 @@ class AuthController extends Controller
                 'phone' => $googleProfilePhone,
                 'avatar_path' => $googleAvatarPath,
             ]);
-
-            $isNewUser = true;
         } else {
             // Link existing user with Google account
             $user->forceFill([
@@ -221,10 +217,8 @@ class AuthController extends Controller
 
         // Check if email is verified
         if (! $user->email_verified_at) {
-            // For new users, send verification email
-            if ($isNewUser) {
-                $user->sendEmailVerificationNotification();
-            }
+            // Always send for any unverified Google user (new or existing).
+            $user->sendEmailVerificationNotification();
 
             // Redirect to verification notice
             Auth::login($user);
