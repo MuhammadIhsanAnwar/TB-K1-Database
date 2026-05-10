@@ -54,21 +54,6 @@
                     <span class="opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">→</span>
                 </a>
             </div>
-            
-            {{-- Kartu Kerjasama --}}
-            <div class="group bg-gray-925/80 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 hover:border-purple-500 hover:shadow-[0_8px_30px_rgba(168,85,247,0.15)] hover:-translate-y-1.5 transition-all duration-300 cursor-pointer card-glow">
-                <div class="w-12 h-12 bg-purple-500/10 rounded-xl flex items-center justify-center mb-5 group-hover:bg-purple-500/20 transition-colors duration-300">
-                    <svg class="w-6 h-6 text-purple-400 group-hover:scale-110 group-hover:rotate-6 transition-transform duration-300" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 13.255A23.931 23.931 0 0112 15c-3.183 0-6.22-.62-9-1.745M16 6V4a2 2 0 00-2-2h-4a2 2 0 00-2 2v2m4 6h.01M5 20h14a2 2 0 002-2V8a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                    </svg>
-                </div>
-                <h3 class="text-lg font-display font-bold text-white mb-1">Kerjasama & Bisnis</h3>
-                <p class="text-slate-400 text-sm mb-4 line-clamp-2">Penawaran kemitraan, media, atau kerja sama B2B.</p>
-                <a href="mailto:business@lapakgaming.com" class="text-purple-400 font-semibold text-sm group-hover:text-purple-300 flex items-center gap-2">
-                    business@lapakgaming.com
-                    <span class="opacity-0 group-hover:opacity-100 group-hover:translate-x-1 transition-all duration-300">→</span>
-                </a>
-            </div>
         </div>
 
         {{-- Kolom Kanan: Form (Porsi 3 kolom) --}}
