@@ -43,9 +43,9 @@
   }
 
   #robot-scene-container {
-    width: 100%;
-  height: 540px;
-  min-height: 540px;
+  width: 100%;
+  height: 420px;
+  min-height: 420px;
   position: relative;
   z-index: 20;
     transform-style: preserve-3d;
@@ -71,8 +71,17 @@
     0%, 100% { opacity: 0.15; transform: scale(1) translate(-50%,-50%); }
     50%       { opacity: 0.32; transform: scale(1.15) translate(-50%,-50%); }
   }
-  .robot-glow-blue   { animation: robotGlow1 4.0s ease-in-out infinite; }
-  .robot-glow-orange { animation: robotGlow2 5.5s ease-in-out infinite 1.2s; }
+  .robot-glow-blue {
+  width: 180px !important;
+  height: 180px !important;
+  filter: blur(14px) !important;
+}
+
+.robot-glow-orange {
+  width: 140px !important;
+  height: 140px !important;
+  filter: blur(18px) !important;
+}
 
   @keyframes ringCW  { to { transform: rotate(360deg); } }
   @keyframes ringCCW { to { transform: rotate(-360deg); } }
@@ -165,6 +174,12 @@
 .reveal-delay-4 { transition-delay: .20s; }
 .reveal-delay-5 { transition-delay: .25s; }
 .reveal-delay-6 { transition-delay: .30s; }
+
+#spline-robot {
+  transform: scale(0.82);
+  opacity: 0.92;
+  will-change: auto !important;
+}
 </style>
 @endpush
 
@@ -230,9 +245,9 @@
       </div>
 
       {{-- Right: 3D Robot AI Assistant --}}
-      <div class="hidden lg:flex flex-shrink-0 items-center justify-center relative"
-           id="hero-robot-wrapper"
-           style="width:500px;height:540px;">
+      <div class="hidden xl:flex flex-shrink-0 items-center justify-center relative"
+            id="hero-robot-wrapper"
+            style="width:420px;height:460px;">
 
       
 
@@ -273,12 +288,12 @@
         {{-- ★ Spline 3D Robot ★ --}}
         <div id="robot-scene-container" style="z-index:20;">
           <spline-viewer
-  id="spline-robot"
-  loading="eager"
-  events-target="global"
-  loading-anim-type="spinner-big-dark"
-  url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode"
-></spline-viewer>
+            id="spline-robot"
+            loading="lazy"
+            events-target="global"
+            loading-anim-type="spinner-big-dark"
+            url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode"
+            ></spline-viewer>
         </div>
 
         {{-- Spline branding cover --}}
@@ -680,7 +695,7 @@ splineRobot.style.transform = `
   observer.observe(robotWrapper);
 
   /* ── Mouse Move ─────────────────────── */
-  heroSection.addEventListener('mousemove', (e) => {
+  heroSection.addEventListener('mouseleave', (e) => {
 
     hasMouseInHero = true;
 
@@ -714,8 +729,7 @@ splineRobot.style.transform = `
  
 
   /* ── Start Loop ─────────────────────── */
-  animationRunning = true;
-  tick();
+  // animation dimatikan biar ringan
 
   /* ── FAQ ────────────────────────────── */
   window.toggleFaq = function (index) {
