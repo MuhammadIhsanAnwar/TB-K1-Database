@@ -13,11 +13,7 @@
     background: #0D1421;
     border: 1px solid #1E2D45;
     border-radius: 14px;
-    transition:
-    transform .25s ease,
-    border-color .25s ease,
-    background .25s ease,
-    box-shadow .25s ease;
+    transition: all 0.2s;
   }
   .cat-btn:hover {
     border-color: rgba(37,99,235,0.5);
@@ -31,16 +27,12 @@
     border: 1px solid #1E2D45;
     border-radius: 14px;
     overflow: hidden;
-    transition:
-    transform .25s ease,
-    border-color .25s ease,
-    background .25s ease,
-    box-shadow .25s ease;
+    transition: all 0.2s;
   }
   .topup-card:hover {
     border-color: rgba(37,99,235,0.5);
     transform: translateY(-3px);
-    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+    box-shadow: 0 12px 32px rgba(0,0,0,0.5);
   }
 
   /* ══════════════════════════════════════════════════════════
@@ -51,9 +43,9 @@
   }
 
   #robot-scene-container {
-  width: 100%;
-  height: 420px;
-  min-height: 420px;
+    width: 100%;
+  height: 540px;
+  min-height: 540px;
   position: relative;
   z-index: 20;
     transform-style: preserve-3d;
@@ -79,17 +71,8 @@
     0%, 100% { opacity: 0.15; transform: scale(1) translate(-50%,-50%); }
     50%       { opacity: 0.32; transform: scale(1.15) translate(-50%,-50%); }
   }
-  .robot-glow-blue {
-  width: 180px !important;
-  height: 180px !important;
-  filter: blur(14px) !important;
-}
-
-.robot-glow-orange {
-  width: 140px !important;
-  height: 140px !important;
-  filter: blur(18px) !important;
-}
+  .robot-glow-blue   { animation: robotGlow1 4.0s ease-in-out infinite; }
+  .robot-glow-orange { animation: robotGlow2 5.5s ease-in-out infinite 1.2s; }
 
   @keyframes ringCW  { to { transform: rotate(360deg); } }
   @keyframes ringCCW { to { transform: rotate(-360deg); } }
@@ -161,10 +144,13 @@
 
    /* ── Scroll Reveal Animation ───────────────────────────── */
   /* ── Clean Reveal Animation ───────────────────────────── */
-  .reveal-card {
-  opacity: 1;
-  transform: none;
-  transition: transform .3s ease;
+.reveal-card {
+  opacity: 0;
+  transform: translateY(30px);
+  transition:
+    opacity 0.7s ease-out,
+    transform 0.7s ease-out;
+  will-change: opacity, transform;
 }
 
 .reveal-card.show {
@@ -179,20 +165,6 @@
 .reveal-delay-4 { transition-delay: .20s; }
 .reveal-delay-5 { transition-delay: .25s; }
 .reveal-delay-6 { transition-delay: .30s; }
-
-#spline-robot {
-  transform: scale(0.82);
-  opacity: 0.92;
-  will-change: auto !important;
-}
-
-img,
-.reveal-card,
-.topup-card,
-.cat-btn {
-  transform: translateZ(0);
-  backface-visibility: hidden;
-}
 </style>
 @endpush
 
@@ -203,6 +175,11 @@ img,
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="relative overflow-hidden pt-10 pb-16" id="hero-section">
   <div class="hero-glow absolute inset-0 pointer-events-none"></div>
+
+  <div class="absolute top-10 right-1/4 w-64 h-64 rounded-full pointer-events-none opacity-10"
+       style="background:radial-gradient(circle,#2563eb,transparent 70%);filter:blur(40px);"></div>
+  <div class="absolute bottom-0 left-1/3 w-48 h-48 rounded-full pointer-events-none opacity-10"
+       style="background:radial-gradient(circle,#f97316,transparent 70%);filter:blur(36px);"></div>
 
   <div class="max-w-7xl mx-auto px-4">
     <div class="flex flex-col lg:flex-row items-center gap-8 xl:gap-12">
@@ -229,7 +206,7 @@ img,
 
         <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
           <a href="{{ route('products.search') }}" class="btn-primary px-6 py-3.5 rounded-xl text-base">
-            <img loading = "lazy" src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
+            <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
             Mulai Belanja
           </a>
           <a href="{{ route('marketplace.trending') }}" class="btn-ghost px-6 py-3.5 rounded-xl text-base">
@@ -253,9 +230,9 @@ img,
       </div>
 
       {{-- Right: 3D Robot AI Assistant --}}
-      <div class="hidden xl:flex flex-shrink-0 items-center justify-center relative"
-            id="hero-robot-wrapper"
-            style="width:420px;height:460px;">
+      <div class="hidden lg:flex flex-shrink-0 items-center justify-center relative"
+           id="hero-robot-wrapper"
+           style="width:500px;height:540px;">
 
       
 
@@ -267,11 +244,11 @@ img,
         <div class="robot-glow-blue absolute rounded-full pointer-events-none"
              style="width:290px;height:290px;z-index:1;background:radial-gradient(circle,rgba(37,99,235,0.38) 0%,transparent 70%);filter:blur(24px);"></div>
         <div class="robot-glow-orange absolute pointer-events-none"
-             style="width:200px;height:200px;top:58%;left:58%;z-index:1;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,0.22) 0%,transparent 70%);filter:blur(24px);transform:translate(-50%,-50%);"></div>
+             style="width:200px;height:200px;top:58%;left:58%;z-index:1;border-radius:50%;background:radial-gradient(circle,rgba(249,115,22,0.22) 0%,transparent 70%);filter:blur(44px);transform:translate(-50%,-50%);"></div>
 
         {{-- Loading skeleton --}}
         <div id="robot-loader" class="absolute inset-0 flex items-center justify-center" style="z-index:30;">
-          <div class="flex flex-col items-center gap-3">
+          <div class="flex flex-col items-center gap-4">
             <div class="relative w-20 h-20">
               <div class="absolute inset-0 rounded-full border-2 border-brand-500/20 border-t-brand-400 animate-spin"></div>
               <div class="absolute inset-2 rounded-full border border-brand-500/10 border-b-accent-400/50"
@@ -296,12 +273,12 @@ img,
         {{-- ★ Spline 3D Robot ★ --}}
         <div id="robot-scene-container" style="z-index:20;">
           <spline-viewer
-            id="spline-robot"
-            loading="lazy"
-            events-target="global"
-            loading-anim-type="spinner-big-dark"
-            url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode"
-            ></spline-viewer>
+  id="spline-robot"
+  loading="eager"
+  events-target="global"
+  loading-anim-type="spinner-big-dark"
+  url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode"
+></spline-viewer>
         </div>
 
         {{-- Spline branding cover --}}
@@ -318,7 +295,7 @@ img,
 
         {{-- Badge: AI Online --}}
         <div class="badge-float-a absolute z-30" style="top:28px;right:-8px;">
-          <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2.5 backdrop-blur-sm"
+          <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2.5 backdrop-blur-md"
                style="background:rgba(9,14,26,0.88);border:1px solid rgba(16,185,129,0.45);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 14px rgba(16,185,129,0.18);">
             <span class="relative flex h-2 w-2">
               <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
@@ -330,7 +307,7 @@ img,
 
         {{-- Badge: Daily transactions --}}
         <div class="badge-float-b absolute z-30" style="bottom:96px;left:-20px;">
-          <div class="rounded-2xl px-4 py-2.5 backdrop-blur-sm"
+          <div class="rounded-2xl px-4 py-2.5 backdrop-blur-md"
                style="background:rgba(9,14,26,0.88);border:1px solid rgba(37,99,235,0.45);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 14px rgba(37,99,235,0.18);">
             <div class="text-[10px] tracking-[0.18em] uppercase font-display mb-0.5" style="color:rgba(96,165,250,0.6);">Transaksi Hari Ini</div>
             <div class="font-display font-bold text-white text-lg leading-none">12.847</div>
@@ -339,7 +316,7 @@ img,
 
         {{-- Badge: Rating --}}
         <div class="badge-float-c absolute z-30" style="bottom:44px;right:-4px;">
-          <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2 backdrop-blur-sm"
+          <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2 backdrop-blur-md"
                style="background:rgba(9,14,26,0.88);border:1px solid rgba(249,115,22,0.38);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 12px rgba(249,115,22,0.14);">
             <span style="font-size:14px;">⭐</span>
             <span class="font-display font-bold text-white text-sm">4.9</span>
@@ -369,7 +346,7 @@ img,
         <div class="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110"
              style="background:#162032;">
           @if($cat->image)
-            <img loading="lazy" src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="w-10 h-10 object-cover rounded-lg">
+            <img src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="w-10 h-10 object-cover rounded-lg">
           @else
             <span class="text-2xl">{{ $cat->icon ?? '🎮' }}</span>
           @endif
@@ -388,7 +365,7 @@ img,
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="pb-14">
   <div class="max-w-7xl mx-auto px-4">
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
       @foreach([
         ['type'=>'topup','icon'=>'⚡','label'=>'Top Up','desc'=>'Langsung ke akun','class'=>'bg-blue-500/10 border-blue-500/30','badge'=>'Tercepat'],
         ['type'=>'joki', 'icon'=>'🏆','label'=>'Jasa Joki','desc'=>'Naik rank dijamin','class'=>'bg-orange-500/10 border-orange-500/25','badge'=>'Populer'],
@@ -426,10 +403,12 @@ img,
       </div>
       <a href="{{ route('products.search') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Lihat semua →</a>
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-3">
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
       @forelse($popularProducts as $product)
         <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
-    @include('components.product-card', ['product' => $product])
+  <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
+  @include('components.product-card', ['product' => $product])
+</div>
 </div>
       @empty
         <div class="col-span-full py-16 text-center">
@@ -451,7 +430,7 @@ img,
       <div class="flex items-center gap-3">
         <div class="w-8 h-8 rounded-lg flex items-center justify-center"
              style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
-          <img loading="lazy" src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
+          <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
         </div>
         <div>
           <h2 class="font-display font-bold text-lg text-white">⚡ Top Up Kilat</h2>
@@ -460,7 +439,7 @@ img,
       </div>
       <a href="{{ route('products.by-type', 'topup') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Semua Top Up →</a>
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3">
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
       @foreach($topupProducts as $product)
         <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
   @include('components.product-card', ['product' => $product])
@@ -483,7 +462,7 @@ img,
       <span class="badge badge-blue mb-4">Kenapa Lapak Gaming?</span>
       <h2 class="font-display font-bold text-2xl sm:text-3xl text-white mb-3">Platform terpercaya untuk<br>semua kebutuhan gaming-mu</h2>
       <p class="text-slate-400 text-sm max-w-lg mx-auto mb-8">Bergabung dengan jutaan gamer Indonesia yang sudah percaya transaksi mereka bersama kami.</p>
-      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3 max-w-3xl mx-auto mb-8">
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8">
         @foreach([
           ['icon'=>'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z','label'=>'Escrow Aman','sub'=>'Dana terlindungi'],
           ['icon'=>'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z','label'=>'Proses Cepat','sub'=>'< 5 menit selesai'],
@@ -703,7 +682,7 @@ splineRobot.style.transform = `
   observer.observe(robotWrapper);
 
   /* ── Mouse Move ─────────────────────── */
-  heroSection.addEventListener('mouseleave', (e) => {
+  heroSection.addEventListener('mousemove', (e) => {
 
     hasMouseInHero = true;
 
@@ -737,7 +716,8 @@ splineRobot.style.transform = `
  
 
   /* ── Start Loop ─────────────────────── */
-  // animation dimatikan biar ringan
+  animationRunning = true;
+  tick();
 
   /* ── FAQ ────────────────────────────── */
   window.toggleFaq = function (index) {
@@ -767,6 +747,30 @@ splineRobot.style.transform = `
     }
 
   };
+
+  document.addEventListener('DOMContentLoaded', () => {
+
+  const reveals = document.querySelectorAll('.reveal-card');
+
+  const observer = new IntersectionObserver((entries) => {
+
+    entries.forEach(entry => {
+
+      if (entry.isIntersecting) {
+
+        entry.target.classList.add('show');
+
+      }
+
+    });
+
+  }, {
+    threshold: 0.12
+  });
+
+  reveals.forEach(el => observer.observe(el));
+
+});
 
 })();
 
