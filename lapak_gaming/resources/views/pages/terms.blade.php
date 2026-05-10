@@ -11,7 +11,7 @@
     {{-- Header --}}
     <div class="text-center mb-16 border-b border-gray-800/50 pb-10 relative">
         <h1 class="text-4xl md:text-5xl font-display font-extrabold text-white mb-6 tracking-tight">
-            Aturan <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Penggunaan</span>
+            Syarat & <span class="text-transparent bg-clip-text bg-gradient-to-r from-purple-400 to-blue-500">Ketentuan</span>
         </h1>
         <div class="inline-flex items-center gap-3 bg-gray-900/80 backdrop-blur-sm px-5 py-2.5 rounded-full border border-gray-800 shadow-lg">
             <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span>
