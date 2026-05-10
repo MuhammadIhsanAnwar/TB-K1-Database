@@ -18,4 +18,9 @@ class PageController extends Controller
     {
         return view('pages.privacy');
     }
+
+    public function refund()
+    {
+        return view('pages.refund');
+    }
 }
