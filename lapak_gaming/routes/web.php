@@ -41,9 +41,11 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
     Route::get('/category/{slug}', [MarketplaceController::class, 'category'])->name('category');
 
 });
+
 Route::get('/hubungi-kami', function () {
     return view('pages.contact');
 })->name('contact');
+
 Route::get('/', [MarketplaceController::class, 'home'])->name('home');
 Route::get('/products/type/{type}', [ProductController::class, 'byType'])->name('products.by-type');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
