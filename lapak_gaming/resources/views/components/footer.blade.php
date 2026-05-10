@@ -73,7 +73,7 @@
       <div>
         <h4 class="font-display font-semibold text-white text-sm mb-4">Tentang Kami</h4>
         <ul class="space-y-2.5">
-          <li><a href="#" class="text-sm text-slate-400 hover:text-white transition-colors">Tentang Lapak Gaming</a></li>
+          <li><a href="{{ route('about') }}" class="text-sm text-slate-400 hover:text-white transition-colors">Tentang Lapak Gaming</a></li>
           <li><a href="{{ route('terms') }}" class="text-sm text-slate-400 hover:text-white transition-colors">Syarat & Ketentuan</a></li>
           <li><a href="{{ route('contact') }}" class="text-sm text-slate-400 hover:text-white transition-colors">Hubungi Kami</a></li>
           <li><a href="{{ route('privacy') }}" class="text-sm text-slate-400 hover:text-white transition-colors">Kebijakan Privasi</a></li>
