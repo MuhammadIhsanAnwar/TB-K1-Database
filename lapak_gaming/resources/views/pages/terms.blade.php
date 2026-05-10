@@ -3,10 +3,9 @@
 @section('title', 'Aturan Penggunaan — Lapak Gaming')
 
 @section('content')
-{{-- Efek fade-in saat halaman dibuka --}}
 <div class="max-w-4xl mx-auto px-4 py-12 md:py-20 animate-fade-in relative z-10">
     
-    {{-- Background Glow Dekoratif (Warna Ungu/Biru) --}}
+    {{-- Background Glow Dekoratif --}}
     <div class="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-2xl h-64 bg-purple-600/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
 
     {{-- Header --}}
@@ -21,93 +20,89 @@
     </div>
 
     {{-- Konten Pembuka --}}
-    <div class="bg-blue-500/5 border border-blue-500/20 rounded-2xl p-6 md:p-8 mb-10 text-center relative overflow-hidden group">
-        <div class="absolute inset-0 bg-gradient-to-r from-blue-600/0 via-blue-600/5 to-blue-600/0 opacity-0 group-hover:opacity-100 group-hover:translate-x-full transition-all duration-1000 ease-out"></div>
+    <div class="bg-gray-900/40 border border-gray-700/50 rounded-2xl p-6 md:p-8 mb-10 text-center relative overflow-hidden">
         <p class="text-slate-300 leading-relaxed text-sm md:text-base relative z-10">
             Selamat datang di Lapak Gaming. Syarat & ketentuan yang ditetapkan di bawah ini mengatur pemakaian jasa yang ditawarkan oleh PT Lapak Gaming Indonesia terkait penggunaan situs <strong class="text-white font-display tracking-wide">lapakgaming.neoverse.my.id</strong>. Pengguna disarankan membaca dengan saksama karena dapat berdampak kepada hak dan kewajiban Pengguna di bawah hukum.
         </p>
     </div>
 
-    {{-- Daftar Aturan (Dibuat model Card Interaktif) --}}
+    {{-- Daftar Aturan (Full Highlighted Cards) --}}
     <div class="space-y-6">
         
-        {{-- Section 1 --}}
-        <div class="group bg-gray-925/80 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 md:p-8 hover:border-blue-500/40 hover:shadow-[0_8px_30px_rgba(59,130,246,0.1)] hover:-translate-y-1 transition-all duration-300">
+        {{-- Section 1: BLUE HIGHLIGHT --}}
+        <div class="group relative bg-blue-900/10 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-6 md:p-8 hover:border-blue-500/60 hover:shadow-[0_8px_30px_rgba(59,130,246,0.15)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500/50 group-hover:bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-colors duration-300"></div>
+            
             <h2 class="text-xl md:text-2xl font-display font-bold text-white mb-5 flex items-center gap-4">
-                <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-500/10 text-blue-400 font-bold text-lg group-hover:scale-110 group-hover:bg-blue-500/20 group-hover:shadow-[0_0_15px_rgba(59,130,246,0.4)] transition-all duration-300">
-                    1
-                </span>
+                <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-blue-500/20 text-blue-400 font-bold text-lg group-hover:scale-110 group-hover:bg-blue-500/30 transition-all duration-300">1</span>
                 Akun, Password, dan Keamanan
             </h2>
-            <ul class="space-y-3 text-slate-400 text-sm md:text-base leading-relaxed ml-2">
+            <ul class="space-y-3 text-slate-300 text-sm md:text-base leading-relaxed ml-2">
                 <li class="flex gap-3"><span class="text-blue-500 mt-0.5 shrink-0">▹</span> Pengguna dengan ini menyatakan bahwa pengguna adalah orang yang cakap dan mampu untuk mengikatkan dirinya dalam sebuah perjanjian yang sah menurut hukum.</li>
                 <li class="flex gap-3"><span class="text-blue-500 mt-0.5 shrink-0">▹</span> Lapak Gaming tidak memungut biaya pendaftaran kepada Pengguna.</li>
                 <li class="flex gap-3"><span class="text-blue-500 mt-0.5 shrink-0">▹</span> Pengguna bertanggung jawab secara pribadi untuk menjaga kerahasiaan akun dan password untuk semua aktivitas yang terjadi dalam akun Pengguna.</li>
-                <li class="flex gap-3"><span class="text-blue-500 mt-0.5 shrink-0">▹</span> Lapak Gaming tidak akan meminta password akun Pengguna untuk alasan apapun, oleh karena itu Lapak Gaming menghimbau Pengguna agar tidak memberikan password akun Anda kepada pihak manapun.</li>
+                <li class="flex gap-3"><span class="text-blue-500 mt-0.5 shrink-0">▹</span> Lapak Gaming tidak akan meminta password akun Pengguna untuk alasan apapun.</li>
             </ul>
         </div>
 
-        {{-- Section 2 --}}
-        <div class="group bg-gray-925/80 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 md:p-8 hover:border-orange-500/40 hover:shadow-[0_8px_30px_rgba(249,115,22,0.1)] hover:-translate-y-1 transition-all duration-300">
-            <h2 class="text-xl md:text-2xl font-display font-bold text-white mb-5 flex items-center gap-4">
-                <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-500/10 text-orange-400 font-bold text-lg group-hover:scale-110 group-hover:bg-orange-500/20 group-hover:shadow-[0_0_15px_rgba(249,115,22,0.4)] transition-all duration-300">
-                    2
-                </span>
-                Transaksi Pembelian
-            </h2>
-            <ul class="space-y-3 text-slate-400 text-sm md:text-base leading-relaxed ml-2">
-                <li class="flex gap-3"><span class="text-orange-500 mt-0.5 shrink-0">▹</span> Pembeli wajib bertransaksi melalui prosedur transaksi yang telah ditetapkan oleh Lapak Gaming. Pembeli melakukan pembayaran dengan menggunakan metode pembayaran yang sebelumnya telah dipilih oleh Pembeli.</li>
-                <li class="flex gap-3"><span class="text-orange-500 mt-0.5 shrink-0">▹</span> Saat melakukan pembelian Produk, Pembeli menyetujui bahwa Pembeli bertanggung jawab untuk membaca, memahami, dan menyetujui informasi/deskripsi keseluruhan Produk sebelum membuat komitmen untuk membeli.</li>
-                <li class="flex gap-3"><span class="text-orange-500 mt-0.5 shrink-0">▹</span> Semua transaksi menggunakan sistem Escrow (Rekening Bersama). Dana akan diteruskan ke Penjual hanya setelah Pembeli mengonfirmasi pesanan telah diterima dengan baik.</li>
-            </ul>
-        </div>
-
-        {{-- Section 3 --}}
-        <div class="group bg-gray-925/80 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 md:p-8 hover:border-purple-500/40 hover:shadow-[0_8px_30px_rgba(168,85,247,0.1)] hover:-translate-y-1 transition-all duration-300">
-            <h2 class="text-xl md:text-2xl font-display font-bold text-white mb-5 flex items-center gap-4">
-                <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-purple-500/10 text-purple-400 font-bold text-lg group-hover:scale-110 group-hover:bg-purple-500/20 group-hover:shadow-[0_0_15px_rgba(168,85,247,0.4)] transition-all duration-300">
-                    3
-                </span>
-                Transaksi Penjualan
-            </h2>
-            <ul class="space-y-3 text-slate-400 text-sm md:text-base leading-relaxed ml-2">
-                <li class="flex gap-3"><span class="text-purple-500 mt-0.5 shrink-0">▹</span> Penjual dilarang memanipulasi harga Produk dengan tujuan apapun.</li>
-                <li class="flex gap-3"><span class="text-purple-500 mt-0.5 shrink-0">▹</span> Penjual wajib memberikan keterangan yang lengkap, jelas, dan sesuai dengan produk yang ditawarkan (misalnya detail akun, status legalitas diamond/voucher).</li>
-                <li class="flex gap-3"><span class="text-purple-500 mt-0.5 shrink-0">▹</span> Penjual wajib menyerahkan produk sesuai dengan spesifikasi yang disepakati maksimal dalam batas waktu pengiriman yang telah ditentukan sistem.</li>
-            </ul>
-        </div>
-
-        {{-- Section 4 (Highlight Merah karena Terlarang) --}}
-        <div class="group bg-gray-925/80 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 md:p-8 hover:border-red-500/40 hover:shadow-[0_8px_30px_rgba(239,68,68,0.1)] hover:-translate-y-1 transition-all duration-300 relative overflow-hidden">
-            {{-- Aksen Garis Merah di samping --}}
-            <div class="absolute left-0 top-0 bottom-0 w-1 bg-red-500/50"></div>
+        {{-- Section 2: ORANGE HIGHLIGHT --}}
+        <div class="group relative bg-orange-900/10 backdrop-blur-sm border border-orange-500/30 rounded-2xl p-6 md:p-8 hover:border-orange-500/60 hover:shadow-[0_8px_30px_rgba(249,115,22,0.15)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-orange-500/50 group-hover:bg-orange-500 shadow-[0_0_10px_rgba(249,115,22,0.5)] transition-colors duration-300"></div>
             
             <h2 class="text-xl md:text-2xl font-display font-bold text-white mb-5 flex items-center gap-4">
-                <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-red-500/10 text-red-400 font-bold text-lg group-hover:scale-110 group-hover:bg-red-500/20 group-hover:shadow-[0_0_15px_rgba(239,68,68,0.4)] transition-all duration-300">
-                    4
-                </span>
+                <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-orange-500/20 text-orange-400 font-bold text-lg group-hover:scale-110 group-hover:bg-orange-500/30 transition-all duration-300">2</span>
+                Transaksi Pembelian
+            </h2>
+            <ul class="space-y-3 text-slate-300 text-sm md:text-base leading-relaxed ml-2">
+                <li class="flex gap-3"><span class="text-orange-500 mt-0.5 shrink-0">▹</span> Pembeli wajib bertransaksi melalui prosedur transaksi yang telah ditetapkan oleh Lapak Gaming.</li>
+                <li class="flex gap-3"><span class="text-orange-500 mt-0.5 shrink-0">▹</span> Saat melakukan pembelian Produk, Pembeli bertanggung jawab untuk membaca dan memahami deskripsi keseluruhan Produk.</li>
+                <li class="flex gap-3"><span class="text-orange-500 mt-0.5 shrink-0">▹</span> Semua transaksi menggunakan sistem <em class="text-white font-medium">Escrow</em> (Rekening Bersama). Dana diteruskan ke Penjual setelah Pembeli mengonfirmasi pesanan.</li>
+            </ul>
+        </div>
+
+        {{-- Section 3: PURPLE HIGHLIGHT --}}
+        <div class="group relative bg-purple-900/10 backdrop-blur-sm border border-purple-500/30 rounded-2xl p-6 md:p-8 hover:border-purple-500/60 hover:shadow-[0_8px_30px_rgba(168,85,247,0.15)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-purple-500/50 group-hover:bg-purple-500 shadow-[0_0_10px_rgba(168,85,247,0.5)] transition-colors duration-300"></div>
+            
+            <h2 class="text-xl md:text-2xl font-display font-bold text-white mb-5 flex items-center gap-4">
+                <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-purple-500/20 text-purple-400 font-bold text-lg group-hover:scale-110 group-hover:bg-purple-500/30 transition-all duration-300">3</span>
+                Transaksi Penjualan
+            </h2>
+            <ul class="space-y-3 text-slate-300 text-sm md:text-base leading-relaxed ml-2">
+                <li class="flex gap-3"><span class="text-purple-500 mt-0.5 shrink-0">▹</span> Penjual dilarang memanipulasi harga Produk dengan tujuan apapun.</li>
+                <li class="flex gap-3"><span class="text-purple-500 mt-0.5 shrink-0">▹</span> Penjual wajib memberikan keterangan yang lengkap, jelas, dan sesuai dengan produk yang ditawarkan.</li>
+                <li class="flex gap-3"><span class="text-purple-500 mt-0.5 shrink-0">▹</span> Penjual wajib menyerahkan produk sesuai spesifikasi dalam batas waktu pengiriman yang telah ditentukan sistem.</li>
+            </ul>
+        </div>
+
+        {{-- Section 4: RED HIGHLIGHT (Peringatan) --}}
+        <div class="group relative bg-red-900/10 backdrop-blur-sm border border-red-500/40 rounded-2xl p-6 md:p-8 hover:border-red-500/70 hover:shadow-[0_8px_30px_rgba(239,68,68,0.2)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-red-500/70 group-hover:bg-red-500 shadow-[0_0_10px_rgba(239,68,68,0.7)] transition-colors duration-300"></div>
+            
+            <h2 class="text-xl md:text-2xl font-display font-bold text-white mb-5 flex items-center gap-4">
+                <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-red-500/20 text-red-400 font-bold text-lg group-hover:scale-110 group-hover:bg-red-500/30 transition-all duration-300">4</span>
                 Barang dan Jasa Terlarang
             </h2>
             <p class="text-slate-300 text-sm md:text-base mb-4 ml-2">Lapak Gaming dengan tegas melarang penjualan produk/jasa berikut:</p>
-            <ul class="space-y-3 text-slate-400 text-sm md:text-base leading-relaxed ml-2">
-                <li class="flex gap-3"><span class="text-red-500 mt-0.5 shrink-0">✕</span> Aplikasi atau tools ilegal (Cheat, Hack, Bot, Mod).</li>
-                <li class="flex gap-3"><span class="text-red-500 mt-0.5 shrink-0">✕</span> Produk hasil pencurian (Carding, Phishing, Scamming).</li>
-                <li class="flex gap-3"><span class="text-red-500 mt-0.5 shrink-0">✕</span> Data pribadi pihak ketiga atau informasi finansial.</li>
+            <ul class="space-y-3 text-red-200 text-sm md:text-base leading-relaxed ml-2">
+                <li class="flex gap-3"><span class="text-red-500 mt-0.5 shrink-0 font-bold">✕</span> Aplikasi atau tools ilegal (Cheat, Hack, Bot, Mod).</li>
+                <li class="flex gap-3"><span class="text-red-500 mt-0.5 shrink-0 font-bold">✕</span> Produk hasil pencurian (Carding, Phishing, Scamming).</li>
+                <li class="flex gap-3"><span class="text-red-500 mt-0.5 shrink-0 font-bold">✕</span> Data pribadi pihak ketiga atau informasi finansial.</li>
             </ul>
         </div>
 
-        {{-- Section 5 --}}
-        <div class="group bg-gray-925/80 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 md:p-8 hover:border-green-500/40 hover:shadow-[0_8px_30px_rgba(34,197,94,0.1)] hover:-translate-y-1 transition-all duration-300">
+        {{-- Section 5: GREEN HIGHLIGHT --}}
+        <div class="group relative bg-green-900/10 backdrop-blur-sm border border-green-500/30 rounded-2xl p-6 md:p-8 hover:border-green-500/60 hover:shadow-[0_8px_30px_rgba(34,197,94,0.15)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+            <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-green-500/50 group-hover:bg-green-500 shadow-[0_0_10px_rgba(34,197,94,0.5)] transition-colors duration-300"></div>
+            
             <h2 class="text-xl md:text-2xl font-display font-bold text-white mb-5 flex items-center gap-4">
-                <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-green-500/10 text-green-400 font-bold text-lg group-hover:scale-110 group-hover:bg-green-500/20 group-hover:shadow-[0_0_15px_rgba(34,197,94,0.4)] transition-all duration-300">
-                    5
-                </span>
+                <span class="flex items-center justify-center w-10 h-10 rounded-xl bg-green-500/20 text-green-400 font-bold text-lg group-hover:scale-110 group-hover:bg-green-500/30 transition-all duration-300">5</span>
                 Penyelesaian Sengketa (Dispute)
             </h2>
-            <ul class="space-y-3 text-slate-400 text-sm md:text-base leading-relaxed ml-2">
-                <li class="flex gap-3"><span class="text-green-500 mt-0.5 shrink-0">▹</span> Apabila terjadi kendala pesanan (misal: produk tidak sesuai atau tidak dikirim), Pembeli dapat menekan tombol "Komplain" sebelum masa garansi habis.</li>
+            <ul class="space-y-3 text-slate-300 text-sm md:text-base leading-relaxed ml-2">
+                <li class="flex gap-3"><span class="text-green-500 mt-0.5 shrink-0">▹</span> Apabila terjadi kendala pesanan, Pembeli dapat menekan tombol "Komplain" sebelum masa garansi habis.</li>
                 <li class="flex gap-3"><span class="text-green-500 mt-0.5 shrink-0">▹</span> Tim Resolusi Lapak Gaming akan menjadi penengah yang adil dengan meninjau bukti dari kedua belah pihak.</li>
-                <li class="flex gap-3"><span class="text-green-500 mt-0.5 shrink-0">▹</span> Keputusan Tim Resolusi Lapak Gaming bersifat final dan mengikat baik bagi Pembeli maupun Penjual.</li>
+                <li class="flex gap-3"><span class="text-green-500 mt-0.5 shrink-0">▹</span> Keputusan Tim Resolusi Lapak Gaming bersifat final dan mengikat bagi Pembeli maupun Penjual.</li>
             </ul>
         </div>
 
@@ -115,7 +110,6 @@
 
     {{-- Penutup --}}
     <div class="mt-12 p-8 bg-[#0D1421] border border-[#1E2D45] rounded-3xl text-center relative overflow-hidden group hover:border-blue-500/50 transition-colors duration-500">
-        {{-- Efek Radar --}}
         <div class="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/10 rounded-full blur-2xl group-hover:bg-blue-600/20 transition-all duration-500"></div>
         
         <svg class="w-10 h-10 text-blue-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
