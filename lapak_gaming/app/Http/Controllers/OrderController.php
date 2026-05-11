@@ -10,14 +10,14 @@ use Illuminate\Support\Facades\{Auth, DB};
 
 class OrderController extends Controller {
     public function index() {
-        $orders = Order::where('user_id', Auth::id())
+        $orders = Order::where('buyer_id', Auth::id())
             ->with('items.product')
             ->latest()->paginate(10);
         return view('orders.index', compact('orders'));
     }
 
     public function show(Order $order) {
-        abort_if($order->user_id !== Auth::id(), 403);
+        abort_if($order->buyer_id !== Auth::id(), 403);
         $order->load('items.product.seller', 'items.review');
         return view('orders.show', compact('order'));
     }
@@ -46,7 +46,7 @@ class OrderController extends Controller {
     }
 
     public function pay(Request $request, Order $order) {
-        abort_if($order->user_id !== Auth::id(), 403);
+        abort_if($order->buyer_id !== Auth::id(), 403);
         abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
 
         $request->validate([
@@ -94,7 +94,7 @@ class OrderController extends Controller {
             $fee = round($subtotal * 0.02);
 
             $order = Order::create([
-                'user_id'        => Auth::id(),
+                'buyer_id'       => Auth::id(),
                 'status'         => Order::STATUS_PENDING_PAYMENT,
                 'payment_method' => $request->payment_method,
             ]);
@@ -131,7 +131,7 @@ class OrderController extends Controller {
     }
 
     public function complete(Order $order) {
-        abort_if($order->user_id !== Auth::id(), 403);
+        abort_if($order->buyer_id !== Auth::id(), 403);
         abort_if(!in_array($order->status, [Order::STATUS_PAYMENT_UPLOADED, Order::STATUS_PROCESSING], true), 422);
 
         DB::transaction(function () use ($order) {
@@ -162,7 +162,7 @@ class OrderController extends Controller {
     }
 
     public function cancel(Order $order) {
-        abort_if($order->user_id !== Auth::id(), 403);
+        abort_if($order->buyer_id !== Auth::id(), 403);
         abort_if(!in_array($order->status, [Order::STATUS_PENDING_PAYMENT, Order::STATUS_PAYMENT_UPLOADED], true), 422);
 
         DB::transaction(function () use ($order) {
@@ -181,7 +181,7 @@ class OrderController extends Controller {
     }
 
     public function uploadProof(Request $request, Order $order) {
-        abort_if($order->user_id !== Auth::id(), 403);
+        abort_if($order->buyer_id !== Auth::id(), 403);
         $request->validate(['payment_proof' => 'required|image|max:2048']);
         $path = $request->file('payment_proof')->store('payment_proofs', 'public');
         $order->update(['payment_proof' => $path, 'status' => Order::STATUS_PAYMENT_UPLOADED, 'paid_at' => now()]);

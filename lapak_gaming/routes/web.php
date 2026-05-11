@@ -145,6 +145,10 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/chat/{order}', [ChatController::class, 'store'])->name('chat.store');
     Route::get('/api/chat/{order}', [ChatController::class, 'poll'])->name('chat.poll');
 
+    Route::get('/chat/product/{product}', [ChatController::class, 'product'])->name('chat.product');
+    Route::post('/chat/product/{product}', [ChatController::class, 'storeProduct'])->name('chat.product.store');
+    Route::get('/api/chat/product/{product}', [ChatController::class, 'pollProduct'])->name('chat.product.poll');
+
     Route::get('/notifications/poll', [NotificationController::class, 'poll'])->name('notifications.poll');
 
     // Admin Terminal untuk menjalankan perintah Artisan

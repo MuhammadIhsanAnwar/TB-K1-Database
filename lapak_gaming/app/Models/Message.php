@@ -11,6 +11,7 @@ class Message extends Model
 
     protected $fillable = [
         'order_id',
+        'product_id',
         'sender_id',
         'receiver_id',
         'message',
@@ -26,6 +27,11 @@ class Message extends Model
     public function order()
     {
         return $this->belongsTo(Order::class);
+    }
+
+    public function product()
+    {
+        return $this->belongsTo(Product::class);
     }
 
     public function sender()

@@ -16,7 +16,7 @@ class Order extends Model {
     public const STATUS_REFUNDED = 'refunded';
 
     protected $fillable = [
-        'order_code', 'user_id', 'status', 'payment_method',
+        'order_code', 'buyer_id', 'status', 'payment_method',
         'payment_proof', 'paid_at', 'completed_at', 'notes',
     ];
 
@@ -34,7 +34,7 @@ class Order extends Model {
         });
     }
 
-    public function buyer()     { return $this->belongsTo(User::class, 'user_id'); }
+    public function buyer()     { return $this->belongsTo(User::class, 'buyer_id'); }
     public function items()     { return $this->hasMany(OrderItem::class); }
     public function financial(): HasOne { return $this->hasOne(OrderFinancial::class); }
 

@@ -54,6 +54,15 @@
           {{ $productName }}
         </h1>
 
+        {{-- Product image --}}
+        <div class="mb-6 rounded-2xl overflow-hidden" style="background:#090E1A;border:1px solid #1E2D45;">
+          <img src="{{ data_get($product, 'image_url') }}"
+               alt="{{ $productName }}"
+               class="w-full h-72 sm:h-96 object-cover"
+               loading="lazy"
+               onerror="this.onerror=null;this.src='{{ asset('images/default-product.png') }}';">
+        </div>
+
         {{-- Stats bar --}}
         <div class="flex flex-wrap gap-5 text-sm text-slate-400 mb-6 pb-6" style="border-bottom:1px solid #1E2D45;">
           <div class="flex items-center gap-1.5">
@@ -229,16 +238,15 @@
             @endforeach
           </div>
           @auth
-            @if($userOrder)
-             <a href="{{ route('chat.index', $userOrder) }}" 
-              class="btn-ghost w-full py-2.5 rounded-xl text-sm text-center">
+            @if(auth()->id() !== $productSeller->id)
+            <a href="{{ route('chat.product', $product) }}"
+               class="btn-ghost w-full py-2.5 rounded-xl text-sm text-center">
               💬 Chat Penjual
-             </a>
+            </a>
             @else
-              <span class="btn-ghost w-full py-2.5 rounded-xl text-sm text-center opacity-50 cursor-not-allowed" 
-                title="Beli produk ini dulu untuk chat dengan penjual">
-                💬 Chat Penjual
-              </span>
+            <span class="btn-ghost w-full py-2.5 rounded-xl text-sm text-center opacity-60 cursor-not-allowed">
+              💬 Ini produk Anda
+            </span>
             @endif
           @else
             <a href="{{ route('login') }}" 
