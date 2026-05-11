@@ -7,7 +7,6 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
 use App\Models\UserProfile;
 use App\Models\UserPolicyConsent;
@@ -15,7 +14,7 @@ use App\Notifications\CustomVerifyEmail;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class User extends Authenticatable implements MustVerifyEmail {
-    use HasFactory, Notifiable, SoftDeletes;
+    use HasFactory, Notifiable;
 
     protected $fillable = [
         'name', 'email', 'password', 'role',
