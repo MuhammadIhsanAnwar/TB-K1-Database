@@ -6,8 +6,10 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\Log;
 use App\Models\UserProfile;
 use App\Notifications\CustomVerifyEmail;
+use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class User extends Authenticatable implements MustVerifyEmail {
     use HasFactory, Notifiable;
@@ -161,8 +163,29 @@ class User extends Authenticatable implements MustVerifyEmail {
     }
 
     // Override to send our custom activation email (works for logged-out clicks)
-    public function sendEmailVerificationNotification()
+    public function sendEmailVerificationNotification(): bool
     {
-        $this->notify(new CustomVerifyEmail());
+        try {
+            $this->notify(new CustomVerifyEmail());
+            return true;
+        } catch (TransportExceptionInterface $exception) {
+            Log::error('Email verification transport failure', [
+                'user_id' => $this->id,
+                'email' => $this->email,
+                'message' => $exception->getMessage(),
+                'code' => $exception->getCode(),
+            ]);
+
+            return false;
+        } catch (\Throwable $exception) {
+            Log::error('Email verification notification failure', [
+                'user_id' => $this->id,
+                'email' => $this->email,
+                'message' => $exception->getMessage(),
+                'exception' => $exception,
+            ]);
+
+            return false;
+        }
     }
 }

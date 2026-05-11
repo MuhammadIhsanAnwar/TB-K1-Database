@@ -120,7 +120,11 @@ class AuthController extends Controller
             return $user;
         });
 
-        $user->sendEmailVerificationNotification();
+        $sent = $user->sendEmailVerificationNotification();
+
+        if (! $sent) {
+            return redirect()->route('login')->with('warning', 'Registrasi berhasil, namun email verifikasi gagal dikirim. Silakan hubungi administrator atau periksa konfigurasi email.');
+        }
 
         return redirect()->route('login')->with('status', 'Registrasi berhasil! Silakan cek email Anda untuk verifikasi akun.');
     }
@@ -218,10 +222,14 @@ class AuthController extends Controller
         // Check if email is verified
         if (! $user->email_verified_at) {
             // Always send for any unverified Google user (new or existing).
-            $user->sendEmailVerificationNotification();
+            $sent = $user->sendEmailVerificationNotification();
 
-            // Redirect to verification notice
             Auth::login($user);
+
+            if (! $sent) {
+                return redirect()->route('verification.notice')->with('warning', 'Verifikasi email gagal dikirim. Silakan hubungi administrator atau coba lagi nanti.');
+            }
+
             return redirect()->route('verification.notice');
         }
 

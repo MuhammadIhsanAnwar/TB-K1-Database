@@ -22,7 +22,9 @@ class VerificationController extends Controller
             return redirect()->route('dashboard');
         }
 
-        $request->user()->sendEmailVerificationNotification();
+        if (! $request->user()->sendEmailVerificationNotification()) {
+            return back()->withErrors(['email' => 'Gagal mengirim email verifikasi. Silakan coba lagi nanti atau hubungi administrator.']);
+        }
 
         return back()->with('status', 'verification-link-sent');
     }

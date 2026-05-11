@@ -166,12 +166,24 @@
       </div>
 
       {{-- Flash status --}}
-      @if(session('status'))
+      @if(session('status') || session('warning') || $errors->any())
       <div class="status-banner mb-5">
         <svg class="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/>
         </svg>
-        <p class="text-sm text-emerald-300">{{ session('status') }}</p>
+        <div class="text-sm">
+          @if(session('status'))
+            <p class="text-emerald-300">{{ session('status') }}</p>
+          @endif
+          @if(session('warning'))
+            <p class="text-yellow-300">{{ session('warning') }}</p>
+          @endif
+          @if($errors->any())
+            @foreach($errors->all() as $error)
+              <p class="text-yellow-300">{{ $error }}</p>
+            @endforeach
+          @endif
+        </div>
       </div>
       @endif
 
