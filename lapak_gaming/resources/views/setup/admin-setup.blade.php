@@ -171,8 +171,8 @@
                     class="form-control @error('email') is-invalid @enderror" 
                     id="email" 
                     name="email" 
-                    placeholder="admin@example.com"
-                    value="{{ old('email') }}"
+                    placeholder="administrator@lapakgaming.neoverse.my.id"
+                    value="{{ old('email', 'administrator@lapakgaming.neoverse.my.id') }}"
                     required
                 >
                 @error('email')

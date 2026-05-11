@@ -93,6 +93,24 @@
                     </button>
                 </div>
             </form>
+
+            <div class="mt-10 rounded-3xl border border-red-700 bg-red-950/20 p-6">
+                <h2 class="text-xl font-bold text-white">Hapus Akun Permanen</h2>
+                <p class="mt-2 text-slate-400">Menghapus akun akan menghapus semua data pribadi dan akses ke Lapak Gaming.</p>
+                <form action="{{ route('settings.destroy') }}" method="POST" class="mt-4">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white hover:bg-red-500">Hapus Akun Permanen</button>
+                </form>
+            </div>
+
+            @unless($user->isSellerAccount())
+            <div class="mt-10 rounded-3xl border border-amber-300 bg-amber-950/10 p-6">
+                <h2 class="text-xl font-bold text-white">Ingin buka toko?</h2>
+                <p class="mt-2 text-slate-400">Daftar jadi seller untuk mendapatkan akses toko dan produk.</p>
+                <a href="{{ route('seller.register.form') }}" class="mt-4 inline-flex rounded-2xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 hover:bg-amber-400">Daftar Jadi Seller</a>
+            </div>
+            @endunless
         </div>
     </div>
 </div>

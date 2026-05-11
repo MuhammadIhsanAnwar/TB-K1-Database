@@ -320,9 +320,9 @@
     {{-- Footer note --}}
     <p class="text-center text-xs text-slate-600 mt-5">
       Dengan masuk, kamu menyetujui
-      <a href="#" class="text-slate-500 hover:text-slate-400 underline">Syarat Layanan</a>
+      <a href="{{ route('terms') }}" class="text-slate-500 hover:text-slate-400 underline">Syarat Layanan</a>
       dan
-      <a href="#" class="text-slate-500 hover:text-slate-400 underline">Kebijakan Privasi</a>
+      <a href="{{ route('privacy') }}" class="text-slate-500 hover:text-slate-400 underline">Kebijakan Privasi</a>
       Lapak Gaming.
     </p>
 

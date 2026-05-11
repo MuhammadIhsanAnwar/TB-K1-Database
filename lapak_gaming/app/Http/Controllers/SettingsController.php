@@ -61,4 +61,18 @@ class SettingsController extends Controller
 
         return back()->with('success', 'Pengaturan profil berhasil diperbarui.');
     }
+
+    public function destroy(Request $request): RedirectResponse
+    {
+        $user = $request->user();
+
+        if ($user) {
+            Auth::logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+            $user->delete();
+        }
+
+        return redirect()->route('home')->with('success', 'Akun Anda telah dihapus secara permanen.');
+    }
 }

@@ -56,9 +56,9 @@ class AuthController extends Controller
             ]);
         }
 
-        return redirect()->intended(match ($user?->role) {
-            'seller' => route('seller.dashboard'),
-            'admin' => route('admin.dashboard'),
+        return redirect()->intended(match (true) {
+            $user?->isSellerAccount() => route('seller.dashboard'),
+            $user?->role === 'admin' => route('admin.dashboard'),
             default => route('buyer.dashboard'),
         });
     }

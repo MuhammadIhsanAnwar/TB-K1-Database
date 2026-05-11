@@ -39,7 +39,7 @@
                     </div>
                 </div>
 
-                <form method="POST" action="{{ route('register.seller.store') }}" enctype="multipart/form-data" class="mt-8 space-y-8" data-register-form>
+                <form method="POST" action="{{ route('seller.register') }}" enctype="multipart/form-data" class="mt-8 space-y-8" data-register-form>
                     @csrf
 
                     <div class="grid gap-6 sm:grid-cols-[160px_1fr] sm:items-start">

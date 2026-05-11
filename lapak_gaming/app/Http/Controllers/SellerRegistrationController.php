@@ -8,6 +8,11 @@ use Illuminate\Support\Facades\Schema;
 
 class SellerRegistrationController extends Controller
 {
+    public function create()
+    {
+        return view('seller.register');
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $user = $request->user();
@@ -19,6 +24,11 @@ class SellerRegistrationController extends Controller
         if ($user->isSellerAccount()) {
             return redirect()->route('seller.dashboard')->with('success', 'Akun Anda sudah terdaftar sebagai seller.');
         }
+
+        $data = $request->validate([
+            'store_name' => ['required', 'string', 'max:255'],
+            'bio' => ['nullable', 'string', 'max:1000'],
+        ]);
 
         $updates = [];
 
@@ -33,6 +43,12 @@ class SellerRegistrationController extends Controller
         if ($updates !== []) {
             $user->forceFill($updates)->save();
         }
+
+        $user->update(['name' => $data['store_name']]);
+        $user->profile()->updateOrCreate(
+            ['user_id' => $user->id],
+            ['bio' => $data['bio']]
+        );
 
         return redirect()->route('seller.dashboard')->with('success', 'Pendaftaran seller berhasil. Anda sekarang memiliki akses buyer & seller.');
     }

@@ -22,6 +22,7 @@ class Message extends Model
     protected $casts = [
         'is_read' => 'boolean',
         'read_at' => 'datetime',
+        'message' => 'encrypted',
     ];
 
     public function order()

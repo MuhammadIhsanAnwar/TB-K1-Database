@@ -601,52 +601,49 @@
   let currentX = 0;
   let currentY = 0;
 
-  let isHover = false;
-  let hasMouseInHero = false;
+  let isVisible = true;
+  let pendingFrame = false;
 
-  let animationRunning = false;
-  let rafId = null;
+  /* ── Apply Transform ────────────────── */
+  function applyRobotTransform() {
+    const rotY = currentX * 18;
+    const rotX = -currentY * 11;
 
-  /* ── Animation Loop ─────────────────── */
-  function tick() {
+    robotWrapper.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    splineRobot.style.transform = 'scale(1)';
+  }
 
-    if (!animationRunning) return;
+  /* ── Animation Step ─────────────────── */
+  function updateRobot() {
+    pendingFrame = false;
 
-    const tx = hasMouseInHero ? targetX : 0;
-    const ty = hasMouseInHero ? targetY : 0;
+    currentX = lerp(currentX, targetX, 0.18);
+    currentY = lerp(currentY, targetY, 0.18);
 
-    currentX = lerp(currentX, tx, 0.055);
-    currentY = lerp(currentY, ty, 0.055);
+    applyRobotTransform();
 
-    const rotY  = currentX * 18;
-    const rotX  = -currentY * 11;
-    const scale = 1;
+    if (isVisible && (Math.abs(currentX - targetX) > 0.001 || Math.abs(currentY - targetY) > 0.001)) {
+      pendingFrame = true;
+      requestAnimationFrame(updateRobot);
+    }
+  }
 
-  robotWrapper.style.transform = 'none';
-
-splineRobot.style.transform = `
-  scale(${scale})
-`;
-
-    rafId = requestAnimationFrame(tick);
+  function scheduleUpdate() {
+    if (!pendingFrame && isVisible) {
+      pendingFrame = true;
+      requestAnimationFrame(updateRobot);
+    }
   }
 
   /* ── Pause ketika tab tidak aktif ───── */
   document.addEventListener('visibilitychange', () => {
 
-    if (document.hidden) {
+    isVisible = !document.hidden;
 
-      animationRunning = false;
-
-      if (rafId) {
-        cancelAnimationFrame(rafId);
-      }
-
+    if (!isVisible) {
+      pendingFrame = false;
     } else {
-
-      animationRunning = true;
-      tick();
-
+      scheduleUpdate();
     }
 
   });
@@ -658,18 +655,13 @@ splineRobot.style.transform = `
 
       if (entry.isIntersecting) {
 
-        if (!animationRunning) {
-          animationRunning = true;
-          tick();
-        }
+        isVisible = true;
+        scheduleUpdate();
 
       } else {
 
-        animationRunning = false;
-
-        if (rafId) {
-          cancelAnimationFrame(rafId);
-        }
+        isVisible = false;
+        pendingFrame = false;
 
       }
 
@@ -683,8 +675,6 @@ splineRobot.style.transform = `
 
   /* ── Mouse Move ─────────────────────── */
   heroSection.addEventListener('mousemove', (e) => {
-
-    hasMouseInHero = true;
 
     const hr = heroSection.getBoundingClientRect();
 
@@ -700,24 +690,23 @@ splineRobot.style.transform = `
       1
     );
 
-    
+    scheduleUpdate();
 
   });
 
   heroSection.addEventListener('mouseleave', () => {
 
-    hasMouseInHero = false;
-
     targetX = 0;
     targetY = 0;
+
+    scheduleUpdate();
 
   });
 
  
 
-  /* ── Start Loop ─────────────────────── */
-  animationRunning = true;
-  tick();
+  /* ── Start Idle Transform ───────────── */
+  applyRobotTransform();
 
   /* ── FAQ ────────────────────────────── */
   window.toggleFaq = function (index) {

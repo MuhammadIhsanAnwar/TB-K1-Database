@@ -532,9 +532,9 @@
                 <input type="checkbox" id="terms_agree" class="auth-checkbox mt-0.5" required>
                 <label for="terms_agree" class="text-xs text-slate-400 cursor-pointer leading-relaxed">
                   Saya menyetujui
-                  <a href="#" class="text-brand-400 hover:underline">Syarat & Ketentuan</a>
+                  <a href="{{ route('terms') }}" class="text-brand-400 hover:underline">Syarat & Ketentuan</a>
                   serta
-                  <a href="#" class="text-brand-400 hover:underline">Kebijakan Privasi</a>
+                  <a href="{{ route('privacy') }}" class="text-brand-400 hover:underline">Kebijakan Privasi</a>
                   Lapak Gaming
                 </label>
               </div>

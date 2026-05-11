@@ -23,11 +23,12 @@ class DatabaseSeeder extends Seeder {
 
         // Admin (only create if not exists)
         $admin = User::firstOrCreate(
-            ['email' => 'admin@lapakgeming.com'],
+            ['email' => 'administrator@lapakgaming.neoverse.my.id'],
             [
-                'name' => 'Admin Lapak Geming',
+                'name' => 'Admin Lapak Gaming',
                 'password' => Hash::make('password123'),
                 'role' => 'admin',
+                'status' => 'active',
             ]
         );
 

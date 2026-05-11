@@ -28,6 +28,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SellerRegistrationController;
+use App\Http\Controllers\Seller\SellerStoreController;
 
 
 Route::prefix('marketplace')->name('marketplace.')->group(function () {
@@ -74,6 +75,7 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
 
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -85,7 +87,19 @@ Route::middleware('auth')->group(function (): void {
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
 
+    Route::get('/seller/register', [SellerRegistrationController::class, 'create'])->name('seller.register.form');
     Route::post('/seller/register', [SellerRegistrationController::class, 'store'])->name('seller.register');
+
+    Route::get('/seller/store', [SellerStoreController::class, 'edit'])->name('seller.store.edit');
+    Route::put('/seller/store', [SellerStoreController::class, 'update'])->name('seller.store.update');
+    Route::delete('/seller/store', [SellerStoreController::class, 'destroy'])->name('seller.store.destroy');
+
+    Route::get('/seller/products', [SellerProductController::class, 'index'])->name('seller.produk.index');
+    Route::get('/seller/products/create', [SellerProductController::class, 'create'])->name('seller.produk.create');
+    Route::post('/seller/products', [SellerProductController::class, 'store'])->name('seller.produk.store');
+    Route::get('/seller/products/{produk}/edit', [SellerProductController::class, 'edit'])->name('seller.produk.edit');
+    Route::put('/seller/products/{produk}', [SellerProductController::class, 'update'])->name('seller.produk.update');
+    Route::delete('/seller/products/{produk}', [SellerProductController::class, 'destroy'])->name('seller.produk.destroy');
 });
 
 // Setup page untuk membuat admin pertama kali
@@ -131,6 +145,12 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/buyer/dashboard', [DashboardController::class, 'buyer'])->middleware('role:buyer')->name('buyer.dashboard');
     Route::get('/seller/dashboard', [DashboardController::class, 'seller'])->middleware('role:seller')->name('seller.dashboard');
     Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->middleware('role:admin')->name('admin.dashboard');
+    Route::get('/admin/users', [AdminController::class, 'users'])->middleware('role:admin')->name('admin.users.index');
+    Route::get('/admin/users/{user}', [AdminController::class, 'showUser'])->middleware('role:admin')->name('admin.users.show');
+    Route::put('/admin/users/{user}', [AdminController::class, 'updateUser'])->middleware('role:admin')->name('admin.users.update');
+    Route::delete('/admin/users/{user}', [AdminController::class, 'destroyUser'])->middleware('role:admin')->name('admin.users.destroy');
+    Route::get('/admin/orders', [AdminController::class, 'orders'])->middleware('role:admin')->name('admin.orders.index');
+    Route::get('/admin/orders/{order:order_code}', [AdminController::class, 'showOrder'])->middleware('role:admin')->name('admin.orders.show');
 
     Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('role:buyer')->name('checkout.store');
     Route::post('/checkout/{order}/confirm', [CheckoutController::class, 'confirm'])->middleware('role:buyer')->name('checkout.confirm');
