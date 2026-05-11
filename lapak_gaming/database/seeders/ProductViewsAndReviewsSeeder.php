@@ -58,7 +58,7 @@ class ProductViewsAndReviewsSeeder extends Seeder
             for ($i = 0; $i < $soldCount; $i++) {
                 $buyer = $buyers->random();
 
-                // Create order using actual database schema
+                // Create order using actual database schema (no subtotal/fee/escrow/grand_total)
                 $subtotal = $product->price;
                 $feeAmount = $subtotal * 0.1; // 10% platform fee
                 $grandTotal = $subtotal + $feeAmount;
@@ -67,10 +67,6 @@ class ProductViewsAndReviewsSeeder extends Seeder
                     'buyer_id' => $buyer->id,
                     'seller_id' => $product->seller_id,
                     'invoice_number' => 'INV-' . date('YmdHis') . '-' . random_int(10000, 99999),
-                    'subtotal' => $subtotal,
-                    'fee_amount' => $feeAmount,
-                    'escrow_amount' => 0,
-                    'grand_total' => $grandTotal,
                     'payment_method' => collect(['wallet', 'bank_transfer', 'credit_card'])->random(),
                     'status' => 'completed',
                     'completed_at' => now()->subDays(random_int(0, 179)),

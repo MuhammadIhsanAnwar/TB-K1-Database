@@ -17,7 +17,6 @@ class Order extends Model {
 
     protected $fillable = [
         'order_code', 'invoice_number', 'buyer_id', 'seller_id', 
-        'subtotal', 'fee_amount', 'escrow_amount', 'grand_total',
         'status', 'payment_method', 'payment_proof', 'delivery_notes',
         'tracking_code', 'due_at', 'completed_at', 'disputed_at', 'notes', 'metadata',
     ];
