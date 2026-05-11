@@ -66,7 +66,7 @@ class ProductViewsAndReviewsSeeder extends Seeder
                 $order = Order::create([
                     'buyer_id' => $buyer->id,
                     'seller_id' => $product->seller_id,
-                    'invoice_number' => 'INV-' . date('YmdHis') . '-' . random_int(10000, 99999),
+                    'invoice_number' => 'INV-' . now()->format('YmdHis') . '-' . uniqid(random_int(100, 999)),
                     'payment_method' => collect(['wallet', 'bank_transfer', 'credit_card'])->random(),
                     'status' => 'completed',
                     'completed_at' => now()->subDays(random_int(0, 179)),
