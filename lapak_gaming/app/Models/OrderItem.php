@@ -5,12 +5,12 @@ use Illuminate\Database\Eloquent\Model;
 class OrderItem extends Model {
     protected $fillable = [
         'order_id', 'product_id', 'seller_id',
-        'product_name', 'price', 'quantity',
-        'subtotal', 'delivery_status', 'delivery_data',
+        'name_snapshot', 'price_snapshot', 'quantity',
+        'delivery_data', 'status',
     ];
 
     protected function casts(): array {
-        return ['price' => 'decimal:2', 'subtotal' => 'decimal:2'];
+        return ['price_snapshot' => 'decimal:2'];
     }
 
     public function order()   { return $this->belongsTo(Order::class); }

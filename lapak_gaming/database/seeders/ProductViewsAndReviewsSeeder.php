@@ -77,23 +77,19 @@ class ProductViewsAndReviewsSeeder extends Seeder
                     'order_id' => $order->id,
                     'product_id' => $product->id,
                     'seller_id' => $product->seller_id,
-                    'buyer_id' => $buyer->id,
+                    'name_snapshot' => $product->name,
+                    'price_snapshot' => $product->price,
                     'quantity' => 1,
-                    'unit_price' => $product->price,
-                    'total_price' => $product->price,
-                    'status' => 'completed',
-                    'completed_at' => $order->completed_at,
+                    'status' => 'confirmed',
                 ]);
 
                 // Create order financial record
                 OrderFinancial::create([
                     'order_id' => $order->id,
-                    'seller_id' => $product->seller_id,
-                    'buyer_id' => $buyer->id,
-                    'base_amount' => $subtotal,
-                    'commission_amount' => $feeAmount,
-                    'seller_revenue' => $subtotal - $feeAmount,
-                    'status' => 'paid',
+                    'subtotal' => $subtotal,
+                    'fee_amount' => $feeAmount,
+                    'escrow_amount' => 0,
+                    'grand_total' => $subtotal + $feeAmount,
                 ]);
 
                 // 70% of buyers leave reviews
