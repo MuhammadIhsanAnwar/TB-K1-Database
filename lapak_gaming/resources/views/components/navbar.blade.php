@@ -4,6 +4,11 @@
   Variables: Auth facade, $categories (injected via view composer or controller)
 --}}
 
+@php
+  /** @var \App\Models\User|null $authUser */
+  $authUser = Auth::user();
+@endphp
+
 {{-- ═══ MOBILE SIDEBAR DRAWER ═══ --}}
 <aside id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col overflow-y-auto"
        style="background:#0D1421;border-right:1px solid #1E2D45;">
@@ -142,6 +147,24 @@
             Pesanan
           </a>
         </li>
+        @if($authUser?->isSellerAccount())
+        <li>
+          <a href="{{ route('seller.dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 7h18M5 7l1 12h12l1-12M10 11v4M14 11v4M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+            Dashboard Seller
+          </a>
+        </li>
+        @else
+        <li>
+          <form method="POST" action="{{ route('seller.register') }}">
+            @csrf
+            <button type="submit" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-amber-300 hover:text-amber-200 hover:bg-amber-900/20 text-sm transition-all">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 1.343-3 3v1H8a2 2 0 00-2 2v4h12v-4a2 2 0 00-2-2h-1v-1c0-1.657-1.343-3-3-3zm0 0V6m0 0l-2 2m2-2l2 2"/></svg>
+              Daftar Jadi Seller
+            </button>
+          </form>
+        </li>
+        @endif
         <li>
           <form method="POST" action="{{ route('logout') }}">
             @csrf
@@ -331,6 +354,22 @@
               {{ $link['label'] }}
             </a>
             @endforeach
+
+            @if($authUser?->isSellerAccount())
+            <a href="{{ route('seller.dashboard') }}"
+               class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-all">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h18M5 7l1 12h12l1-12M10 11v4M14 11v4M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+              Dashboard Seller
+            </a>
+            @else
+            <form method="POST" action="{{ route('seller.register') }}">
+              @csrf
+              <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-amber-300 hover:text-amber-200 hover:bg-amber-900/20 transition-all">
+                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 1.343-3 3v1H8a2 2 0 00-2 2v4h12v-4a2 2 0 00-2-2h-1v-1c0-1.657-1.343-3-3-3zm0 0V6m0 0l-2 2m2-2l2 2"/></svg>
+                Daftar Jadi Seller
+              </button>
+            </form>
+            @endif
           </div>
           <div class="p-1.5" style="border-top:1px solid #1E2D45;">
             <form method="POST" action="{{ route('logout') }}">

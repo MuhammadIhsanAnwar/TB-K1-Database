@@ -14,7 +14,7 @@ class User extends Authenticatable implements MustVerifyEmail {
 
     protected $fillable = [
         'name', 'email', 'password', 'role',
-        'status', 'seller_level_id', 'suspended_at', 'google_id', 'phone', 'avatar',
+        'status', 'seller_level_id', 'suspended_at', 'google_id', 'phone', 'avatar', 'is_seller',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -22,6 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail {
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'is_seller' => 'boolean',
     ];
 
     // Scopes
@@ -61,6 +62,28 @@ class User extends Authenticatable implements MustVerifyEmail {
     public function isSeller(): bool { return $this->role === 'seller'; }
     public function isAdmin(): bool  { return $this->role === 'admin'; }
     public function isBuyer(): bool  { return $this->role === 'buyer'; }
+
+    public function isSellerAccount(): bool
+    {
+        if ($this->role === 'seller') {
+            return true;
+        }
+
+        if (array_key_exists('is_seller', $this->attributes)) {
+            return (bool) ($this->attributes['is_seller'] ?? false);
+        }
+
+        return in_array(($this->attributes['user_type'] ?? null), ['seller', 'mixed'], true);
+    }
+
+    public function hasRole(string $role): bool
+    {
+        return match ($role) {
+            'seller' => $this->isSellerAccount(),
+            'buyer' => in_array($this->role, ['buyer', 'seller'], true) || $this->isSellerAccount(),
+            default => $this->role === $role,
+        };
+    }
 
     public function getAvatarUrlAttribute(): string {
         $avatarPath = $this->attributes['avatar'] ?? $this->profile?->avatar_path ?? null;

@@ -12,7 +12,19 @@ class EnsureRole
     {
         $user = $request->user();
 
-        if (! $user || ! in_array($user->role, $roles, true)) {
+        if (! $user) {
+            abort(403, 'Akses ditolak.');
+        }
+
+        $allowed = false;
+        foreach ($roles as $role) {
+            if ($user->hasRole($role)) {
+                $allowed = true;
+                break;
+            }
+        }
+
+        if (! $allowed) {
             abort(403, 'Akses ditolak.');
         }
 

@@ -3,29 +3,96 @@
 @section('content')
 <div class="min-h-screen bg-gray-950 py-12 px-4">
     <div class="max-w-2xl mx-auto">
-        <h1 class="text-3xl font-bold text-white mb-8">Settings</h1>
-        
-        <div class="bg-gray-900 rounded-xl p-8">
-            <div class="space-y-6">
+        <h1 class="text-3xl font-bold text-white mb-8">Pengaturan Profil</h1>
+
+        @if (session('success'))
+        <div class="mb-6 bg-emerald-500/20 border border-emerald-600/30 rounded-lg p-4 text-emerald-300">
+            {{ session('success') }}
+        </div>
+        @endif
+
+        @if ($errors->any())
+        <div class="mb-6 bg-red-500/20 border border-red-600/30 rounded-lg p-4">
+            <p class="text-red-400 font-medium mb-2">Periksa kembali data berikut:</p>
+            <ul class="list-disc list-inside text-red-400 text-sm space-y-1">
+                @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+                @endforeach
+            </ul>
+        </div>
+        @endif
+
+        <div class="bg-gray-900 rounded-xl p-8 space-y-6">
+            <div class="flex items-center gap-4">
+                <img src="{{ $user->avatar_url }}"
+                     alt="Foto profil {{ $user->name }}"
+                     class="w-16 h-16 rounded-full object-cover border border-gray-700">
                 <div>
-                    <h2 class="text-xl font-semibold text-white mb-4">Account Information</h2>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                        <div class="bg-gray-800 p-4 rounded-lg">
-                            <p class="text-gray-400 text-sm">Name</p>
-                            <p class="text-white font-medium">{{ Auth::user()->name }}</p>
-                        </div>
-                        <div class="bg-gray-800 p-4 rounded-lg">
-                            <p class="text-gray-400 text-sm">Email</p>
-                            <p class="text-white font-medium">{{ Auth::user()->email }}</p>
-                        </div>
+                    <p class="text-white font-semibold">{{ $user->name }}</p>
+                    <p class="text-gray-400 text-sm">{{ $user->email }}</p>
+                    <div class="mt-2 flex gap-2 text-xs">
+                        <span class="px-2 py-1 rounded-full border border-brand-500/30 bg-brand-500/10 text-brand-300">Buyer</span>
+                        @if($user->isSellerAccount())
+                        <span class="px-2 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-300">Seller</span>
+                        @endif
+                    </div>
+                </div>
+            </div>
+
+            <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
+                @csrf
+                @method('PUT')
+
+                <div>
+                    <label for="profile_photo" class="block text-sm font-medium text-gray-300 mb-2">Foto Profil</label>
+                    <input type="file" name="profile_photo" id="profile_photo"
+                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
+                    <p class="text-xs text-gray-500 mt-1">Format jpg, jpeg, png, webp. Maksimal 5MB.</p>
+                </div>
+
+                <div>
+                    <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Nama Lengkap</label>
+                    <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}"
+                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white" required>
+                </div>
+
+                <div>
+                    <label for="phone" class="block text-sm font-medium text-gray-300 mb-2">Nomor Telepon</label>
+                    <input type="text" name="phone" id="phone" value="{{ old('phone', $profile?->phone ?? $user->phone) }}"
+                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white" placeholder="08xxxxxxxxxx">
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label for="gender" class="block text-sm font-medium text-gray-300 mb-2">Jenis Kelamin</label>
+                        <select name="gender" id="gender" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
+                            <option value="">Pilih</option>
+                            @foreach(['male' => 'Laki-laki', 'female' => 'Perempuan', 'other' => 'Lainnya'] as $value => $label)
+                            <option value="{{ $value }}" @selected(old('gender', $profile?->gender) === $value)>{{ $label }}</option>
+                            @endforeach
+                        </select>
+                    </div>
+                    <div>
+                        <label for="birth_date" class="block text-sm font-medium text-gray-300 mb-2">Tanggal Lahir</label>
+                        <input type="date" name="birth_date" id="birth_date"
+                               value="{{ old('birth_date', optional($profile?->birth_date)->format('Y-m-d')) }}"
+                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
                     </div>
                 </div>
 
-                <div class="border-t border-gray-800 pt-6">
-                    <h2 class="text-xl font-semibold text-white mb-4">Preferences</h2>
-                    <p class="text-gray-400">Settings preferences will be available soon.</p>
+                <div>
+                    <label for="bio" class="block text-sm font-medium text-gray-300 mb-2">Bio</label>
+                    <textarea name="bio" id="bio" rows="4"
+                              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
+                              placeholder="Ceritakan profil singkat Anda...">{{ old('bio', $profile?->bio) }}</textarea>
                 </div>
-            </div>
+
+                <div class="pt-2">
+                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors">
+                        Simpan Pengaturan Profil
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </div>

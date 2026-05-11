@@ -19,15 +19,15 @@ class MarketplaceController extends Controller
             : collect();
 
         $popularProducts = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->popular()->with(['seller', 'category'])->take(12)->get()
+            ? Product::query()->active()->inStock()->with(['seller', 'category'])->inRandomOrder()->take(12)->get()
             : collect();
 
         $topupProducts = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->ofType('topup')->with(['seller', 'category'])->take(8)->get()
+            ? Product::query()->active()->inStock()->ofType('topup')->with(['seller', 'category'])->inRandomOrder()->take(8)->get()
             : collect();
 
         $featuredProducts = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->where('is_featured', true)->with(['seller', 'category'])->latest()->take(8)->get()
+            ? Product::query()->active()->inStock()->where('is_featured', true)->with(['seller', 'category'])->inRandomOrder()->take(8)->get()
             : collect();
 
         return view('marketplace.home', [

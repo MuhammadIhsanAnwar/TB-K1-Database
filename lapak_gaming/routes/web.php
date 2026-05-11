@@ -27,6 +27,7 @@ use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PageController;
+use App\Http\Controllers\SellerRegistrationController;
 
 
 Route::prefix('marketplace')->name('marketplace.')->group(function () {
@@ -83,6 +84,8 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+
+    Route::post('/seller/register', [SellerRegistrationController::class, 'store'])->name('seller.register');
 });
 
 // Setup page untuk membuat admin pertama kali
