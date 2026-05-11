@@ -139,6 +139,14 @@ Route::get('/activate/{id}/{hash}', [VerificationController::class, 'activate'])
     ->name('activation.activate')
     ->middleware('signed');
 
+// Email verification routes - must be public to allow guests to verify
+Route::get('/email/verify-pending', [VerificationController::class, 'pending'])
+    ->name('verification.pending');
+
+Route::post('/email/verification-notification/guest', [VerificationController::class, 'resendGuest'])
+    ->middleware('throttle:6,1')
+    ->name('verification.resend.guest');
+
 Route::middleware('auth')->group(function (): void {
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
     Route::get('/email/verify', [VerificationController::class, 'notice'])->name('verification.notice');
@@ -148,10 +156,6 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/email/verification-notification', [VerificationController::class, 'send'])
         ->middleware('throttle:6,1')
         ->name('verification.send');
-    Route::get('/email/verify-pending', [VerificationController::class, 'pending'])->name('verification.pending');
-    Route::post('/email/verification-notification/guest', [VerificationController::class, 'resendGuest'])
-        ->middleware('throttle:6,1')
-        ->name('verification.resend.guest');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/buyer/dashboard', [DashboardController::class, 'buyer'])->middleware('role:buyer')->name('buyer.dashboard');

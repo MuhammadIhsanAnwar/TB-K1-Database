@@ -43,7 +43,7 @@ class CustomVerifyEmail extends Notification
         try {
             $url = $this->verificationUrl($notifiable);
             $appName = (string) Config::get('app.name', 'Lapak Gaming');
-            $logoUrl = url('storage/app/public/logo/logo.png');
+            $logoUrl = asset('storage/app/public/logo/logo.png');
 
             $mailMessage = (new MailMessage)
                 ->subject('Aktivasi Akun Anda')

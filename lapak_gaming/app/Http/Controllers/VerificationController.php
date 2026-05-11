@@ -15,6 +15,10 @@ class VerificationController extends Controller
     {
         $email = $request->query('email', session('email'));
 
+        if (!$email && $request->user()) {
+            $email = $request->user()->email;
+        }
+
         return view('auth.verify-pending', [
             'email' => $email,
         ]);
