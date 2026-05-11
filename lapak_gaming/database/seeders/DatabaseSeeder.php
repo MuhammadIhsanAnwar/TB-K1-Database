@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder {
             BuyerSeeder::class,
             ProfilesTableSeeder::class,
             ProductsTableSeeder::class,
+            ProductViewsAndReviewsSeeder::class, // ← Add this
         ]);
 
         // Admin (only create if not exists)
