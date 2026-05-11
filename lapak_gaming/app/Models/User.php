@@ -6,17 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Log;
 use App\Models\UserProfile;
 use App\Notifications\CustomVerifyEmail;
 use Symfony\Component\Mailer\Exception\TransportExceptionInterface;
 
 class User extends Authenticatable implements MustVerifyEmail {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, SoftDeletes;
 
     protected $fillable = [
         'name', 'email', 'password', 'role',
         'status', 'seller_level_id', 'suspended_at', 'google_id', 'phone', 'avatar', 'is_seller',
+        'account_deletion_token', 'account_deletion_token_sent_at', 'deactivated_at',
     ];
 
     protected $hidden = ['password', 'remember_token'];
@@ -25,6 +27,8 @@ class User extends Authenticatable implements MustVerifyEmail {
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
         'is_seller' => 'boolean',
+        'deactivated_at' => 'datetime',
+        'account_deletion_token_sent_at' => 'datetime',
     ];
 
     // Scopes
@@ -174,6 +178,8 @@ class User extends Authenticatable implements MustVerifyEmail {
                 'email' => $this->email,
                 'message' => $exception->getMessage(),
                 'code' => $exception->getCode(),
+                'exception' => get_class($exception),
+                'trace' => $exception->getTraceAsString(),
             ]);
 
             return false;
@@ -182,7 +188,8 @@ class User extends Authenticatable implements MustVerifyEmail {
                 'user_id' => $this->id,
                 'email' => $this->email,
                 'message' => $exception->getMessage(),
-                'exception' => $exception,
+                'exception' => get_class($exception),
+                'trace' => $exception->getTraceAsString(),
             ]);
 
             return false;

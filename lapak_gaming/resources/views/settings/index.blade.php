@@ -2,116 +2,124 @@
 
 @section('content')
 <div class="min-h-screen bg-gray-950 py-12 px-4">
-    <div class="max-w-2xl mx-auto">
-        <h1 class="text-3xl font-bold text-white mb-8">Pengaturan Profil</h1>
-
-        @if (session('success'))
-        <div class="mb-6 bg-emerald-500/20 border border-emerald-600/30 rounded-lg p-4 text-emerald-300">
-            {{ session('success') }}
-        </div>
-        @endif
-
-        @if ($errors->any())
-        <div class="mb-6 bg-red-500/20 border border-red-600/30 rounded-lg p-4">
-            <p class="text-red-400 font-medium mb-2">Periksa kembali data berikut:</p>
-            <ul class="list-disc list-inside text-red-400 text-sm space-y-1">
-                @foreach ($errors->all() as $error)
-                <li>{{ $error }}</li>
-                @endforeach
-            </ul>
-        </div>
-        @endif
-
-        <div class="bg-gray-900 rounded-xl p-8 space-y-6">
-            <div class="flex items-center gap-4">
-                <img src="{{ $user->avatar_url }}"
-                     alt="Foto profil {{ $user->name }}"
-                     class="w-16 h-16 rounded-full object-cover border border-gray-700">
-                <div>
-                    <p class="text-white font-semibold">{{ $user->name }}</p>
-                    <p class="text-gray-400 text-sm">{{ $user->email }}</p>
-                    <div class="mt-2 flex gap-2 text-xs">
-                        <span class="px-2 py-1 rounded-full border border-brand-500/30 bg-brand-500/10 text-brand-300">Buyer</span>
-                        @if($user->isSellerAccount())
-                        <span class="px-2 py-1 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-300">Seller</span>
-                        @endif
-                    </div>
-                </div>
+    <div class="max-w-6xl mx-auto grid gap-8 lg:grid-cols-[280px_minmax(0,1fr)]">
+        <aside class="rounded-3xl border border-slate-800 bg-slate-950 p-6">
+            <div class="mb-8 text-center">
+                <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="mx-auto h-24 w-24 rounded-full border border-slate-700 object-cover">
+                <h2 class="mt-4 text-xl font-semibold text-white">{{ $user->name }}</h2>
+                <p class="text-sm text-slate-400">{{ $user->email }}</p>
             </div>
 
-            <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data" class="space-y-5">
-                @csrf
-                @method('PUT')
+            <nav class="space-y-2">
+                <a href="{{ route('settings.profile') }}" class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $selectedTab === 'profile' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white' }}">Edit Profil</a>
+                <a href="{{ route('settings.account') }}" class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $selectedTab === 'account' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white' }}">Pengaturan Akun</a>
+                <a href="{{ route('settings.buyer') }}" class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $selectedTab === 'buyer' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white' }}">Daftar Jadi Buyer</a>
+            </nav>
+        </aside>
 
-                <div>
-                    <label for="profile_photo" class="block text-sm font-medium text-gray-300 mb-2">Foto Profil</label>
-                    <input type="file" name="profile_photo" id="profile_photo"
-                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
-                    <p class="text-xs text-gray-500 mt-1">Format jpg, jpeg, png, webp. Maksimal 5MB.</p>
+        <main class="rounded-3xl border border-slate-800 bg-slate-950 p-8">
+            @if (session('success'))
+                <div class="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-emerald-200">{{ session('success') }}</div>
+            @endif
+            @if (session('status'))
+                <div class="mb-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 text-cyan-200">{{ session('status') }}</div>
+            @endif
+            @if (session('warning'))
+                <div class="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-200">{{ session('warning') }}</div>
+            @endif
+            @if ($errors->any())
+                <div class="mb-6 rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-rose-200">
+                    <ul class="list-disc list-inside space-y-2 text-sm">
+                        @foreach ($errors->all() as $error)
+                            <li>{{ $error }}</li>
+                        @endforeach
+                    </ul>
                 </div>
+            @endif
 
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Nama Lengkap</label>
-                    <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}"
-                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white" required>
-                </div>
-
-                <div>
-                    <label for="phone" class="block text-sm font-medium text-gray-300 mb-2">Nomor Telepon</label>
-                    <input type="text" name="phone" id="phone" value="{{ old('phone', $profile?->phone ?? $user->phone) }}"
-                           class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white" placeholder="08xxxxxxxxxx">
-                </div>
-
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label for="gender" class="block text-sm font-medium text-gray-300 mb-2">Jenis Kelamin</label>
-                        <select name="gender" id="gender" class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
-                            <option value="">Pilih</option>
-                            @foreach(['male' => 'Laki-laki', 'female' => 'Perempuan', 'other' => 'Lainnya'] as $value => $label)
-                            <option value="{{ $value }}" @selected(old('gender', $profile?->gender) === $value)>{{ $label }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div>
-                        <label for="birth_date" class="block text-sm font-medium text-gray-300 mb-2">Tanggal Lahir</label>
-                        <input type="date" name="birth_date" id="birth_date"
-                               value="{{ old('birth_date', optional($profile?->birth_date)->format('Y-m-d')) }}"
-                               class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white">
-                    </div>
-                </div>
-
-                <div>
-                    <label for="bio" class="block text-sm font-medium text-gray-300 mb-2">Bio</label>
-                    <textarea name="bio" id="bio" rows="4"
-                              class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white"
-                              placeholder="Ceritakan profil singkat Anda...">{{ old('bio', $profile?->bio) }}</textarea>
-                </div>
-
-                <div class="pt-2">
-                    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-medium py-2.5 px-4 rounded-lg transition-colors">
-                        Simpan Pengaturan Profil
-                    </button>
-                </div>
-            </form>
-
-            <div class="mt-10 rounded-3xl border border-red-700 bg-red-950/20 p-6">
-                <h2 class="text-xl font-bold text-white">Hapus Akun Permanen</h2>
-                <p class="mt-2 text-slate-400">Menghapus akun akan menghapus semua data pribadi dan akses ke Lapak Gaming.</p>
-                <form action="{{ route('settings.destroy') }}" method="POST" class="mt-4">
+            @if ($selectedTab === 'profile')
+                <h1 class="text-3xl font-bold text-white mb-8">Edit Profil</h1>
+                <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                     @csrf
-                    @method('DELETE')
-                    <button type="submit" class="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white hover:bg-red-500">Hapus Akun Permanen</button>
-                </form>
-            </div>
+                    @method('PUT')
 
-            @unless($user->isSellerAccount())
-            <div class="mt-10 rounded-3xl border border-amber-300 bg-amber-950/10 p-6">
-                <h2 class="text-xl font-bold text-white">Ingin buka toko?</h2>
-                <p class="mt-2 text-slate-400">Daftar jadi seller untuk mendapatkan akses toko dan produk.</p>
-                <a href="{{ route('seller.register.form') }}" class="mt-4 inline-flex rounded-2xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 hover:bg-amber-400">Daftar Jadi Seller</a>
-            </div>
-            @endunless
-        </div>
+                    <div>
+                        <label for="profile_photo" class="block text-sm font-medium text-slate-300 mb-2">Foto Profil</label>
+                        <input type="file" name="profile_photo" id="profile_photo" class="w-full rounded-2xl border border-slate-800 bg-slate-900 px-4 py-3 text-slate-200" accept="image/*">
+                    </div>
+
+                    <div>
+                        <label for="name" class="block text-sm font-medium text-slate-300 mb-2">Nama Lengkap</label>
+                        <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" class="w-full rounded-2xl border border-slate-800 bg-slate-900 px-4 py-3 text-slate-200" required>
+                    </div>
+
+                    <div>
+                        <label for="phone" class="block text-sm font-medium text-slate-300 mb-2">Nomor Telepon</label>
+                        <input type="text" name="phone" id="phone" value="{{ old('phone', $profile?->phone ?? $user->phone) }}" class="w-full rounded-2xl border border-slate-800 bg-slate-900 px-4 py-3 text-slate-200" placeholder="08xxxxxxxxxx">
+                    </div>
+
+                    <div class="grid gap-4 lg:grid-cols-2">
+                        <div>
+                            <label for="gender" class="block text-sm font-medium text-slate-300 mb-2">Jenis Kelamin</label>
+                            <select name="gender" id="gender" class="w-full rounded-2xl border border-slate-800 bg-slate-900 px-4 py-3 text-slate-200">
+                                <option value="">Pilih</option>
+                                <option value="male" @selected(old('gender', $profile?->gender) === 'male')>Laki-laki</option>
+                                <option value="female" @selected(old('gender', $profile?->gender) === 'female')>Perempuan</option>
+                                <option value="other" @selected(old('gender', $profile?->gender) === 'other')>Lainnya</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label for="birth_date" class="block text-sm font-medium text-slate-300 mb-2">Tanggal Lahir</label>
+                            <input type="date" name="birth_date" id="birth_date" value="{{ old('birth_date', optional($profile?->birth_date)->format('Y-m-d')) }}" class="w-full rounded-2xl border border-slate-800 bg-slate-900 px-4 py-3 text-slate-200">
+                        </div>
+                    </div>
+
+                    <button type="submit" class="w-full rounded-2xl bg-slate-800 px-5 py-3 text-sm font-semibold text-white transition hover:bg-slate-700">Simpan Perubahan Profil</button>
+                </form>
+            @elseif ($selectedTab === 'account')
+                <h1 class="text-3xl font-bold text-white mb-8">Pengaturan Akun</h1>
+                <div class="grid gap-6 lg:grid-cols-2">
+                    <section class="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+                        <h2 class="text-lg font-semibold text-white mb-4">Informasi Akun</h2>
+                        <dl class="space-y-4 text-sm text-slate-300">
+                            <div>
+                                <dt class="font-medium text-slate-400">Email</dt>
+                                <dd class="mt-1 text-white">{{ $user->email }}</dd>
+                            </div>
+                            <div>
+                                <dt class="font-medium text-slate-400">Status Verifikasi</dt>
+                                <dd class="mt-1 {{ $user->email_verified_at ? 'text-emerald-300' : 'text-amber-300' }}">{{ $user->email_verified_at ? 'Terverifikasi' : 'Belum Terverifikasi' }}</dd>
+                            </div>
+                        </dl>
+                        @if (! $user->email_verified_at)
+                            <form action="{{ route('verification.send') }}" method="POST" class="mt-6">
+                                @csrf
+                                <button type="submit" class="w-full rounded-2xl bg-slate-800 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700 transition">Kirim Ulang Email Verifikasi</button>
+                            </form>
+                        @endif
+                    </section>
+                    <section class="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+                        <h2 class="text-lg font-semibold text-white mb-4">Hapus Akun Permanen</h2>
+                        <p class="text-slate-400 mb-6">Agar akun bisa dihapus, sistem akan mengirimkan kode verifikasi ke email terdaftar terlebih dahulu.</p>
+                        <a href="{{ route('settings.account.delete') }}" class="inline-flex w-full items-center justify-center rounded-2xl bg-rose-600 px-5 py-3 text-sm font-semibold text-white hover:bg-rose-500 transition">Mulai Proses Hapus Akun</a>
+                    </section>
+                </div>
+            @else
+                <h1 class="text-3xl font-bold text-white mb-8">Daftar Jadi Buyer</h1>
+                <div class="rounded-3xl border border-slate-800 bg-slate-900 p-6 space-y-5 text-slate-300">
+                    <p>Semua pengguna otomatis memiliki peran buyer. Setelah akun aktif dan email terverifikasi, Anda dapat langsung berbelanja.</p>
+                    @if ($user->isBuyer())
+                        <p class="text-white">Akun Anda sudah berstatus buyer. Nikmati fitur belanja dan riwayat pesanan.</p>
+                    @else
+                        <p class="text-white">Peran Anda saat ini: {{ ucfirst($user->role) }}. Jika ingin kembali menjadi buyer, silakan hubungi administrator.</p>
+                    @endif
+                    <div class="grid gap-4 sm:grid-cols-2">
+                        <a href="{{ route('products.search') }}" class="rounded-2xl bg-cyan-600 px-5 py-3 text-sm font-semibold text-white text-center hover:bg-cyan-500 transition">Jelajahi Produk</a>
+                        <a href="{{ route('profile.show') }}" class="rounded-2xl border border-slate-700 px-5 py-3 text-sm font-semibold text-white text-center hover:border-slate-600 transition">Lihat Profil</a>
+                    </div>
+                </div>
+            @endif
+        </main>
     </div>
 </div>
 @endsection

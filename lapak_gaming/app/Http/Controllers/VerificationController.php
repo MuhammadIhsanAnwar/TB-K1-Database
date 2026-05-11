@@ -2,13 +2,43 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Foundation\Auth\EmailVerificationRequest;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\View\View;
 
 class VerificationController extends Controller
 {
+    public function pending(Request $request): View
+    {
+        $email = $request->query('email', session('email'));
+
+        return view('auth.verify-pending', [
+            'email' => $email,
+        ]);
+    }
+
+    public function resendGuest(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'email' => ['required', 'email'],
+        ]);
+
+        $user = User::where('email', $data['email'])->first();
+
+        if (! $user || $user->email_verified_at) {
+            return back()->withErrors(['email' => 'Alamat email tidak ditemukan atau sudah terverifikasi.']);
+        }
+
+        if (! $user->sendEmailVerificationNotification()) {
+            return back()->withErrors(['email' => 'Gagal mengirim ulang email verifikasi. Silakan coba lagi nanti.']);
+        }
+
+        return back()->with('status', 'Email verifikasi telah dikirim ulang. Silakan periksa kotak masuk Anda.');
+    }
+
     public function notice(Request $request): View|RedirectResponse
     {
         return $request->user()->hasVerifiedEmail()

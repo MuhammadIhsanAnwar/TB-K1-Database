@@ -73,9 +73,17 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/wishlist/{product}', [WishlistController::class, 'add'])->name('wishlist.add');
     Route::delete('/wishlist/{product}', [WishlistController::class, 'remove'])->name('wishlist.remove');
 
-    Route::get('/settings', [SettingsController::class, 'index'])->name('settings.index');
+    Route::get('/settings', function () { return redirect()->route('settings.profile'); })->name('settings.index');
+    Route::get('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
+    Route::get('/settings/account', [SettingsController::class, 'account'])->name('settings.account');
+    Route::get('/settings/buyer', [SettingsController::class, 'buyer'])->name('settings.buyer');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::post('/settings/account/delete-code', [SettingsController::class, 'sendDeletionCode'])->name('settings.account.sendDeletionCode');
+    Route::get('/settings/account/delete', [SettingsController::class, 'confirmDeletionForm'])->name('settings.account.delete');
     Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
+    Route::post('/settings/deactivate', [SettingsController::class, 'deactivate'])->name('settings.deactivate');
+    Route::get('/account/reactivate', [SettingsController::class, 'reactivateForm'])->name('account.reactivate.form');
+    Route::post('/account/reactivate', [SettingsController::class, 'reactivate'])->name('account.reactivate');
 
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
     Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
@@ -140,6 +148,10 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/email/verification-notification', [VerificationController::class, 'send'])
         ->middleware('throttle:6,1')
         ->name('verification.send');
+    Route::get('/email/verify-pending', [VerificationController::class, 'pending'])->name('verification.pending');
+    Route::post('/email/verification-notification/guest', [VerificationController::class, 'resendGuest'])
+        ->middleware('throttle:6,1')
+        ->name('verification.resend.guest');
 
     Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
     Route::get('/buyer/dashboard', [DashboardController::class, 'buyer'])->middleware('role:buyer')->name('buyer.dashboard');

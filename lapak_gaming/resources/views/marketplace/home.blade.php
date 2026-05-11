@@ -215,12 +215,16 @@
         </div>
 
         <div class="flex flex-wrap gap-6 mt-10 justify-center lg:justify-start">
-          @foreach([
-            ['num'=>'500K+','label'=>'Pengguna Aktif'],
-            ['num'=>'10K+', 'label'=>'Produk Tersedia'],
-            ['num'=>'5K+',  'label'=>'Seller Verified'],
-            ['num'=>'99.8%','label'=>'Kepuasan Pembeli'],
-          ] as $stat)
+          @php
+            $heroStats = [
+              ['num' => number_format($activeUsers), 'label' => 'Pengguna Aktif'],
+              ['num' => number_format($availableProducts), 'label' => 'Produk Tersedia'],
+              ['num' => number_format($verifiedSellers), 'label' => 'Seller Verified'],
+              ['num' => number_format($transactionCount), 'label' => 'Transaksi Sukses'],
+            ];
+          @endphp
+
+          @foreach($heroStats as $stat)
           <div class="text-center lg:text-left">
             <div class="font-display font-bold text-2xl text-white">{{ $stat['num'] }}</div>
             <div class="text-xs text-slate-500 mt-0.5">{{ $stat['label'] }}</div>

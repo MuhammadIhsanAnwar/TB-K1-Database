@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\Order;
 use App\Models\Product;
-use App\Models\ProductStatistic;
+use App\Models\Review;
+use App\Models\Seller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -30,12 +32,37 @@ class MarketplaceController extends Controller
             ? Product::query()->active()->inStock()->where('is_featured', true)->with(['seller', 'category'])->inRandomOrder()->take(8)->get()
             : collect();
 
+        $activeUsers = Schema::hasTable('users')
+            ? \\App\\Models\\User::whereNotNull('email_verified_at')->where('status', 'active')->count()
+            : 0;
+
+        $availableProducts = Schema::hasTable('products')
+            ? Product::query()->active()->inStock()->count()
+            : 0;
+
+        $verifiedSellers = Schema::hasTable('sellers')
+            ? Seller::query()->verified()->count()
+            : 0;
+
+        $averageRating = Schema::hasTable('reviews')
+            ? (float) Review::query()->where('is_visible', true)->avg('rating')
+            : 0.0;
+
+        $transactionCount = Schema::hasTable('orders')
+            ? Order::query()->completed()->count()
+            : 0;
+
         return view('marketplace.home', [
             'categories' => $categories,
             'popularProducts' => $popularProducts,
             'topupProducts' => $topupProducts,
             'featuredProducts' => $featuredProducts,
             'search' => $request->string('q')->toString(),
+            'activeUsers' => $activeUsers,
+            'availableProducts' => $availableProducts,
+            'verifiedSellers' => $verifiedSellers,
+            'averageRating' => $averageRating,
+            'transactionCount' => $transactionCount,
         ]);
     }
 

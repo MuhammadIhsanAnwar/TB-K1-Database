@@ -31,11 +31,22 @@ class AuthController extends Controller
 
         // Check if user exists and if email is verified
         $user = User::where('email', $credentials['email'])->first();
-        
-        if ($user && !$user->email_verified_at) {
-            return back()->withErrors([
-                'email' => 'Silakan verifikasi email Anda terlebih dahulu sebelum login.',
-            ])->onlyInput('email');
+
+        if ($user && ! $user->email_verified_at) {
+            if (! Auth::validate($credentials)) {
+                return back()->withErrors([
+                    'email' => 'Email atau password tidak valid.',
+                ])->onlyInput('email');
+            }
+
+            if (! $user->sendEmailVerificationNotification()) {
+                return back()->withErrors([
+                    'email' => 'Verifikasi email gagal dikirim. Silakan coba lagi nanti atau hubungi administrator.',
+                ])->onlyInput('email');
+            }
+
+            return redirect()->route('verification.pending', ['email' => $user->email])
+                ->with('status', 'Email verifikasi sudah dikirim ulang. Silakan cek kotak masuk Anda.');
         }
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
@@ -54,6 +65,21 @@ class AuthController extends Controller
             return back()->withErrors([
                 'email' => 'Akun Anda sedang disuspend.',
             ]);
+        }
+
+        // Check if user is deactivated (soft deleted)
+        if ($user && $user->trashed() && $user->deactivated_at) {
+            if ($user->deactivated_at->addMonths(6)->isPast()) {
+                // Permanently delete if 6 months passed
+                $user->forceDelete();
+                Auth::logout();
+                return back()->withErrors([
+                    'email' => 'Akun Anda telah dihapus permanen karena melewati batas waktu aktivasi.',
+                ]);
+            } else {
+                // Redirect to reactivation page
+                return redirect()->route('account.reactivate.form');
+            }
         }
 
         return redirect()->intended(match (true) {
@@ -123,10 +149,12 @@ class AuthController extends Controller
         $sent = $user->sendEmailVerificationNotification();
 
         if (! $sent) {
-            return redirect()->route('login')->with('warning', 'Registrasi berhasil, namun email verifikasi gagal dikirim. Silakan hubungi administrator atau periksa konfigurasi email.');
+            return redirect()->route('verification.pending', ['email' => $user->email])
+                ->with('warning', 'Registrasi berhasil, namun email verifikasi gagal dikirim. Silakan hubungi administrator atau periksa konfigurasi email.');
         }
 
-        return redirect()->route('login')->with('status', 'Registrasi berhasil! Silakan cek email Anda untuk verifikasi akun.');
+        return redirect()->route('verification.pending', ['email' => $user->email])
+            ->with('status', 'Registrasi berhasil! Silakan cek email Anda untuk verifikasi akun.');
     }
 
     public function google(Request $request): RedirectResponse
@@ -224,13 +252,14 @@ class AuthController extends Controller
             // Always send for any unverified Google user (new or existing).
             $sent = $user->sendEmailVerificationNotification();
 
-            Auth::login($user);
-
             if (! $sent) {
-                return redirect()->route('verification.notice')->with('warning', 'Verifikasi email gagal dikirim. Silakan hubungi administrator atau coba lagi nanti.');
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Verifikasi email gagal dikirim. Silakan hubungi administrator atau coba lagi nanti.',
+                ]);
             }
 
-            return redirect()->route('verification.notice');
+            return redirect()->route('verification.pending', ['email' => $user->email])
+                ->with('status', 'Email verifikasi sudah dikirim. Silakan cek kotak masuk Anda.');
         }
 
         // Email is verified, proceed with normal login
