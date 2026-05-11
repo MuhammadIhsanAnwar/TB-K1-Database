@@ -31,7 +31,9 @@ class Order extends Model {
     protected static function boot() {
         parent::boot();
         static::creating(function($order) {
-            $order->order_code = 'LG-' . now()->format('Ymd') . '-' . strtoupper(Str::random(6));
+            do {
+                $order->order_code = 'LG-' . now()->format('Ymd') . '-' . strtoupper(Str::random(8));
+            } while (self::where('order_code', $order->order_code)->exists());
         });
     }
 
