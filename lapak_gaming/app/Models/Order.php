@@ -16,8 +16,10 @@ class Order extends Model {
     public const STATUS_REFUNDED = 'refunded';
 
     protected $fillable = [
-        'order_code', 'buyer_id', 'status', 'payment_method',
-        'payment_proof', 'paid_at', 'completed_at', 'notes',
+        'order_code', 'invoice_number', 'buyer_id', 'seller_id', 
+        'subtotal', 'fee_amount', 'escrow_amount', 'grand_total',
+        'status', 'payment_method', 'payment_proof', 'delivery_notes',
+        'tracking_code', 'due_at', 'completed_at', 'disputed_at', 'notes', 'metadata',
     ];
 
     protected function casts(): array {

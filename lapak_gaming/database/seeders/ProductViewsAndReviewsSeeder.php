@@ -58,18 +58,21 @@ class ProductViewsAndReviewsSeeder extends Seeder
             for ($i = 0; $i < $soldCount; $i++) {
                 $buyer = $buyers->random();
 
-                // Create order
+                // Create order using actual database schema
+                $subtotal = $product->price;
+                $feeAmount = $subtotal * 0.1; // 10% platform fee
+                $grandTotal = $subtotal + $feeAmount;
+
                 $order = Order::create([
                     'buyer_id' => $buyer->id,
                     'seller_id' => $product->seller_id,
-                    'order_number' => 'ORD-' . date('YmdHis') . '-' . random_int(10000, 99999),
-                    'subtotal' => $product->price,
-                    'shipping_cost' => 0,
-                    'tax' => 0,
-                    'total' => $product->price,
+                    'invoice_number' => 'INV-' . date('YmdHis') . '-' . random_int(10000, 99999),
+                    'subtotal' => $subtotal,
+                    'fee_amount' => $feeAmount,
+                    'escrow_amount' => 0,
+                    'grand_total' => $grandTotal,
                     'payment_method' => collect(['wallet', 'bank_transfer', 'credit_card'])->random(),
                     'status' => 'completed',
-                    'paid_at' => now()->subDays(random_int(1, 180)),
                     'completed_at' => now()->subDays(random_int(0, 179)),
                 ]);
 
@@ -91,9 +94,9 @@ class ProductViewsAndReviewsSeeder extends Seeder
                     'order_id' => $order->id,
                     'seller_id' => $product->seller_id,
                     'buyer_id' => $buyer->id,
-                    'base_amount' => $product->price,
-                    'commission_amount' => $product->price * 0.1,
-                    'seller_revenue' => $product->price * 0.9,
+                    'base_amount' => $subtotal,
+                    'commission_amount' => $feeAmount,
+                    'seller_revenue' => $subtotal - $feeAmount,
                     'status' => 'paid',
                 ]);
 
