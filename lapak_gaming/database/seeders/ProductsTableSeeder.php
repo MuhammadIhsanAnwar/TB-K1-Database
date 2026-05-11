@@ -25,7 +25,7 @@ class ProductsTableSeeder extends Seeder
         }
 
         // For each seller, create one product per category (schema-adaptive for hosting)
-        User::where('role', 'seller')->chunk(100, function ($sellers) use ($categories, $columns) {
+        User::withoutTrashed()->where('role', 'seller')->chunk(100, function ($sellers) use ($categories, $columns) {
             $progressBar = $this->command->getOutput()->createProgressBar($sellers->count() * $categories->count());
             
             foreach ($sellers as $seller) {

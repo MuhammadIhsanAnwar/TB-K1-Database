@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\Seller;
+use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -33,7 +34,7 @@ class MarketplaceController extends Controller
             : collect();
 
         $activeUsers = Schema::hasTable('users')
-            ? \\App\\Models\\User::whereNotNull('email_verified_at')->where('status', 'active')->count()
+            ? User::whereNotNull('email_verified_at')->where('status', 'active')->count()
             : 0;
 
         $availableProducts = Schema::hasTable('products')
@@ -117,7 +118,7 @@ class MarketplaceController extends Controller
 
     public function trending(Request $request): View
     {
-        $trendingProducts = schema::hasTable('products')
+        $trendingProducts = Schema::hasTable('products')
             ? Product::query()
                 ->active()
                 ->inStock()

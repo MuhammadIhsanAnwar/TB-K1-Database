@@ -10,7 +10,7 @@ class ProfilesTableSeeder extends Seeder
     public function run(): void
     {
         // Populate user_profiles for buyers (users without profiles)
-        $buyers = User::where('role', 'buyer')
+        $buyers = User::withoutTrashed()->where('role', 'buyer')
             ->whereDoesntHave('profile')
             ->chunk(100, function ($users) {
                 foreach ($users as $user) {
@@ -25,7 +25,7 @@ class ProfilesTableSeeder extends Seeder
             });
 
         // Populate user_profiles for sellers (users without profiles)
-        $sellers = User::where('role', 'seller')
+        $sellers = User::withoutTrashed()->where('role', 'seller')
             ->whereDoesntHave('profile')
             ->chunk(100, function ($users) {
                 foreach ($users as $user) {

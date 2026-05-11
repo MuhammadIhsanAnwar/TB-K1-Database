@@ -9,7 +9,7 @@ class SellersTableSeeder extends Seeder
     public function run(): void
     {
         // Create 600 sellers if they don't exist
-        $existingSellerCount = User::where('role', 'seller')->count();
+        $existingSellerCount = User::withoutTrashed()->where('role', 'seller')->count();
         $sellersNeeded = 600 - $existingSellerCount;
         
         if ($sellersNeeded > 0) {

@@ -34,6 +34,7 @@ class Product extends Model {
     public function seller()    { return $this->belongsTo(User::class, 'seller_id'); }
     public function category()  { return $this->belongsTo(Category::class); }
     public function reviews()   { return $this->hasMany(Review::class); }
+    public function comments()  { return $this->hasMany(ProductComment::class); }
     public function orderItems(){ return $this->hasMany(OrderItem::class); }
     public function carts()     { return $this->hasMany(Cart::class); }
     public function statistics(): HasOne { return $this->hasOne(ProductStatistic::class); }

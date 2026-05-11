@@ -13,7 +13,7 @@ class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        $seller = User::query()->where('role', 'seller')->first();
+        $seller = User::query()->withoutTrashed()->where('role', 'seller')->first();
         $category = Category::query()->where('slug', 'top-up')->first() ?? Category::query()->first();
 
         if (! $seller || ! $category) {
