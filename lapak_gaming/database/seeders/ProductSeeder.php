@@ -7,13 +7,14 @@ use App\Models\Product;
 use App\Models\ProductStatistic;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class ProductSeeder extends Seeder
 {
     public function run(): void
     {
-        $seller = User::query()->withoutTrashed()->where('role', 'seller')->first();
+        $seller = User::query()->where('role', 'seller')->first();
         $category = Category::query()->where('slug', 'top-up')->first() ?? Category::query()->first();
 
         if (! $seller || ! $category) {

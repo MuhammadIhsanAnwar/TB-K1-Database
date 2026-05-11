@@ -6,6 +6,7 @@ use App\Models\Product;
 use App\Models\User;
 use App\Models\Category;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class ProductsTableSeeder extends Seeder
@@ -25,8 +26,9 @@ class ProductsTableSeeder extends Seeder
         }
 
         // For each seller, create one product per category (schema-adaptive for hosting)
-        User::withoutTrashed()->where('role', 'seller')->chunk(100, function ($sellers) use ($categories, $columns) {
-            $progressBar = $this->command->getOutput()->createProgressBar($sellers->count() * $categories->count());
+        // Use DB::table to bypass SoftDeletes trait
+        DB::table('users')->where('role', 'seller')->chunk(100, function ($sellers) use ($categories, $columns) {
+            $progressBar = $this->command->getOutput()->createProgressBar(count($sellers) * $categories->count());
             
             foreach ($sellers as $seller) {
                 foreach ($categories as $category) {
