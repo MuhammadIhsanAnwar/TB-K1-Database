@@ -25,7 +25,7 @@ class AuthController extends Controller
     public function storeLogin(Request $request): RedirectResponse
     {
         $credentials = $request->validate([
-            'email' => ['required', 'email'],
+            'email'    => ['required', 'email'],
             'password' => ['required', 'string'],
         ]);
 
@@ -59,27 +59,32 @@ class AuthController extends Controller
 
         $user = $request->user();
 
+        // ── Suspended account check ──────────────────────────────────────────
         if ($user && $user->status === 'suspended') {
             Auth::logout();
+            $request->session()->invalidate();
 
-            return back()->withErrors([
-                'email' => 'Akun Anda sedang disuspend.',
-            ]);
+            $reason  = $user->suspend_reason;
+            $message = 'Akun Anda telah disuspend oleh admin.';
+
+            if ($reason) {
+                $message .= ' Alasan: ' . $reason;
+            }
+
+            return back()->withErrors(['email' => $message])->onlyInput('email');
         }
 
-        // Check if user is deactivated
+        // ── Deactivated account check ────────────────────────────────────────
         if ($user && $user->deactivated_at) {
             if ($user->deactivated_at->copy()->addMonths(6)->isPast()) {
-                // Permanently delete if 6 months passed
                 $user->delete();
                 Auth::logout();
 
                 return back()->withErrors([
                     'email' => 'Akun Anda telah dihapus permanen karena melewati batas waktu aktivasi.',
-                ]);
+                ])->onlyInput('email');
             }
 
-            // Redirect to reactivation page
             return redirect()->route('account.reactivate.form');
         }
 
@@ -89,7 +94,7 @@ class AuthController extends Controller
 
         return redirect()->intended(match (true) {
             $user?->isSellerAccount() => route('seller.dashboard'),
-            default => route('buyer.dashboard'),
+            default                   => route('buyer.dashboard'),
         });
     }
 
@@ -101,49 +106,49 @@ class AuthController extends Controller
     public function storeRegister(Request $request): RedirectResponse
     {
         $messages = [
-            'email.required' => 'Email wajib diisi.',
-            'email.email' => 'Format email tidak valid.',
-            'email.unique' => 'Email sudah terdaftar.',
-            'password.required' => 'Password wajib diisi.',
-            'password.confirmed' => 'Konfirmasi password tidak cocok.',
-            'password.min' => 'Password minimal :min karakter.',
-            'password.*' => 'Password harus mengandung huruf besar, huruf kecil, angka, dan simbol.',
-            'profile_photo.required' => 'Foto profil wajib diunggah.',
-            'profile_photo.image' => 'File yang diunggah harus berupa gambar.',
-            'profile_photo.max' => 'Ukuran foto maksimal 5MB.',
-            'phone.required' => 'Nomor telepon wajib diisi.',
+            'email.required'          => 'Email wajib diisi.',
+            'email.email'             => 'Format email tidak valid.',
+            'email.unique'            => 'Email sudah terdaftar.',
+            'password.required'       => 'Password wajib diisi.',
+            'password.confirmed'      => 'Konfirmasi password tidak cocok.',
+            'password.min'            => 'Password minimal :min karakter.',
+            'password.*'              => 'Password harus mengandung huruf besar, huruf kecil, angka, dan simbol.',
+            'profile_photo.required'  => 'Foto profil wajib diunggah.',
+            'profile_photo.image'     => 'File yang diunggah harus berupa gambar.',
+            'profile_photo.max'       => 'Ukuran foto maksimal 5MB.',
+            'phone.required'          => 'Nomor telepon wajib diisi.',
         ];
 
         $data = $request->validate([
-            'name' => ['required', 'string', 'max:255'],
-            'gender' => ['required', 'in:male,female,other'],
-            'birth_date' => ['required', 'date', 'before:today'],
-            'phone' => ['required', 'string', 'max:20'],
+            'name'          => ['required', 'string', 'max:255'],
+            'gender'        => ['required', 'in:male,female,other'],
+            'birth_date'    => ['required', 'date', 'before:today'],
+            'phone'         => ['required', 'string', 'max:20'],
             'profile_photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
-            'email' => ['required', 'email', 'max:255', 'unique:users,email'],
-            'password' => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
+            'email'         => ['required', 'email', 'max:255', 'unique:users,email'],
+            'password'      => ['required', 'confirmed', Password::min(8)->mixedCase()->numbers()->symbols()],
         ], $messages);
 
         $user = DB::transaction(function () use ($request, $data) {
-            $photo = $request->file('profile_photo');
+            $photo          = $request->file('profile_photo');
             $avatarFilename = Str::uuid()->toString() . '.' . $photo->getClientOriginalExtension();
             Storage::disk('public_app_public')->putFileAs('user-avatars', $photo, $avatarFilename);
             $avatarPath = 'app/public/user-avatars/' . $avatarFilename;
 
             $user = User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
+                'name'     => $data['name'],
+                'email'    => $data['email'],
                 'password' => $data['password'],
-                'role' => 'buyer',
-                'status' => 'active',
-                'phone' => $data['phone'],
-                'avatar' => $avatarPath,
+                'role'     => 'buyer',
+                'status'   => 'active',
+                'phone'    => $data['phone'],
+                'avatar'   => $avatarPath,
             ]);
 
             $user->profile()->create([
-                'gender' => $data['gender'],
+                'gender'     => $data['gender'],
                 'birth_date' => $data['birth_date'],
-                'phone' => $data['phone'],
+                'phone'      => $data['phone'],
                 'avatar_path' => $avatarPath,
             ]);
 
@@ -206,54 +211,49 @@ class AuthController extends Controller
             ]);
         }
 
-        $googlePhone = $this->resolveGooglePhone($googleUser->token ?? null);
+        $googlePhone      = $this->resolveGooglePhone($googleUser->token ?? null);
         $googleAvatarPath = $this->storeGoogleAvatar($googleUser->getAvatar(), (string) $googleUser->getId());
-        $googleProfilePhone = $googlePhone ?: '-';
-        $googleProfileBirthDate = '2000-01-01';
 
-        // Find existing user by google_id or email
         $user = User::where('google_id', $googleUser->getId())->first()
             ?? User::where('email', $googleUser->getEmail())->first();
 
         if (! $user) {
-            // Create new user without email verification
             $user = User::create([
-                'name' => $googleUser->getName() ?: $googleUser->getNickname() ?: 'Pengguna Google',
-                'email' => $googleUser->getEmail(),
-                'password' => Str::random(40),
-                'role' => 'buyer',
-                'status' => 'active',
+                'name'      => $googleUser->getName() ?: $googleUser->getNickname() ?: 'Pengguna Google',
+                'email'     => $googleUser->getEmail(),
+                'password'  => Str::random(40),
+                'role'      => 'buyer',
+                'status'    => 'active',
                 'google_id' => $googleUser->getId(),
-                'phone' => $googlePhone,
-                'avatar' => $googleAvatarPath,
-                // email_verified_at remains null - requires verification
+                'phone'     => $googlePhone,
+                'avatar'    => $googleAvatarPath,
             ]);
-            
+
             $user->profile()->create([
-                'gender' => 'other',
-                // Provide safe defaults for legacy schemas where these columns are NOT NULL.
-                'birth_date' => $googleProfileBirthDate,
-                'phone' => $googleProfilePhone,
+                'gender'     => 'other',
+                'birth_date' => '2000-01-01',
+                'phone'      => $googlePhone ?: '-',
                 'avatar_path' => $googleAvatarPath,
             ]);
         } else {
-            // Link existing user with Google account
             $user->forceFill([
                 'google_id' => $user->google_id ?: $googleUser->getId(),
-                'phone' => $user->phone ?: $googlePhone,
-                'avatar' => $user->avatar ?: $googleAvatarPath,
+                'phone'     => $user->phone ?: $googlePhone,
+                'avatar'    => $user->avatar ?: $googleAvatarPath,
             ])->save();
         }
 
         if ($user->status === 'suspended') {
-            return redirect()->route('login')->withErrors([
-                'email' => 'Akun Anda sedang disuspend.',
-            ]);
+            $reason  = $user->suspend_reason;
+            $message = 'Akun Anda telah disuspend oleh admin.';
+            if ($reason) {
+                $message .= ' Alasan: ' . $reason;
+            }
+
+            return redirect()->route('login')->withErrors(['email' => $message]);
         }
 
-        // Check if email is verified
         if (! $user->email_verified_at) {
-            // Always send for any unverified Google user (new or existing).
             $sent = $user->sendEmailVerificationNotification();
 
             if (! $sent) {
@@ -266,14 +266,13 @@ class AuthController extends Controller
                 ->with('status', 'Email verifikasi sudah dikirim. Silakan cek kotak masuk Anda.');
         }
 
-        // Email is verified, proceed with normal login
         Auth::login($user, true);
         $request->session()->regenerate();
 
         return redirect()->intended(match ($user?->role) {
             'seller' => route('seller.dashboard'),
-            'admin' => route('admin.dashboard'),
-            default => route('buyer.dashboard'),
+            'admin'  => route('admin.dashboard'),
+            default  => route('buyer.dashboard'),
         });
     }
 
