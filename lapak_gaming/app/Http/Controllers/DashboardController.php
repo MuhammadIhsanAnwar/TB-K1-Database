@@ -96,7 +96,7 @@ class DashboardController extends Controller
                 $chartTransactions->push(Order::whereDate('created_at', $date->format('Y-m-d'))->count());
 
                 // FIX DISINI: Pakai 'grand_total' sesuai migration kamu
-                $revenue = Order::whereDate('created_at', $date->format('Y-m-d'))->sum('grand_total');
+                $revenue = Order::whereDate('created_at', $date->format('Y-m-d'))->sum('id');
                 $chartRevenue->push($revenue);
             } else {
                 $chartTransactions->push(0);
