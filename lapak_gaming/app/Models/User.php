@@ -5,10 +5,12 @@ use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\UserProfile;
 use App\Models\UserPolicyConsent;
+use Illuminate\Auth\Notifications\VerifyEmail;
 
 class User extends Authenticatable implements MustVerifyEmail {
     use HasFactory, Notifiable;
@@ -167,6 +169,24 @@ class User extends Authenticatable implements MustVerifyEmail {
             'balance_after' => $balanceState->balance,
         ]);
         return true;
+    }
+
+    public function sendEmailVerificationNotification(): bool
+    {
+        try {
+            $this->notify(new VerifyEmail());
+
+            return true;
+        } catch (\Throwable $exception) {
+            Log::error('Email verification notification failure', [
+                'user_id' => $this->id,
+                'email' => $this->email,
+                'message' => $exception->getMessage(),
+                'exception' => get_class($exception),
+            ]);
+
+            return false;
+        }
     }
 
 }
