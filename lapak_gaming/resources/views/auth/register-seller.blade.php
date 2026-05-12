@@ -39,131 +39,62 @@
                     </div>
                 </div>
 
-                <form method="POST" action="{{ route('seller.register') }}" enctype="multipart/form-data" class="mt-8 space-y-8" data-register-form>
+                <form method="POST" action="{{ route('seller.register') }}" enctype="multipart/form-data" class="mt-8 space-y-6">
                     @csrf
 
                     <div class="grid gap-6 sm:grid-cols-[160px_1fr] sm:items-start">
                         <div>
-                            <label class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Logo Toko</label>
+                            <label class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Logo / Foto Profil Toko</label>
                             <div class="space-y-3">
                                 <img
-                                    src="https://ui-avatars.com/api/?name=Store&background=f59e0b&color=fff"
+                                    src="{{ auth()->user()->shop_photo ? asset('storage/' . auth()->user()->shop_photo) : 'https://ui-avatars.com/api/?name=Toko&background=f59e0b&color=fff' }}"
                                     alt="Preview logo toko"
                                     class="h-40 w-40 rounded-3xl border border-slate-200 object-cover shadow-sm dark:border-slate-700"
-                                    data-photo-preview
                                 >
                                 <input
-                                    name="profile_photo"
+                                    name="shop_photo"
                                     type="file"
                                     accept="image/*"
                                     class="block w-full text-sm text-slate-500 file:mr-4 file:rounded-2xl file:border-0 file:bg-slate-950 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:file:bg-slate-800 dark:text-slate-400"
-                                    data-photo-input
                                 />
                                 <p class="text-xs text-slate-500 dark:text-slate-400">Format JPG, PNG, atau WEBP. Maksimal 5MB.</p>
-                                <p class="hidden text-sm font-medium text-rose-500" data-photo-error></p>
-                                @error('profile_photo') <p class="text-sm text-rose-500">{{ $message }}</p> @enderror
+                                @error('shop_photo') <p class="text-sm text-rose-500">{{ $message }}</p> @enderror
                             </div>
                         </div>
 
-                        <div class="grid gap-4 sm:grid-cols-2">
+                        <div class="grid gap-4">
                             <label class="block">
-                                <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Username Toko</span>
-                                <input name="username" type="text" value="{{ old('username') }}" placeholder="nama_toko" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none ring-0 transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
-                                @error('username') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
+                                <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Nama Toko</span>
+                                <input name="shop_name" type="text" value="{{ old('shop_name', auth()->user()->shop_name) }}" placeholder="Contoh: Toko Game Keren" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none ring-0 transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
+                                @error('shop_name') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
                             </label>
-                            <label class="block">
-                                <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Nama Pemilik</span>
-                                <input name="name" type="text" value="{{ old('name') }}" placeholder="Nama lengkap" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none ring-0 transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
-                                @error('name') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                            </label>
-                            <label class="block">
-                                <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Jenis Kelamin</span>
-                                <select name="gender" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white">
-                                    <option value="">Pilih jenis kelamin</option>
-                                    <option value="male" @selected(old('gender') === 'male')>Laki-laki</option>
-                                    <option value="female" @selected(old('gender') === 'female')>Perempuan</option>
-                                    <option value="other" @selected(old('gender') === 'other')>Lainnya</option>
-                                </select>
-                                @error('gender') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                            </label>
-                            <label class="block">
-                                <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Tanggal Lahir</span>
-                                <input name="birth_date" type="date" value="{{ old('birth_date') }}" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
-                                @error('birth_date') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                            </label>
-                            <label class="block">
-                                <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Nomor Hp</span>
-                                <input name="phone" type="tel" value="{{ old('phone') }}" placeholder="08xxxxxxxxxx" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
-                                @error('phone') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                            </label>
+
                             <label class="block">
                                 <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Deskripsi Toko</span>
-                                <textarea name="bio" rows="2" placeholder="Jelaskan tentang toko Anda" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white">{{ old('bio') }}</textarea>
-                                @error('bio') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                            </label>
-                            <label class="block sm:col-span-2">
-                                <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Email</span>
-                                <input name="email" type="email" value="{{ old('email') }}" placeholder="nama@email.com" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
-                                @error('email') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                            </label>
-                            <label class="block">
-                                <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Password</span>
-                                <input name="password" type="password" placeholder="Minimal 8 karakter" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
-                                @error('password') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                            </label>
-                            <label class="block">
-                                <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Konfirmasi Password</span>
-                                <input name="password_confirmation" type="password" placeholder="Ulangi password" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
+                                <textarea name="shop_description" rows="4" placeholder="Cerita singkat tentang toko Anda" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white">{{ old('shop_description', auth()->user()->shop_description) }}</textarea>
+                                @error('shop_description') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
                             </label>
                         </div>
                     </div>
 
-                    <div class="grid gap-4 sm:grid-cols-2">
-                        <label class="block">
-                            <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Provinsi</span>
-                            <input name="province" type="text" value="{{ old('province') }}" placeholder="Provinsi" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
-                            @error('province') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                        </label>
-                        <label class="block">
-                            <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Kabupaten/Kota</span>
-                            <input name="regency" type="text" value="{{ old('regency') }}" placeholder="Kabupaten / Kota" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
-                            @error('regency') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                        </label>
-                        <label class="block">
-                            <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Kecamatan</span>
-                            <input name="district" type="text" value="{{ old('district') }}" placeholder="Kecamatan" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
-                            @error('district') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                        </label>
-                        <label class="block">
-                            <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Kelurahan/Desa</span>
-                            <input name="village" type="text" value="{{ old('village') }}" placeholder="Kelurahan / Desa" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
-                            @error('village') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                        </label>
-                        <label class="block sm:col-span-2 sm:max-w-xs">
-                            <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Kode Pos</span>
-                            <input name="postal_code" type="text" value="{{ old('postal_code') }}" placeholder="12345" class="w-full rounded-2xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white" />
-                            @error('postal_code') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                        </label>
-                        <label class="block sm:col-span-2">
-                            <span class="mb-2 block text-sm font-semibold text-slate-700 dark:text-slate-300">Alamat Bisnis</span>
-                            <textarea name="full_address" rows="4" placeholder="Alamat lengkap toko" class="w-full rounded-3xl border border-slate-200 bg-white px-4 py-3 text-slate-950 outline-none transition focus:border-slate-950 dark:border-slate-700 dark:bg-slate-950 dark:text-white">{{ old('full_address') }}</textarea>
-                            @error('full_address') <p class="mt-2 text-sm text-rose-500">{{ $message }}</p> @enderror
-                        </label>
+                    <div class="rounded-3xl border border-slate-800 bg-slate-950/90 p-6 text-slate-300">
+                        <h3 class="text-lg font-bold text-white">Informasi akun</h3>
+                        <p class="mt-2 text-sm text-slate-400">Akun Anda sudah terdaftar sebagai buyer. Isi nama toko, logo, dan deskripsi untuk mengajukan seller ke admin.</p>
+                        <div class="mt-4 grid gap-4 sm:grid-cols-2">
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Nama</p>
+                                <p class="mt-2 text-sm text-white">{{ auth()->user()->name }}</p>
+                            </div>
+                            <div>
+                                <p class="text-xs uppercase tracking-[0.25em] text-slate-500">Email</p>
+                                <p class="mt-2 text-sm text-white">{{ auth()->user()->email }}</p>
+                            </div>
+                        </div>
                     </div>
 
                     <button class="inline-flex w-full items-center justify-center rounded-2xl bg-amber-600 px-4 py-3 font-bold text-white transition hover:bg-amber-700 dark:bg-amber-500 dark:hover:bg-amber-600">
-                        Buat Toko
+                        Ajukan Seller
                     </button>
-
-                    <a href="{{ route('google.auth') }}" class="inline-flex w-full items-center justify-center gap-3 rounded-2xl border border-white/10 bg-black/30 px-4 py-3 font-semibold text-white transition hover:bg-black/40">
-                        <svg class="h-5 w-5" viewBox="0 0 48 48" aria-hidden="true">
-                            <path fill="#FFC107" d="M43.611 20.083H42V20H24v8h11.303C33.654 32.658 29.355 36 24 36c-6.627 0-12-5.373-12-12s5.373-12 12-12c3.059 0 5.842 1.154 7.957 3.043l5.657-5.657C34.041 6.053 29.272 4 24 4 12.955 4 4 12.955 4 24s8.955 20 20 20 20-8.955 20-20c0-1.341-.138-2.651-.389-3.917z"/>
-                            <path fill="#FF3D00" d="M6.306 14.691l6.571 4.819C14.655 15.108 18.961 12 24 12c3.059 0 5.842 1.154 7.957 3.043l5.657-5.657C34.041 6.053 29.272 4 24 4c-7.682 0-14.358 4.337-17.694 10.691z"/>
-                            <path fill="#4CAF50" d="M24 44c5.143 0 9.86-1.969 13.409-5.178l-6.191-5.238C29.173 35.091 26.763 36 24 36c-5.334 0-9.623-3.323-11.287-7.946l-6.522 5.025C9.48 39.556 16.227 44 24 44z"/>
-                            <path fill="#1976D2" d="M43.611 20.083H42V20H24v8h11.303a12.04 12.04 0 0 1-4.085 5.584l.003-.002 6.191 5.238C36.96 39.101 44 34 44 24c0-1.341-.138-2.651-.389-3.917z"/>
-                        </svg>
-                        Daftar dengan Google
-                    </a>
                 </form>
 
                 <div class="mt-5 text-sm text-slate-500 dark:text-slate-400">

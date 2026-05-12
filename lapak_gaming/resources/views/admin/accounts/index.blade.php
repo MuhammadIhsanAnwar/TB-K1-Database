@@ -85,13 +85,13 @@
     {{-- Tab Navigation Gaya "Users" --}}
     <div class="overflow-x-auto">
       <div class="inline-flex gap-1 rounded-2xl border border-slate-800 bg-slate-900 p-1.5 min-w-max">
-        <a href="?tab=buyers" class="tab-btn {{ ($tab ?? 'buyers') === 'buyers' ? 'active' : '' }}">
-          Daftar Buyers
+        <a href="?tab=users" class="tab-btn {{ ($tab ?? 'users') === 'users' ? 'active' : '' }}">
+          Menu User
           <span class="tab-badge">{{ $buyers->total() }}</span>
         </a>
 
         <a href="?tab=sellers" class="tab-btn {{ ($tab ?? '') === 'sellers' ? 'active' : '' }}">
-          Daftar Sellers
+          Menu Seller
           <span class="tab-badge">{{ $sellers->total() }}</span>
         </a>
 
@@ -118,34 +118,49 @@
                 </thead>
                 <tbody class="divide-y divide-slate-800">
                     @php 
-                        if(($tab ?? 'buyers') == 'sellers') $currentData = $sellers;
-                        elseif(($tab ?? '') == 'applications') $currentData = $applications;
-                        else $currentData = $buyers;
+                        if(($tab ?? 'users') == 'sellers') {
+                            $currentData = $sellers;
+                        } elseif(($tab ?? '') == 'applications') {
+                            $currentData = $applications;
+                        } else {
+                            $currentData = $buyers;
+                        }
                     @endphp
 
                     @forelse($currentData as $user)
                     <tr class="hover:bg-slate-800/40 transition">
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 rounded-xl bg-slate-800 border border-slate-700 flex items-center justify-center font-bold text-blue-400">
-                                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                                <div class="h-12 w-12 overflow-hidden rounded-2xl border border-slate-700 bg-slate-800">
+                                    <img src="{{ $user->shop_photo_url ?? $user->avatar_url }}" alt="Avatar {{ $user->name }}" class="h-full w-full object-cover" />
                                 </div>
-                                <div>
+                                <div class="min-w-0">
                                     <p class="font-medium text-white">{{ $user->name }}</p>
                                     <p class="text-xs text-slate-500 font-mono">ID #{{ $user->id }}</p>
+                                    @if(($tab ?? '') === 'sellers' || ($tab ?? '') === 'applications')
+                                        <p class="mt-1 text-sm text-slate-400 truncate">{{ $user->shop_name ?? 'Belum ada nama toko' }}</p>
+                                    @endif
                                 </div>
                             </div>
                         </td>
                         <td class="px-6 py-4">
                             <p class="text-slate-300">{{ $user->email }}</p>
                             <p class="text-xs text-slate-500">{{ $user->phone ?? '-' }}</p>
+                            @if(($tab ?? '') !== 'users' && $user->shop_description)
+                                <p class="mt-2 text-xs text-slate-400">{{ \Illuminate\Support\Str::limit($user->shop_description, 80) }}</p>
+                            @endif
                         </td>
                         <td class="px-6 py-4">
-                            @if($user->role == 'seller' || $user->seller_status == 'approved')
+                            @if($user->status === 'suspended')
+                                <span class="pill bg-rose-500/10 text-rose-300">Suspended</span>
+                                @if($user->suspend_reason)
+                                    <p class="mt-2 text-xs text-rose-300">Alasan: {{ \Illuminate\Support\Str::limit($user->suspend_reason, 90) }}</p>
+                                @endif
+                            @elseif($user->role === 'seller' || $user->seller_status === 'approved')
                                 <span class="pill pill-approved">
                                     <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span> Verified Seller
                                 </span>
-                            @elseif($user->seller_status == 'pending')
+                            @elseif($user->seller_status === 'pending')
                                 <span class="pill pill-pending">
                                     <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span> Pending
                                 </span>
@@ -156,9 +171,24 @@
                             @endif
                         </td>
                         <td class="px-6 py-4 text-right">
-                            <button class="rounded-xl bg-slate-800 border border-slate-700 px-4 py-1.5 text-xs font-bold text-slate-300 hover:text-white hover:border-slate-500 transition">
-                                Detail
-                            </button>
+                            @if($user->role !== 'admin')
+                                <form action="{{ route('admin.users.status', $user) }}" method="POST" class="space-y-2 text-right">
+                                    @csrf
+                                    @method('PUT')
+
+                                    <div class="flex items-center justify-end gap-2">
+                                        <select name="status" class="rounded-2xl border border-slate-800 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none transition focus:border-amber-500">
+                                            <option value="active" @selected($user->status === 'active')>Active</option>
+                                            <option value="suspended" @selected($user->status === 'suspended')>Suspended</option>
+                                        </select>
+                                        <button type="submit" class="rounded-2xl bg-amber-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-amber-400">Simpan</button>
+                                    </div>
+
+                                    <textarea name="suspend_reason" rows="2" placeholder="Alasan suspend (opsional)" class="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none transition focus:border-amber-500">{{ old('suspend_reason') }}</textarea>
+                                </form>
+                            @else
+                                <span class="text-xs text-slate-500">Tidak dapat mengubah admin.</span>
+                            @endif
                         </td>
                     </tr>
                     @empty

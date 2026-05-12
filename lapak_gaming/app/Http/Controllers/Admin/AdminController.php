@@ -26,10 +26,10 @@ class AdminController extends Controller
      */
     public function accounts(Request $request): View
     {
-        // 1. Cek tab mana yang aktif, kalau kosong defaultnya 'buyers'
-        $tab = $request->query('tab', 'buyers');
+        // 1. Cek tab mana yang aktif, kalau kosong defaultnya 'users'
+        $tab = $request->query('tab', 'users');
 
-        // 2. Tab 1: Kita namai $buyers (biar sesuai sama file Blade kamu)
+        // 2. Tab 1: Kita namai $buyers tapi sebenarnya ini untuk menu user.
         $buyers = User::query()
             ->where('role', 'buyer')
             ->where(function ($q) {
@@ -39,7 +39,7 @@ class AdminController extends Controller
             ->where('role', '!=', 'admin')
             ->orderByDesc('created_at')
             ->paginate(20, ['*'], 'buyers_page')
-            ->appends(['tab' => 'buyers']);
+            ->appends(['tab' => 'users']);
 
         // 3. Tab 2: Seller yang sudah jualan (approved)
         $sellers = User::query()
