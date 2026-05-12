@@ -75,8 +75,6 @@ class AdminController extends Controller
      */
     public function users(Request $request): View
     {
-        $tab = $request->get('tab', 'all');
-        
         $users = User::query()
             ->where('role', '!=', 'admin')
             ->orderByDesc('created_at')
