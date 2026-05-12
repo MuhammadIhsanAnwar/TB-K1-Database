@@ -76,48 +76,50 @@ class DashboardController extends Controller
 
     public function admin(Request $request): View
     {
+        // 1. Hitung statistik dasar
         $totalUsers = Schema::hasTable('users') ? User::query()->count() : 0;
         $buyers = Schema::hasTable('users') ? User::query()->where('role', 'buyer')->count() : 0;
         $sellers = Schema::hasTable('users') ? User::query()->where('role', 'seller')->count() : 0;
         $suspendedUsers = Schema::hasTable('users') ? User::query()->where('status', 'suspended')->count() : 0;
-
-        // Inilah data real Request Seller kita
         $sellerRequests = Schema::hasTable('users') ? User::query()->where('seller_status', 'pending')->count() : 0;
 
+        // 2. Siapkan wadah data untuk Grafik
+        $chartLabels = collect();
+        $chartTransactions = collect();
+        $chartRevenue = collect();
+
+        // Ambil data 7 hari terakhir (Termasuk hari ini)
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i);
+            $chartLabels->push($date->format('d M')); // Contoh: 13 Mei
+
+            if (Schema::hasTable('orders')) {
+                // Hitung jumlah transaksi harian
+                $count = Order::whereDate('created_at', $date->format('Y-m-d'))->count();
+                $chartTransactions->push($count);
+
+                // Hitung pendapatan harian (Ganti 'total_price' sesuai nama kolom di tabel orders kamu)
+                $revenue = Order::whereDate('created_at', $date->format('Y-m-d'))->sum('total_price');
+                $chartRevenue->push($revenue);
+            } else {
+                $chartTransactions->push(0);
+                $chartRevenue->push(0);
+            }
+        }
+
+        // 3. Render View dengan SEMUA data
         return view('dashboard.admin', [
             'totalUsers' => $totalUsers,
             'buyers' => $buyers,
             'sellers' => $sellers,
             'suspendedUsers' => $suspendedUsers,
-            'sellerRequests' => $sellerRequests, // Gunakan ini saja
+            'sellerRequests' => $sellerRequests,
             'products' => Schema::hasTable('products') ? Product::query()->count() : 0,
-            'orders' => Order::query()->count(),
-            // 'pendingOrders' bisa dihapus dari sini jika tidak ingin dikirim ke view
-        ]);
-
-        // Ambil data transaksi 7 hari terakhir untuk grafik
-        $days = collect();
-        $transactionCounts = collect();
-        $revenueData = collect();
-
-        for ($i = 6; $i >= 0; $i--) {
-            $date = now()->subDays($i)->format('Y-m-d');
-            $days->push(now()->subDays($i)->format('d M'));
-
-            // Hitung jumlah order di tanggal tersebut
-            $count = Order::whereDate('created_at', $date)->count();
-            $transactionCounts->push($count);
-
-            // Hitung total uang masuk di tanggal tersebut (asumsi ada kolom total_price)
-            $revenue = Order::whereDate('created_at', $date)->sum('total_price');
-            $revenueData->push($revenue);
-        }
-
-        return view('dashboard.admin', [
-            // ... variabel lain ...
-            'chartLabels' => $days,
-            'chartTransactions' => $transactionCounts,
-            'chartRevenue' => $revenueData,
+            'orders' => Schema::hasTable('orders') ? Order::query()->count() : 0,
+            // Variabel grafik yang tadi bikin error:
+            'chartLabels' => $chartLabels,
+            'chartTransactions' => $chartTransactions,
+            'chartRevenue' => $chartRevenue,
         ]);
     }
 }
