@@ -9,6 +9,62 @@
   $authUser = Auth::user();
 @endphp
 
+@push('styles')
+<style>
+  /* ═══════════════════════════════════════
+     DUNIAGAMES STYLE BUTTON (for navbar)
+  ════════════════════════════════════════ */
+
+  .dg-btn {
+    background:
+      linear-gradient(135deg,#2563eb 0%,#1d4ed8 40%,#0f172a 100%);
+    border: 1px solid rgba(96,165,250,0.35);
+
+    box-shadow:
+      0 10px 30px rgba(37,99,235,0.25),
+      inset 0 1px 0 rgba(255,255,255,0.08);
+
+    letter-spacing: .02em;
+
+    transform-style: preserve-3d;
+  }
+
+  .dg-btn:hover {
+    transform:
+      translateY(-3px)
+      scale(1.02);
+
+    box-shadow:
+      0 18px 40px rgba(37,99,235,0.38),
+      0 0 30px rgba(96,165,250,0.22);
+  }
+
+  .dg-btn:active {
+    transform: scale(.98);
+  }
+
+  .dg-btn-glow {
+    position: absolute;
+    inset: 0;
+
+    background:
+      linear-gradient(
+        120deg,
+        transparent 20%,
+        rgba(255,255,255,0.20) 50%,
+        transparent 80%
+      );
+
+    transform: translateX(-120%);
+    transition: transform .8s ease;
+  }
+
+  .dg-btn:hover .dg-btn-glow {
+    transform: translateX(120%);
+  }
+</style>
+@endpush
+
 {{-- ═══ MOBILE SIDEBAR DRAWER ═══ --}}
 <aside id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col overflow-y-auto"
        style="background:#0D1421;border-right:1px solid #1E2D45;">
@@ -48,7 +104,10 @@
   <div class="p-4" style="border-bottom:1px solid #1E2D45;">
     <div class="grid grid-cols-2 gap-2">
       <a href="{{ route('login') }}" class="btn-ghost text-center text-sm py-2.5 px-3 rounded-xl">Login</a>
-      <a href="{{ route('register') }}" class="btn-primary text-center text-sm py-2.5 px-3 rounded-xl">Daftar</a>
+      <a href="{{ route('register') }}" class="dg-btn group relative inline-flex items-center justify-center overflow-hidden rounded-xl py-2.5 px-3 font-display font-bold text-white transition-all duration-300 text-sm">
+        <span class="relative z-10">Daftar</span>
+        <span class="dg-btn-glow"></span>
+      </a>
     </div>
   </div>
   @endauth
@@ -464,14 +523,14 @@
       @else
       {{-- Guest --}}
       <a href="{{ route('login') }}" class="btn-ghost py-2 px-4 text-sm rounded-xl">Masuk</a>
-      <a href="{{ route('register') }}" class="btn-primary py-2 px-4 text-sm rounded-xl">
-        Daftar
-      </a>
       @endauth
 
       @guest
-      <a href="{{ route('register') }}" class="hidden sm:inline-flex btn-primary px-4 py-2 rounded-xl text-sm">
-        Daftar Gratis Sekarang
+      <a href="{{ route('register') }}" class="hidden sm:inline-flex dg-btn group relative items-center justify-center overflow-hidden rounded-xl px-4 py-2 font-display font-bold text-white transition-all duration-300 text-sm">
+        <span class="relative z-10 flex items-center gap-2">
+          <span>Daftar Gratis Sekarang</span>
+        </span>
+        <span class="dg-btn-glow"></span>
       </a>
       @endguest
     </div>
