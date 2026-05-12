@@ -81,13 +81,18 @@ class AdminController extends Controller
             ->where('role', '!=', 'admin')
             ->orderByDesc('created_at')
             ->paginate(20);
-            
+
         $sellers = User::query()
             ->where('role', 'seller')
             ->orderByDesc('created_at')
             ->paginate(20);
+        
+        $applications = User::query()
+            ->where('role', 'buyer')
+            ->orderByDesc('created_at')
+            ->paginate(20);
 
-        return view('admin.users.index', compact('regularUsers', 'tab'));
+        return view('admin.users.index', compact('regularUsers', 'sellers', 'applications', 'tab'));
     }
 
     public function showUser(User $user): View
