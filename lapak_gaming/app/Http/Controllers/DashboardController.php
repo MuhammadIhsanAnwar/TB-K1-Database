@@ -23,7 +23,7 @@ class DashboardController extends Controller
 
     public function index(Request $request)
     {
-        if (! $this->hasDashboardTables()) {
+        if (!$this->hasDashboardTables()) {
             return redirect()->route('setup.migrate');
         }
 
@@ -80,15 +80,17 @@ class DashboardController extends Controller
         $buyers = Schema::hasTable('users') ? User::query()->where('role', 'buyer')->count() : 0;
         $sellers = Schema::hasTable('users') ? User::query()->where('role', 'seller')->count() : 0;
         $suspendedUsers = Schema::hasTable('users') ? User::query()->where('status', 'suspended')->count() : 0;
-        $sellerRequests = Schema::hasTable('users') ? User::query()->where('role', 'buyer')->where('is_seller', true)->count() : 0;
 
-        if (! Schema::hasTable('orders')) {
+        // DISINI PERUBAHANNYA: Hitung yang seller_status-nya PENDING
+        $sellerRequests = Schema::hasTable('users') ? User::query()->where('seller_status', 'pending')->count() : 0;
+
+        if (!Schema::hasTable('orders')) {
             return view('dashboard.admin', [
                 'totalUsers' => $totalUsers,
                 'buyers' => $buyers,
                 'sellers' => $sellers,
                 'suspendedUsers' => $suspendedUsers,
-                'sellerRequests' => $sellerRequests,
+                'sellerRequests' => $sellerRequests, // Sekarang isinya 0 jika tidak ada pengajuan
                 'products' => 0,
                 'orders' => 0,
                 'pendingOrders' => 0,
@@ -100,7 +102,7 @@ class DashboardController extends Controller
             'buyers' => $buyers,
             'sellers' => $sellers,
             'suspendedUsers' => $suspendedUsers,
-            'sellerRequests' => $sellerRequests,
+            'sellerRequests' => $sellerRequests, // Sekarang isinya 0 jika tidak ada pengajuan
             'products' => Schema::hasTable('products') ? Product::query()->count() : 0,
             'orders' => Order::query()->count(),
             'pendingOrders' => Order::query()->where('status', Order::STATUS_PENDING_PAYMENT)->count(),
