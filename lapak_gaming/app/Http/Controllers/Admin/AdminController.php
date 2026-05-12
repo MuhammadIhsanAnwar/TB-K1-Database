@@ -26,44 +26,32 @@ class AdminController extends Controller
      */
     public function accounts(Request $request): View
     {
-        $tab = $request->query('tab', 'users');
+        // 1. Ambil parameter tab (default: buyers)
+        $tab = $request->query('tab', 'buyers');
 
-        // Tab 1: User biasa (role = buyer, bukan seller, bukan admin)
-        $regularUsers = User::query()
-            ->where('role', 'buyer')
+        // 2. Ambil data Buyers (Sesuai query di log error kamu)
+        $buyers = User::where('role', 'buyer')
             ->where(function ($q) {
                 $q->where('seller_status', 'none')
                     ->orWhereNull('seller_status');
             })
             ->where('role', '!=', 'admin')
             ->orderByDesc('created_at')
-            ->paginate(20, ['*'], 'users_page')
-            ->appends(['tab' => 'users']);
+            ->paginate(20);
 
-        // Tab 2: Seller yang sudah diapprove
-        $sellers = User::query()
-            ->where(function ($q) {
-                $q->where('role', 'seller')
-                    ->orWhere('is_seller', true);
-            })
+        // 3. Ambil data Sellers yang sudah approved
+        $sellers = User::where(function ($q) {
+            $q->where('role', 'seller')
+                ->orWhere('is_seller', 1);
+        })
             ->where('seller_status', 'approved')
-            ->orderByDesc('created_at')
-            ->paginate(20, ['*'], 'sellers_page')
-            ->appends(['tab' => 'sellers']);
+            ->paginate(20);
 
-        // Tab 3: Pengajuan seller yang pending
-        $applications = User::query()
-            ->where('seller_status', 'pending')
-            ->orderByDesc('created_at')
-            ->paginate(20, ['*'], 'apps_page')
-            ->appends(['tab' => 'applications']);
+        // 4. Hitung jumlah yang sedang pending (untuk statistik di header)
+        $pendingCount = User::where('seller_status', 'pending')->count();
 
-        return view('admin.accounts.index', compact(
-            'tab',
-            'regularUsers',
-            'sellers',
-            'applications',
-        ));
+        // 5. KIRIM SEMUANYA KE VIEW (Jangan sampai ada yang ketinggalan di compact)
+        return view('admin.accounts.index', compact('buyers', 'sellers', 'pendingCount', 'tab'));
     }
 
     // ─────────────────────────────────────────────────────────────────────────
@@ -86,7 +74,7 @@ class AdminController extends Controller
             ->where('role', 'seller')
             ->orderByDesc('created_at')
             ->paginate(20);
-        
+
         $applications = User::query()
             ->where('role', 'buyer')
             ->orderByDesc('created_at')
