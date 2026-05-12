@@ -29,31 +29,21 @@ class AdminController extends Controller
         // 1. Cek tab mana yang aktif, kalau kosong defaultnya 'users'
         $tab = $request->query('tab', 'users');
 
-        // 2. Tab 1: Kita namai $buyers tapi sebenarnya ini untuk menu user.
+        // 1. Tab Menu User: MUTLAK hanya untuk role 'buyer'
         $buyers = User::query()
             ->where('role', 'buyer')
-            ->where(function ($q) {
-                $q->where('seller_status', 'none')
-                    ->orWhereNull('seller_status');
-            })
-            ->where('role', '!=', 'admin')
             ->orderByDesc('created_at')
             ->paginate(20, ['*'], 'buyers_page')
             ->appends(['tab' => 'users']);
 
-        // 3. Tab 2: Seller yang sudah jualan (approved)
+        // 2. Tab Menu Seller: MUTLAK hanya untuk role 'seller'
         $sellers = User::query()
-            ->where(function ($q) {
-                $q->where('role', 'seller')
-                    ->orWhere('seller_status', 'approved')
-                    ->orWhere('is_seller', true);
-            })
+            ->where('role', 'seller')
             ->orderByDesc('created_at')
             ->paginate(20, ['*'], 'sellers_page')
             ->appends(['tab' => 'sellers']);
 
-        // 4. Tab 3: Data pengajuan (pending)
-        // Kita simpan di $applications, tapi di Blade nanti panggilnya sesuaikan
+        // 3. Tab Pengajuan: Khusus yang masih antre minta di-approve
         $applications = User::query()
             ->where('seller_status', 'pending')
             ->orderByDesc('created_at')
