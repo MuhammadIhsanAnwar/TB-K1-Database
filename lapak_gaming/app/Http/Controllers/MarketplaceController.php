@@ -26,6 +26,10 @@ class MarketplaceController extends Controller
             ? Category::query()->active()->whereNull('parent_id')->with('children')->orderBy('sort_order')->take(10)->get()
             : collect();
 
+        $allCategories = Schema::hasTable('categories')
+            ? Category::query()->active()->orderBy('sort_order')->get()
+            : collect();
+
         $popularProducts = Schema::hasTable('products')
             ? Product::query()->active()->inStock()->with(['seller', 'category'])->inRandomOrder()->take(12)->get()
             : collect();
@@ -69,12 +73,41 @@ class MarketplaceController extends Controller
         $transactionCount = Schema::hasTable('orders')
             ? Order::query()->completed()->count()
             : 0;
-        $banners = Schema::hasTable('banners')
+        $heroBanners = Schema::hasTable('banners')
             ? Banner::query()->active()->where('position', 'hero')->latest()->take(6)->get()
             : collect();
 
+        $featuredBanners = Schema::hasTable('banners')
+            ? Banner::query()->active()->where('position', 'featured')->latest()->take(6)->get()
+            : collect();
+
+        $sidebarBanners = Schema::hasTable('banners')
+            ? Banner::query()->active()->where('position', 'sidebar')->latest()->take(6)->get()
+            : collect();
+
+        $categoryProducts = collect();
+
+        if (Schema::hasTable('products')) {
+            $categoryProducts = $allCategories->map(function (Category $category) {
+                return [
+                    'category' => $category,
+                    'products' => Product::query()
+                        ->active()
+                        ->inStock()
+                        ->where('category_id', $category->id)
+                        ->with(['seller', 'category'])
+                        ->orderByDesc('is_featured')
+                        ->orderByDesc('views_count')
+                        ->latest()
+                        ->take(12)
+                        ->get(),
+                ];
+            })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->values();
+        }
+
         return view('marketplace.home', [
             'categories' => $categories,
+            'allCategories' => $allCategories,
             'popularProducts' => $popularProducts,
             'topupProducts' => $topupProducts,
             'featuredProducts' => $featuredProducts,
@@ -84,7 +117,10 @@ class MarketplaceController extends Controller
             'verifiedSellers' => $verifiedSellers,
             'averageRating' => $averageRating,
             'transactionCount' => $transactionCount,
-            'banners' => $banners,
+            'heroBanners' => $heroBanners,
+            'featuredBanners' => $featuredBanners,
+            'sidebarBanners' => $sidebarBanners,
+            'categoryProducts' => $categoryProducts,
         ]);
     }
 

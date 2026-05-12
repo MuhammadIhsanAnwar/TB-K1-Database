@@ -186,7 +186,7 @@
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- HERO BANNERS                                               --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-@if(isset($banners) && $banners->count())
+@if(isset($heroBanners) && $heroBanners->count())
 <section class="relative py-5 sm:py-7">
   <div class="max-w-7xl mx-auto px-4">
     <div class="mb-4 flex items-end justify-between gap-4">
@@ -202,7 +202,7 @@
 
     <div class="overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/40 shadow-card-hover">
       <div id="banner-track" class="banner-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory p-3 sm:p-4">
-        @foreach($banners as $banner)
+          @foreach($heroBanners as $banner)
           <a href="{{ $banner->link_url ?: '#' }}" class="banner-slide group relative flex-none w-[88%] sm:w-[74%] md:w-[48%] xl:w-[32%] overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900">
             <div class="relative aspect-[16/8] sm:aspect-[16/6] overflow-hidden">
               <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
@@ -218,6 +218,65 @@
           </a>
         @endforeach
       </div>
+    </div>
+  </div>
+</section>
+@endif
+
+@if(isset($featuredBanners) && $featuredBanners->count())
+<section class="pb-14">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-end justify-between gap-4 mb-6">
+      <div>
+        <h2 class="section-title font-display font-bold text-lg text-white">Banner Featured</h2>
+        <p class="text-xs text-slate-500 mt-1 pl-4">Promo unggulan untuk penawaran utama</p>
+      </div>
+    </div>
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      @foreach($featuredBanners as $banner)
+        <a href="{{ $banner->link_url ?: '#' }}" class="reveal-card group overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900 shadow-card-hover">
+          <div class="relative aspect-[16/8] overflow-hidden">
+            <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/35 to-transparent"></div>
+            <div class="absolute inset-0 flex items-end p-5 sm:p-6">
+              <div>
+                <span class="inline-flex items-center rounded-full border border-brand-400/30 bg-brand-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-200">Featured</span>
+                <h3 class="mt-3 text-xl sm:text-2xl font-bold text-white">{{ $banner->title }}</h3>
+                <p class="mt-1 text-sm text-slate-300">{{ $banner->subtitle }}</p>
+              </div>
+            </div>
+          </div>
+        </a>
+      @endforeach
+    </div>
+  </div>
+</section>
+@endif
+
+@if(isset($sidebarBanners) && $sidebarBanners->count())
+<section class="pb-14">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-end justify-between gap-4 mb-6">
+      <div>
+        <h2 class="section-title font-display font-bold text-lg text-white">Banner Sidebar</h2>
+        <p class="text-xs text-slate-500 mt-1 pl-4">Promo kecil untuk penempatan samping</p>
+      </div>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      @foreach($sidebarBanners as $banner)
+        <a href="{{ $banner->link_url ?: '#' }}" class="reveal-card group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-card">
+          <div class="flex gap-4 p-4">
+            <div class="h-24 w-24 sm:h-28 sm:w-28 flex-none overflow-hidden rounded-2xl border border-slate-800">
+              <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+            </div>
+            <div class="min-w-0 flex-1">
+              <span class="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200">Sidebar</span>
+              <h3 class="mt-3 text-base font-bold text-white line-clamp-2">{{ $banner->title }}</h3>
+              <p class="mt-1 text-sm text-slate-400 line-clamp-2">{{ $banner->subtitle }}</p>
+            </div>
+          </div>
+        </a>
+      @endforeach
     </div>
   </div>
 </section>
@@ -417,6 +476,49 @@
   </div>
 </section>
 
+@if(isset($categoryProducts) && $categoryProducts->count())
+<section class="pb-20">
+  <div class="max-w-7xl mx-auto px-4 space-y-8">
+    <div class="flex items-end justify-between gap-4">
+      <div>
+        <h2 class="section-title font-display font-bold text-lg text-white">Semua Kategori Produk</h2>
+        <p class="text-xs text-slate-500 mt-1 pl-4">Geser produk ke kanan dan kiri di setiap kategori</p>
+      </div>
+      <a href="{{ route('products.search') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Lihat semua produk →</a>
+    </div>
+
+    @foreach($categoryProducts as $group)
+      @php($category = $group['category'])
+      @php($products = $group['products'])
+      <section class="reveal-card rounded-[28px] border border-slate-800 bg-slate-950/60 p-4 sm:p-5 shadow-card-hover">
+        <div class="flex items-center justify-between gap-3 mb-4">
+          <div>
+            <h3 class="font-display text-xl font-bold text-white">{{ $category->name }}</h3>
+            <p class="text-xs text-slate-500 mt-1">{{ $products->count() }} produk tersedia</p>
+          </div>
+          <div class="flex items-center gap-2">
+            <button type="button" class="category-scroll-btn rounded-xl border border-slate-800 bg-slate-900 p-2 text-slate-300 hover:text-white" data-target="category-track-{{ $category->id }}" data-dir="left" aria-label="Scroll kiri">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+            </button>
+            <button type="button" class="category-scroll-btn rounded-xl border border-slate-800 bg-slate-900 p-2 text-slate-300 hover:text-white" data-target="category-track-{{ $category->id }}" data-dir="right" aria-label="Scroll kanan">
+              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <div id="category-track-{{ $category->id }}" class="category-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2">
+          @foreach($products as $product)
+            <div class="flex-none w-[72%] sm:w-[40%] md:w-[28%] xl:w-[20%] snap-start">
+              @include('components.product-card', ['product' => $product])
+            </div>
+          @endforeach
+        </div>
+      </section>
+    @endforeach
+  </div>
+</section>
+@endif
+
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- QUICK ACCESS — TYPE BUTTONS                                 --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
@@ -537,7 +639,9 @@
         </div>
         @endforeach
       </div>
-      <a href="{{ route('register') }}" class="btn-primary px-8 py-3.5 rounded-xl text-base">Daftar Gratis Sekarang →</a>
+      @guest
+        <a href="{{ route('register') }}" class="btn-primary px-8 py-3.5 rounded-xl text-base">Daftar Gratis Sekarang →</a>
+      @endguest
     </div>
   </div>
 </section>
@@ -901,6 +1005,21 @@
 
     startAutoplay();
   }
+
+  document.querySelectorAll('.category-scroll-btn').forEach((button) => {
+    button.addEventListener('click', () => {
+      const targetId = button.getAttribute('data-target');
+      const direction = button.getAttribute('data-dir');
+      const track = targetId ? document.getElementById(targetId) : null;
+      if (!track) return;
+
+      const amount = Math.max(320, track.clientWidth * 0.7);
+      track.scrollBy({
+        left: direction === 'left' ? -amount : amount,
+        behavior: 'smooth',
+      });
+    });
+  });
 
 });
 

@@ -166,6 +166,12 @@
               Pengaturan
             </a>
           </li>
+          <li>
+            <a href="{{ route('settings.password') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3 1.343 3 3v2H9v-2c0-1.657 1.343-3 3-3zm0 0V8m0 3h3m-3 0H9m3-5a5 5 0 00-5 5v2h10v-2a5 5 0 00-5-5z"/></svg>
+              Ubah Password
+            </a>
+          </li>
         @else
         <li>
           <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
@@ -177,6 +183,12 @@
           <a href="{{ route('profile.show') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
             <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
             Profil Saya
+          </a>
+        </li>
+        <li>
+          <a href="{{ route('settings.password') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
+            <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 11c1.657 0 3 1.343 3 3v2H9v-2c0-1.657 1.343-3 3-3zm0 0V8m0 3h3m-3 0H9m3-5a5 5 0 00-5 5v2h10v-2a5 5 0 00-5-5z"/></svg>
+            Ubah Password
           </a>
         </li>
         <li>
@@ -456,6 +468,12 @@
         Daftar
       </a>
       @endauth
+
+      @guest
+      <a href="{{ route('register') }}" class="hidden sm:inline-flex btn-primary px-4 py-2 rounded-xl text-sm">
+        Daftar Gratis Sekarang
+      </a>
+      @endguest
     </div>
   </div>
 </header>
