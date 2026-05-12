@@ -82,7 +82,7 @@ class AdminController extends Controller
             ->orderByDesc('created_at')
             ->paginate(20);
 
-        return view('admin.users.index', compact('users', 'tab'));
+        return view('admin.users.index', compact('regularUsers', 'tab'));
     }
 
     public function showUser(User $user): View
