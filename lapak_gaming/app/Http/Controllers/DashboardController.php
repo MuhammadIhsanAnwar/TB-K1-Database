@@ -81,31 +81,18 @@ class DashboardController extends Controller
         $sellers = Schema::hasTable('users') ? User::query()->where('role', 'seller')->count() : 0;
         $suspendedUsers = Schema::hasTable('users') ? User::query()->where('status', 'suspended')->count() : 0;
 
-        // DISINI PERUBAHANNYA: Hitung yang seller_status-nya PENDING
+        // Inilah data real Request Seller kita
         $sellerRequests = Schema::hasTable('users') ? User::query()->where('seller_status', 'pending')->count() : 0;
-
-        if (!Schema::hasTable('orders')) {
-            return view('dashboard.admin', [
-                'totalUsers' => $totalUsers,
-                'buyers' => $buyers,
-                'sellers' => $sellers,
-                'suspendedUsers' => $suspendedUsers,
-                'sellerRequests' => $sellerRequests, // Sekarang isinya 0 jika tidak ada pengajuan
-                'products' => 0,
-                'orders' => 0,
-                'pendingOrders' => 0,
-            ]);
-        }
 
         return view('dashboard.admin', [
             'totalUsers' => $totalUsers,
             'buyers' => $buyers,
             'sellers' => $sellers,
             'suspendedUsers' => $suspendedUsers,
-            'sellerRequests' => $sellerRequests, // Sekarang isinya 0 jika tidak ada pengajuan
+            'sellerRequests' => $sellerRequests, // Gunakan ini saja
             'products' => Schema::hasTable('products') ? Product::query()->count() : 0,
             'orders' => Order::query()->count(),
-            'pendingOrders' => Order::query()->where('status', Order::STATUS_PENDING_PAYMENT)->count(),
+            // 'pendingOrders' bisa dihapus dari sini jika tidak ingin dikirim ke view
         ]);
     }
 }
