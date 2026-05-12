@@ -51,7 +51,7 @@
 <div class="min-h-screen bg-slate-950 py-10 px-4">
   <div class="mx-auto max-w-7xl space-y-6">
 
-    {{-- Header Gaya "Users" --}}
+    {{-- Header --}}
     <div class="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
       <div>
         <p class="text-xs uppercase tracking-widest text-amber-400">Admin Panel</p>
@@ -66,7 +66,7 @@
       </div>
     </div>
 
-    {{-- Statistik Ringkas (Glow Style) --}}
+    {{-- Statistik Ringkas --}}
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
         <div class="rounded-2xl border border-slate-800 bg-slate-900 p-5">
             <p class="text-slate-500 text-xs font-bold uppercase tracking-wider">Total Buyers</p>
@@ -82,7 +82,7 @@
         </div>
     </div>
 
-    {{-- Tab Navigation Gaya "Users" --}}
+    {{-- Tab Navigation --}}
     <div class="overflow-x-auto">
       <div class="inline-flex gap-1 rounded-2xl border border-slate-800 bg-slate-900 p-1.5 min-w-max">
         <a href="?tab=users" class="tab-btn {{ ($tab ?? 'users') === 'users' ? 'active' : '' }}">
@@ -170,22 +170,48 @@
                                 </span>
                             @endif
                         </td>
+                        
+                        {{-- BAGIAN AKSI YANG SUDAH DIPERBAIKI --}}
                         <td class="px-6 py-4 text-right">
                             @if($user->role !== 'admin')
-                                <form action="{{ route('admin.users.status', $user) }}" method="POST" class="space-y-2 text-right">
-                                    @csrf
-                                    @method('PUT')
-
+                                
+                                {{-- JIKA INI TAB PENGAJUAN SELLER, TAMPILKAN TOMBOL APPROVE/REJECT --}}
+                                @if(($tab ?? '') === 'applications')
                                     <div class="flex items-center justify-end gap-2">
-                                        <select name="status" class="rounded-2xl border border-slate-800 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none transition focus:border-amber-500">
-                                            <option value="active" @selected($user->status === 'active')>Active</option>
-                                            <option value="suspended" @selected($user->status === 'suspended')>Suspended</option>
-                                        </select>
-                                        <button type="submit" class="rounded-2xl bg-amber-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-amber-400">Simpan</button>
+                                        <form method="POST" action="{{ route('admin.users.approve-seller', $user->id) }}">
+                                            @csrf
+                                            <button type="submit" onclick="return confirm('Setujui toko {{ $user->shop_name }} sebagai seller?')" class="rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-900 px-4 py-2 text-xs font-bold transition shadow-[0_0_10px_rgba(16,185,129,0.3)]">
+                                                Approve
+                                            </button>
+                                        </form>
+
+                                        <form method="POST" action="{{ route('admin.users.reject-seller', $user->id) }}">
+                                            @csrf
+                                            <input type="hidden" name="rejection_reason" value="Foto profil toko atau deskripsi kurang jelas. Silakan perbaiki dan ajukan kembali.">
+                                            <button type="submit" onclick="return confirm('Tolak pengajuan toko ini?')" class="rounded-xl bg-red-500/10 border border-red-500/20 px-4 py-2 text-xs font-bold text-red-400 hover:bg-red-500/20 transition">
+                                                Tolak
+                                            </button>
+                                        </form>
                                     </div>
 
-                                    <textarea name="suspend_reason" rows="2" placeholder="Alasan suspend (opsional)" class="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none transition focus:border-amber-500">{{ old('suspend_reason') }}</textarea>
-                                </form>
+                                {{-- JIKA INI TAB USER/SELLER BIASA, TAMPILKAN FORM ACTIVE/SUSPEND --}}
+                                @else
+                                    <form action="{{ route('admin.users.status', $user) }}" method="POST" class="space-y-2 text-right">
+                                        @csrf
+                                        @method('PUT')
+
+                                        <div class="flex items-center justify-end gap-2">
+                                            <select name="status" class="rounded-2xl border border-slate-800 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none transition focus:border-amber-500">
+                                                <option value="active" @selected($user->status === 'active')>Active</option>
+                                                <option value="suspended" @selected($user->status === 'suspended')>Suspended</option>
+                                            </select>
+                                            <button type="submit" class="rounded-2xl bg-amber-500 px-4 py-2 text-xs font-bold text-slate-950 hover:bg-amber-400">Simpan</button>
+                                        </div>
+
+                                        <textarea name="suspend_reason" rows="2" placeholder="Alasan suspend (opsional)" class="mt-2 w-full rounded-2xl border border-slate-800 bg-slate-950 px-3 py-2 text-sm text-slate-200 outline-none transition focus:border-amber-500">{{ old('suspend_reason') }}</textarea>
+                                    </form>
+                                @endif
+
                             @else
                                 <span class="text-xs text-slate-500">Tidak dapat mengubah admin.</span>
                             @endif
