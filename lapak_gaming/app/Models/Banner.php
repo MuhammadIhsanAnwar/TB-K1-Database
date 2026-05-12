@@ -13,6 +13,7 @@ class Banner extends Model
         'title',
         'subtitle',
         'image_url',
+        'image_path',
         'link_url',
         'position',
         'is_active',
@@ -25,5 +26,13 @@ class Banner extends Model
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function getImageUrlAttribute($value)
+    {
+        if ($this->image_path) {
+            return url('storage/banners/' . $this->image_path);
+        }
+        return $value;
     }
 }

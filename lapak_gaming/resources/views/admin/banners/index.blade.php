@@ -10,7 +10,7 @@
             <p class="mt-2 text-slate-400">Atur banner yang tampil di halaman utama marketplace.</p>
         </div>
 
-        <form action="{{ route('admin.banners.store') }}" method="POST" class="grid gap-4 rounded-3xl border border-slate-800 bg-slate-900 p-6 lg:grid-cols-2">
+        <form action="{{ route('admin.banners.store') }}" method="POST" enctype="multipart/form-data" class="grid gap-4 rounded-3xl border border-slate-800 bg-slate-900 p-6 lg:grid-cols-2">
             @csrf
             <div>
                 <label class="block text-sm font-medium text-slate-300">Judul</label>
@@ -21,8 +21,14 @@
                 <input name="subtitle" type="text" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white">
             </div>
             <div>
-                <label class="block text-sm font-medium text-slate-300">URL Gambar</label>
-                <input name="image_url" type="url" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white" placeholder="https://..." required>
+                <label class="block text-sm font-medium text-slate-300">Unggah Gambar</label>
+                <input name="image" type="file" accept="image/*" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-slate-400 file:bg-slate-800 file:border-0 file:px-3 file:py-2 file:text-white">
+                <p class="mt-1 text-xs text-slate-500">JPG, PNG, GIF, WebP. Max 5MB</p>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-slate-300">Atau URL Gambar</label>
+                <input name="image_url" type="url" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white" placeholder="https://...">
+                <p class="mt-1 text-xs text-slate-500">Jika tidak unggah file, sediakan URL gambar</p>
             </div>
             <div>
                 <label class="block text-sm font-medium text-slate-300">URL Tujuan</label>

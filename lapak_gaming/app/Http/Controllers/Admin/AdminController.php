@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class AdminController extends Controller
@@ -72,16 +73,32 @@ class AdminController extends Controller
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:255'],
-            'image_url' => ['required', 'url', 'max:2048'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],
+            'image_url' => ['nullable', 'url', 'max:2048'],
             'link_url' => ['nullable', 'url', 'max:2048'],
             'position' => ['required', 'in:hero,featured,sidebar'],
             'is_active' => ['nullable', 'boolean'],
         ]);
 
+        $imagePath = null;
+        $imageUrl = $data['image_url'] ?? null;
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = 'banner_' . time() . '.' . $file->getClientOriginalExtension();
+            $imagePath = $file->storeAs('banners', $filename, 'public');
+            $imageUrl = null;
+        }
+
+        if (!$imagePath && !$imageUrl) {
+            return back()->withErrors(['image' => 'Unggah gambar atau sediakan URL gambar.']);
+        }
+
         Banner::create([
             'title' => $data['title'],
             'subtitle' => $data['subtitle'] ?? null,
-            'image_url' => $data['image_url'],
+            'image_url' => $imageUrl,
+            'image_path' => $imagePath,
             'link_url' => $data['link_url'] ?? null,
             'position' => $data['position'],
             'is_active' => (bool) ($data['is_active'] ?? true),

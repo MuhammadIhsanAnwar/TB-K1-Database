@@ -6,12 +6,16 @@
         </a>
 
         <nav class="hidden items-center gap-3 md:flex">
-            <a href="{{ route('home') }}" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">Marketplace</a>
+            @if (!auth()->check() || auth()->user()->role !== 'admin')
+                <a href="{{ route('home') }}" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">Marketplace</a>
+            @endif
+
             @auth
                 @if (auth()->user()->role === 'admin')
                     <a href="{{ route('admin.dashboard') }}" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">Panel Admin</a>
                     <a href="{{ route('admin.users.index') }}" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">Kelola Akun</a>
                     <a href="{{ route('admin.orders.index') }}" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">Transaksi</a>
+                    <a href="{{ route('admin.banners.index') }}" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">Banner</a>
                 @else
                     <a href="{{ route('dashboard') }}" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">Dashboard</a>
                     <a href="{{ route('wallet.index') }}" class="rounded-full px-4 py-2 text-sm font-semibold text-slate-600 transition hover:bg-slate-100 dark:text-slate-300 dark:hover:bg-slate-800">Wallet</a>

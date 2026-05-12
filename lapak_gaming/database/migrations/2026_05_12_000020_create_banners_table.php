@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('title');
             $table->string('subtitle')->nullable();
-            $table->string('image_url');
+            $table->string('image_url')->nullable();
+            $table->string('image_path')->nullable();
             $table->string('link_url')->nullable();
             $table->enum('position', ['hero', 'featured', 'sidebar'])->default('hero');
             $table->boolean('is_active')->default(true);
