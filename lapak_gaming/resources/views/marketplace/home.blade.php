@@ -218,8 +218,8 @@
         </p>
 
         <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
-          <a href="{{ route('products.search') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 transition-all duration-200 shadow-lg hover:shadow-xl">
-            Mulai Belanja Sekarang
+          <a href="{{ route('register') }}" class="inline-flex items-center justify-center px-6 py-3 rounded-full text-base font-semibold text-white bg-gradient-to-r from-slate-900 to-slate-700 border border-slate-700 hover:bg-slate-800 transition duration-200 shadow-sm shadow-slate-950/20">
+            Daftar Gratis Sekarang
           </a>
         </div>
 
@@ -697,12 +697,12 @@
   /* ── DOM refs ───────────────────────── */
   const heroSection    = document.getElementById('hero-section');
   const robotWrapper   = document.getElementById('hero-robot-wrapper');
-  const splineRobot = document.getElementById('spline-robot');
+  const robotScene     = document.getElementById('robot-scene-container');
   const splineEl       = document.getElementById('spline-robot');
   const loader         = document.getElementById('robot-loader');
   
 
-  if (!heroSection || !robotWrapper || !splineEl) return;
+  if (!heroSection || !robotWrapper || !robotScene || !splineEl) return;
 
   /* ── Loader ─────────────────────────── */
   function hideLoader() {
@@ -762,8 +762,8 @@
     const rotY = currentX * 18;
     const rotX = -currentY * 11;
 
-    robotWrapper.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
-    splineRobot.style.transform = 'scale(1)';
+    robotScene.style.transform = `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+    splineEl.style.transform = 'scale(1)';
   }
 
   /* ── Animation Step ─────────────────── */
