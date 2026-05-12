@@ -33,7 +33,7 @@
                             <td class="px-6 py-4">Rp {{ number_format($order->grand_total, 0, ',', '.') }}</td>
                             <td class="px-6 py-4">{{ $order->status_label }}</td>
                             <td class="px-6 py-4">
-                                <a href="{{ route('admin.orders.show', $order) }}" class="rounded-2xl bg-amber-500 px-3 py-2 text-xs font-semibold text-slate-950">Detail</a>
+                                <a href="{{ route('admin.orders.show', $order->id) }}" class="rounded-2xl bg-amber-500 px-3 py-2 text-xs font-semibold text-slate-950">Detail</a>
                             </td>
                         </tr>
                     @endforeach
