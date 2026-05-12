@@ -67,19 +67,20 @@ class AuthController extends Controller
             ]);
         }
 
-        // Check if user is deactivated (soft deleted)
-        if ($user && $user->trashed() && $user->deactivated_at) {
-            if ($user->deactivated_at->addMonths(6)->isPast()) {
+        // Check if user is deactivated
+        if ($user && $user->deactivated_at) {
+            if ($user->deactivated_at->copy()->addMonths(6)->isPast()) {
                 // Permanently delete if 6 months passed
-                $user->forceDelete();
+                $user->delete();
                 Auth::logout();
+
                 return back()->withErrors([
                     'email' => 'Akun Anda telah dihapus permanen karena melewati batas waktu aktivasi.',
                 ]);
-            } else {
-                // Redirect to reactivation page
-                return redirect()->route('account.reactivate.form');
             }
+
+            // Redirect to reactivation page
+            return redirect()->route('account.reactivate.form');
         }
 
         return redirect()->intended(match (true) {
