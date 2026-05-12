@@ -836,20 +836,22 @@
   let pendingFrame = false;
 
   /* ── Apply Transform ────────────────── */
-function applyRobotTransform() {
+   function applyRobotTransform() {
 
   const rotY = currentX * 12;
   const rotX = -currentY * 8;
 
-  // container tetap diam
+  // container & border tetap diam
   robotScene.style.transform = 'none';
+  robotWrapper.style.transform = 'none';
 
-  // hanya robot spline yang bergerak
-  splineEl.style.transform =
-    `perspective(1200px)
-     rotateX(${rotX}deg)
-     rotateY(${rotY}deg)
-     scale(1)`;
+  // hanya robot yang rotate
+  tiltLayer.style.transform =
+    `
+    perspective(1200px)
+    rotateX(${rotX}deg)
+    rotateY(${rotY}deg)
+    `;
 
 }
   /* ── Animation Step ─────────────────── */
