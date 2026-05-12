@@ -487,9 +487,11 @@
       <a href="{{ route('products.search') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Lihat semua produk →</a>
     </div>
 
-    @foreach($categoryProducts as $group)
-      @php($category = $group['category'])
-      @php($products = $group['products'])
+      @foreach($categoryProducts as $group)
+  @php
+      $category = $group['category'];
+      $products = $group['products'];
+  @endphp
       <section class="reveal-card rounded-[28px] border border-slate-800 bg-slate-950/60 p-4 sm:p-5 shadow-card-hover">
         <div class="flex items-center justify-between gap-3 mb-4">
           <div>
@@ -565,9 +567,7 @@
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
       @forelse($popularProducts as $product)
         <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
-  <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
   @include('components.product-card', ['product' => $product])
-</div>
 </div>
       @empty
         <div class="col-span-full py-16 text-center">
