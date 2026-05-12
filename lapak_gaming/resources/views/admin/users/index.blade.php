@@ -115,7 +115,7 @@
       <div class="inline-flex gap-1 rounded-2xl border border-slate-800 bg-slate-900 p-1.5 min-w-max">
 
         <a href="{{ route('admin.accounts', ['tab' => 'users']) }}"
-           class="tab-btn {{ ($tab ?? 'all') == 'users' ? 'active' : '' }}">
+           class="tab-btn {{ ($tab ?? 'all') == 'buyers' ? 'active' : '' }}">
           User
           <span class="tab-badge">{{ $regularUsers->total() }}</span>
         </a>
