@@ -40,6 +40,7 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
     Route::get('/category/{slug}', [MarketplaceController::class, 'category'])->name('category');
 });
 
+Route::get('/', [MarketplaceController::class, 'home'])->name('home');
 Route::get('/products/type/{type}', [ProductController::class, 'byType'])->name('products.by-type');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/browse/search', [ProductController::class, 'search'])->name('products.search');
