@@ -1,35 +1,44 @@
 <?php
+
 namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Order;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
 class SellerProductController extends Controller {
+    
     public function dashboard() {
         $seller = Auth::user();
-        $sellerProducts = Product::where('seller_id', $seller->id)->with('statistics');
-        $stats = [
-            'total_products' => (clone $sellerProducts)->count(),
-            'total_sold'     => (clone $sellerProducts)->get()->sum('sold_count'),
-            'balance'        => $seller->balance,
-        ];
-        $recentSales = \App\Models\OrderItem::where('seller_id', $seller->id)
-            ->with(['order', 'product'])->latest()->take(5)->get();
-        return view('seller.dashboard', compact('stats', 'recentSales'));
+        
+        // Ambil data produk untuk dihitung di Blade
+        $products = Product::where('seller_id', $seller->id)->get();
+        
+        // Ambil data order terkait seller ini (via OrderItem)
+        $orders = OrderItem::where('seller_id', $seller->id)
+            ->with(['order', 'product'])
+            ->latest()
+            ->get();
+
+        return view('seller.dashboard', compact('seller', 'products', 'orders'));
     }
 
     public function index() {
         $products = Product::where('seller_id', Auth::id())
-            ->with(['category', 'statistics'])->latest()->paginate(15);
+            ->with(['category'])
+            ->latest()
+            ->paginate(15);
         return view('seller.products.index', compact('products'));
     }
 
     public function create() {
-        $categories = Category::active()->get();
+        $categories = Category::where('status', 'active')->get(); // Sesuaikan scope/kolom status kamu
         return view('seller.products.create', compact('categories'));
     }
 
@@ -50,6 +59,7 @@ class SellerProductController extends Controller {
 
         $validated['seller_id'] = Auth::id();
         $validated['slug'] = Str::slug($validated['name']) . '-' . Str::random(4);
+        $validated['status'] = 'published';
 
         Product::create($validated);
 
@@ -59,7 +69,7 @@ class SellerProductController extends Controller {
 
     public function edit(Product $produk) {
         abort_if($produk->seller_id !== Auth::id(), 403);
-        $categories = Category::active()->get();
+        $categories = Category::all();
         return view('seller.products.edit', compact('produk', 'categories'));
     }
 
@@ -78,6 +88,8 @@ class SellerProductController extends Controller {
         ]);
 
         if ($request->hasFile('image')) {
+            // Hapus foto lama jika ada
+            if ($produk->image) Storage::disk('public')->delete($produk->image);
             $validated['image'] = $request->file('image')->store('products', 'public');
         }
 
@@ -89,7 +101,8 @@ class SellerProductController extends Controller {
 
     public function destroy(Product $produk) {
         abort_if($produk->seller_id !== Auth::id(), 403);
+        // Mengubah status jadi archived (Soft Delete manual)
         $produk->update(['status' => 'archived']);
-        return back()->with('success', 'Produk diarsipkan.');
+        return back()->with('success', 'Produk berhasil diarsipkan.');
     }
 }
