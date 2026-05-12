@@ -95,6 +95,16 @@
                         @if (! $user->email_verified_at)
                             <form action="{{ route('verification.send') }}" method="POST" class="mt-6">
                                 @csrf
+                                <button type="submit" class="w-full rounded-2xl bg-slate-800 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700 transition">Kirim Ulang Email Verifikasi</button>
+                            </form>
+                        @endif
+                    </section>
+                    <section class="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+                        <h2 class="text-lg font-semibold text-white mb-4">Hapus Akun Permanen</h2>
+                        <p class="text-slate-400 mb-6">Agar akun bisa dihapus, sistem akan mengirimkan kode verifikasi ke email terdaftar terlebih dahulu.</p>
+                        <a href="{{ route('settings.account.delete') }}" class="inline-flex w-full items-center justify-center rounded-2xl bg-rose-600 px-5 py-3 text-sm font-semibold text-white hover:bg-rose-500 transition">Mulai Proses Hapus Akun</a>
+                    </section>
+                </div>
             @elseif ($selectedTab === 'password')
                 <h1 class="text-3xl font-bold text-white mb-8">Ubah Password</h1>
                 <div class="grid gap-6 lg:grid-cols-2">
@@ -130,16 +140,6 @@
 
                             <button type="submit" class="w-full rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition">Perbarui Password</button>
                         </form>
-                    </section>
-                </div>
-                                <button type="submit" class="w-full rounded-2xl bg-slate-800 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700 transition">Kirim Ulang Email Verifikasi</button>
-                            </form>
-                        @endif
-                    </section>
-                    <section class="rounded-3xl border border-slate-800 bg-slate-900 p-6">
-                        <h2 class="text-lg font-semibold text-white mb-4">Hapus Akun Permanen</h2>
-                        <p class="text-slate-400 mb-6">Agar akun bisa dihapus, sistem akan mengirimkan kode verifikasi ke email terdaftar terlebih dahulu.</p>
-                        <a href="{{ route('settings.account.delete') }}" class="inline-flex w-full items-center justify-center rounded-2xl bg-rose-600 px-5 py-3 text-sm font-semibold text-white hover:bg-rose-500 transition">Mulai Proses Hapus Akun</a>
                     </section>
                 </div>
             @else
