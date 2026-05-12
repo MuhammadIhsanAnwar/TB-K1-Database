@@ -78,12 +78,12 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('/wishlist/{product}', [WishlistController::class, 'remove'])->name('wishlist.remove');
 
     // Settings
-    Route::get('/settings', fn() => redirect()->route('settings.profile'))->name('settings.index');
+    Route::get('/settings', fn () => redirect()->route('settings.profile'))->name('settings.index');
     Route::get('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
     Route::get('/settings/account', [SettingsController::class, 'account'])->name('settings.account');
     Route::get('/settings/password', [SettingsController::class, 'password'])->name('settings.password');
     Route::get('/settings/seller', [SettingsController::class, 'seller'])->name('settings.seller');
-    Route::get('/settings/buyer', fn() => redirect()->route('settings.seller'))->name('settings.buyer');
+    Route::get('/settings/buyer', fn () => redirect()->route('settings.seller'))->name('settings.buyer');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/password/code', [SettingsController::class, 'sendPasswordChangeCode'])->name('settings.password.sendCode');
     Route::put('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password.update');
@@ -149,26 +149,36 @@ Route::middleware('auth')->group(function (): void {
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
 
-        // Kelola Akun (Satu rute untuk 3 Tab: Users, Sellers, Applications)
-        Route::get('/users', [AdminController::class, 'index'])->name('users.index');
+        // Kelola Akun (tabbed: users / sellers / applications)
+        Route::get('/accounts', [AdminController::class, 'accounts'])->name('accounts');
 
-        // Management Actions
+        // User status management (suspend/activate only)
         Route::put('/users/{user}/status', [AdminController::class, 'updateUserStatus'])->name('users.status');
         Route::delete('/users/{user}', [AdminController::class, 'destroyUser'])->name('users.destroy');
 
-        // Seller Workflow
+        // Seller application workflow
         Route::post('/users/{user}/approve-seller', [AdminController::class, 'approveSeller'])->name('users.approve-seller');
         Route::post('/users/{user}/reject-seller', [AdminController::class, 'rejectSeller'])->name('users.reject-seller');
 
-        // Banners, Notifications, Orders, Terminal tetap sama seperti sebelumnya...
+        // Legacy user list (kept for backward compatibility)
+        Route::get('/users', [AdminController::class, 'users'])->name('users.index');
+        Route::get('/users/{user}', [AdminController::class, 'showUser'])->name('users.show');
+
+        // Banners
         Route::get('/banners', [AdminController::class, 'banners'])->name('banners.index');
         Route::post('/banners', [AdminController::class, 'storeBanner'])->name('banners.store');
         Route::delete('/banners/{banner}', [AdminController::class, 'destroyBanner'])->name('banners.destroy');
+
+        // Notifications
         Route::get('/notifications', [AdminController::class, 'notifications'])->name('notifications.index');
         Route::post('/notifications', [AdminController::class, 'sendNotification'])->name('notifications.send');
+
+        // Orders
         Route::get('/orders', [AdminController::class, 'orders'])->name('orders.index');
         Route::get('/orders/{order:order_code}', [AdminController::class, 'showOrder'])->name('orders.show');
-        Route::get('/terminal', fn() => redirect()->route('artisan.terminal.index'))->name('terminal.index');
+
+        // Terminal
+        Route::get('/terminal', fn () => redirect()->route('artisan.terminal.index'))->name('terminal.index');
     });
 
     // ─── Checkout ─────────────────────────────────────────────────────────────
