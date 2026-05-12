@@ -866,19 +866,15 @@
   const rotY = currentX * 12;
   const rotX = -currentY * 8;
 
-  // container & border tetap diam
+  // semua container tetap diam
   robotScene.style.transform = 'none';
   robotWrapper.style.transform = 'none';
+  tiltLayer.style.transform = 'none';
 
   const robotOnly = document.getElementById('robot-only');
+  robotOnly.style.transform = 'none';
 
-robotOnly.style.transform =
-`
-perspective(1200px)
-rotateX(${rotX}deg)
-rotateY(${rotY}deg)
-`;
-  // hanya spline robot yang rotate
+  // hanya spline robot (kepala robot) yang bergerak mengikuti kursor
   splineEl.style.transform =
     `
     perspective(1200px)
