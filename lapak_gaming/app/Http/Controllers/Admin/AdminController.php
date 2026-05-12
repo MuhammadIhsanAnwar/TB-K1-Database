@@ -11,40 +11,35 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
 class AdminController extends Controller
 {
-    // ─────────────────────────────────────────────────────────────────────────
-    // 1. KELOLA AKUN (Unified Tabbed Page)
-    // ─────────────────────────────────────────────────────────────────────────
+    // ─── 1. KELOLA AKUN (Unified Tabbed Page) ────────────────────────────────
 
     public function index(Request $request): View
     {
         $tab = $request->query('tab', 'users');
 
-        // Tab Buyer
         $regularUsers = User::query()
             ->where('role', 'buyer')
             ->orderByDesc('created_at')
             ->paginate(15, ['*'], 'users_page')
             ->appends(['tab' => 'users']);
 
-        // Tab Seller
         $sellers = User::query()
             ->where('role', 'seller')
             ->orderByDesc('created_at')
             ->paginate(15, ['*'], 'sellers_page')
             ->appends(['tab' => 'sellers']);
 
-        // Tab Pengajuan
         $applications = User::query()
             ->where('seller_status', 'pending')
             ->orderByDesc('created_at')
             ->paginate(15, ['*'], 'apps_page')
             ->appends(['tab' => 'applications']);
 
-        // Statistik Badge (Real Count)
         $counts = [
             'users' => User::where('role', 'buyer')->count(),
             'sellers' => User::where('role', 'seller')->count(),
@@ -54,9 +49,7 @@ class AdminController extends Controller
         return view('admin.users.index', compact('tab', 'regularUsers', 'sellers', 'applications', 'counts'));
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // 2. USER ACTIONS (Status & Delete)
-    // ─────────────────────────────────────────────────────────────────────────
+    // ─── 2. USER ACTIONS ─────────────────────────────────────────────────────
 
     public function updateUserStatus(Request $request, User $user): RedirectResponse
     {
@@ -81,21 +74,8 @@ class AdminController extends Controller
             \DB::table('sessions')->where('user_id', $user->id)->delete();
         }
 
-        return back()->with('success', "Akun {$user->name} berhasil diperbarui.");
+        return back()->with('success', "Status akun {$user->name} berhasil diperbarui.");
     }
-
-    public function destroyUser(User $user): RedirectResponse
-    {
-        if ($user->role === 'admin') {
-            return back()->withErrors(['delete' => 'Tidak dapat menghapus akun admin.']);
-        }
-        $user->delete();
-        return back()->with('success', 'Pengguna telah dihapus.');
-    }
-
-    // ─────────────────────────────────────────────────────────────────────────
-    // 3. SELLER WORKFLOW (Approve / Reject)
-    // ─────────────────────────────────────────────────────────────────────────
 
     public function approveSeller(User $user): RedirectResponse
     {
@@ -144,39 +124,102 @@ class AdminController extends Controller
         return back()->with('success', "Pengajuan seller {$user->name} ditolak.");
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // 4. BANNERS, NOTIFICATIONS & ORDERS (Back to Life!)
-    // ─────────────────────────────────────────────────────────────────────────
+    public function destroyUser(User $user): RedirectResponse
+    {
+        if ($user->role === 'admin') return back()->withErrors(['delete' => 'Admin tidak bisa dihapus.']);
+        $user->delete();
+        return back()->with('success', 'User dihapus.');
+    }
+
+    // ─── 3. BANNERS (SUDAH DIPERBAIKI!) ──────────────────────────────────────
 
     public function banners(): View
     {
-        $banners = Banner::query()->latest()->get();
+        $banners = Schema::hasTable('banners') ? Banner::query()->latest()->get() : collect();
         return view('admin.banners.index', compact('banners'));
     }
 
     public function storeBanner(Request $request): RedirectResponse
     {
-        // ... (Gunakan logika storeBanner asli kamu di sini) ...
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'subtitle' => ['nullable', 'string', 'max:255'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],
+            'image_url' => ['nullable', 'url', 'max:2048'],
+            'link_url' => ['nullable', 'url', 'max:2048'],
+            'position' => ['required', 'in:hero,featured,sidebar'],
+            'is_active' => ['nullable', 'boolean'],
+        ]);
+
+        $imagePath = null;
+        $imageUrl = $data['image_url'] ?? null;
+
+        if ($request->hasFile('image')) {
+            $file = $request->file('image');
+            $filename = 'banner_' . time() . '.' . $file->getClientOriginalExtension();
+            // Pakai disk 'public_app_public' sesuai kodingan lama kamu
+            $imagePath = $file->storeAs('banners', $filename, 'public_app_public');
+            $imageUrl = null;
+        }
+
+        if (!$imagePath && !$imageUrl) {
+            return back()->withErrors(['image' => 'Unggah gambar atau sediakan URL gambar.']);
+        }
+
+        Banner::create([
+            'title' => $data['title'],
+            'subtitle' => $data['subtitle'] ?? null,
+            'image_url' => $imageUrl,
+            'image_path' => $imagePath,
+            'link_url' => $data['link_url'] ?? null,
+            'position' => $data['position'],
+            'is_active' => (bool) ($data['is_active'] ?? true),
+        ]);
+
         return back()->with('success', 'Banner berhasil disimpan.');
     }
 
     public function destroyBanner(Banner $banner): RedirectResponse
     {
+        if ($banner->image_path) {
+            Storage::disk('public_app_public')->delete($banner->image_path);
+        }
         $banner->delete();
         return back()->with('success', 'Banner berhasil dihapus.');
     }
 
+    // ─── 4. NOTIFICATIONS & ORDERS ───────────────────────────────────────────
+
     public function notifications(): View
     {
-        // PAKAI MODEL ASLI KAMU: MarketplaceNotification
         $notifications = MarketplaceNotification::query()->latest()->paginate(20);
         return view('admin.notifications.index', compact('notifications'));
     }
 
     public function sendNotification(Request $request): RedirectResponse
     {
-        // ... (Gunakan logika broadcast asli kamu di sini) ...
-        return back()->with('success', 'Notifikasi berhasil dikirim.');
+        $data = $request->validate([
+            'audience' => ['required', 'in:all,buyer,seller'],
+            'title' => ['required', 'string', 'max:255'],
+            'body' => ['required', 'string', 'max:2000'],
+            'link' => ['nullable', 'url', 'max:2048'],
+        ]);
+
+        $users = User::query()
+            ->when($data['audience'] !== 'all', fn($q) => $q->where('role', $data['audience']))
+            ->get();
+
+        foreach ($users as $user) {
+            MarketplaceNotification::create([
+                'user_id' => $user->id,
+                'title' => $data['title'],
+                'body' => $data['body'],
+                'link' => $data['link'] ?? null,
+                'type' => 'admin-broadcast',
+            ]);
+        }
+
+        return back()->with('success', 'Notifikasi berhasil dikirim ke ' . $users->count() . ' akun.');
     }
 
     public function orders(Request $request): View
