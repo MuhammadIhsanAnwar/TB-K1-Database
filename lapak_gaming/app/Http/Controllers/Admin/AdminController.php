@@ -11,10 +11,10 @@ class AdminController extends Controller
 {
     public function index(Request $request)
     {
-        $tab = $request->get('tab', 'users'); // Default ke tab user biasa
+        $tab = $request->get('tab', 'users');
 
-        // 1. Ambil Data berdasarkan Tab
-        $users = User::where('role', 'buyer')
+        // 1. Ambil Data (Pastikan namanya $regularUsers agar cocok dengan Blade)
+        $regularUsers = User::where('role', 'buyer')
             ->orderByDesc('created_at')
             ->paginate(15, ['*'], 'users_page')->appends(['tab' => 'users']);
 
@@ -26,14 +26,15 @@ class AdminController extends Controller
             ->orderByDesc('created_at')
             ->paginate(15, ['*'], 'apps_page')->appends(['tab' => 'applications']);
 
-        // 2. Hitung Statistik Real (Badge Angka)
+        // 2. Hitung Statistik
         $counts = [
             'users' => User::where('role', 'buyer')->count(),
             'sellers' => User::where('role', 'seller')->count(),
-            'apps' => User::where('seller_status', 'pending')->count(), // Ini akan jadi 0 jika tak ada pengajuan
+            'apps' => User::where('seller_status', 'pending')->count(),
         ];
 
-        return view('admin.users.index', compact('users', 'sellers', 'applications', 'counts', 'tab'));
+        // 3. Kirim variabel $regularUsers (BUKAN $users)
+        return view('admin.users.index', compact('regularUsers', 'sellers', 'applications', 'counts', 'tab'));
     }
 
     public function updateUserStatus(Request $request, User $user)
