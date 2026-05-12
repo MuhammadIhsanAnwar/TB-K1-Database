@@ -111,14 +111,13 @@ class AdminController extends Controller
 
     public function notifications()
     {
-        // Kita ambil data notifikasi dari database. 
-        // Kalau kamu pakai sistem notifikasi bawaan Laravel, biasanya tabelnya namanya 'notifications'.
-        // Kita pakai DB facade aja biar aman kalau kamu belum buat Model-nya.
-
+        // Kita tarik data dari tabel 'notifications'
+        // Kita pakai \DB supaya aman kalau kamu belum buat Model-nya
         $notifications = \Illuminate\Support\Facades\DB::table('notifications')
             ->latest()
-            ->paginate(10);
+            ->paginate(15);
 
+        // Pastikan variabel 'notifications' ini dikirim ke view
         return view('admin.notifications.index', compact('notifications'));
     }
 }
