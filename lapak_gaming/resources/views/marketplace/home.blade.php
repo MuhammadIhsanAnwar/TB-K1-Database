@@ -231,6 +231,18 @@
    pointer-events:none;
 }
 
+spline-viewer::part(watermark) {
+  display: none !important;
+}
+
+spline-viewer::part(badge) {
+  display: none !important;
+}
+
+spline-viewer iframe {
+  pointer-events: auto;
+}
+
 #robot-only{
    width:100%;
    height:100%;
