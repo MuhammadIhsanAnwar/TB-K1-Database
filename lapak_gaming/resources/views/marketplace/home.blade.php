@@ -861,28 +861,19 @@
   let pendingFrame = false;
 
   /* ── Apply Transform ────────────────── */
-   function applyRobotTransform() {
+   let splineApp = null;
+let robotHead = null;
 
-  const rotY = currentX * 12;
-  const rotX = -currentY * 8;
+splineEl.addEventListener('load', async (e) => {
 
-  // semua container tetap diam
-  robotScene.style.transform = 'none';
-  robotWrapper.style.transform = 'none';
-  tiltLayer.style.transform = 'none';
+  hideLoader();
 
-  const robotOnly = document.getElementById('robot-only');
-  robotOnly.style.transform = 'none';
+  splineApp = e.target.application;
 
-  // hanya spline robot (kepala robot) yang bergerak mengikuti kursor
-  splineEl.style.transform =
-    `
-    perspective(1200px)
-    rotateX(${rotX}deg)
-    rotateY(${rotY}deg)
-    `;
+  // GANTI "Head" dengan nama object kepala di spline kamu
+  robotHead = splineApp.findObjectByName('Head');
 
-}
+});
   /* ── Animation Step ─────────────────── */
   function updateRobot() {
     pendingFrame = false;
@@ -973,7 +964,17 @@
 
   });
 
- 
+ function applyRobotTransform() {
+
+  if (!robotHead) return;
+
+  const rotY = currentX * 0.35;
+  const rotX = -currentY * 0.20;
+
+  robotHead.rotation.y = rotY;
+  robotHead.rotation.x = rotX;
+
+}
 
   /* ── Start Idle Transform ───────────── */
   applyRobotTransform();
