@@ -106,20 +106,25 @@
     transform-style: preserve-3d;
   }
 
+  #robot-scene-container {
+    width: 100%;
+  height: 540px;
+  min-height: 540px;
+  position: relative;
+  z-index: 20;
+    
+  }
+
   #robot-tilt-layer{
    width:100%;
    height:100%;
+   position: absolute;
+   top: 0;
+   left: 0;
+   z-index: 21;
    transform-style: preserve-3d;
    will-change: transform;
 }
-
-  #robot-scene-container {
-    width: 100%;
-    height: 540px;
-    min-height: 540px;
-    position: relative;
-    z-index: 20;
-  }
 
   spline-viewer {
     width: 100%;
@@ -360,16 +365,17 @@
         </div>
 
         {{-- ★ Spline 3D Robot ★ --}}
+        <div id="robot-scene-container">
+        </div>
+
         <div id="robot-tilt-layer">
-          <div id="robot-scene-container">
-            <spline-viewer
-              id="spline-robot"
-              loading="eager"
-              events-target="global"
-              loading-anim-type="spinner-big-dark"
-              url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode">
-            </spline-viewer>
-          </div>
+          <spline-viewer
+            id="spline-robot"
+            loading="eager"
+            events-target="global"
+            loading-anim-type="spinner-big-dark"
+            url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode">
+          </spline-viewer>
         </div>
 
         {{-- Spline branding cover --}}
@@ -842,10 +848,11 @@
   const rotY = currentX * 12;
   const rotX = -currentY * 8;
 
-  // container tetap diam
+  // container & border tetap diam
+  robotScene.style.transform = 'none';
   robotWrapper.style.transform = 'none';
 
-  // hanya tilt layer (robot + scene) yang rotate
+  // hanya robot yang rotate
   tiltLayer.style.transform =
     `
     perspective(1200px)
