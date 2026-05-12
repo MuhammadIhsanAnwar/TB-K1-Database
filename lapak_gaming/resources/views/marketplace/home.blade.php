@@ -758,14 +758,21 @@
   let pendingFrame = false;
 
   /* ── Apply Transform ────────────────── */
- function applyRobotTransform() {
-  const rotY = currentX * 18;
-  const rotX = -currentY * 11;
+function applyRobotTransform() {
 
-  robotScene.style.transform =
-    `perspective(1200px) rotateX(${rotX}deg) rotateY(${rotY}deg)`;
+  const rotY = currentX * 12;
+  const rotX = -currentY * 8;
 
-  splineEl.style.transform = 'scale(1)';
+  // container tetap diam
+  robotScene.style.transform = 'none';
+
+  // hanya robot spline yang bergerak
+  splineEl.style.transform =
+    `perspective(1200px)
+     rotateX(${rotX}deg)
+     rotateY(${rotY}deg)
+     scale(1)`;
+
 }
   /* ── Animation Step ─────────────────── */
   function updateRobot() {
