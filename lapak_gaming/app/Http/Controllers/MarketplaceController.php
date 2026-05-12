@@ -39,16 +39,28 @@ class MarketplaceController extends Controller
             : collect();
 
         $activeUsers = Schema::hasTable('users')
-            ? User::whereNotNull('email_verified_at')->where('status', 'active')->count()
+            ? User::query()
+                ->where('status', 'active')
+                ->whereNull('deactivated_at')
+                ->count()
             : 0;
 
         $availableProducts = Schema::hasTable('products')
             ? Product::query()->active()->inStock()->count()
             : 0;
 
-        $verifiedSellers = Schema::hasTable('sellers')
-            ? Seller::query()->verified()->count()
-            : 0;
+        $verifiedSellers = 0;
+
+        if (Schema::hasTable('sellers')) {
+            $verifiedSellers = Seller::query()->active()->verified()->count();
+        }
+
+        if ($verifiedSellers === 0 && Schema::hasTable('users')) {
+            $verifiedSellers = User::query()
+                ->where('role', 'seller')
+                ->where('status', 'active')
+                ->count();
+        }
 
         $averageRating = Schema::hasTable('reviews')
             ? (float) Review::query()->where('is_public', true)->avg('rating')
@@ -58,7 +70,7 @@ class MarketplaceController extends Controller
             ? Order::query()->completed()->count()
             : 0;
         $banners = Schema::hasTable('banners')
-            ? Banner::query()->active()->where('position', 'hero')->latest()->take(3)->get()
+            ? Banner::query()->active()->where('position', 'hero')->latest()->take(6)->get()
             : collect();
 
         return view('marketplace.home', [

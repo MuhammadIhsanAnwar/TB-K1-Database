@@ -20,12 +20,26 @@
                             <p class="text-gray-400 text-sm">{{ $notification->body }}</p>
                             <p class="text-gray-500 text-xs mt-2">{{ $notification->created_at->diffForHumans() }}</p>
                         </div>
-                        @if(!$notification->is_read)
-                        <button class="ml-4 text-gray-400 hover:text-gray-300 transition-colors">
-                            <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-                        </button>
-                        @endif
+                        <div class="ml-4 flex flex-col gap-2">
+                            @if($notification->link)
+                                <a href="{{ $notification->link }}" class="text-sm font-semibold text-brand-300 hover:text-brand-200">Buka</a>
+                            @endif
+                            @if(!$notification->is_read)
+                                <form action="{{ route('notifications.read', $notification) }}" method="POST">
+                                    @csrf
+                                    <button class="text-gray-400 hover:text-gray-300 transition-colors text-sm font-semibold">
+                                        Tandai dibaca
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
                     </div>
+                    @if($notification->link)
+                        <a href="{{ $notification->link }}" class="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-brand-300 hover:text-brand-200">
+                            Buka notifikasi
+                            <span aria-hidden="true">→</span>
+                        </a>
+                    @endif
                 </div>
                 @endforeach
             </div>

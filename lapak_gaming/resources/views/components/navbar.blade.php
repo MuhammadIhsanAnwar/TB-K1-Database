@@ -123,6 +123,50 @@
     <div>
       <p class="text-[10px] font-display font-semibold text-slate-600 uppercase tracking-widest mb-2 px-1">Akun</p>
       <ul class="space-y-0.5">
+        @if($authUser?->isAdmin())
+          <li>
+            <a href="{{ route('admin.dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-2a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/></svg>
+              Panel Admin
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('admin.users.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a4 4 0 00-5-3.874M9 20H4v-2a4 4 0 015-3.874m7-4.126a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+              Kelola Akun
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('admin.orders.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"/></svg>
+              Transaksi
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('admin.banners.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h10"/></svg>
+              Banner
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('admin.notifications.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+              Notifikasi
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('profile.show') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
+              Profil Saya
+            </a>
+          </li>
+          <li>
+            <a href="{{ route('settings.index') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+              Pengaturan
+            </a>
+          </li>
+        @else
         <li>
           <a href="{{ route('dashboard') }}" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
             <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-2a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z"/></svg>
@@ -164,6 +208,7 @@
             </button>
           </form>
         </li>
+        @endif
         @endif
         <li>
           <form method="POST" action="{{ route('logout') }}">
@@ -222,46 +267,54 @@
 
     {{-- Desktop nav links --}}
     <nav class="hidden lg:flex items-center gap-1 ml-2">
-        <a href="{{ route('marketplace.home') }}"
-            class="nav-link px-3 py-1.5 rounded-lg text-sm font-medium
-            {{ request()->routeIs('marketplace.home') ? 'active' : '' }}">
-            Beranda
+        @if($authUser?->isAdmin())
+          <a href="{{ route('admin.dashboard') }}" class="nav-link px-3 py-1.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.dashboard') ? 'active' : '' }}">Panel Admin</a>
+          <a href="{{ route('admin.users.index') }}" class="nav-link px-3 py-1.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.users.*') ? 'active' : '' }}">Kelola Akun</a>
+          <a href="{{ route('admin.orders.index') }}" class="nav-link px-3 py-1.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.orders.*') ? 'active' : '' }}">Transaksi</a>
+          <a href="{{ route('admin.banners.index') }}" class="nav-link px-3 py-1.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.banners.*') ? 'active' : '' }}">Banner</a>
+          <a href="{{ route('admin.notifications.index') }}" class="nav-link px-3 py-1.5 rounded-lg text-sm font-medium {{ request()->routeIs('admin.notifications.*') ? 'active' : '' }}">Notifikasi</a>
+        @else
+          <a href="{{ route('marketplace.home') }}"
+              class="nav-link px-3 py-1.5 rounded-lg text-sm font-medium
+              {{ request()->routeIs('marketplace.home') ? 'active' : '' }}">
+              Beranda
+            </a>
+
+          {{-- Categories Dropdown --}}
+          <div class="relative">
+            <button onclick="toggleDropdown('cat-dropdown')" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white transition-colors">
+              Kategori
+              <svg id="cat-dropdown-arrow" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <div id="cat-dropdown" class="dropdown-panel absolute top-full left-0 mt-2 w-64 rounded-xl shadow-card-hover overflow-hidden"
+                 style="background:#0D1421;border:1px solid #1E2D45;">
+              @isset($categories)
+              <div class="p-2 grid grid-cols-2 gap-1">
+                @foreach($categories as $cat)
+                <a href="{{ route('categories.show', $cat->slug) }}"
+                   class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-colors"
+                  >
+                  <span class="text-base">{{ $cat->icon ?? '🎮' }}</span>
+                  <span class="truncate">{{ $cat->name }}</span>
+                </a>
+                @endforeach
+              </div>
+              @endisset
+              <div class="p-2 pt-0" style="border-top:1px solid #1E2D45;">
+                <a href="{{ route('products.search') }}" class="flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm text-brand-400 hover:text-brand-300 font-medium transition-colors">
+                  Lihat Semua Kategori →
+                </a>
+              </div>
+            </div>
+          </div>
+
+          <a href="{{ route('marketplace.trending') }}"
+            class="nav-link flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium
+            {{ request()->routeIs('marketplace.trending') ? 'active' : '' }}">
+            Trending
+            <span class="badge badge-orange">HOT</span>
           </a>
-
-      {{-- Categories Dropdown --}}
-      <div class="relative">
-        <button onclick="toggleDropdown('cat-dropdown')" class="flex items-center gap-1 px-3 py-1.5 rounded-lg text-sm font-medium text-slate-400 hover:text-white transition-colors">
-          Kategori
-          <svg id="cat-dropdown-arrow" class="w-3.5 h-3.5 transition-transform duration-200" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
-        </button>
-        <div id="cat-dropdown" class="dropdown-panel absolute top-full left-0 mt-2 w-64 rounded-xl shadow-card-hover overflow-hidden"
-             style="background:#0D1421;border:1px solid #1E2D45;">
-          @isset($categories)
-          <div class="p-2 grid grid-cols-2 gap-1">
-            @foreach($categories as $cat)
-            <a href="{{ route('categories.show', $cat->slug) }}"
-               class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-colors"
-              >
-              <span class="text-base">{{ $cat->icon ?? '🎮' }}</span>
-              <span class="truncate">{{ $cat->name }}</span>
-            </a>
-            @endforeach
-          </div>
-          @endisset
-          <div class="p-2 pt-0" style="border-top:1px solid #1E2D45;">
-            <a href="{{ route('products.search') }}" class="flex items-center justify-center gap-1 px-3 py-2 rounded-lg text-sm text-brand-400 hover:text-brand-300 font-medium transition-colors">
-              Lihat Semua Kategori →
-            </a>
-          </div>
-        </div>
-      </div>
-
-      <a href="{{ route('marketplace.trending') }}"
-        class="nav-link flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium
-        {{ request()->routeIs('marketplace.trending') ? 'active' : '' }}">
-        Trending
-        <span class="badge badge-orange">HOT</span>
-      </a>
+        @endif
   </nav>
 
     {{-- Search Bar (center, desktop) --}}
@@ -286,18 +339,18 @@
       @auth
       {{-- Notifications --}}
       <div class="relative">
-        <button onclick="toggleDropdown('notif-dropdown')" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors" style="background:#162032;border:1px solid #1E2D45;" aria-label="Notifications">
+        <button onclick="toggleDropdown('notif-dropdown'); loadNotificationPreview();" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors" style="background:#162032;border:1px solid #1E2D45;" aria-label="Notifications">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
-          <span class="notif-dot"></span>
+          <span id="notif-badge" class="notif-dot hidden"></span>
         </button>
-        <div id="notif-dropdown" class="dropdown-panel absolute right-0 top-full mt-2 w-80 rounded-xl shadow-card-hover"
+        <div id="notif-dropdown" data-notifications-url="{{ route('notifications.poll') }}" class="dropdown-panel absolute right-0 top-full mt-2 w-80 rounded-xl shadow-card-hover"
              style="background:#0D1421;border:1px solid #1E2D45;">
           <div class="flex items-center justify-between px-4 py-3" style="border-bottom:1px solid #1E2D45;">
             <span class="font-display font-semibold text-sm text-white">Notifikasi</span>
             <a href="{{ route('notifications.index') }}" class="text-xs text-brand-400 hover:text-brand-300">Lihat semua</a>
           </div>
-          <div class="py-2 max-h-72 overflow-y-auto">
-            <div class="px-4 py-3 text-sm text-slate-400 text-center">Tidak ada notifikasi baru.</div>
+          <div id="notif-dropdown-body" class="py-2 max-h-72 overflow-y-auto">
+            <div class="px-4 py-3 text-sm text-slate-400 text-center">Klik ikon notifikasi untuk memuat pesan terbaru.</div>
           </div>
         </div>
       </div>
@@ -340,35 +393,48 @@
             <div class="text-xs text-slate-400 truncate mt-0.5">{{ Auth::user()->email }}</div>
           </div>
           <div class="p-1.5">
-            @foreach([
-              ['route'=>'dashboard',    'icon'=>'M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-2a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z', 'label'=>'Dashboard'],
-              ['route'=>'profile.show', 'icon'=>'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'label'=>'Profil Saya'],
-              ['route'=>'wallet.index', 'icon'=>'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z', 'label'=>'Wallet'],
-              ['route'=>'orders.index', 'icon'=>'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', 'label'=>'Pesanan Saya'],
-              ['route'=>'settings.index','icon'=>'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z', 'label'=>'Pengaturan'],
-            ] as $link)
-            <a href="{{ route($link['route']) }}"
-               class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-all"
-              >
-              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $link['icon'] }}"/></svg>
-              {{ $link['label'] }}
-            </a>
-            @endforeach
-
-            @if($authUser?->isSellerAccount())
-            <a href="{{ route('seller.dashboard') }}"
-               class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-all">
-              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h18M5 7l1 12h12l1-12M10 11v4M14 11v4M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
-              Dashboard Seller
-            </a>
+            @if($authUser?->isAdmin())
+              @foreach([
+                ['route'=>'admin.dashboard', 'icon'=>'M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-2a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z', 'label'=>'Panel Admin'],
+                ['route'=>'admin.users.index', 'icon'=>'M17 20h5v-2a4 4 0 00-5-3.874M9 20H4v-2a4 4 0 015-3.874m7-4.126a4 4 0 11-8 0 4 4 0 018 0z', 'label'=>'Kelola Akun'],
+                ['route'=>'admin.orders.index', 'icon'=>'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', 'label'=>'Transaksi'],
+                ['route'=>'admin.banners.index', 'icon'=>'M4 6h16M4 12h16M4 18h10', 'label'=>'Banner'],
+                ['route'=>'admin.notifications.index', 'icon'=>'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9', 'label'=>'Notifikasi'],
+                ['route'=>'profile.show', 'icon'=>'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'label'=>'Profil Saya'],
+                ['route'=>'settings.index','icon'=>'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z', 'label'=>'Pengaturan'],
+              ] as $link)
+              <a href="{{ route($link['route']) }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-all">
+                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $link['icon'] }}"/></svg>
+                {{ $link['label'] }}
+              </a>
+              @endforeach
             @else
-            <form method="POST" action="{{ route('seller.register') }}">
-              @csrf
-              <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-amber-300 hover:text-amber-200 hover:bg-amber-900/20 transition-all">
-                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 1.343-3 3v1H8a2 2 0 00-2 2v4h12v-4a2 2 0 00-2-2h-1v-1c0-1.657-1.343-3-3-3zm0 0V6m0 0l-2 2m2-2l2 2"/></svg>
-                Daftar Jadi Seller
-              </button>
-            </form>
+              @foreach([
+                ['route'=>'dashboard',    'icon'=>'M4 5a1 1 0 011-1h4a1 1 0 011 1v5a1 1 0 01-1 1H5a1 1 0 01-1-1V5zm10 0a1 1 0 011-1h4a1 1 0 011 1v2a1 1 0 01-1 1h-4a1 1 0 01-1-1V5zM4 15a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H5a1 1 0 01-1-1v-4zm10-2a1 1 0 011-1h4a1 1 0 011 1v6a1 1 0 01-1 1h-4a1 1 0 01-1-1v-6z', 'label'=>'Dashboard'],
+                ['route'=>'profile.show', 'icon'=>'M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z', 'label'=>'Profil Saya'],
+                ['route'=>'wallet.index', 'icon'=>'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z', 'label'=>'Wallet'],
+                ['route'=>'orders.index', 'icon'=>'M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2', 'label'=>'Pesanan Saya'],
+                ['route'=>'settings.index','icon'=>'M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z M15 12a3 3 0 11-6 0 3 3 0 016 0z', 'label'=>'Pengaturan'],
+              ] as $link)
+              <a href="{{ route($link['route']) }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-all">
+                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $link['icon'] }}"/></svg>
+                {{ $link['label'] }}
+              </a>
+              @endforeach
+              @if($authUser?->isSellerAccount())
+              <a href="{{ route('seller.dashboard') }}" class="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-all">
+                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 7h18M5 7l1 12h12l1-12M10 11v4M14 11v4M9 7V5a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+                Dashboard Seller
+              </a>
+              @else
+              <form method="POST" action="{{ route('seller.register') }}">
+                @csrf
+                <button type="submit" class="w-full flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm text-amber-300 hover:text-amber-200 hover:bg-amber-900/20 transition-all">
+                  <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 8c-1.657 0-3 1.343-3 3v1H8a2 2 0 00-2 2v4h12v-4a2 2 0 00-2-2h-1v-1c0-1.657-1.343-3-3-3zm0 0V6m0 0l-2 2m2-2l2 2"/></svg>
+                  Daftar Jadi Seller
+                </button>
+              </form>
+              @endif
             @endif
           </div>
           <div class="p-1.5" style="border-top:1px solid #1E2D45;">

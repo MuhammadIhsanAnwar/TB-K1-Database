@@ -95,6 +95,8 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
 
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
 
     Route::get('/seller/register', [SellerRegistrationController::class, 'create'])->name('seller.register.form');
     Route::post('/seller/register', [SellerRegistrationController::class, 'store'])->name('seller.register');

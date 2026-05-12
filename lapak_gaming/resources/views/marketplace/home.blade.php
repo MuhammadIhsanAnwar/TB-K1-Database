@@ -35,6 +35,19 @@
     box-shadow: 0 12px 32px rgba(0,0,0,0.5);
   }
 
+  .banner-track {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .banner-track::-webkit-scrollbar {
+    display: none;
+  }
+
+  .banner-slide {
+    scroll-snap-align: start;
+  }
+
   /* ══════════════════════════════════════════════════════════
      3D ROBOT — animations & layout
   ══════════════════════════════════════════════════════════ */
@@ -169,6 +182,46 @@
 @endpush
 
 @section('content')
+
+{{-- ═══════════════════════════════════════════════════════════ --}}
+{{-- HERO BANNERS                                               --}}
+{{-- ═══════════════════════════════════════════════════════════ --}}
+@if(isset($banners) && $banners->count())
+<section class="relative py-5 sm:py-7">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="mb-4 flex items-end justify-between gap-4">
+      <div>
+        <p class="text-[10px] font-display font-semibold uppercase tracking-[0.28em] text-amber-300">Promo Terbaru</p>
+        <h2 class="mt-1 text-lg sm:text-xl font-bold text-white">Banner Iklan</h2>
+      </div>
+      <div class="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+        <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
+        Auto scroll aktif
+      </div>
+    </div>
+
+    <div class="overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/40 shadow-card-hover">
+      <div id="banner-track" class="banner-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory p-3 sm:p-4">
+        @foreach($banners as $banner)
+          <a href="{{ $banner->link_url ?: '#' }}" class="banner-slide group relative flex-none w-[88%] sm:w-[74%] md:w-[48%] xl:w-[32%] overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900">
+            <div class="relative aspect-[16/8] sm:aspect-[16/6] overflow-hidden">
+              <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/35 to-transparent"></div>
+              <div class="absolute inset-0 flex items-end p-5 sm:p-6">
+                <div class="max-w-md">
+                  <span class="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200">Iklan Beranda</span>
+                  <h3 class="mt-3 text-xl sm:text-2xl font-bold text-white">{{ $banner->title }}</h3>
+                  <p class="mt-1 text-sm text-slate-300">{{ $banner->subtitle }}</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        @endforeach
+      </div>
+    </div>
+  </div>
+</section>
+@endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- HERO SECTION                                               --}}
@@ -450,27 +503,6 @@
 </div>
       @endforeach
     </div>
-  </div>
-</section>
-@endif
-
-{{-- ═══════════════════════════════════════════════════════════ --}}
-@if(isset($banners) && $banners->count())
-<section class="relative py-8">
-  <div class="max-w-7xl mx-auto px-4 grid gap-4 md:grid-cols-3">
-    @foreach($banners as $banner)
-      <a href="{{ $banner->link_url ?: '#' }}" class="group overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 shadow-card transition hover:-translate-y-1 hover:border-amber-500/40">
-        <div class="relative h-44 overflow-hidden">
-          <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
-          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"></div>
-        </div>
-        <div class="space-y-2 p-5">
-          <p class="text-xs uppercase tracking-[0.24em] text-amber-300">Iklan Beranda</p>
-          <h3 class="text-xl font-bold text-white">{{ $banner->title }}</h3>
-          <p class="text-sm text-slate-400">{{ $banner->subtitle }}</p>
-        </div>
-      </a>
-    @endforeach
   </div>
 </section>
 @endif
@@ -828,6 +860,46 @@
     });
 
     statCounters.forEach((counter) => statObserver.observe(counter));
+  }
+
+  const bannerTrack = document.getElementById('banner-track');
+
+  if (bannerTrack && bannerTrack.children.length > 1) {
+    const slides = Array.from(bannerTrack.children);
+    let currentIndex = 0;
+    let autoplayTimer = null;
+
+    const scrollToSlide = (index) => {
+      const slide = slides[index];
+      if (!slide) return;
+
+      bannerTrack.scrollTo({
+        left: slide.offsetLeft - bannerTrack.offsetLeft,
+        behavior: 'smooth',
+      });
+    };
+
+    const startAutoplay = () => {
+      if (autoplayTimer) return;
+
+      autoplayTimer = window.setInterval(() => {
+        currentIndex = (currentIndex + 1) % slides.length;
+        scrollToSlide(currentIndex);
+      }, 4200);
+    };
+
+    const stopAutoplay = () => {
+      if (autoplayTimer) {
+        window.clearInterval(autoplayTimer);
+        autoplayTimer = null;
+      }
+    };
+
+    bannerTrack.addEventListener('mouseenter', stopAutoplay);
+    bannerTrack.addEventListener('mouseleave', startAutoplay);
+    bannerTrack.addEventListener('touchstart', stopAutoplay, { passive: true });
+
+    startAutoplay();
   }
 
 });

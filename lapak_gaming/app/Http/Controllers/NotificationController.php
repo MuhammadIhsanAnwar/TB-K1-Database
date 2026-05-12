@@ -34,4 +34,31 @@ class NotificationController extends Controller
             'items' => $notifications,
         ]);
     }
+
+    public function markRead(Request $request, MarketplaceNotification $notification): JsonResponse
+    {
+        if ($notification->user_id !== $request->user()->id) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+
+        $notification->forceFill([
+            'is_read' => true,
+            'read_at' => now(),
+        ])->save();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function markAllRead(Request $request): JsonResponse
+    {
+        MarketplaceNotification::query()
+            ->where('user_id', $request->user()->id)
+            ->where('is_read', false)
+            ->update([
+                'is_read' => true,
+                'read_at' => now(),
+            ]);
+
+        return response()->json(['success' => true]);
+    }
 }

@@ -820,6 +820,112 @@
       }
     }
 
+    function escapeHtml(value) {
+      return String(value ?? '')
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    async function loadNotificationPreview() {
+      const panel = document.getElementById('notif-dropdown');
+      const body = document.getElementById('notif-dropdown-body');
+      const badge = document.getElementById('notif-badge');
+
+      if (!panel || !body) return;
+
+      const url = panel.dataset.notificationsUrl;
+      if (!url) return;
+
+      body.innerHTML = '<div class="px-4 py-3 text-sm text-slate-400 text-center">Memuat notifikasi...</div>';
+
+      try {
+        const response = await fetch(url, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+          },
+        });
+
+        if (!response.ok) throw new Error('Failed to load notifications');
+
+        const data = await response.json();
+        const items = Array.isArray(data.items) ? data.items : [];
+
+        if (badge) {
+          badge.classList.toggle('hidden', !(Number(data.unread_count) > 0));
+        }
+
+        if (!items.length) {
+          body.innerHTML = '<div class="px-4 py-3 text-sm text-slate-400 text-center">Tidak ada notifikasi baru.</div>';
+          return;
+        }
+
+        body.innerHTML = items.map((item) => {
+          const unread = !item.is_read;
+          const title = escapeHtml(item.title || 'Notifikasi');
+          const bodyText = escapeHtml(item.body || '');
+          const link = escapeHtml(item.link || '');
+          const createdAt = item.created_at ? new Date(item.created_at).toLocaleString('id-ID', {
+            dateStyle: 'medium',
+            timeStyle: 'short',
+          }) : '';
+
+          return `
+            <div class="px-4 py-3 border-b border-slate-800 last:border-b-0 ${unread ? 'bg-slate-900/60' : ''}">
+              <div class="flex items-start gap-3">
+                <span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${unread ? 'bg-rose-400' : 'bg-slate-700'}"></span>
+                <div class="min-w-0 flex-1">
+                  <div class="text-sm font-semibold text-white">${title}</div>
+                  <div class="mt-1 text-sm text-slate-400">${bodyText}</div>
+                  <div class="mt-2 text-[11px] uppercase tracking-[0.18em] text-slate-500">${createdAt}</div>
+                </div>
+                <div class="ml-2 flex shrink-0 flex-col items-end gap-2">
+                  ${link ? `<button type="button" data-notification-id="${item.id}" data-notification-link="${link}" class="text-xs font-semibold text-brand-300 hover:text-brand-200">Buka</button>` : ''}
+                  ${unread ? `<button type="button" data-notification-id="${item.id}" class="text-xs font-semibold text-slate-300 hover:text-white">Tandai</button>` : ''}
+                </div>
+              </div>
+            </div>
+          `;
+        }).join('');
+
+        body.querySelectorAll('[data-notification-id]').forEach((button) => {
+          button.addEventListener('click', async () => {
+            const notificationId = button.getAttribute('data-notification-id');
+            const notificationLink = button.getAttribute('data-notification-link');
+            if (!notificationId) return;
+
+            const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+            const readUrl = `${window.location.origin}/notifications/${notificationId}/read`;
+
+            try {
+              await fetch(readUrl, {
+                method: 'POST',
+                headers: {
+                  'X-CSRF-TOKEN': csrf || '',
+                  'X-Requested-With': 'XMLHttpRequest',
+                  'Accept': 'application/json',
+                },
+              });
+
+              if (notificationLink) {
+                window.location.href = notificationLink;
+                return;
+              }
+
+              await loadNotificationPreview();
+            } catch (error) {
+              // no-op: preview stays visible
+            }
+          });
+        });
+      } catch (error) {
+        body.innerHTML = '<div class="px-4 py-3 text-sm text-red-300 text-center">Gagal memuat notifikasi.</div>';
+      }
+    }
+
     document.addEventListener('click', (e) => {
       if (!e.target.closest('[onclick^="toggleDropdown"]')) {
         dropdowns.forEach(ddId => {
@@ -882,6 +988,8 @@
     });
 
     reveals.forEach((el) => observer.observe(el));
+
+  loadNotificationPreview();
 });
 
 document.addEventListener('DOMContentLoaded', () => {
