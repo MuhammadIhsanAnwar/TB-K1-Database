@@ -47,10 +47,6 @@
                 <div class="text-sm text-slate-400">Transaksi</div>
                 <div class="mt-2 text-3xl font-black text-white">{{ $orders }}</div>
             </div>
-            <div class="rounded-3xl border border-slate-800 bg-slate-900 p-6">
-                <div class="text-sm text-slate-400">Pending</div>
-                <div class="mt-2 text-3xl font-black text-white">{{ $pendingOrders }}</div>
-            </div>
         </div>
 
         <section class="grid gap-4 lg:grid-cols-3">
