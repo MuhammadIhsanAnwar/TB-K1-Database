@@ -195,6 +195,12 @@
   pointer-events: none;
 }
 
+#robot-tilt-layer{
+   width:100%;
+   height:100%;
+   transform-style: preserve-3d;
+   will-change: transform;
+}
 
 
   #spline-logo-cover {
@@ -351,15 +357,19 @@
         </div>
 
         {{-- ★ Spline 3D Robot ★ --}}
-        <div id="robot-scene-container" style="z-index:20;">
-          <spline-viewer
-  id="spline-robot"
-  loading="eager"
-  events-target="global"
-  loading-anim-type="spinner-big-dark"
-  url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode"
-></spline-viewer>
-        </div>
+        <div id="robot-scene-container">
+
+  <div id="robot-tilt-layer">
+      <spline-viewer
+        id="spline-robot"
+        loading="eager"
+        events-target="global"
+        loading-anim-type="spinner-big-dark"
+        url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode">
+      </spline-viewer>
+  </div>
+
+</div>
 
         {{-- Spline branding cover --}}
         <div id="spline-logo-cover"></div>
@@ -766,6 +776,7 @@
   const robotWrapper   = document.getElementById('hero-robot-wrapper');
   const robotScene     = document.getElementById('robot-scene-container');
   const splineEl       = document.getElementById('spline-robot');
+  const tiltLayer = document.getElementById('robot-tilt-layer');
   const loader         = document.getElementById('robot-loader');
   
 
