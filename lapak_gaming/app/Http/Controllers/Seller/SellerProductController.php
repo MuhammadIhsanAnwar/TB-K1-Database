@@ -26,7 +26,7 @@ class SellerProductController extends Controller {
             ->latest()
             ->get();
 
-        return view('seller.dashboard', compact('seller', 'products', 'orders'));
+        return view('dashboard.seller', compact('seller', 'products', 'orders'));
     }
 
     public function index() {
