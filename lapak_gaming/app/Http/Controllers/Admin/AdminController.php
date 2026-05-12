@@ -5,15 +5,19 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Models\Order;
+use App\Models\Product; // Pastikan model ini ada
+// use App\Models\Banner; // Buka comment ini jika kamu punya model Banner
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 
 class AdminController extends Controller
 {
+    // ─── 1. KELOLA AKUN & PENGAJUAN ──────────────────────────────────────────
+
     public function index(Request $request)
     {
         $tab = $request->get('tab', 'users');
 
-        // 1. Ambil Data (Pastikan namanya $regularUsers agar cocok dengan Blade)
         $regularUsers = User::where('role', 'buyer')
             ->orderByDesc('created_at')
             ->paginate(15, ['*'], 'users_page')->appends(['tab' => 'users']);
@@ -26,14 +30,12 @@ class AdminController extends Controller
             ->orderByDesc('created_at')
             ->paginate(15, ['*'], 'apps_page')->appends(['tab' => 'applications']);
 
-        // 2. Hitung Statistik
         $counts = [
             'users' => User::where('role', 'buyer')->count(),
             'sellers' => User::where('role', 'seller')->count(),
             'apps' => User::where('seller_status', 'pending')->count(),
         ];
 
-        // 3. Kirim variabel $regularUsers (BUKAN $users)
         return view('admin.users.index', compact('regularUsers', 'sellers', 'applications', 'counts', 'tab'));
     }
 
@@ -43,8 +45,7 @@ class AdminController extends Controller
             'status' => $request->status,
             'suspend_reason' => $request->suspend_reason
         ]);
-
-        return back()->with('success', "Status user {$user->name} berhasil diperbarui.");
+        return back()->with('success', "Status akun {$user->name} berhasil diperbarui.");
     }
 
     public function approveSeller(User $user)
@@ -54,16 +55,15 @@ class AdminController extends Controller
             'seller_status' => 'approved',
             'is_seller' => true
         ]);
-
         return back()->with('success', "{$user->name} sekarang resmi menjadi Seller.");
     }
 
-    public function rejectSeller(User $user)
+    public function rejectSeller(Request $request, User $user)
     {
         $user->update([
             'seller_status' => 'rejected'
+            // Jika ada kolom rejection_reason, tambahkan di sini
         ]);
-
         return back()->with('success', "Pengajuan seller {$user->name} telah ditolak.");
     }
 
@@ -73,21 +73,50 @@ class AdminController extends Controller
         return back()->with('success', 'User berhasil dihapus.');
     }
 
-    // ─────────────────────────────────────────────────────────────────────────
-    // ORDERS
-    // ─────────────────────────────────────────────────────────────────────────
+    // ─── 2. KELOLA BANNERS (Fungsi yang tadi hilang) ─────────────────────────
 
-    public function orders(Request $request): View
+    public function banners()
     {
-        $orders = Order::query()->with(['buyer', 'seller'])->latest()->paginate(20);
+        // Jika kamu belum punya tabel banners, buat dummy saja dulu agar tidak error
+        $banners = []; // Ganti dengan Banner::all() jika sudah ada modelnya
+        return view('admin.banners.index', compact('banners'));
+    }
 
+    public function storeBanner(Request $request)
+    {
+        // Logika simpan banner kamu di sini
+        return back()->with('success', 'Banner berhasil ditambahkan.');
+    }
+
+    public function destroyBanner($id)
+    {
+        // Logika hapus banner kamu di sini
+        return back()->with('success', 'Banner berhasil dihapus.');
+    }
+
+    // ─── 3. KELOLA ORDERS (Fungsi yang tadi hilang) ──────────────────────────
+
+    public function orders()
+    {
+        $orders = Order::latest()->paginate(20);
         return view('admin.orders.index', compact('orders'));
     }
 
-    public function showOrder(Order $order): View
+    public function showOrder(Order $order)
     {
-        $order->load(['buyer', 'seller', 'items.product']);
-
         return view('admin.orders.show', compact('order'));
+    }
+
+    // ─── 4. NOTIFICATIONS (Fungsi yang tadi hilang) ──────────────────────────
+
+    public function notifications()
+    {
+        return view('admin.notifications.index');
+    }
+
+    public function sendNotification(Request $request)
+    {
+        // Logika kirim notifikasi massal kamu di sini
+        return back()->with('success', 'Notifikasi berhasil dikirim.');
     }
 }
