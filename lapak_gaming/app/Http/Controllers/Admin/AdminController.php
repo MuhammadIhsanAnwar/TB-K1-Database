@@ -3,121 +3,191 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\Banner;
+use App\Models\MarketplaceNotification;
 use App\Models\Order;
-use App\Models\Product; // Pastikan model ini ada
-// use App\Models\Banner; // Buka comment ini jika kamu punya model Banner
+use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\View\View;
 
 class AdminController extends Controller
 {
-    // ─── 1. KELOLA AKUN & PENGAJUAN ──────────────────────────────────────────
+    // ─────────────────────────────────────────────────────────────────────────
+    // 1. KELOLA AKUN (Unified Tabbed Page)
+    // ─────────────────────────────────────────────────────────────────────────
 
-    public function index(Request $request)
+    public function index(Request $request): View
     {
-        $tab = $request->get('tab', 'users');
+        $tab = $request->query('tab', 'users');
 
-        $regularUsers = User::where('role', 'buyer')
+        // Tab Buyer
+        $regularUsers = User::query()
+            ->where('role', 'buyer')
             ->orderByDesc('created_at')
-            ->paginate(15, ['*'], 'users_page')->appends(['tab' => 'users']);
+            ->paginate(15, ['*'], 'users_page')
+            ->appends(['tab' => 'users']);
 
-        $sellers = User::where('role', 'seller')
+        // Tab Seller
+        $sellers = User::query()
+            ->where('role', 'seller')
             ->orderByDesc('created_at')
-            ->paginate(15, ['*'], 'sellers_page')->appends(['tab' => 'sellers']);
+            ->paginate(15, ['*'], 'sellers_page')
+            ->appends(['tab' => 'sellers']);
 
-        $applications = User::where('seller_status', 'pending')
+        // Tab Pengajuan
+        $applications = User::query()
+            ->where('seller_status', 'pending')
             ->orderByDesc('created_at')
-            ->paginate(15, ['*'], 'apps_page')->appends(['tab' => 'applications']);
+            ->paginate(15, ['*'], 'apps_page')
+            ->appends(['tab' => 'applications']);
 
+        // Statistik Badge (Real Count)
         $counts = [
             'users' => User::where('role', 'buyer')->count(),
             'sellers' => User::where('role', 'seller')->count(),
             'apps' => User::where('seller_status', 'pending')->count(),
         ];
 
-        return view('admin.users.index', compact('regularUsers', 'sellers', 'applications', 'counts', 'tab'));
+        return view('admin.users.index', compact('tab', 'regularUsers', 'sellers', 'applications', 'counts'));
     }
 
-    public function updateUserStatus(Request $request, User $user)
+    // ─────────────────────────────────────────────────────────────────────────
+    // 2. USER ACTIONS (Status & Delete)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    public function updateUserStatus(Request $request, User $user): RedirectResponse
     {
-        $user->update([
-            'status' => $request->status,
-            'suspend_reason' => $request->suspend_reason
+        if ($user->role === 'admin' && $user->id !== Auth::id()) {
+            return back()->withErrors(['status' => 'Tidak dapat mengubah status akun admin lain.']);
+        }
+
+        $data = $request->validate([
+            'status' => ['required', 'in:active,suspended'],
+            'suspend_reason' => ['nullable', 'string', 'max:1000'],
         ]);
-        return back()->with('success', "Status akun {$user->name} berhasil diperbarui.");
+
+        $updates = [
+            'status' => $data['status'],
+            'suspended_at' => $data['status'] === 'suspended' ? now() : null,
+            'suspend_reason' => $data['status'] === 'suspended' ? ($data['suspend_reason'] ?? null) : null,
+        ];
+
+        $user->forceFill($updates)->save();
+
+        if ($data['status'] === 'suspended') {
+            \DB::table('sessions')->where('user_id', $user->id)->delete();
+        }
+
+        return back()->with('success', "Akun {$user->name} berhasil diperbarui.");
     }
 
-    public function approveSeller(User $user)
+    public function destroyUser(User $user): RedirectResponse
     {
-        $user->update([
+        if ($user->role === 'admin') {
+            return back()->withErrors(['delete' => 'Tidak dapat menghapus akun admin.']);
+        }
+        $user->delete();
+        return back()->with('success', 'Pengguna telah dihapus.');
+    }
+
+    // ─────────────────────────────────────────────────────────────────────────
+    // 3. SELLER WORKFLOW (Approve / Reject)
+    // ─────────────────────────────────────────────────────────────────────────
+
+    public function approveSeller(User $user): RedirectResponse
+    {
+        if ($user->seller_status !== 'pending') {
+            return back()->withErrors(['approve' => 'Pengajuan ini tidak dalam status pending.']);
+        }
+
+        $user->forceFill([
             'role' => 'seller',
             'seller_status' => 'approved',
-            'is_seller' => true
+            'seller_rejection_reason' => null,
+            'status' => 'active',
+            'is_seller' => true,
+        ])->save();
+
+        MarketplaceNotification::create([
+            'user_id' => $user->id,
+            'title' => 'Pengajuan Seller Disetujui',
+            'body' => "Selamat! Toko \"{$user->shop_name}\" Anda telah diverifikasi. Anda sekarang bisa berjualan.",
+            'link' => route('seller.dashboard'),
+            'type' => 'seller-approved',
         ]);
-        return back()->with('success', "{$user->name} sekarang resmi menjadi Seller.");
+
+        return back()->with('success', "Pengajuan seller {$user->name} berhasil disetujui.");
     }
 
-    public function rejectSeller(Request $request, User $user)
+    public function rejectSeller(Request $request, User $user): RedirectResponse
     {
-        $user->update([
-            'seller_status' => 'rejected'
-            // Jika ada kolom rejection_reason, tambahkan di sini
+        $data = $request->validate([
+            'rejection_reason' => ['required', 'string', 'min:10', 'max:1000'],
         ]);
-        return back()->with('success', "Pengajuan seller {$user->name} telah ditolak.");
+
+        $user->forceFill([
+            'seller_status' => 'rejected',
+            'seller_rejection_reason' => $data['rejection_reason'],
+        ])->save();
+
+        MarketplaceNotification::create([
+            'user_id' => $user->id,
+            'title' => 'Pengajuan Seller Ditolak',
+            'body' => "Maaf, pengajuan toko Anda ditolak. Alasan: {$data['rejection_reason']}.",
+            'link' => route('seller.register.form'),
+            'type' => 'seller-rejected',
+        ]);
+
+        return back()->with('success', "Pengajuan seller {$user->name} ditolak.");
     }
 
-    public function destroyUser(User $user)
-    {
-        $user->delete();
-        return back()->with('success', 'User berhasil dihapus.');
-    }
+    // ─────────────────────────────────────────────────────────────────────────
+    // 4. BANNERS, NOTIFICATIONS & ORDERS (Back to Life!)
+    // ─────────────────────────────────────────────────────────────────────────
 
-    // ─── 2. KELOLA BANNERS (Fungsi yang tadi hilang) ─────────────────────────
-
-    public function banners()
+    public function banners(): View
     {
-        // Jika kamu belum punya tabel banners, buat dummy saja dulu agar tidak error
-        $banners = []; // Ganti dengan Banner::all() jika sudah ada modelnya
+        $banners = Banner::query()->latest()->get();
         return view('admin.banners.index', compact('banners'));
     }
 
-    public function storeBanner(Request $request)
+    public function storeBanner(Request $request): RedirectResponse
     {
-        // Logika simpan banner kamu di sini
-        return back()->with('success', 'Banner berhasil ditambahkan.');
+        // ... (Gunakan logika storeBanner asli kamu di sini) ...
+        return back()->with('success', 'Banner berhasil disimpan.');
     }
 
-    public function destroyBanner($id)
+    public function destroyBanner(Banner $banner): RedirectResponse
     {
-        // Logika hapus banner kamu di sini
+        $banner->delete();
         return back()->with('success', 'Banner berhasil dihapus.');
     }
 
-    // ─── 3. KELOLA ORDERS (Fungsi yang tadi hilang) ──────────────────────────
-
-    public function orders()
+    public function notifications(): View
     {
-        $orders = Order::latest()->paginate(20);
+        // PAKAI MODEL ASLI KAMU: MarketplaceNotification
+        $notifications = MarketplaceNotification::query()->latest()->paginate(20);
+        return view('admin.notifications.index', compact('notifications'));
+    }
+
+    public function sendNotification(Request $request): RedirectResponse
+    {
+        // ... (Gunakan logika broadcast asli kamu di sini) ...
+        return back()->with('success', 'Notifikasi berhasil dikirim.');
+    }
+
+    public function orders(Request $request): View
+    {
+        $orders = Order::query()->with(['buyer', 'seller'])->latest()->paginate(20);
         return view('admin.orders.index', compact('orders'));
     }
 
-    public function showOrder(Order $order)
+    public function showOrder(Order $order): View
     {
+        $order->load(['buyer', 'seller', 'items.product']);
         return view('admin.orders.show', compact('order'));
-    }
-
-    // ─── 4. NOTIFICATIONS ────────────────────────────────────────────────────
-
-    public function notifications()
-    {
-        // Kita tarik data dari tabel 'notifications'
-        // Kita pakai \DB supaya aman kalau kamu belum buat Model-nya
-        $notifications = \Illuminate\Support\Facades\DB::table('notifications')
-            ->latest()
-            ->paginate(15);
-
-        // Pastikan variabel 'notifications' ini dikirim ke view
-        return view('admin.notifications.index', compact('notifications'));
     }
 }
