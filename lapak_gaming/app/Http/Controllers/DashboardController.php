@@ -94,5 +94,30 @@ class DashboardController extends Controller
             'orders' => Order::query()->count(),
             // 'pendingOrders' bisa dihapus dari sini jika tidak ingin dikirim ke view
         ]);
+
+        // Ambil data transaksi 7 hari terakhir untuk grafik
+        $days = collect();
+        $transactionCounts = collect();
+        $revenueData = collect();
+
+        for ($i = 6; $i >= 0; $i--) {
+            $date = now()->subDays($i)->format('Y-m-d');
+            $days->push(now()->subDays($i)->format('d M'));
+
+            // Hitung jumlah order di tanggal tersebut
+            $count = Order::whereDate('created_at', $date)->count();
+            $transactionCounts->push($count);
+
+            // Hitung total uang masuk di tanggal tersebut (asumsi ada kolom total_price)
+            $revenue = Order::whereDate('created_at', $date)->sum('total_price');
+            $revenueData->push($revenue);
+        }
+
+        return view('dashboard.admin', [
+            // ... variabel lain ...
+            'chartLabels' => $days,
+            'chartTransactions' => $transactionCounts,
+            'chartRevenue' => $revenueData,
+        ]);
     }
 }
