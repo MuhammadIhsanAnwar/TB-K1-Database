@@ -63,7 +63,7 @@
   z-index: 20;
     transform-style: preserve-3d;
     will-change: transform;
-    transition: transform 0.05s linear;
+    
   }
 
   spline-viewer {
