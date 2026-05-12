@@ -122,7 +122,6 @@
    top: 0;
    left: 0;
    z-index: 21;
-   transform-style: preserve-3d;
    will-change: transform;
 }
 
@@ -131,6 +130,7 @@
     height: 100%;
     background: transparent !important;
     display: block;
+    transform-style: preserve-3d;
   }
 
   spline-viewer::part(logo) { display: none !important; }
@@ -851,9 +851,10 @@
   // container & border tetap diam
   robotScene.style.transform = 'none';
   robotWrapper.style.transform = 'none';
+  tiltLayer.style.transform = 'none';
 
-  // hanya robot yang rotate
-  tiltLayer.style.transform =
+  // hanya spline robot yang rotate
+  splineEl.style.transform =
     `
     perspective(1200px)
     rotateX(${rotX}deg)
