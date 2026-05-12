@@ -184,105 +184,6 @@
 @section('content')
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- HERO BANNERS                                               --}}
-{{-- ═══════════════════════════════════════════════════════════ --}}
-@if(isset($heroBanners) && $heroBanners->count())
-<section class="relative py-5 sm:py-7">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="mb-4 flex items-end justify-between gap-4">
-      <div>
-        <p class="text-[10px] font-display font-semibold uppercase tracking-[0.28em] text-amber-300">Promo Terbaru</p>
-        <h2 class="mt-1 text-lg sm:text-xl font-bold text-white">Banner Iklan</h2>
-      </div>
-      <div class="hidden sm:flex items-center gap-2 text-xs text-slate-500">
-        <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
-        Auto scroll aktif
-      </div>
-    </div>
-
-    <div class="overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/40 shadow-card-hover">
-      <div id="banner-track" class="banner-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory p-3 sm:p-4">
-          @foreach($heroBanners as $banner)
-          <a href="{{ $banner->link_url ?: '#' }}" class="banner-slide group relative flex-none w-[88%] sm:w-[74%] md:w-[48%] xl:w-[32%] overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900">
-            <div class="relative aspect-[16/8] sm:aspect-[16/6] overflow-hidden">
-              <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
-              <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/35 to-transparent"></div>
-              <div class="absolute inset-0 flex items-end p-5 sm:p-6">
-                <div class="max-w-md">
-                  <span class="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200">Iklan Beranda</span>
-                  <h3 class="mt-3 text-xl sm:text-2xl font-bold text-white">{{ $banner->title }}</h3>
-                  <p class="mt-1 text-sm text-slate-300">{{ $banner->subtitle }}</p>
-                </div>
-              </div>
-            </div>
-          </a>
-        @endforeach
-      </div>
-    </div>
-  </div>
-</section>
-@endif
-
-@if(isset($featuredBanners) && $featuredBanners->count())
-<section class="pb-14">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="flex items-end justify-between gap-4 mb-6">
-      <div>
-        <h2 class="section-title font-display font-bold text-lg text-white">Banner Featured</h2>
-        <p class="text-xs text-slate-500 mt-1 pl-4">Promo unggulan untuk penawaran utama</p>
-      </div>
-    </div>
-    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      @foreach($featuredBanners as $banner)
-        <a href="{{ $banner->link_url ?: '#' }}" class="reveal-card group overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900 shadow-card-hover">
-          <div class="relative aspect-[16/8] overflow-hidden">
-            <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/35 to-transparent"></div>
-            <div class="absolute inset-0 flex items-end p-5 sm:p-6">
-              <div>
-                <span class="inline-flex items-center rounded-full border border-brand-400/30 bg-brand-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-200">Featured</span>
-                <h3 class="mt-3 text-xl sm:text-2xl font-bold text-white">{{ $banner->title }}</h3>
-                <p class="mt-1 text-sm text-slate-300">{{ $banner->subtitle }}</p>
-              </div>
-            </div>
-          </div>
-        </a>
-      @endforeach
-    </div>
-  </div>
-</section>
-@endif
-
-@if(isset($sidebarBanners) && $sidebarBanners->count())
-<section class="pb-14">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="flex items-end justify-between gap-4 mb-6">
-      <div>
-        <h2 class="section-title font-display font-bold text-lg text-white">Banner Sidebar</h2>
-        <p class="text-xs text-slate-500 mt-1 pl-4">Promo kecil untuk penempatan samping</p>
-      </div>
-    </div>
-    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
-      @foreach($sidebarBanners as $banner)
-        <a href="{{ $banner->link_url ?: '#' }}" class="reveal-card group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-card">
-          <div class="flex gap-4 p-4">
-            <div class="h-24 w-24 sm:h-28 sm:w-28 flex-none overflow-hidden rounded-2xl border border-slate-800">
-              <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
-            </div>
-            <div class="min-w-0 flex-1">
-              <span class="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200">Sidebar</span>
-              <h3 class="mt-3 text-base font-bold text-white line-clamp-2">{{ $banner->title }}</h3>
-              <p class="mt-1 text-sm text-slate-400 line-clamp-2">{{ $banner->subtitle }}</p>
-            </div>
-          </div>
-        </a>
-      @endforeach
-    </div>
-  </div>
-</section>
-@endif
-
-{{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- HERO SECTION                                               --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="relative overflow-hidden pt-10 pb-16" id="hero-section">
@@ -317,12 +218,8 @@
         </p>
 
         <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
-          <a href="{{ route('products.search') }}" class="btn-primary px-6 py-3.5 rounded-xl text-base">
-            <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
-            Mulai Belanja
-          </a>
-          <a href="{{ route('marketplace.trending') }}" class="btn-ghost px-6 py-3.5 rounded-xl text-base">
-            Lihat Trending →
+          <a href="{{ route('products.search') }}" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl text-base font-semibold text-white bg-gradient-to-r from-blue-600 to-orange-500 hover:from-blue-700 hover:to-orange-600 transition-all duration-200 shadow-lg hover:shadow-xl">
+            Mulai Belanja Sekarang
           </a>
         </div>
 
@@ -445,6 +342,105 @@
     </div>
   </div>
 </section>
+
+{{-- ═══════════════════════════════════════════════════════════ --}}
+{{-- HERO BANNERS                                               --}}
+{{-- ═══════════════════════════════════════════════════════════ --}}
+@if(isset($heroBanners) && $heroBanners->count())
+<section class="relative py-5 sm:py-7">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="mb-4 flex items-end justify-between gap-4">
+      <div>
+        <p class="text-[10px] font-display font-semibold uppercase tracking-[0.28em] text-amber-300">Promo Terbaru</p>
+        <h2 class="mt-1 text-lg sm:text-xl font-bold text-white">Banner Iklan</h2>
+      </div>
+      <div class="hidden sm:flex items-center gap-2 text-xs text-slate-500">
+        <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
+        Auto scroll aktif
+      </div>
+    </div>
+
+    <div class="overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/40 shadow-card-hover">
+      <div id="banner-track" class="banner-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory p-3 sm:p-4">
+          @foreach($heroBanners as $banner)
+          <a href="{{ $banner->link_url ?: '#' }}" class="banner-slide group relative flex-none w-[88%] sm:w-[74%] md:w-[48%] xl:w-[32%] overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900">
+            <div class="relative aspect-[16/8] sm:aspect-[16/6] overflow-hidden">
+              <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/35 to-transparent"></div>
+              <div class="absolute inset-0 flex items-end p-5 sm:p-6">
+                <div class="max-w-md">
+                  <span class="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200">Iklan Beranda</span>
+                  <h3 class="mt-3 text-xl sm:text-2xl font-bold text-white">{{ $banner->title }}</h3>
+                  <p class="mt-1 text-sm text-slate-300">{{ $banner->subtitle }}</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        @endforeach
+      </div>
+    </div>
+  </div>
+</section>
+@endif
+
+@if(isset($featuredBanners) && $featuredBanners->count())
+<section class="pb-14">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-end justify-between gap-4 mb-6">
+      <div>
+        <h2 class="section-title font-display font-bold text-lg text-white">Banner Featured</h2>
+        <p class="text-xs text-slate-500 mt-1 pl-4">Promo unggulan untuk penawaran utama</p>
+      </div>
+    </div>
+    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
+      @foreach($featuredBanners as $banner)
+        <a href="{{ $banner->link_url ?: '#' }}" class="reveal-card group overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900 shadow-card-hover">
+          <div class="relative aspect-[16/8] overflow-hidden">
+            <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/35 to-transparent"></div>
+            <div class="absolute inset-0 flex items-end p-5 sm:p-6">
+              <div>
+                <span class="inline-flex items-center rounded-full border border-brand-400/30 bg-brand-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-200">Featured</span>
+                <h3 class="mt-3 text-xl sm:text-2xl font-bold text-white">{{ $banner->title }}</h3>
+                <p class="mt-1 text-sm text-slate-300">{{ $banner->subtitle }}</p>
+              </div>
+            </div>
+          </div>
+        </a>
+      @endforeach
+    </div>
+  </div>
+</section>
+@endif
+
+@if(isset($sidebarBanners) && $sidebarBanners->count())
+<section class="pb-14">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-end justify-between gap-4 mb-6">
+      <div>
+        <h2 class="section-title font-display font-bold text-lg text-white">Banner Sidebar</h2>
+        <p class="text-xs text-slate-500 mt-1 pl-4">Promo kecil untuk penempatan samping</p>
+      </div>
+    </div>
+    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
+      @foreach($sidebarBanners as $banner)
+        <a href="{{ $banner->link_url ?: '#' }}" class="reveal-card group overflow-hidden rounded-2xl border border-slate-800 bg-slate-900 shadow-card">
+          <div class="flex gap-4 p-4">
+            <div class="h-24 w-24 sm:h-28 sm:w-28 flex-none overflow-hidden rounded-2xl border border-slate-800">
+              <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+            </div>
+            <div class="min-w-0 flex-1">
+              <span class="inline-flex items-center rounded-full border border-amber-400/30 bg-amber-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-amber-200">Sidebar</span>
+              <h3 class="mt-3 text-base font-bold text-white line-clamp-2">{{ $banner->title }}</h3>
+              <p class="mt-1 text-sm text-slate-400 line-clamp-2">{{ $banner->subtitle }}</p>
+            </div>
+          </div>
+        </a>
+      @endforeach
+    </div>
+  </div>
+</section>
+@endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- CATEGORY SHORTCUTS                                          --}}
@@ -639,9 +635,6 @@
         </div>
         @endforeach
       </div>
-      @guest
-        <a href="{{ route('register') }}" class="btn-primary px-8 py-3.5 rounded-xl text-base">Daftar Gratis Sekarang →</a>
-      @endguest
     </div>
   </div>
 </section>
