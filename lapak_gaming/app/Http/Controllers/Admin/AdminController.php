@@ -45,9 +45,9 @@ class AdminController extends Controller
         $sellers = User::query()
             ->where(function ($q) {
                 $q->where('role', 'seller')
+                    ->orWhere('seller_status', 'approved')
                     ->orWhere('is_seller', true);
             })
-            ->where('seller_status', 'approved')
             ->orderByDesc('created_at')
             ->paginate(20, ['*'], 'sellers_page')
             ->appends(['tab' => 'sellers']);
