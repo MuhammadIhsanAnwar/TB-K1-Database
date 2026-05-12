@@ -26,32 +26,50 @@ class AdminController extends Controller
      */
     public function accounts(Request $request): View
     {
-        // 1. Ambil parameter tab (default: buyers)
+        // 1. Cek tab mana yang aktif, kalau kosong defaultnya 'buyers'
         $tab = $request->query('tab', 'buyers');
 
-        // 2. Ambil data Buyers (Sesuai query di log error kamu)
-        $buyers = User::where('role', 'buyer')
+        // 2. Tab 1: Kita namai $buyers (biar sesuai sama file Blade kamu)
+        $buyers = User::query()
+            ->where('role', 'buyer')
             ->where(function ($q) {
                 $q->where('seller_status', 'none')
                     ->orWhereNull('seller_status');
             })
             ->where('role', '!=', 'admin')
             ->orderByDesc('created_at')
-            ->paginate(20);
+            ->paginate(20, ['*'], 'buyers_page')
+            ->appends(['tab' => 'buyers']);
 
-        // 3. Ambil data Sellers yang sudah approved
-        $sellers = User::where(function ($q) {
-            $q->where('role', 'seller')
-                ->orWhere('is_seller', 1);
-        })
+        // 3. Tab 2: Seller yang sudah jualan (approved)
+        $sellers = User::query()
+            ->where(function ($q) {
+                $q->where('role', 'seller')
+                    ->orWhere('is_seller', true);
+            })
             ->where('seller_status', 'approved')
-            ->paginate(20);
+            ->orderByDesc('created_at')
+            ->paginate(20, ['*'], 'sellers_page')
+            ->appends(['tab' => 'sellers']);
 
-        // 4. Hitung jumlah yang sedang pending (untuk statistik di header)
+        // 4. Tab 3: Data pengajuan (pending)
+        // Kita simpan di $applications, tapi di Blade nanti panggilnya sesuaikan
+        $applications = User::query()
+            ->where('seller_status', 'pending')
+            ->orderByDesc('created_at')
+            ->paginate(20, ['*'], 'apps_page')
+            ->appends(['tab' => 'applications']);
+
+        // 5. Hitung total pending buat lencana/badge di UI
         $pendingCount = User::where('seller_status', 'pending')->count();
 
-        // 5. KIRIM SEMUANYA KE VIEW (Jangan sampai ada yang ketinggalan di compact)
-        return view('admin.accounts.index', compact('buyers', 'sellers', 'pendingCount', 'tab'));
+        return view('admin.accounts.index', compact(
+            'tab',
+            'buyers', // Namanya harus $buyers biar Blade nggak nangis
+            'sellers',
+            'applications',
+            'pendingCount'
+        ));
     }
 
     // ─────────────────────────────────────────────────────────────────────────
