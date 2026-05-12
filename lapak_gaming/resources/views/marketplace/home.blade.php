@@ -455,6 +455,26 @@
 @endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
+@if(isset($banners) && $banners->count())
+<section class="relative py-8">
+  <div class="max-w-7xl mx-auto px-4 grid gap-4 md:grid-cols-3">
+    @foreach($banners as $banner)
+      <a href="{{ $banner->link_url ?: '#' }}" class="group overflow-hidden rounded-3xl border border-slate-800 bg-slate-900 shadow-card transition hover:-translate-y-1 hover:border-amber-500/40">
+        <div class="relative h-44 overflow-hidden">
+          <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/30 to-transparent"></div>
+        </div>
+        <div class="space-y-2 p-5">
+          <p class="text-xs uppercase tracking-[0.24em] text-amber-300">Iklan Beranda</p>
+          <h3 class="text-xl font-bold text-white">{{ $banner->title }}</h3>
+          <p class="text-sm text-slate-400">{{ $banner->subtitle }}</p>
+        </div>
+      </a>
+    @endforeach
+  </div>
+</section>
+@endif
+
 {{-- VALUE PROPOSITION BANNER                                    --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="pb-14">

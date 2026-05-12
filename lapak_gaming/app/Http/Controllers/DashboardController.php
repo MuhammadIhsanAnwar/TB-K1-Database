@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MarketplaceNotification;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\User;
 use App\Models\Wallet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
@@ -75,9 +76,19 @@ class DashboardController extends Controller
 
     public function admin(Request $request): View
     {
+        $totalUsers = Schema::hasTable('users') ? User::query()->count() : 0;
+        $buyers = Schema::hasTable('users') ? User::query()->where('role', 'buyer')->count() : 0;
+        $sellers = Schema::hasTable('users') ? User::query()->where('role', 'seller')->count() : 0;
+        $suspendedUsers = Schema::hasTable('users') ? User::query()->where('status', 'suspended')->count() : 0;
+        $sellerRequests = Schema::hasTable('users') ? User::query()->where('role', 'buyer')->where('is_seller', true)->count() : 0;
+
         if (! Schema::hasTable('orders')) {
             return view('dashboard.admin', [
-                'buyers' => 0,
+                'totalUsers' => $totalUsers,
+                'buyers' => $buyers,
+                'sellers' => $sellers,
+                'suspendedUsers' => $suspendedUsers,
+                'sellerRequests' => $sellerRequests,
                 'products' => 0,
                 'orders' => 0,
                 'pendingOrders' => 0,
@@ -85,7 +96,11 @@ class DashboardController extends Controller
         }
 
         return view('dashboard.admin', [
-            'buyers' => Order::query()->distinct('buyer_id')->count('buyer_id'),
+            'totalUsers' => $totalUsers,
+            'buyers' => $buyers,
+            'sellers' => $sellers,
+            'suspendedUsers' => $suspendedUsers,
+            'sellerRequests' => $sellerRequests,
             'products' => Schema::hasTable('products') ? Product::query()->count() : 0,
             'orders' => Order::query()->count(),
             'pendingOrders' => Order::query()->where('status', Order::STATUS_PENDING_PAYMENT)->count(),

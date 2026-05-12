@@ -83,9 +83,12 @@ class AuthController extends Controller
             return redirect()->route('account.reactivate.form');
         }
 
+        if ($user?->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
         return redirect()->intended(match (true) {
             $user?->isSellerAccount() => route('seller.dashboard'),
-            $user?->role === 'admin' => route('admin.dashboard'),
             default => route('buyer.dashboard'),
         });
     }

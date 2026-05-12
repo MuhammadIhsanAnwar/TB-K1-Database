@@ -13,7 +13,7 @@
             <nav class="space-y-2">
                 <a href="{{ route('settings.profile') }}" class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $selectedTab === 'profile' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white' }}">Edit Profil</a>
                 <a href="{{ route('settings.account') }}" class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $selectedTab === 'account' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white' }}">Pengaturan Akun</a>
-                <a href="{{ route('settings.buyer') }}" class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $selectedTab === 'buyer' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white' }}">Daftar Jadi Buyer</a>
+                <a href="{{ route('settings.seller') }}" class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $selectedTab === 'seller' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white' }}">Daftar Jadi Seller</a>
             </nav>
         </aside>
 
@@ -105,19 +105,30 @@
                     </section>
                 </div>
             @else
-                <h1 class="text-3xl font-bold text-white mb-8">Daftar Jadi Buyer</h1>
-                <div class="rounded-3xl border border-slate-800 bg-slate-900 p-6 space-y-5 text-slate-300">
-                    <p>Semua pengguna otomatis memiliki peran buyer. Setelah akun aktif dan email terverifikasi, Anda dapat langsung berbelanja.</p>
-                    @if ($user->isBuyer())
-                        <p class="text-white">Akun Anda sudah berstatus buyer. Nikmati fitur belanja dan riwayat pesanan.</p>
-                    @else
-                        <p class="text-white">Peran Anda saat ini: {{ ucfirst($user->role) }}. Jika ingin kembali menjadi buyer, silakan hubungi administrator.</p>
-                    @endif
-                    <div class="grid gap-4 sm:grid-cols-2">
-                        <a href="{{ route('products.search') }}" class="rounded-2xl bg-cyan-600 px-5 py-3 text-sm font-semibold text-white text-center hover:bg-cyan-500 transition">Jelajahi Produk</a>
-                        <a href="{{ route('profile.show') }}" class="rounded-2xl border border-slate-700 px-5 py-3 text-sm font-semibold text-white text-center hover:border-slate-600 transition">Lihat Profil</a>
+                @if ($user->role === 'admin')
+                    <h1 class="text-3xl font-bold text-white mb-8">Akses Admin</h1>
+                    <div class="rounded-3xl border border-slate-800 bg-slate-900 p-6 space-y-5 text-slate-300">
+                        <p>Akun administrator tidak memakai menu seller/buyer. Gunakan panel admin untuk mengelola seluruh akun, transaksi, pesan, dan banner.</p>
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <a href="{{ route('admin.dashboard') }}" class="rounded-2xl bg-amber-500 px-5 py-3 text-sm font-semibold text-slate-950 text-center hover:bg-amber-400 transition">Buka Panel Admin</a>
+                            <a href="{{ route('admin.users.index') }}" class="rounded-2xl border border-slate-700 px-5 py-3 text-sm font-semibold text-white text-center hover:border-slate-600 transition">Kelola Akun</a>
+                        </div>
                     </div>
-                </div>
+                @else
+                    <h1 class="text-3xl font-bold text-white mb-8">Daftar Jadi Seller</h1>
+                    <div class="rounded-3xl border border-slate-800 bg-slate-900 p-6 space-y-5 text-slate-300">
+                        <p>Aktifkan mode seller untuk mulai membuka toko, mengelola produk, dan menerima pesanan dari buyer.</p>
+                        @if ($user->isSellerAccount())
+                            <p class="text-white">Akun Anda sudah memiliki akses seller. Silakan lanjut ke dashboard seller untuk mengelola toko.</p>
+                        @else
+                            <p class="text-white">Peran Anda saat ini masih {{ ucfirst($user->role) }}. Ajukan seller untuk diverifikasi admin.</p>
+                        @endif
+                        <div class="grid gap-4 sm:grid-cols-2">
+                            <a href="{{ route('seller.register.form') }}" class="rounded-2xl bg-amber-500 px-5 py-3 text-sm font-semibold text-slate-950 text-center hover:bg-amber-400 transition">Ajukan Jadi Seller</a>
+                            <a href="{{ route('seller.dashboard') }}" class="rounded-2xl border border-slate-700 px-5 py-3 text-sm font-semibold text-white text-center hover:border-slate-600 transition">Buka Dashboard Seller</a>
+                        </div>
+                    </div>
+                @endif
             @endif
         </main>
     </div>

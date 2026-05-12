@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Banner;
+use App\Models\MarketplaceNotification;
 use App\Models\Order;
 use App\Models\User;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
 
 class AdminController extends Controller
@@ -38,11 +42,92 @@ class AdminController extends Controller
         return back()->with('success', 'Data pengguna berhasil diperbarui.');
     }
 
-    public function destroyUser(User $user)
+    public function destroyUser(User $user): RedirectResponse
     {
         $user->delete();
 
         return redirect()->route('admin.users.index')->with('success', 'Pengguna telah dihapus.');
+    }
+
+    public function approveSeller(User $user): RedirectResponse
+    {
+        $user->forceFill([
+            'role' => 'seller',
+            'status' => 'active',
+            'is_seller' => true,
+        ])->save();
+
+        return back()->with('success', 'Seller berhasil diverifikasi.');
+    }
+
+    public function banners(): View
+    {
+        $banners = Schema::hasTable('banners') ? Banner::query()->latest()->get() : collect();
+
+        return view('admin.banners.index', compact('banners'));
+    }
+
+    public function storeBanner(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'subtitle' => ['nullable', 'string', 'max:255'],
+            'image_url' => ['required', 'url', 'max:2048'],
+            'link_url' => ['nullable', 'url', 'max:2048'],
+            'position' => ['required', 'in:hero,featured,sidebar'],
+            'is_active' => ['nullable', 'boolean'],
+        ]);
+
+        Banner::create([
+            'title' => $data['title'],
+            'subtitle' => $data['subtitle'] ?? null,
+            'image_url' => $data['image_url'],
+            'link_url' => $data['link_url'] ?? null,
+            'position' => $data['position'],
+            'is_active' => (bool) ($data['is_active'] ?? true),
+        ]);
+
+        return back()->with('success', 'Banner berhasil disimpan.');
+    }
+
+    public function destroyBanner(Banner $banner): RedirectResponse
+    {
+        $banner->delete();
+
+        return back()->with('success', 'Banner berhasil dihapus.');
+    }
+
+    public function notifications(): View
+    {
+        $notifications = MarketplaceNotification::query()->latest()->limit(20)->get();
+
+        return view('admin.notifications.index', compact('notifications'));
+    }
+
+    public function sendNotification(Request $request): RedirectResponse
+    {
+        $data = $request->validate([
+            'audience' => ['required', 'in:all,buyer,seller'],
+            'title' => ['required', 'string', 'max:255'],
+            'body' => ['required', 'string', 'max:2000'],
+            'link' => ['nullable', 'url', 'max:2048'],
+        ]);
+
+        $users = User::query()->when($data['audience'] !== 'all', function ($query) use ($data): void {
+            $query->where('role', $data['audience']);
+        })->get();
+
+        foreach ($users as $user) {
+            MarketplaceNotification::create([
+                'user_id' => $user->id,
+                'title' => $data['title'],
+                'body' => $data['body'],
+                'link' => $data['link'] ?? null,
+                'type' => 'admin-broadcast',
+            ]);
+        }
+
+        return back()->with('success', 'Notifikasi berhasil dikirim ke ' . $users->count() . ' akun.');
     }
 
     public function orders(Request $request): View

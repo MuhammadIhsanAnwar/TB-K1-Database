@@ -19,6 +19,7 @@ class SettingsController extends Controller
 {
     public function profile(): View
     {
+        /** @var User $user */
         $user = Auth::user();
         $profile = $user->profile;
 
@@ -31,6 +32,7 @@ class SettingsController extends Controller
 
     public function account(): View
     {
+        /** @var User $user */
         $user = Auth::user();
         $profile = $user->profile;
 
@@ -41,20 +43,22 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function buyer(): View
+    public function seller(): View
     {
+        /** @var User $user */
         $user = Auth::user();
         $profile = $user->profile;
 
         return view('settings.index', [
             'user' => $user,
             'profile' => $profile,
-            'selectedTab' => 'buyer',
+            'selectedTab' => 'seller',
         ]);
     }
 
     public function update(Request $request): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
 
         $data = $request->validate([
@@ -94,6 +98,7 @@ class SettingsController extends Controller
 
     public function sendDeletionCode(Request $request): RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
         $code = str_pad(random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
 
@@ -109,6 +114,7 @@ class SettingsController extends Controller
 
     public function confirmDeletionForm(): View
     {
+        /** @var User $user */
         $user = Auth::user();
 
         return view('settings.delete-account', [
@@ -116,11 +122,12 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function reactivateForm(): View
+    public function reactivateForm(): View|RedirectResponse
     {
+        /** @var User $user */
         $user = Auth::user();
 
-        if (!$user || !$user->trashed() || !$user->deactivated_at) {
+        if (! $user || ! $user->deactivated_at) {
             return redirect()->route('home');
         }
 

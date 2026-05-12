@@ -51,6 +51,19 @@
             </div>
         </form>
 
+        @if ($user->role !== 'admin' && $user->is_seller && $user->role !== 'seller')
+            <form action="{{ route('admin.users.approve-seller', $user) }}" method="POST" class="mt-6 rounded-3xl border border-amber-700 bg-slate-950 p-6">
+                @csrf
+                <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+                    <div>
+                        <h2 class="text-lg font-bold text-white">Verifikasi Seller</h2>
+                        <p class="mt-2 text-slate-400">Set akun buyer ini menjadi seller dan aktifkan akses toko.</p>
+                    </div>
+                    <button type="submit" class="rounded-2xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 hover:bg-amber-400">Verifikasi Seller</button>
+                </div>
+            </form>
+        @endif
+
         <form action="{{ route('admin.users.destroy', $user) }}" method="POST" class="mt-6 rounded-3xl border border-red-700 bg-slate-950 p-6">
             @csrf
             @method('DELETE')

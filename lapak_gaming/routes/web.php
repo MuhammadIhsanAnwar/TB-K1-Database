@@ -76,7 +76,8 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/settings', function () { return redirect()->route('settings.profile'); })->name('settings.index');
     Route::get('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
     Route::get('/settings/account', [SettingsController::class, 'account'])->name('settings.account');
-    Route::get('/settings/buyer', [SettingsController::class, 'buyer'])->name('settings.buyer');
+    Route::get('/settings/seller', [SettingsController::class, 'seller'])->name('settings.seller');
+    Route::get('/settings/buyer', fn () => redirect()->route('settings.seller'))->name('settings.buyer');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/account/delete-code', [SettingsController::class, 'sendDeletionCode'])->name('settings.account.sendDeletionCode');
     Route::get('/settings/account/delete', [SettingsController::class, 'confirmDeletionForm'])->name('settings.account.delete');
@@ -118,6 +119,10 @@ Route::post('/setup/admin', [SetupController::class, 'storeAdmin'])->name('setup
 Route::get('/setup/migrate', [MigrationController::class, 'index'])->name('setup.migrate');
 Route::post('/setup/migrate/run', [MigrationController::class, 'run'])->name('setup.migrate.run');
 Route::get('/setup/migrate/status', [MigrationController::class, 'status'])->name('setup.migrate.status');
+
+Route::middleware(['auth', 'role:admin'])->group(function (): void {
+    Route::get('/admin', fn () => redirect()->route('admin.dashboard'))->name('admin.index');
+});
 
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthController::class, 'createLogin'])->name('login');
@@ -164,8 +169,14 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/admin/users', [AdminController::class, 'users'])->middleware('role:admin')->name('admin.users.index');
     Route::get('/admin/users/{user}', [AdminController::class, 'showUser'])->middleware('role:admin')->name('admin.users.show');
     Route::put('/admin/users/{user}', [AdminController::class, 'updateUser'])->middleware('role:admin')->name('admin.users.update');
+    Route::post('/admin/users/{user}/approve-seller', [AdminController::class, 'approveSeller'])->middleware('role:admin')->name('admin.users.approve-seller');
     Route::delete('/admin/users/{user}', [AdminController::class, 'destroyUser'])->middleware('role:admin')->name('admin.users.destroy');
     Route::get('/admin/orders', [AdminController::class, 'orders'])->middleware('role:admin')->name('admin.orders.index');
+    Route::get('/admin/banners', [AdminController::class, 'banners'])->middleware('role:admin')->name('admin.banners.index');
+    Route::post('/admin/banners', [AdminController::class, 'storeBanner'])->middleware('role:admin')->name('admin.banners.store');
+    Route::delete('/admin/banners/{banner}', [AdminController::class, 'destroyBanner'])->middleware('role:admin')->name('admin.banners.destroy');
+    Route::get('/admin/notifications', [AdminController::class, 'notifications'])->middleware('role:admin')->name('admin.notifications.index');
+    Route::post('/admin/notifications', [AdminController::class, 'sendNotification'])->middleware('role:admin')->name('admin.notifications.send');
     Route::get('/admin/orders/{order:order_code}', [AdminController::class, 'showOrder'])->middleware('role:admin')->name('admin.orders.show');
 
     Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('role:buyer')->name('checkout.store');

@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Category;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\Banner;
 use App\Models\Review;
 use App\Models\Seller;
 use App\Models\User;
@@ -15,8 +16,12 @@ use Illuminate\View\View;
 
 class MarketplaceController extends Controller
 {
-    public function home(Request $request): View
+    public function home(Request $request): View|\Illuminate\Http\RedirectResponse
     {
+        if ($request->user()?->role === 'admin') {
+            return redirect()->route('admin.dashboard');
+        }
+
         $categories = Schema::hasTable('categories')
             ? Category::query()->active()->whereNull('parent_id')->with('children')->orderBy('sort_order')->take(10)->get()
             : collect();
@@ -52,6 +57,9 @@ class MarketplaceController extends Controller
         $transactionCount = Schema::hasTable('orders')
             ? Order::query()->completed()->count()
             : 0;
+        $banners = Schema::hasTable('banners')
+            ? Banner::query()->active()->where('position', 'hero')->latest()->take(3)->get()
+            : collect();
 
         return view('marketplace.home', [
             'categories' => $categories,
@@ -64,6 +72,7 @@ class MarketplaceController extends Controller
             'verifiedSellers' => $verifiedSellers,
             'averageRating' => $averageRating,
             'transactionCount' => $transactionCount,
+            'banners' => $banners,
         ]);
     }
 
