@@ -38,7 +38,7 @@ class SellerProductController extends Controller {
     }
 
     public function create() {
-        $categories = Category::where('status', 'active')->get(); // Sesuaikan scope/kolom status kamu
+        $categories = Category::all();
         return view('seller.products.create', compact('categories'));
     }
 
