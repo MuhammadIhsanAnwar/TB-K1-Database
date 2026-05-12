@@ -107,16 +107,18 @@ class AdminController extends Controller
         return view('admin.orders.show', compact('order'));
     }
 
-    // ─── 4. NOTIFICATIONS (Fungsi yang tadi hilang) ──────────────────────────
+    // ─── 4. NOTIFICATIONS ────────────────────────────────────────────────────
 
     public function notifications()
     {
-        return view('admin.notifications.index');
-    }
+        // Kita ambil data notifikasi dari database. 
+        // Kalau kamu pakai sistem notifikasi bawaan Laravel, biasanya tabelnya namanya 'notifications'.
+        // Kita pakai DB facade aja biar aman kalau kamu belum buat Model-nya.
 
-    public function sendNotification(Request $request)
-    {
-        // Logika kirim notifikasi massal kamu di sini
-        return back()->with('success', 'Notifikasi berhasil dikirim.');
+        $notifications = \Illuminate\Support\Facades\DB::table('notifications')
+            ->latest()
+            ->paginate(10);
+
+        return view('admin.notifications.index', compact('notifications'));
     }
 }
