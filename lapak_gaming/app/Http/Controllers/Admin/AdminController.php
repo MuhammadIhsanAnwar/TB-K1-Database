@@ -86,7 +86,7 @@ class AdminController extends Controller
         if ($request->hasFile('image')) {
             $file = $request->file('image');
             $filename = 'banner_' . time() . '.' . $file->getClientOriginalExtension();
-            $imagePath = $file->storeAs('banners', $filename, 'public');
+            $imagePath = $file->storeAs('banners', $filename, 'public_app_public');
             $imageUrl = null;
         }
 

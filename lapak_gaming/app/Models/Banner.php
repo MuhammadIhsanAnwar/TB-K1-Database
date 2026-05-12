@@ -31,7 +31,7 @@ class Banner extends Model
     public function getImageUrlAttribute($value)
     {
         if ($this->image_path) {
-            return url('storage/banners/' . $this->image_path);
+            return url('storage/app/public/' . ltrim($this->image_path, '/'));
         }
         return $value;
     }

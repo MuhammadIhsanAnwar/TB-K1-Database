@@ -11,11 +11,12 @@ class NotificationController extends Controller
 {
     public function index()
     {
-        try {
-            $notifications = Auth::user()->notifications()->latest()->paginate(15);
-        } catch (\Exception $e) {
-            $notifications = collect([]);
-        }
+        $user = Auth::user();
+
+        $notifications = MarketplaceNotification::query()
+            ->where('user_id', $user?->id)
+            ->latest()
+            ->paginate(15);
         
         return view('notifications.index', compact('notifications'));
     }

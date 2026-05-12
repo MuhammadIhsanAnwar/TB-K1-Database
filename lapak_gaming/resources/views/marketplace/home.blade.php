@@ -217,16 +217,16 @@
         <div class="flex flex-wrap gap-6 mt-10 justify-center lg:justify-start">
           @php
             $heroStats = [
-              ['num' => number_format($activeUsers), 'label' => 'Pengguna Aktif'],
-              ['num' => number_format($availableProducts), 'label' => 'Produk Tersedia'],
-              ['num' => number_format($verifiedSellers), 'label' => 'Seller Verified'],
-              ['num' => number_format($transactionCount), 'label' => 'Transaksi Sukses'],
+              ['num' => $activeUsers, 'label' => 'Pengguna Aktif'],
+              ['num' => $availableProducts, 'label' => 'Produk Tersedia'],
+              ['num' => $verifiedSellers, 'label' => 'Seller Verified'],
+              ['num' => $transactionCount, 'label' => 'Transaksi Sukses'],
             ];
           @endphp
 
           @foreach($heroStats as $stat)
           <div class="text-center lg:text-left">
-            <div class="font-display font-bold text-2xl text-white">{{ $stat['num'] }}</div>
+            <div class="font-display font-bold text-2xl text-white js-stat-counter" data-target="{{ $stat['num'] }}">0</div>
             <div class="text-xs text-slate-500 mt-0.5">{{ $stat['label'] }}</div>
           </div>
           @endforeach
@@ -791,6 +791,44 @@
   });
 
   reveals.forEach(el => observer.observe(el));
+
+  const statCounters = document.querySelectorAll('.js-stat-counter');
+
+  function animateCounter(element) {
+    const target = Number(element.getAttribute('data-target') || 0);
+    const duration = 1400;
+    const start = performance.now();
+
+    function tick(now) {
+      const progress = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - progress, 3);
+      const value = Math.round(target * eased);
+      element.textContent = value.toLocaleString('id-ID');
+
+      if (progress < 1) {
+        requestAnimationFrame(tick);
+      } else {
+        element.textContent = target.toLocaleString('id-ID');
+      }
+    }
+
+    requestAnimationFrame(tick);
+  }
+
+  if (statCounters.length) {
+    const statObserver = new IntersectionObserver((entries, observerInstance) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting) return;
+
+        animateCounter(entry.target);
+        observerInstance.unobserve(entry.target);
+      });
+    }, {
+      threshold: 0.35,
+    });
+
+    statCounters.forEach((counter) => statObserver.observe(counter));
+  }
 
 });
 
