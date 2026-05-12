@@ -220,6 +220,23 @@
     z-index: 28;
   }
 
+  #robot-tilt-layer{
+   width:100%;
+   height:100%;
+   position:absolute;
+   inset:0;
+   display:flex;
+   align-items:center;
+   justify-content:center;
+   pointer-events:none;
+}
+
+#robot-only{
+   width:100%;
+   height:100%;
+   transform-style:preserve-3d;
+   will-change:transform;
+}
    /* ── Scroll Reveal Animation ───────────────────────────── */
   /* ── Clean Reveal Animation ───────────────────────────── */
 .reveal-card {
@@ -367,17 +384,18 @@
         {{-- ★ Spline 3D Robot ★ --}}
         <div id="robot-scene-container">
         </div>
-
         <div id="robot-tilt-layer">
-          <spline-viewer
-            id="spline-robot"
-            loading="eager"
-            events-target="global"
-            loading-anim-type="spinner-big-dark"
-            url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode">
-          </spline-viewer>
-        </div>
-
+  <div id="robot-only">
+    <spline-viewer
+      id="spline-robot"
+      loading="eager"
+      events-target="global"
+      loading-anim-type="spinner-big-dark"
+      url="https://prod.spline.design/vNP16bdGzzl-ASAu/scene.splinecode">
+    </spline-viewer>
+  </div>
+</div>
+    
         {{-- Spline branding cover --}}
         <div id="spline-logo-cover"></div>
 
@@ -851,8 +869,15 @@
   // container & border tetap diam
   robotScene.style.transform = 'none';
   robotWrapper.style.transform = 'none';
-  tiltLayer.style.transform = 'none';
 
+  const robotOnly = document.getElementById('robot-only');
+
+robotOnly.style.transform =
+`
+perspective(1200px)
+rotateX(${rotX}deg)
+rotateY(${rotY}deg)
+`;
   // hanya spline robot yang rotate
   splineEl.style.transform =
     `
