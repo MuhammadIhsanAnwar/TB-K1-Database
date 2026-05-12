@@ -2,6 +2,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
@@ -31,10 +32,17 @@ class Order extends Model {
     protected static function boot() {
         parent::boot();
         static::creating(function($order) {
-            do {
-                $order->order_code = 'LG-' . now()->format('Ymd') . '-' . strtoupper(Str::random(8));
-            } while (self::where('order_code', $order->order_code)->exists());
+            if (Schema::hasColumn($order->getTable(), 'order_code')) {
+                do {
+                    $order->order_code = 'LG-' . now()->format('Ymd') . '-' . strtoupper(Str::random(8));
+                } while (self::where('order_code', $order->order_code)->exists());
+            }
         });
+    }
+
+    public function getOrderCodeAttribute(): string
+    {
+        return $this->attributes['order_code'] ?? $this->attributes['invoice_number'] ?? '';
     }
 
     public function buyer()     { return $this->belongsTo(User::class, 'buyer_id'); }

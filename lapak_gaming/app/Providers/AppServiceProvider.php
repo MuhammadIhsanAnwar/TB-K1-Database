@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\View;
@@ -27,6 +29,28 @@ class AppServiceProvider extends ServiceProvider
         if ($this->app->environment('production')) {
             URL::forceScheme('https');
         }
+
+        VerifyEmail::createUrlUsing(function ($notifiable): string {
+            return URL::temporarySignedRoute(
+                'activation.activate',
+                now()->addMinutes(config('auth.verification.expire', 60)),
+                [
+                    'id' => $notifiable->getKey(),
+                    'hash' => sha1($notifiable->getEmailForVerification()),
+                ]
+            );
+        });
+
+        VerifyEmail::toMailUsing(function ($notifiable, string $url): MailMessage {
+            return (new MailMessage)
+                ->subject('Aktivasi Akun Anda')
+                ->markdown('emails.verify-email', [
+                    'url' => $url,
+                    'recipientName' => $notifiable->name ?? $notifiable->email,
+                    'appName' => config('app.name', 'Lapak Gaming'),
+                    'logoUrl' => asset('storage/app/public/logo/logo.png'),
+                ]);
+        });
 
         // Hanya share categories jika table sudah ada
         if (Schema::hasTable('categories')) {

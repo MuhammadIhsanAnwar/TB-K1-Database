@@ -4,13 +4,13 @@ namespace Database\Seeders;
 
 use App\Models\Product;
 use App\Models\ProductComment;
+use App\Models\ProductStatistic;
 use App\Models\CommentLike;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\OrderFinancial;
 use App\Models\User;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class ProductSalesAndCommentsSeeder extends Seeder
 {
@@ -32,17 +32,20 @@ class ProductSalesAndCommentsSeeder extends Seeder
                 $quantity = random_int(1, 5);
 
                 // Create order
+                $subtotal = $product->price * $quantity;
+                $feeAmount = $subtotal * 0.05;
+                $grandTotal = $subtotal + $feeAmount;
+
                 $order = Order::create([
                     'buyer_id' => $buyer->id,
                     'seller_id' => $product->seller_id,
-                    'order_number' => 'ORD-' . date('YmdHis') . '-' . random_int(1000, 9999),
-                    'subtotal' => $product->price * $quantity,
-                    'shipping_cost' => 0,
-                    'tax' => 0,
-                    'total' => $product->price * $quantity,
+                    'invoice_number' => 'INV-' . now()->format('YmdHis') . '-' . random_int(1000, 9999),
+                    'subtotal' => $subtotal,
+                    'fee_amount' => $feeAmount,
+                    'escrow_amount' => 0,
+                    'grand_total' => $grandTotal,
                     'payment_method' => collect(['wallet', 'bank_transfer', 'credit_card'])->random(),
                     'status' => 'completed',
-                    'paid_at' => now()->subDays(random_int(1, 90)),
                     'completed_at' => now()->subDays(random_int(0, 89)),
                 ]);
 
@@ -51,21 +54,19 @@ class ProductSalesAndCommentsSeeder extends Seeder
                     'order_id' => $order->id,
                     'product_id' => $product->id,
                     'seller_id' => $product->seller_id,
+                    'name_snapshot' => $product->name,
+                    'price_snapshot' => $product->price,
                     'quantity' => $quantity,
-                    'unit_price' => $product->price,
-                    'subtotal' => $product->price * $quantity,
-                    'status' => 'completed',
-                    'delivered_at' => now()->subDays(random_int(0, 80)),
+                    'status' => 'confirmed',
                 ]);
 
                 // Create order financial
                 OrderFinancial::create([
                     'order_id' => $order->id,
-                    'seller_id' => $product->seller_id,
-                    'gross_amount' => $product->price * $quantity,
-                    'fee_amount' => ($product->price * $quantity) * 0.05, // 5% fee
-                    'net_amount' => ($product->price * $quantity) * 0.95,
-                    'status' => 'settled',
+                    'subtotal' => $subtotal,
+                    'fee_amount' => $feeAmount,
+                    'escrow_amount' => 0,
+                    'grand_total' => $grandTotal,
                 ]);
 
                 // ~70% chance buyer leaves a comment/rating
@@ -115,18 +116,22 @@ class ProductSalesAndCommentsSeeder extends Seeder
             }
 
             // Update product statistics
-            $product->statistics()->update([
-                'sold_count' => $soldCount,
-                'rating_average' => DB::table('product_comments')
-                    ->where('product_id', $product->id)
-                    ->where('status', 'approved')
-                    ->whereNotNull('rating')
-                    ->avg('rating') ?? 0,
-                'review_count' => ProductComment::where('product_id', $product->id)
-                    ->where('status', 'approved')
-                    ->whereNotNull('rating')
-                    ->count(),
-            ]);
+            ProductStatistic::updateOrCreate(
+                ['product_id' => $product->id],
+                [
+                    'sold_count' => $soldCount,
+                    'rating_average' => ProductComment::where('product_id', $product->id)
+                        ->where('status', 'approved')
+                        ->whereNotNull('rating')
+                        ->avg('rating') ?? 0,
+                    'review_count' => ProductComment::where('product_id', $product->id)
+                        ->where('status', 'approved')
+                        ->whereNotNull('rating')
+                        ->count(),
+                    'views_count' => random_int(50, 5000),
+                    'downloads_count' => random_int(10, $soldCount * 3),
+                ]
+            );
 
             $this->command->line("✓ Created sales and comments for: {$product->name}");
         }
