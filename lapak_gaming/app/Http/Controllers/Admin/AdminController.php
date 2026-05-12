@@ -75,12 +75,14 @@ class AdminController extends Controller
      */
     public function users(Request $request): View
     {
+        $tab = $request->query('tab', 'users');
+
         $users = User::query()
             ->where('role', '!=', 'admin')
             ->orderByDesc('created_at')
             ->paginate(20);
 
-        return view('admin.users.index', compact('users'));
+        return view('admin.users.index', compact('users', 'tab'));
     }
 
     public function showUser(User $user): View
