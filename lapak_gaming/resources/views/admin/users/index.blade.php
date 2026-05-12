@@ -114,19 +114,19 @@
     <div class="overflow-x-auto">
       <div class="inline-flex gap-1 rounded-2xl border border-slate-800 bg-slate-900 p-1.5 min-w-max">
 
-        <a href="{{ route('admin.accounts', ['tab' => 'users']) }}"
+        <a href="{{ route('admin.users.index', ['tab' => 'users']) }}"
            class="tab-btn {{ $tab === 'users' ? 'active' : '' }}">
           User
           <span class="tab-badge">{{ $regularUsers->total() }}</span>
         </a>
 
-        <a href="{{ route('admin.accounts', ['tab' => 'sellers']) }}"
+        <a href="{{ route('admin.users.index', ['tab' => 'sellers']) }}"
            class="tab-btn {{ $tab === 'sellers' ? 'active' : '' }}">
           Seller
           <span class="tab-badge">{{ $sellers->total() }}</span>
         </a>
 
-        <a href="{{ route('admin.accounts', ['tab' => 'applications']) }}"
+        <a href="{{ route('admin.users.index', ['tab' => 'applications']) }}"
            class="tab-btn {{ $tab === 'applications' ? 'active' : '' }}">
           Pengajuan Seller
           @if($applications->total() > 0)
