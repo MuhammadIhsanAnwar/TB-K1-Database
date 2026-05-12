@@ -7,12 +7,15 @@ use App\Models\Seller;
 use App\Models\Review;
 use App\Models\User;
 use App\Notifications\AccountDeletionVerification;
+use App\Notifications\PasswordChangeVerification;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rules\Password as PasswordRule;
 use Illuminate\View\View;
 
 class SettingsController extends Controller
@@ -40,6 +43,19 @@ class SettingsController extends Controller
             'user' => $user,
             'profile' => $profile,
             'selectedTab' => 'account',
+        ]);
+    }
+
+    public function password(): View
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $profile = $user->profile;
+
+        return view('settings.index', [
+            'user' => $user,
+            'profile' => $profile,
+            'selectedTab' => 'password',
         ]);
     }
 
@@ -110,6 +126,57 @@ class SettingsController extends Controller
         $user->notify(new AccountDeletionVerification($code));
 
         return back()->with('status', 'Kode verifikasi telah dikirim ke email Anda. Silakan periksa kotak masuk.');
+    }
+
+    public function sendPasswordChangeCode(Request $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $code = str_pad(random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
+
+        Cache::put($this->passwordChangeCodeKey($user), Hash::make($code), now()->addMinutes(10));
+
+        $user->notify(new PasswordChangeVerification($code));
+
+        return back()->with('status', 'Kode verifikasi ubah password telah dikirim ke email Anda.');
+    }
+
+    public function updatePassword(Request $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $data = $request->validate([
+            'verification_code' => ['required', 'digits:6'],
+            'password' => ['required', 'confirmed', PasswordRule::min(8)],
+        ]);
+
+        $storedCode = Cache::get($this->passwordChangeCodeKey($user));
+
+        if (! $storedCode) {
+            return back()->withErrors([
+                'verification_code' => 'Kode verifikasi belum dikirim atau sudah kedaluwarsa.',
+            ]);
+        }
+
+        if (! Hash::check($data['verification_code'], $storedCode)) {
+            return back()->withErrors([
+                'verification_code' => 'Kode verifikasi tidak valid.',
+            ]);
+        }
+
+        $user->forceFill([
+            'password' => $data['password'],
+        ])->save();
+
+        Cache::forget($this->passwordChangeCodeKey($user));
+
+        return back()->with('success', 'Password berhasil diperbarui.');
+    }
+
+    private function passwordChangeCodeKey(User $user): string
+    {
+        return 'password-change-code:' . $user->id;
     }
 
     public function confirmDeletionForm(): View

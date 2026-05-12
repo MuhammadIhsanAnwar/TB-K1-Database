@@ -76,9 +76,12 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/settings', function () { return redirect()->route('settings.profile'); })->name('settings.index');
     Route::get('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
     Route::get('/settings/account', [SettingsController::class, 'account'])->name('settings.account');
+    Route::get('/settings/password', [SettingsController::class, 'password'])->name('settings.password');
     Route::get('/settings/seller', [SettingsController::class, 'seller'])->name('settings.seller');
     Route::get('/settings/buyer', fn () => redirect()->route('settings.seller'))->name('settings.buyer');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::post('/settings/password/code', [SettingsController::class, 'sendPasswordChangeCode'])->name('settings.password.sendCode');
+    Route::put('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password.update');
     Route::post('/settings/account/delete-code', [SettingsController::class, 'sendDeletionCode'])->name('settings.account.sendDeletionCode');
     Route::get('/settings/account/delete', [SettingsController::class, 'confirmDeletionForm'])->name('settings.account.delete');
     Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');

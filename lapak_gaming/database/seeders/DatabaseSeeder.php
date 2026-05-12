@@ -19,8 +19,11 @@ class DatabaseSeeder extends Seeder {
             BuyerSeeder::class,
             ProfilesTableSeeder::class,
             ProductsTableSeeder::class,
-            ProductViewsAndReviewsSeeder::class, // ← Add this
         ]);
+
+        if (app()->environment(['local', 'testing'])) {
+            $this->call(ProductViewsAndReviewsSeeder::class);
+        }
 
         // Admin (only create if not exists)
         $admin = User::firstOrCreate(

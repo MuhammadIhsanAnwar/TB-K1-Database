@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 
 class Order extends Model {
@@ -46,6 +47,7 @@ class Order extends Model {
     }
 
     public function buyer()     { return $this->belongsTo(User::class, 'buyer_id'); }
+    public function seller(): BelongsTo { return $this->belongsTo(User::class, 'seller_id'); }
     public function items()     { return $this->hasMany(OrderItem::class); }
     public function financial(): HasOne { return $this->hasOne(OrderFinancial::class); }
 

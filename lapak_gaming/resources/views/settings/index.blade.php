@@ -13,6 +13,7 @@
             <nav class="space-y-2">
                 <a href="{{ route('settings.profile') }}" class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $selectedTab === 'profile' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white' }}">Edit Profil</a>
                 <a href="{{ route('settings.account') }}" class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $selectedTab === 'account' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white' }}">Pengaturan Akun</a>
+                <a href="{{ route('settings.password') }}" class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $selectedTab === 'password' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white' }}">Ubah Password</a>
                 <a href="{{ route('settings.seller') }}" class="block rounded-2xl px-4 py-3 text-sm font-medium transition {{ $selectedTab === 'seller' ? 'bg-slate-800 text-white' : 'text-slate-400 hover:bg-slate-900 hover:text-white' }}">Daftar Jadi Seller</a>
             </nav>
         </aside>
@@ -94,6 +95,43 @@
                         @if (! $user->email_verified_at)
                             <form action="{{ route('verification.send') }}" method="POST" class="mt-6">
                                 @csrf
+            @elseif ($selectedTab === 'password')
+                <h1 class="text-3xl font-bold text-white mb-8">Ubah Password</h1>
+                <div class="grid gap-6 lg:grid-cols-2">
+                    <section class="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+                        <h2 class="text-lg font-semibold text-white mb-4">Kirim Kode Verifikasi</h2>
+                        <p class="text-slate-400 mb-6">Kode akan dikirim ke email terdaftar. Setelah itu, masukkan kode tersebut untuk menyimpan password baru.</p>
+                        <form action="{{ route('settings.password.sendCode') }}" method="POST">
+                            @csrf
+                            <button type="submit" class="w-full rounded-2xl bg-slate-800 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700 transition">Kirim Kode ke Email</button>
+                        </form>
+                    </section>
+
+                    <section class="rounded-3xl border border-slate-800 bg-slate-900 p-6">
+                        <h2 class="text-lg font-semibold text-white mb-4">Simpan Password Baru</h2>
+                        <form action="{{ route('settings.password.update') }}" method="POST" class="space-y-4">
+                            @csrf
+                            @method('PUT')
+
+                            <div>
+                                <label for="verification_code" class="block text-sm font-medium text-slate-300 mb-2">Kode Verifikasi</label>
+                                <input type="text" name="verification_code" id="verification_code" maxlength="6" inputmode="numeric" class="w-full rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-slate-200" placeholder="6 digit kode" required>
+                            </div>
+
+                            <div>
+                                <label for="password" class="block text-sm font-medium text-slate-300 mb-2">Password Baru</label>
+                                <input type="password" name="password" id="password" class="w-full rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-slate-200" required>
+                            </div>
+
+                            <div>
+                                <label for="password_confirmation" class="block text-sm font-medium text-slate-300 mb-2">Konfirmasi Password Baru</label>
+                                <input type="password" name="password_confirmation" id="password_confirmation" class="w-full rounded-2xl border border-slate-800 bg-slate-950 px-4 py-3 text-slate-200" required>
+                            </div>
+
+                            <button type="submit" class="w-full rounded-2xl bg-emerald-600 px-5 py-3 text-sm font-semibold text-white hover:bg-emerald-500 transition">Perbarui Password</button>
+                        </form>
+                    </section>
+                </div>
                                 <button type="submit" class="w-full rounded-2xl bg-slate-800 px-5 py-3 text-sm font-semibold text-white hover:bg-slate-700 transition">Kirim Ulang Email Verifikasi</button>
                             </form>
                         @endif
