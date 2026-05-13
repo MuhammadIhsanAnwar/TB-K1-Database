@@ -1,66 +1,192 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gray-950 py-12 px-4">
-    <div class="max-w-2xl mx-auto">
-        <h1 class="text-3xl font-bold text-white mb-8">Edit Profile</h1>
+<div class="min-h-screen bg-[#050816] px-4 py-14">
 
-        <div class="bg-gray-900 rounded-xl p-8">
+    {{-- REVEAL ANIMATION --}}
+    <style>
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            animation: revealUp .8s ease forwards;
+        }
+
+        .reveal-delay-1 {
+            animation-delay: .15s;
+        }
+
+        .reveal-delay-2 {
+            animation-delay: .3s;
+        }
+
+        @keyframes revealUp {
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <div class="mx-auto max-w-3xl">
+
+        {{-- HEADER --}}
+        <div
+            class="reveal relative overflow-hidden rounded-[30px] border border-blue-500/20 bg-gradient-to-br from-[#060816] via-[#091225] to-[#0B1730] px-7 py-8 shadow-[0_0_70px_rgba(37,99,235,0.12)]">
+
+            <div
+                class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.16),transparent_35%)]">
+            </div>
+
+            <div class="relative z-10 flex items-center justify-between gap-6">
+
+                <div>
+                    <div
+                        class="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.18em] text-blue-300 backdrop-blur-xl">
+                        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        PROFILE SETTINGS
+                    </div>
+
+                    <h1 class="mt-5 text-3xl font-black text-white md:text-4xl">
+                        Edit Profile
+                    </h1>
+
+                    <p class="mt-3 max-w-xl text-sm leading-relaxed text-slate-300">
+                        Ubah informasi akunmu dengan tampilan dashboard modern ala Lapak Gaming.
+                    </p>
+                </div>
+
+                {{-- LOGO --}}
+                <div
+                    class="hidden md:flex relative h-[130px] w-[130px] items-center justify-center rounded-full border border-blue-500/20 bg-blue-500/5 backdrop-blur-2xl">
+
+                    <div
+                        class="absolute h-[170px] w-[170px] rounded-full bg-blue-500/10 blur-3xl">
+                    </div>
+
+                    <img src="{{ asset('storage/app/public/logo/logo.png') }}"
+                        alt="Logo"
+                        class="relative z-10 h-24 w-24 object-contain drop-shadow-[0_0_25px_rgba(59,130,246,0.55)]">
+                </div>
+
+            </div>
+        </div>
+
+        {{-- FORM CARD --}}
+        <div
+            class="reveal reveal-delay-1 mt-7 overflow-hidden rounded-[30px] border border-white/10 bg-[#0B1220]/95 p-7 shadow-[0_0_50px_rgba(37,99,235,0.05)] backdrop-blur-xl">
+
+            {{-- ERROR --}}
             @if ($errors->any())
-            <div class="mb-6 bg-red-500/20 border border-red-600/30 rounded-lg p-4">
-                <p class="text-red-400 font-medium mb-2">Please fix the following errors:</p>
-                <ul class="list-disc list-inside text-red-400 text-sm space-y-1">
+            <div
+                class="mb-6 rounded-2xl border border-red-500/20 bg-red-500/10 p-5">
+
+                <p class="mb-3 text-sm font-bold tracking-wide text-red-300">
+                    Please fix the following errors:
+                </p>
+
+                <ul class="space-y-1 text-sm text-red-200">
                     @foreach ($errors->all() as $error)
-                    <li>{{ $error }}</li>
+                    <li>• {{ $error }}</li>
                     @endforeach
                 </ul>
             </div>
             @endif
 
-            <form action="{{ route('profile.update') }}" method="POST" class="space-y-6">
+            <form action="{{ route('profile.update') }}"
+                method="POST"
+                class="space-y-6">
+
                 @csrf
                 @method('PUT')
 
-                <div>
-                    <label for="name" class="block text-sm font-medium text-gray-300 mb-2">Full Name</label>
-                    <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" 
-                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none"
-                        required>
+                {{-- FULL NAME --}}
+                <div class="reveal reveal-delay-1">
+                    <label
+                        for="name"
+                        class="mb-2 block text-sm font-semibold tracking-wide text-slate-300">
+                        Full Name
+                    </label>
+
+                    <input type="text"
+                        name="name"
+                        id="name"
+                        value="{{ old('name', $user->name) }}"
+                        required
+                        class="w-full rounded-2xl border border-white/10 bg-[#111827]/90 px-5 py-3 text-white placeholder-slate-500 transition duration-300 focus:border-blue-500/40 focus:bg-[#131d31] focus:outline-none focus:ring-2 focus:ring-blue-500/10">
+
                     @error('name')
-                    <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-red-400">
+                        {{ $message }}
+                    </p>
                     @enderror
                 </div>
 
-                <div>
-                    <label for="email" class="block text-sm font-medium text-gray-300 mb-2">Email Address</label>
-                    <input type="email" name="email" id="email" value="{{ old('email', $user->email) }}" 
-                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none"
-                        required>
+                {{-- EMAIL --}}
+                <div class="reveal reveal-delay-1">
+                    <label
+                        for="email"
+                        class="mb-2 block text-sm font-semibold tracking-wide text-slate-300">
+                        Email Address
+                    </label>
+
+                    <input type="email"
+                        name="email"
+                        id="email"
+                        value="{{ old('email', $user->email) }}"
+                        required
+                        class="w-full rounded-2xl border border-white/10 bg-[#111827]/90 px-5 py-3 text-white placeholder-slate-500 transition duration-300 focus:border-blue-500/40 focus:bg-[#131d31] focus:outline-none focus:ring-2 focus:ring-blue-500/10">
+
                     @error('email')
-                    <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-red-400">
+                        {{ $message }}
+                    </p>
                     @enderror
                 </div>
 
-                <div>
-                    <label for="phone" class="block text-sm font-medium text-gray-300 mb-2">Phone Number (Optional)</label>
-                    <input type="tel" name="phone" id="phone" value="{{ old('phone', $user->phone ?? '') }}" 
-                        class="w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 text-white placeholder-gray-500 focus:border-purple-500 focus:outline-none"
-                        placeholder="+62...">
+                {{-- PHONE --}}
+                <div class="reveal reveal-delay-2">
+                    <label
+                        for="phone"
+                        class="mb-2 block text-sm font-semibold tracking-wide text-slate-300">
+                        Phone Number (Optional)
+                    </label>
+
+                    <input type="tel"
+                        name="phone"
+                        id="phone"
+                        value="{{ old('phone', $user->phone ?? '') }}"
+                        placeholder="+62..."
+                        class="w-full rounded-2xl border border-white/10 bg-[#111827]/90 px-5 py-3 text-white placeholder-slate-500 transition duration-300 focus:border-blue-500/40 focus:bg-[#131d31] focus:outline-none focus:ring-2 focus:ring-blue-500/10">
+
                     @error('phone')
-                    <p class="text-red-400 text-sm mt-1">{{ $message }}</p>
+                    <p class="mt-2 text-sm text-red-400">
+                        {{ $message }}
+                    </p>
                     @enderror
                 </div>
 
-                <div class="border-t border-gray-800 pt-6 flex gap-3">
-                    <button type="submit" class="flex-1 bg-purple-600 hover:bg-purple-700 text-white font-medium py-2 px-4 rounded-lg transition-colors">
-                        Save Changes
+                {{-- BUTTON --}}
+                <div
+                    class="reveal reveal-delay-2 flex flex-col gap-3 border-t border-white/10 pt-6 sm:flex-row">
+
+                    <button type="submit"
+                        class="group flex-1 rounded-2xl border border-blue-500/30 bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-3 text-sm font-bold tracking-wide text-white transition duration-300 hover:-translate-y-1 hover:shadow-[0_0_25px_rgba(59,130,246,0.35)]">
+
+                        <span class="flex items-center justify-center gap-2">
+                            Save Changes
+                        </span>
                     </button>
-                    <a href="{{ route('profile.show') }}" class="flex-1 bg-gray-800 hover:bg-gray-700 text-white font-medium py-2 px-4 rounded-lg transition-colors text-center">
+
+                    <a href="{{ route('profile.show') }}"
+                        class="flex-1 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-center text-sm font-semibold text-slate-300 transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.05] hover:text-white">
+
                         Cancel
                     </a>
                 </div>
+
             </form>
         </div>
+
     </div>
 </div>
 @endsection
