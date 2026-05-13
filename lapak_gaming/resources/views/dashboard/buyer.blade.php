@@ -117,7 +117,7 @@
     </div>
 
     {{-- CONTENT --}}
-    <div class="grid gap-5 lg:grid-cols-2">
+    <div class="mt-6 grid gap-5 lg:grid-cols-3 max-w-6xl mx-auto">
 
         {{-- RECENT ORDERS --}}
         <section
