@@ -5,9 +5,9 @@
 
     {{-- BACKGROUND EFFECT --}}
     <div class="pointer-events-none fixed inset-0 -z-10">
-        <div class="absolute -top-32 -right-32 h-[340px] w-[340px] rounded-full bg-blue-500/10 blur-3xl"></div>
-        <div class="absolute bottom-[-140px] left-[-120px] h-[340px] w-[340px] rounded-full bg-orange-500/10 blur-3xl"></div>
-    </div>
+    <div class="absolute -top-32 -right-32 h-[340px] w-[340px] rounded-full bg-blue-500/10 blur-3xl"></div>
+    <div class="absolute bottom-[-140px] left-[-120px] h-[340px] w-[340px] rounded-full bg-orange-500/10 blur-3xl"></div>
+</div>
 
     <div class="relative z-10 mx-auto max-w-7xl">
 
