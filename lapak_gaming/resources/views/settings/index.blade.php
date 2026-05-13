@@ -1,10 +1,10 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="relative min-h-screen overflow-hidden bg-[#060816] px-4 pb-20 pt-32">
+<div class="relative bg-[#060816] px-4 pb-20 pt-32">
 
     {{-- BACKGROUND EFFECT --}}
-    <div class="pointer-events-none absolute inset-0 overflow-hidden">
+    <div class="pointer-events-none fixed inset-0 -z-10">
         <div class="absolute -top-32 -right-32 h-[340px] w-[340px] rounded-full bg-blue-500/10 blur-3xl"></div>
         <div class="absolute bottom-[-140px] left-[-120px] h-[340px] w-[340px] rounded-full bg-orange-500/10 blur-3xl"></div>
     </div>
