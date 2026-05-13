@@ -107,7 +107,7 @@ class ChatController extends Controller
 
     // ─── PRODUCT CHAT ────────────────────────────────────────────────────────
 
-    public function product(Request $request, Product $product): View|RedirectResponse
+    public function product(Request $request, Product $product): View
     {
         $product->load('seller');
         $user = $request->user();
@@ -116,12 +116,25 @@ class ChatController extends Controller
         if ($user->id === $product->seller_id) {
             $conversations = Conversation::where('seller_id', $user->id)
                 ->where('product_id', $product->id)
-                ->with(['buyer', 'product'])->orderByDesc('last_message_at')->get();
+                ->with('buyer')
+                ->orderByDesc('last_message_at')
+                ->get();
+
             return view('chat.product-seller', compact('product', 'conversations'));
         }
 
         $conversation = Conversation::findOrCreateForProduct($user->id, $product->seller_id, $product->id);
-        return redirect()->route('chat.show', $conversation);
+        $partner = $product->seller;
+        $participants = collect();
+        $messages = Message::where('conversation_id', $conversation->id)
+            ->with('sender')->oldest()->get();
+
+        $conversation->markReadFor($user->id);
+        Message::where('conversation_id', $conversation->id)
+            ->where('receiver_id', $user->id)->whereNull('read_at')
+            ->update(['read_at' => now(), 'is_read' => true]);
+
+        return view('chat.product', compact('product', 'partner', 'participants', 'messages'));
     }
 
     // ─── ORDER CHAT ──────────────────────────────────────────────────────────
@@ -205,7 +218,11 @@ class ChatController extends Controller
         $conversation->updateLastMessage($msg);
         $conversation->incrementUnread($user->id);
 
-        return redirect()->route('chat.show', $conversation);
+        if ($user->id === $product->seller_id) {
+            return redirect()->route('chat.product', ['product' => $product->id, 'buyer' => $buyerId]);
+        }
+
+        return redirect()->route('chat.product', ['product' => $product->id]);
     }
 
     public function pollProduct(Request $request, Product $product): JsonResponse

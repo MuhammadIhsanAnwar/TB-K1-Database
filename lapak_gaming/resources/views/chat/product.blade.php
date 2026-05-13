@@ -36,7 +36,7 @@
 
   <div id="chat-box"
        data-auth-id="{{ $authId }}"
-       data-poll-url="{{ route('chat.product.poll', ['product' => $product->id, 'buyer' => $partnerId]) }}"
+       data-poll-url="{{ $authId === $product->seller_id && $partnerId ? route('chat.product.poll', ['product' => $product->id, 'buyer' => $partnerId]) : route('chat.product.poll', ['product' => $product->id]) }}"
        class="mt-6 h-120 overflow-y-auto rounded-[1.75rem] bg-slate-50 p-4 dark:bg-slate-950/40">
     @forelse($messages as $message)
       <div class="mb-3 flex {{ $message->sender_id === $authId ? 'justify-end' : 'justify-start' }}">
@@ -103,15 +103,22 @@
   };
 
   const pollMessages = async () => {
-    if (!pollUrl || !pollUrl.includes('buyer=')) {
+    if (!pollUrl) {
       return;
     }
 
-    const response = await fetch(pollUrl, {
-      headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
-    });
-    const payload = await response.json();
-    renderMessages(payload.messages);
+    try {
+      const response = await fetch(pollUrl, {
+        headers: { 'Accept': 'application/json', 'X-Requested-With': 'XMLHttpRequest' },
+      });
+      if (!response.ok) {
+        return;
+      }
+      const payload = await response.json();
+      renderMessages(payload.messages);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   scrollBottom();
