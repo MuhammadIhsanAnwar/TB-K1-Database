@@ -27,6 +27,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SellerRegistrationController;
 use App\Http\Controllers\Seller\SellerStoreController;
+use App\Http\Controllers\Admin\VerificationController;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public marketplace routes
@@ -169,6 +170,19 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/orders', [AdminController::class, 'orders'])->name('orders.index');
         Route::get('/orders/{order:order_code}', [AdminController::class, 'showOrder'])->name('orders.show');
         Route::get('/terminal', fn() => redirect()->route('artisan.terminal.index'))->name('terminal.index');
+
+        // ─── Verification ─────────────────────────────────────────────────────
+        Route::prefix('verification')->name('verification.')->group(function () {
+            Route::get('/', [VerificationController::class, 'index'])->name('index');
+            Route::get('/{user}', [VerificationController::class, 'show'])->name('show');
+            Route::post('/{user}/review', [VerificationController::class, 'markUnderReview'])->name('review');
+            Route::post('/{user}/revise', [VerificationController::class, 'requestRevision'])->name('revise');
+            Route::post('/{user}/approve', [VerificationController::class, 'approve'])->name('approve');
+            Route::post('/{user}/reject', [VerificationController::class, 'reject'])->name('reject');
+            Route::post('/{user}/suspend', [VerificationController::class, 'suspend'])->name('suspend');
+            Route::post('/{user}/reinstate', [VerificationController::class, 'reinstate'])->name('reinstate');
+            Route::post('/{user}/clarify', [VerificationController::class, 'sendClarification'])->name('clarify');
+        });
     });
 
     // ─── Checkout ─────────────────────────────────────────────────────────────
@@ -184,14 +198,21 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/wallet/deposit', [WalletController::class, 'deposit'])->middleware('role:buyer')->name('wallet.deposit');
     Route::post('/wallet/withdraw', [WalletController::class, 'withdraw'])->middleware('role:seller')->name('wallet.withdraw');
 
-    // ─── Chat ─────────────────────────────────────────────────────────────────
+    // ─── Chat (Modern) ───────────────────────────────────────────────────────
 
-    Route::get('/chat/{order}', [ChatController::class, 'index'])->name('chat.index');
-    Route::post('/chat/{order}', [ChatController::class, 'store'])->name('chat.store');
-    Route::get('/api/chat/{order}', [ChatController::class, 'poll'])->name('chat.poll');
+    Route::get('/messages', [ChatController::class, 'inbox'])->name('chat.inbox');
+    Route::get('/messages/{conversation}', [ChatController::class, 'show'])->name('chat.show');
+    Route::post('/messages/{conversation}/send', [ChatController::class, 'send'])->name('chat.send');
+    Route::get('/api/messages/{conversation}/poll', [ChatController::class, 'poll'])->name('chat.poll');
+    Route::get('/api/messages/inbox/poll', [ChatController::class, 'pollInbox'])->name('chat.inbox.poll');
+    Route::get('/chat/order/{order}', [ChatController::class, 'orderChat'])->name('chat.order');
+    // Product chat
     Route::get('/chat/product/{product}', [ChatController::class, 'product'])->name('chat.product');
     Route::post('/chat/product/{product}', [ChatController::class, 'storeProduct'])->name('chat.product.store');
     Route::get('/api/chat/product/{product}', [ChatController::class, 'pollProduct'])->name('chat.product.poll');
+    // Legacy
+    Route::get('/chat/{order}', [ChatController::class, 'index'])->name('chat.index');
+    Route::post('/chat/{order}', [ChatController::class, 'store'])->name('chat.store');
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
