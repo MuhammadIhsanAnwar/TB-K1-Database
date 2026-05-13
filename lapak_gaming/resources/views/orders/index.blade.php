@@ -3,10 +3,10 @@
 @section('title', 'Daftar Transaksi')
 
 @section('content')
-<div class="relative px-4 pt-28 pb-16 overflow-hidden">
+<div class="relative px-4 pt-28 pb-16">
 
     {{-- BACKGROUND EFFECT --}}
-    <div class="pointer-events-none absolute inset-0 overflow-hidden">
+    <div class="pointer-events-none absolute inset-0 -z-10">
         <div class="absolute top-[-120px] right-[-120px] h-[320px] w-[320px] rounded-full bg-blue-500/10 blur-3xl"></div>
         <div class="absolute bottom-[-140px] left-[-120px] h-[320px] w-[320px] rounded-full bg-orange-500/10 blur-3xl"></div>
     </div>
