@@ -6,10 +6,64 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class Conversation extends Model
 {
     use SoftDeletes;
+
+    protected static bool $schemaChecked = false;
+
+    protected static function booted(): void
+    {
+        static::addGlobalScope('ensure_conversation_schema', function ($builder) {
+            static::ensureSchema();
+        });
+    }
+
+    protected static function ensureSchema(): void
+    {
+        if (static::$schemaChecked) {
+            return;
+        }
+
+        if (! Schema::hasTable('conversations')) {
+            Schema::create('conversations', function (Blueprint $table) {
+                $table->id();
+                $table->foreignId('buyer_id')->constrained('users')->cascadeOnDelete();
+                $table->foreignId('seller_id')->constrained('users')->cascadeOnDelete();
+                $table->foreignId('product_id')->nullable()->constrained()->nullOnDelete();
+                $table->foreignId('order_id')->nullable()->constrained()->nullOnDelete();
+                $table->text('last_message')->nullable();
+                $table->timestamp('last_message_at')->nullable();
+                $table->foreignId('last_message_sender_id')->nullable()->constrained('users')->nullOnDelete();
+                $table->unsignedInteger('unread_buyer')->default(0);
+                $table->unsignedInteger('unread_seller')->default(0);
+                $table->boolean('pinned_by_seller')->default(false);
+                $table->timestamp('archived_by_buyer_at')->nullable();
+                $table->timestamp('archived_by_seller_at')->nullable();
+                $table->timestamps();
+                $table->softDeletes();
+                $table->unique(['buyer_id', 'seller_id', 'product_id', 'order_id'], 'unique_conversation');
+                $table->index(['seller_id', 'last_message_at']);
+                $table->index(['buyer_id', 'last_message_at']);
+            });
+        }
+
+        if (Schema::hasTable('messages') && ! Schema::hasColumn('messages', 'conversation_id')) {
+            Schema::table('messages', function (Blueprint $table) {
+                $table->foreignId('conversation_id')
+                    ->nullable()
+                    ->after('id')
+                    ->constrained('conversations')
+                    ->nullOnDelete();
+                $table->index('conversation_id');
+            });
+        }
+
+        static::$schemaChecked = true;
+    }
 
     protected $fillable = [
         'buyer_id',
