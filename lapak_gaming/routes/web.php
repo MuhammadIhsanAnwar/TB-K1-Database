@@ -27,7 +27,7 @@ use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\SellerRegistrationController;
 use App\Http\Controllers\Seller\SellerStoreController;
-use App\Http\Controllers\Admin\VerificationController;
+use App\Http\Controllers\Admin\VerificationController as AdminVerificationController;
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Public marketplace routes
@@ -172,16 +172,16 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/terminal', fn() => redirect()->route('artisan.terminal.index'))->name('terminal.index');
 
         // ─── Verification ─────────────────────────────────────────────────────
-        Route::prefix('verification')->name('verification.')->group(function () {
-            Route::get('/', [VerificationController::class, 'index'])->name('index');
-            Route::get('/{user}', [VerificationController::class, 'show'])->name('show');
-            Route::post('/{user}/review', [VerificationController::class, 'markUnderReview'])->name('review');
-            Route::post('/{user}/revise', [VerificationController::class, 'requestRevision'])->name('revise');
-            Route::post('/{user}/approve', [VerificationController::class, 'approve'])->name('approve');
-            Route::post('/{user}/reject', [VerificationController::class, 'reject'])->name('reject');
-            Route::post('/{user}/suspend', [VerificationController::class, 'suspend'])->name('suspend');
-            Route::post('/{user}/reinstate', [VerificationController::class, 'reinstate'])->name('reinstate');
-            Route::post('/{user}/clarify', [VerificationController::class, 'sendClarification'])->name('clarify');
+        rification.')->group(function () {
+            Route::get('/', [AdminVerificationController::class, 'index'])->name('index');
+            Route::get('/{user}', [AdminVerificationController::class, 'show'])->name('show');
+            Route::post('/{user}/review', [AdminVerificationController::class, 'markUnderReview'])->name('review');
+            Route::post('/{user}/revise', [AdminVerificationController::class, 'requestRevision'])->name('revise');
+            Route::post('/{user}/approve', [AdminVerificationController::class, 'approve'])->name('approve');
+            Route::post('/{user}/reject', [AdminVerificationController::class, 'reject'])->name('reject');
+            Route::post('/{user}/suspend', [AdminVerificationController::class, 'suspend'])->name('suspend');
+            Route::post('/{user}/reinstate', [AdminVerificationController::class, 'reinstate'])->name('reinstate');
+            Route::post('/{user}/clarify', [AdminVerificationController::class, 'sendClarification'])->name('clarify');
         });
     });
 
@@ -205,7 +205,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/messages/{conversation}/send', [ChatController::class, 'send'])->name('chat.send');
     Route::get('/api/messages/{conversation}/poll', [ChatController::class, 'poll'])->name('chat.poll');
     Route::get('/api/messages/inbox/poll', [ChatController::class, 'pollInbox'])->name('chat.inbox.poll');
-    Route::get('/chat/order/{order}', [ChatController::class, 'orderChat'])->name('chat.order');
+    Route::get('/chRoute::prefix('verification')->name('veat/order/{order}', [ChatController::class, 'orderChat'])->name('chat.order');
     // Product chat
     Route::get('/chat/product/{product}', [ChatController::class, 'product'])->name('chat.product');
     Route::post('/chat/product/{product}', [ChatController::class, 'storeProduct'])->name('chat.product.store');
