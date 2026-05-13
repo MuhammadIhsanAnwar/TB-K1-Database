@@ -30,12 +30,18 @@ class ChatController extends Controller
 
     // ─── SHOW Conversation ────────────────────────────────────────────────────
 
+    protected function authorizeParticipant(Conversation $conversation, User $user): void
+    {
+        abort_unless(
+            $conversation->buyer_id === $user->id || $conversation->seller_id === $user->id,
+            403
+        );
+    }
+
     public function show(Request $request, Conversation $conversation): View
     {
         $user = $request->user();
-        abort_unless(
-            $conversation->buyer_id === $user->id || $conversation->seller_id === $user->id, 403
-        );
+        $this->authorizeParticipant($conversation, $user);
         $conversation->load(['buyer', 'seller', 'product', 'order']);
         $conversation->markReadFor($user->id);
         Message::where('conversation_id', $conversation->id)
@@ -58,9 +64,7 @@ class ChatController extends Controller
     public function send(Request $request, Conversation $conversation): JsonResponse
     {
         $user = $request->user();
-        abort_unless(
-            $conversation->buyer_id === $user->id || $conversation->seller_id === $user->id, 403
-        );
+        $this->authorizeParticipant($conversation, $user);
         $data = $request->validate(['message' => ['required', 'string', 'max:2000']]);
         $receiverId = $user->id === $conversation->buyer_id
             ? $conversation->seller_id : $conversation->buyer_id;
@@ -84,9 +88,7 @@ class ChatController extends Controller
     public function poll(Request $request, Conversation $conversation): JsonResponse
     {
         $user = $request->user();
-        abort_unless(
-            $conversation->buyer_id === $user->id || $conversation->seller_id === $user->id, 403
-        );
+        $this->authorizeParticipant($conversation, $user);
         $since = (int) $request->query('since', 0);
         $messages = Message::where('conversation_id', $conversation->id)
             ->when($since, fn($q) => $q->where('id', '>', $since))
@@ -176,16 +178,28 @@ class ChatController extends Controller
         $product->load('seller');
         $user = $request->user();
         abort_unless($product->seller_id, 404);
-        $data = $request->validate(['message' => ['required', 'string', 'max:2000']]);
-        $buyerId  = $user->id === $product->seller_id ? (int) $request->input('receiver_id', 0) : $user->id;
+
+        $data = $request->validate([
+            'message' => ['required', 'string', 'max:2000'],
+            'receiver_id' => ['nullable', 'integer', 'exists:users,id'],
+        ]);
+
+        if ($user->id === $product->seller_id) {
+            $buyerId = (int) ($data['receiver_id'] ?? 0);
+            abort_unless($buyerId > 0 && $buyerId !== $user->id, 403);
+        } else {
+            $buyerId = $user->id;
+        }
+
         $conversation = Conversation::findOrCreateForProduct($buyerId, $product->seller_id, $product->id);
         $receiverId = $user->id === $buyerId ? $product->seller_id : $buyerId;
+
         $msg = Message::create([
             'conversation_id' => $conversation->id,
-            'product_id' => $product->id,
-            'sender_id'  => $user->id,
-            'receiver_id'=> $receiverId,
-            'message'    => $data['message'],
+            'product_id'      => $product->id,
+            'sender_id'       => $user->id,
+            'receiver_id'     => $receiverId,
+            'message'         => $data['message'],
         ]);
         $conversation->updateLastMessage($msg);
         $conversation->incrementUnread($user->id);

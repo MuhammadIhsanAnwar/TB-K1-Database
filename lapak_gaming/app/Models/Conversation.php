@@ -126,6 +126,10 @@ class Conversation extends Model
      */
     public static function findOrCreateForProduct(int $buyerId, int $sellerId, int $productId): static
     {
+        if ($buyerId <= 0 || $sellerId <= 0 || $productId <= 0) {
+            throw new \InvalidArgumentException('Invalid product chat participants or product ID.');
+        }
+
         return static::firstOrCreate(
             [
                 'buyer_id'   => $buyerId,
@@ -142,6 +146,10 @@ class Conversation extends Model
      */
     public static function findOrCreateForOrder(int $buyerId, int $sellerId, int $orderId): static
     {
+        if ($buyerId <= 0 || $sellerId <= 0 || $orderId <= 0) {
+            throw new \InvalidArgumentException('Invalid order chat participants or order ID.');
+        }
+
         return static::firstOrCreate(
             [
                 'buyer_id'  => $buyerId,
