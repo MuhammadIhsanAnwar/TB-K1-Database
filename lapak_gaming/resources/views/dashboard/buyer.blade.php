@@ -36,11 +36,9 @@
 
             <div
                 class="hidden lg:flex h-[180px] w-[180px] items-center justify-center rounded-full border border-blue-500/20 bg-blue-500/5 backdrop-blur-xl">
-                <img src="{{ asset('images/logo.png') }}"
-                    alt="Logo"
-                    class="h-28 w-28 object-contain opacity-95">
-            </div>
+                <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="w-8 h-8 rounded-lg object-contain bg-white/5 p-1 shadow-glow-sm">
 
+            </div>
         </div>
     </div>
 
