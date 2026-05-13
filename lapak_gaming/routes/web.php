@@ -172,7 +172,8 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/terminal', fn() => redirect()->route('artisan.terminal.index'))->name('terminal.index');
 
         // ─── Verification ─────────────────────────────────────────────────────
-        rification.')->group(function () {
+       // ─── Verification ─────────────────────────────────────────────────────
+Route::prefix('verification')->name('verification.')->group(function () {
             Route::get('/', [AdminVerificationController::class, 'index'])->name('index');
             Route::get('/{user}', [AdminVerificationController::class, 'show'])->name('show');
             Route::post('/{user}/review', [AdminVerificationController::class, 'markUnderReview'])->name('review');
@@ -205,7 +206,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/messages/{conversation}/send', [ChatController::class, 'send'])->name('chat.send');
     Route::get('/api/messages/{conversation}/poll', [ChatController::class, 'poll'])->name('chat.poll');
     Route::get('/api/messages/inbox/poll', [ChatController::class, 'pollInbox'])->name('chat.inbox.poll');
-    Route::get('/chRoute::prefix('verification')->name('veat/order/{order}', [ChatController::class, 'orderChat'])->name('chat.order');
+  Route::get('/chat/order/{order}', [ChatController::class, 'orderChat'])->name('chat.order');
     // Product chat
     Route::get('/chat/product/{product}', [ChatController::class, 'product'])->name('chat.product');
     Route::post('/chat/product/{product}', [ChatController::class, 'storeProduct'])->name('chat.product.store');
