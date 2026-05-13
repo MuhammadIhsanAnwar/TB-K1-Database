@@ -3,13 +3,61 @@
 @section('title', 'Kebijakan Pengembalian Dana — Lapak Gaming')
 
 @section('content')
+
+{{-- REVEAL CSS --}}
+<style>
+    .reveal {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: all 1s ease;
+    }
+
+    .reveal.active {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
+    .reveal-left {
+        opacity: 0;
+        transform: translateX(-60px);
+        transition: all 1s ease;
+    }
+
+    .reveal-left.active {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .reveal-right {
+        opacity: 0;
+        transform: translateX(60px);
+        transition: all 1s ease;
+    }
+
+    .reveal-right.active {
+        opacity: 1;
+        transform: translateX(0);
+    }
+
+    .reveal-zoom {
+        opacity: 0;
+        transform: scale(0.9);
+        transition: all 1s ease;
+    }
+
+    .reveal-zoom.active {
+        opacity: 1;
+        transform: scale(1);
+    }
+</style>
+
 <div class="max-w-4xl mx-auto px-4 py-12 md:py-20 animate-fade-in relative z-10">
     
     {{-- Background Glow Dekoratif --}}
     <div class="absolute top-10 left-1/2 -translate-x-1/2 w-full max-w-2xl h-64 bg-rose-600/10 blur-[100px] rounded-full pointer-events-none -z-10"></div>
 
     {{-- Header --}}
-    <div class="text-center mb-16 border-b border-gray-800/50 pb-10 relative">
+    <div class="text-center mb-16 border-b border-gray-800/50 pb-10 relative reveal">
         <h1 class="text-4xl md:text-5xl font-display font-extrabold text-white mb-6 tracking-tight">
             Kebijakan <span class="text-transparent bg-clip-text bg-gradient-to-r from-rose-400 to-orange-500">Refund</span>
         </h1>
@@ -20,7 +68,7 @@
     </div>
 
     {{-- Konten Pembuka --}}
-    <div class="bg-gray-900/40 border border-gray-700/50 rounded-2xl p-6 md:p-8 mb-10 text-center">
+    <div class="bg-gray-900/40 border border-gray-700/50 rounded-2xl p-6 md:p-8 mb-10 text-center reveal-zoom">
         <p class="text-slate-300 leading-relaxed text-sm md:text-base">
             Di Lapak Gaming, kepuasan dan keamanan transaksi Anda adalah prioritas utama. Jika produk yang Anda terima tidak sesuai atau mengalami kendala, Anda dapat mengajukan pengembalian dana sesuai dengan ketentuan yang berlaku.
         </p>
@@ -30,7 +78,7 @@
     <div class="space-y-6">
         
         {{-- Section 1: Syarat Utama --}}
-        <div class="group relative bg-rose-900/10 backdrop-blur-sm border border-rose-500/30 rounded-2xl p-6 md:p-8 hover:border-rose-500/60 hover:shadow-[0_8px_30px_rgba(244,63,94,0.15)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+        <div class="group relative bg-rose-900/10 backdrop-blur-sm border border-rose-500/30 rounded-2xl p-6 md:p-8 hover:border-rose-500/60 hover:shadow-[0_8px_30px_rgba(244,63,94,0.15)] hover:-translate-y-1 transition-all duration-300 overflow-hidden reveal-left">
             <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-rose-500/50 group-hover:bg-rose-500 shadow-[0_0_10px_rgba(244,63,94,0.5)] transition-colors duration-300"></div>
             
             <h2 class="text-xl md:text-2xl font-display font-bold text-white mb-5 flex items-center gap-4">
@@ -46,7 +94,7 @@
         </div>
 
         {{-- Section 2: Prosedur --}}
-        <div class="group relative bg-blue-900/10 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-6 md:p-8 hover:border-blue-500/60 hover:shadow-[0_8px_30px_rgba(59,130,246,0.15)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+        <div class="group relative bg-blue-900/10 backdrop-blur-sm border border-blue-500/30 rounded-2xl p-6 md:p-8 hover:border-blue-500/60 hover:shadow-[0_8px_30px_rgba(59,130,246,0.15)] hover:-translate-y-1 transition-all duration-300 overflow-hidden reveal-right">
             <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-blue-500/50 group-hover:bg-blue-500 shadow-[0_0_10px_rgba(59,130,246,0.5)] transition-colors duration-300"></div>
             
             <h2 class="text-xl md:text-2xl font-display font-bold text-white mb-5 flex items-center gap-4">
@@ -70,7 +118,7 @@
         </div>
 
         {{-- Section 3: Pengembalian Dana --}}
-        <div class="group relative bg-emerald-900/10 backdrop-blur-sm border border-emerald-500/30 rounded-2xl p-6 md:p-8 hover:border-emerald-500/60 hover:shadow-[0_8px_30px_rgba(16,185,129,0.15)] hover:-translate-y-1 transition-all duration-300 overflow-hidden">
+        <div class="group relative bg-emerald-900/10 backdrop-blur-sm border border-emerald-500/30 rounded-2xl p-6 md:p-8 hover:border-emerald-500/60 hover:shadow-[0_8px_30px_rgba(16,185,129,0.15)] hover:-translate-y-1 transition-all duration-300 overflow-hidden reveal-left">
             <div class="absolute left-0 top-0 bottom-0 w-1.5 bg-emerald-500/50 group-hover:bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)] transition-colors duration-300"></div>
             
             <h2 class="text-xl md:text-2xl font-display font-bold text-white mb-5 flex items-center gap-4">
@@ -93,7 +141,7 @@
     </div>
 
     {{-- Penutup/Catatan --}}
-    <div class="mt-12 p-8 bg-[#0D1421] border border-[#1E2D45] rounded-3xl text-center relative overflow-hidden group hover:border-rose-500/50 transition-colors duration-500">
+    <div class="mt-12 p-8 bg-[#0D1421] border border-[#1E2D45] rounded-3xl text-center relative overflow-hidden group hover:border-rose-500/50 transition-colors duration-500 reveal-zoom">
         <div class="absolute -top-24 -right-24 w-48 h-48 bg-rose-600/10 rounded-full blur-2xl group-hover:bg-rose-600/20 transition-all duration-500"></div>
         
         <svg class="w-10 h-10 text-rose-500 mx-auto mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -104,4 +152,25 @@
         </p>
     </div>
 </div>
+
+{{-- REVEAL JS --}}
+<script>
+    function revealElements() {
+        const reveals = document.querySelectorAll('.reveal, .reveal-left, .reveal-right, .reveal-zoom');
+
+        reveals.forEach((element) => {
+            const windowHeight = window.innerHeight;
+            const elementTop = element.getBoundingClientRect().top;
+            const revealPoint = 100;
+
+            if (elementTop < windowHeight - revealPoint) {
+                element.classList.add('active');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', revealElements);
+    window.addEventListener('load', revealElements);
+</script>
+
 @endsection
