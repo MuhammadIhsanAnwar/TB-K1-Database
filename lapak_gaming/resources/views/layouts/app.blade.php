@@ -926,6 +926,27 @@
       }
     }
 
+    async function loadChatBadge() {
+      const badge = document.getElementById('chat-badge');
+      if (!badge) return;
+
+      try {
+        const response = await fetch('/chat/poll-inbox', {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+          },
+        });
+
+        if (!response.ok) throw new Error('Failed to load chat badge');
+
+        const data = await response.json();
+        badge.classList.toggle('hidden', !(Number(data.total_unread) > 0));
+      } catch (error) {
+        // no-op: badge stays as is
+      }
+    }
+
     document.addEventListener('click', (e) => {
       if (!e.target.closest('[onclick^="toggleDropdown"]')) {
         dropdowns.forEach(ddId => {
@@ -990,6 +1011,7 @@
     reveals.forEach((el) => observer.observe(el));
 
   loadNotificationPreview();
+  loadChatBadge();
 });
 
 document.addEventListener('DOMContentLoaded', () => {

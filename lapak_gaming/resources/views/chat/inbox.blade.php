@@ -4,38 +4,237 @@
 
 @push('styles')
 <style>
-.inbox-page { display: flex; min-height: calc(100vh - 80px); }
-.sidebar { width: 320px; shrink: 0; border-right: 1px solid rgba(30,45,69,.8); }
-.conv-item { padding: 14px 16px; cursor: pointer; transition: background .15s; border-bottom: 1px solid rgba(30,45,69,.5); }
-.conv-item:hover { background: rgba(30,45,69,.5); }
-.conv-item.active { background: rgba(37,99,235,.1); border-left: 2px solid #3b82f6; }
-.unread-badge { background: #3b82f6; color: #fff; border-radius: 999px; font-size: .65rem; font-weight: 800; min-width: 18px; height: 18px; display: inline-flex; align-items: center; justify-content: center; padding: 0 5px; }
-.empty-pane { flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; opacity: .6; }
+/* WhatsApp Style Inbox */
+.inbox-container {
+    display: flex;
+    height: calc(100vh - 80px);
+    background: #0a0a0a;
+    border-radius: 12px;
+    overflow: hidden;
+    border: 1px solid #1a1a1a;
+    box-shadow: 0 8px 32px rgba(0,0,0,0.5);
+}
+
+.inbox-sidebar {
+    width: 350px;
+    background: #111111;
+    border-right: 1px solid #1a1a1a;
+    display: flex;
+    flex-direction: column;
+}
+
+.inbox-header {
+    padding: 20px 16px;
+    background: #111111;
+    border-bottom: 1px solid #1a1a1a;
+}
+
+.inbox-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 4px;
+}
+
+.inbox-subtitle {
+    font-size: 14px;
+    color: #888888;
+}
+
+.search-container {
+    margin-top: 16px;
+}
+
+.search-input {
+    width: 100%;
+    background: #1a1a1a;
+    border: 1px solid #2a2a2a;
+    border-radius: 8px;
+    padding: 10px 12px;
+    color: #ffffff;
+    font-size: 14px;
+    outline: none;
+}
+
+.search-input:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
+}
+
+.search-input::placeholder {
+    color: #666666;
+}
+
+.conversations-list {
+    flex: 1;
+    overflow-y: auto;
+}
+
+.conv-item {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+    border-bottom: 1px solid #1a1a1a;
+    text-decoration: none;
+    position: relative;
+}
+
+.conv-item:hover {
+    background: #1a1a1a;
+}
+
+.conv-item.active {
+    background: #1e3a8a;
+}
+
+.conv-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: #2563eb;
+}
+
+.conv-avatar {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-right: 14px;
+    border: 2px solid #2a2a2a;
+}
+
+.conv-content {
+    flex: 1;
+    min-width: 0;
+}
+
+.conv-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 6px;
+}
+
+.conv-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: #ffffff;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conv-time {
+    font-size: 12px;
+    color: #666666;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+.conv-context {
+    font-size: 13px;
+    color: #2563eb;
+    margin-bottom: 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conv-preview {
+    font-size: 14px;
+    color: #888888;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.conv-preview.unread {
+    color: #ffffff;
+    font-weight: 500;
+}
+
+.unread-badge {
+    background: #2563eb;
+    color: #ffffff;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    min-width: 18px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 6px;
+    margin-left: auto;
+}
+
+.empty-state {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #0a0a0a;
+    color: #888888;
+}
+
+.empty-icon {
+    font-size: 64px;
+    margin-bottom: 16px;
+}
+
+.empty-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: #ffffff;
+    margin-bottom: 8px;
+}
+
+.empty-text {
+    font-size: 14px;
+    text-align: center;
+    max-width: 300px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .inbox-container {
+        height: 100vh;
+        border-radius: 0;
+    }
+
+    .inbox-sidebar {
+        width: 100%;
+    }
+
+    .empty-state {
+        display: none;
+    }
+}
 </style>
 @endpush
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 py-6">
-    <div class="flex gap-4 items-center mb-6">
-        <div>
-            <h1 class="text-2xl font-black text-white">Pesan</h1>
-            <p class="text-slate-400 text-sm">Semua percakapan dengan pembeli dan penjual</p>
-        </div>
-    </div>
-
-    <div class="rounded-2xl border border-slate-800 bg-slate-950 overflow-hidden flex" style="min-height: 600px">
+<div class="max-w-7xl mx-auto px-4 py-4">
+    <div class="inbox-container">
 
         {{-- Sidebar: Conversation List --}}
-        <div class="w-80 shrink-0 border-r border-slate-800 flex flex-col">
-            <div class="p-4 border-b border-slate-800">
-                <div class="relative">
-                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <div class="inbox-sidebar">
+            <div class="inbox-header">
+                <h1 class="inbox-title">Pesan</h1>
+                <p class="inbox-subtitle">Semua percakapan dengan pembeli dan penjual</p>
+                <div class="search-container">
                     <input id="searchInput" type="text" placeholder="Cari percakapan..."
-                        class="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-900 border border-slate-700 text-sm text-slate-200 placeholder-slate-500 focus:outline-none focus:border-brand-500 transition-colors">
+                           class="search-input">
                 </div>
             </div>
 
-            <div class="overflow-y-auto flex-1" id="convList">
+            <div class="conversations-list" id="convList">
                 @forelse($conversations as $conv)
                 @php
                     $user   = auth()->user();
@@ -43,35 +242,35 @@
                     $unread  = $conv->unreadFor($user->id);
                 @endphp
                 <a href="{{ route('chat.show', $conv) }}"
-                   class="conv-item flex gap-3 items-start hover:no-underline block"
+                   class="conv-item {{ request()->routeIs('chat.show') && request()->route('conversation') == $conv->id ? 'active' : '' }}"
                    data-name="{{ strtolower($partner?->name ?? '') }}">
-                    <div class="relative shrink-0">
-                        <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=?' }}"
-                             class="w-11 h-11 rounded-full object-cover" alt="{{ $partner?->name }}">
-                        @if($unread > 0)
-                        <span class="absolute -top-1 -right-1 unread-badge">{{ $unread > 9 ? '9+' : $unread }}</span>
-                        @endif
-                    </div>
-                    <div class="flex-1 min-w-0">
-                        <div class="flex justify-between items-center gap-2">
-                            <span class="font-semibold text-white text-sm truncate">{{ $partner?->name ?? 'Pengguna' }}</span>
-                            <span class="text-xs text-slate-500 shrink-0">
+                    <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=?' }}"
+                         class="conv-avatar" alt="{{ $partner?->name }}">
+                    <div class="conv-content">
+                        <div class="conv-header">
+                            <span class="conv-name">{{ $partner?->name ?? 'Pengguna' }}</span>
+                            <span class="conv-time">
                                 {{ $conv->last_message_at?->diffForHumans(null, true) ?? '' }}
                             </span>
                         </div>
                         @if($conv->product)
-                        <p class="text-xs text-brand-400 truncate mt-0.5">🎮 {{ $conv->product->name }}</p>
+                        <p class="conv-context">🎮 {{ $conv->product->name }}</p>
                         @elseif($conv->order)
-                        <p class="text-xs text-amber-400 truncate mt-0.5">📦 Order #{{ $conv->order->order_code ?? $conv->order_id }}</p>
+                        <p class="conv-context">📦 Order #{{ $conv->order->order_code ?? $conv->order_id }}</p>
                         @endif
-                        <p class="text-xs text-slate-500 truncate mt-0.5 {{ $unread > 0 ? 'text-slate-300 font-medium' : '' }}">
-                            @if($conv->last_message)
-                                @if($conv->last_message_sender_id === $user->id)Kamu: @endif
-                                {{ mb_substr($conv->last_message, 0, 50) }}
-                            @else
-                                Belum ada pesan
+                        <div class="flex justify-between items-center">
+                            <span class="conv-preview {{ $unread > 0 ? 'unread' : '' }}">
+                                @if($conv->last_message)
+                                    @if($conv->last_message_sender_id === $user->id)Kamu: @endif
+                                    {{ mb_substr($conv->last_message, 0, 50) }}
+                                @else
+                                    Belum ada pesan
+                                @endif
+                            </span>
+                            @if($unread > 0)
+                            <span class="unread-badge">{{ $unread > 9 ? '9+' : $unread }}</span>
                             @endif
-                        </p>
+                        </div>
                     </div>
                 </a>
                 @empty
@@ -91,13 +290,14 @@
         </div>
 
         {{-- Main pane: Empty state --}}
-        <div class="flex-1 empty-pane">
-            <div class="text-5xl">💬</div>
-            <p class="text-slate-400 font-medium">Pilih percakapan</p>
-            <p class="text-slate-500 text-sm">Klik salah satu percakapan di kiri untuk membukanya</p>
+        <div class="empty-state">
+            <div class="empty-icon">💬</div>
+            <h2 class="empty-title">Pilih percakapan</h2>
+            <p class="empty-text">Klik salah satu percakapan di kiri untuk membukanya</p>
         </div>
 
     </div>
+</div>
 </div>
 
 @push('scripts')
