@@ -3,7 +3,7 @@
 @section('title', 'Daftar Transaksi')
 
 @section('content')
-<div class="min-h-screen bg-[#060816] px-4 pb-16 pt-28 overflow-hidden">
+<div class="relative px-4 pt-28 pb-16 overflow-hidden">
 
     {{-- BACKGROUND EFFECT --}}
     <div class="pointer-events-none absolute inset-0 overflow-hidden">
@@ -26,25 +26,25 @@
                 <div>
                     <div
                         class="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-blue-300">
-                        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         TRANSACTION HISTORY
                     </div>
 
-                    <h1 class="mt-4 text-3xl font-black text-white md:text-4xl">
+                    <h1 class="mt-4 text-3xl font-black text-white md:text-5xl leading-tight">
                         Riwayat Transaksi
                     </h1>
 
-                    <p class="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300">
+                    <p class="mt-3 max-w-2xl text-sm leading-relaxed text-slate-300 md:text-[15px]">
                         Lihat seluruh riwayat transaksi, status order, serta detail seller dari akun buyer Anda.
                     </p>
                 </div>
 
                 <div
-                    class="hidden h-[120px] w-[120px] items-center justify-center rounded-full border border-blue-500/20 bg-blue-500/10 backdrop-blur-xl md:flex">
+                    class="hidden md:flex h-[140px] w-[140px] items-center justify-center rounded-full border border-blue-500/20 bg-blue-500/10 backdrop-blur-xl shadow-[0_0_40px_rgba(37,99,235,0.15)]">
 
                     <img src="{{ asset('storage/app/public/logo/logo.png') }}"
                         alt="Logo"
-                        class="h-24 w-24 object-contain opacity-95">
+                        class="h-28 w-28 object-contain opacity-95">
                 </div>
 
             </div>
@@ -56,7 +56,7 @@
             @forelse($orders as $order)
 
                 <a href="{{ route('orders.show', $order->order_code) }}"
-                    class="reveal-up group block overflow-hidden rounded-[28px] border border-white/5 bg-[#0B1220]/95 p-6 backdrop-blur-xl transition duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:shadow-[0_0_30px_rgba(37,99,235,0.12)]">
+                    class="reveal-up group block overflow-hidden rounded-[28px] border border-white/5 bg-[#0B1220]/90 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-500/30 hover:shadow-[0_0_35px_rgba(37,99,235,0.14)]">
 
                     <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
 
@@ -65,7 +65,7 @@
 
                             <div class="flex flex-wrap items-center gap-3">
 
-                                <h2 class="text-xl font-black text-white">
+                                <h2 class="text-xl font-black text-white transition duration-300 group-hover:text-blue-300">
                                     {{ $order->invoice_number }}
                                 </h2>
 
@@ -79,7 +79,7 @@
                             <div class="mt-4 flex flex-wrap items-center gap-3">
 
                                 <div
-                                    class="rounded-2xl border border-white/5 bg-white/[0.03] px-4 py-3">
+                                    class="rounded-2xl border border-white/5 bg-white/[0.03] px-4 py-3 transition duration-300 group-hover:border-blue-500/20">
 
                                     <div class="text-[11px] uppercase tracking-wider text-slate-500">
                                         Tanggal
@@ -91,7 +91,7 @@
                                 </div>
 
                                 <div
-                                    class="rounded-2xl border border-white/5 bg-white/[0.03] px-4 py-3">
+                                    class="rounded-2xl border border-white/5 bg-white/[0.03] px-4 py-3 transition duration-300 group-hover:border-orange-500/20">
 
                                     <div class="text-[11px] uppercase tracking-wider text-slate-500">
                                         Seller
@@ -107,7 +107,7 @@
 
                         {{-- RIGHT --}}
                         <div
-                            class="rounded-[24px] border border-orange-500/20 bg-orange-500/[0.04] px-6 py-5 text-left lg:min-w-[240px] lg:text-right">
+                            class="rounded-[24px] border border-orange-500/20 bg-orange-500/[0.04] px-6 py-5 text-left transition duration-300 group-hover:border-orange-400/30 group-hover:bg-orange-500/[0.06] lg:min-w-[240px] lg:text-right">
 
                             <div
                                 class="text-[11px] font-semibold uppercase tracking-[0.2em] text-orange-300">
@@ -126,13 +126,27 @@
             @empty
 
                 <div
-                    class="reveal-up rounded-[28px] border border-dashed border-white/10 bg-[#0B1220]/80 py-16 text-center">
+                    class="reveal-up rounded-[32px] border border-dashed border-white/10 bg-[#0B1220]/75 py-20 text-center backdrop-blur-xl">
 
-                    <div class="text-lg font-semibold text-white">
+                    <div
+                        class="mx-auto flex h-20 w-20 items-center justify-center rounded-full border border-blue-500/20 bg-blue-500/10">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                            class="h-10 w-10 text-blue-300"
+                            fill="none"
+                            viewBox="0 0 24 24"
+                            stroke="currentColor">
+                            <path stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="1.5"
+                                d="M3 7h18M6 11h12M8 15h8" />
+                        </svg>
+                    </div>
+
+                    <div class="mt-6 text-2xl font-bold text-white">
                         Belum Ada Transaksi
                     </div>
 
-                    <p class="mt-2 text-sm text-slate-500">
+                    <p class="mt-3 text-sm text-slate-500">
                         Semua transaksi buyer akan muncul di halaman ini.
                     </p>
 
@@ -143,7 +157,7 @@
         </div>
 
         {{-- PAGINATION --}}
-        <div class="reveal-up mt-8">
+        <div class="reveal-up mt-10">
             {{ $orders->links() }}
         </div>
 
@@ -154,8 +168,9 @@
 <style>
 .reveal-up{
     opacity:0;
-    transform:translateY(45px);
-    animation:revealUp .9s cubic-bezier(.22,1,.36,1) forwards;
+    transform:translateY(50px);
+    animation:revealUp 1s cubic-bezier(.22,1,.36,1) forwards;
+    will-change:transform, opacity;
 }
 
 .reveal-up:nth-child(2){animation-delay:.08s;}
