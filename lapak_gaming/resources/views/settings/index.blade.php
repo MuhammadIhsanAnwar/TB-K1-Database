@@ -229,7 +229,7 @@
                     </div>
 
                     <button type="submit"
-                        class="w-full rounded-2xl bg-gradient-to-r from-blue-600 to-orange-500 px-5 py-3 text-sm font-bold text-white transition duration-300 hover:scale-[1.01] hover:shadow-[0_0_25px_rgba(37,99,235,0.35)]">
+                        class="w-full rounded-2xl bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-3 text-sm font-bold text-white transition duration-300 hover:scale-[1.01] hover:shadow-[0_0_25px_rgba(37,99,235,0.35)]">
 
                         Simpan Perubahan Profil
                     </button>
