@@ -584,16 +584,13 @@
       @else
       {{-- Guest --}}
       <a href="{{ route('login') }}" class="btn-ghost py-2 px-4 text-sm rounded-xl">Masuk</a>
-      @endauth
-
-      @guest
       <a href="{{ route('register') }}" class="hidden sm:inline-flex dg-btn group relative items-center justify-center overflow-hidden rounded-xl px-4 py-2 font-display font-bold text-white transition-all duration-300 text-sm">
         <span class="relative z-10 flex items-center gap-2">
-          <span>Daftar Gratis Sekarang</span>
+          <span>Daftar</span>
         </span>
         <span class="dg-btn-glow"></span>
       </a>
-      @endguest
+      @endauth
     </div>
   </div>
 </header>
