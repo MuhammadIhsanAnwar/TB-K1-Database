@@ -58,8 +58,8 @@
         </div>
     </div>
 
-    {{-- QUICK ACTIONS (Ini yang Baru Kita Tambahkan) --}}
-    <div class="grid gap-6 md:grid-cols-2">
+    {{-- QUICK ACTIONS --}}
+    <div class="grid gap-6 md:grid-cols-3">
         <a href="{{ route('seller.produk.create') }}" class="group flex items-center justify-between p-6 bg-amber-500 rounded-3xl transition-all hover:scale-[1.02] active:scale-95 shadow-lg shadow-amber-500/20">
             <div>
                 <h3 class="text-xl font-black text-slate-950 italic">TAMBAH PRODUK</h3>
@@ -79,6 +79,17 @@
             <div class="bg-slate-700 p-4 rounded-2xl group-hover:bg-amber-500 transition-colors">
                 <svg class="w-8 h-8 text-white group-hover:text-slate-950" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
+                </svg>
+            </div>
+        </a>
+        <a href="{{ route('chat.inbox') }}" class="group flex items-center justify-between p-6 bg-slate-800 border border-slate-700 rounded-3xl transition-all hover:border-blue-500/50">
+            <div>
+                <h3 class="text-xl font-black text-white italic">PESAN MASUK</h3>
+                <p class="text-slate-400 text-sm font-bold tracking-tight">Balas chat dari pembeli</p>
+            </div>
+            <div class="bg-slate-700 p-4 rounded-2xl group-hover:bg-blue-500 transition-colors">
+                <svg class="w-8 h-8 text-white group-hover:text-slate-950" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a.863.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                 </svg>
             </div>
         </a>

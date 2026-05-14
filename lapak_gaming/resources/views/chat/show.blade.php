@@ -695,7 +695,17 @@ async function sendMessage() {
 
         if (data.message) {
             const tmp = document.querySelector(`[data-msg-id="${tempId}"]`);
-            if (tmp) tmp.remove();
+            if (tmp) {
+                // Replace temp message with real one instead of just removing
+                const realMsg = data.message;
+                tmp.dataset.msgId = realMsg.id;
+                const bubble = tmp.querySelector('.bubble-content');
+                if (bubble) {
+                    bubble.querySelector('.message-text').textContent = realMsg.message;
+                }
+                const timeSpan = tmp.querySelector('.message-time span');
+                if (timeSpan) timeSpan.textContent = realMsg.time;
+            }
             lastId = data.message.id;
         }
     } catch(e) {

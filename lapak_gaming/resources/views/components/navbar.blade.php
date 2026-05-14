@@ -417,10 +417,13 @@
     {{-- Right Action Icons --}}
     <div class="flex items-center gap-1.5 ml-auto">
 
-      {{-- Mobile search --}}
+      @auth
+      @if(! $authUser?->isAdmin())
+      {{-- Mobile search (only for non-admin) --}}
       <a href="{{ route('products.search') }}" class="md:hidden w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors" style="background:#162032;border:1px solid #1E2D45;">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
       </a>
+      @endif
 
       @auth
       {{-- Notifications --}}
@@ -445,15 +448,16 @@
         </div>
       </div>
 
-      {{-- Chat --}}
+      @if(! $authUser?->isAdmin())
+      {{-- Chat (only for non-admin) --}}
       <div class="relative">
         <a href="{{ route('chat.inbox') }}" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors" style="background:#162032;border:1px solid #1E2D45;" aria-label="Chat">
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a.863.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/></svg>
           <span id="chat-badge" class="notif-dot hidden"></span>
         </a>
       </div>
 
-      {{-- Cart --}}
+      {{-- Cart (only for non-admin) --}}
       <div class="relative">
         <button onclick="toggleDropdown('cart-dropdown')" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors" style="background:#162032;border:1px solid #1E2D45;" aria-label="Cart">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
@@ -463,7 +467,12 @@
             </span>
           @endif
         </button>
-        <div id="cart-dropdown" class="dropdown-panel absolute right-0 top-full mt-2 w-72 rounded-xl shadow-card-hover"
+        @endif
+      </div>
+      @endif
+
+      @if(! $authUser?->isAdmin())
+      <div id="cart-dropdown" class="dropdown-panel absolute right-0 top-full mt-2 w-72 rounded-xl shadow-card-hover"
              style="background:#0D1421;border:1px solid #1E2D45;">
           <div class="px-4 py-3" style="border-bottom:1px solid #1E2D45;">
             <div class="flex items-center justify-between gap-3">
