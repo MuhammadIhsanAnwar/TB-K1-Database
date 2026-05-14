@@ -5,6 +5,12 @@
     <div class="max-w-4xl mx-auto">
         <div class="flex justify-between items-center mb-8">
             <h1 class="text-3xl font-bold text-white">Notifications</h1>
+            <form action="{{ route('notifications.read-all') }}" method="POST">
+                @csrf
+                <button type="submit" class="text-sm font-semibold text-brand-300 hover:text-brand-200">
+                    Tandai semua dibaca
+                </button>
+            </form>
         </div>
 
         @if($notifications->count() > 0)

@@ -60,9 +60,17 @@
                 </label>
                 <label class="block">
                     <span class="text-sm font-medium text-slate-300">Foto Produk</span>
-                    <input name="images[]" type="file" class="mt-2 w-full text-slate-300" accept="image/*" multiple />
+                    <input id="product-images" name="images[]" type="file" class="mt-2 w-full text-slate-300" accept="image/*" multiple />
                     <p class="mt-2 text-xs text-slate-500">Maksimal 5 MB per foto, bisa pilih lebih dari satu file.</p>
                 </label>
+            </div>
+
+            <div>
+                <div class="flex items-center justify-between">
+                    <span class="text-sm font-medium text-slate-300">Pratinjau Foto</span>
+                    <span class="text-xs text-slate-500">Akan tampil sebelum disimpan</span>
+                </div>
+                <div id="product-image-preview" class="mt-3 grid gap-3 sm:grid-cols-2 lg:grid-cols-3"></div>
             </div>
 
             <label class="block">
@@ -74,4 +82,32 @@
         </form>
     </div>
 </div>
+
+<script>
+    const productImagesInput = document.getElementById('product-images');
+    const productImagePreview = document.getElementById('product-image-preview');
+
+    if (productImagesInput && productImagePreview) {
+        productImagesInput.addEventListener('change', () => {
+            const files = Array.from(productImagesInput.files || []);
+
+            if (!files.length) {
+                productImagePreview.innerHTML = '<div class="rounded-2xl border border-dashed border-slate-700 p-6 text-sm text-slate-500">Belum ada foto dipilih.</div>';
+                return;
+            }
+
+            productImagePreview.innerHTML = files.map((file) => {
+                const objectUrl = URL.createObjectURL(file);
+                return `
+                    <div class="overflow-hidden rounded-2xl border border-slate-700 bg-slate-950">
+                        <img src="${objectUrl}" alt="Pratinjau foto produk" class="h-44 w-full object-cover">
+                        <div class="px-3 py-2 text-xs text-slate-400 truncate">${file.name}</div>
+                    </div>
+                `;
+            }).join('');
+        });
+
+        productImagePreview.innerHTML = '<div class="rounded-2xl border border-dashed border-slate-700 p-6 text-sm text-slate-500">Belum ada foto dipilih.</div>';
+    }
+</script>
 @endsection

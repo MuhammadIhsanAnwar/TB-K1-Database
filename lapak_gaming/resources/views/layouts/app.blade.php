@@ -891,7 +891,7 @@
                 </div>
                 <div class="ml-2 flex shrink-0 flex-col items-end gap-2">
                   ${link ? `<button type="button" data-notification-id="${item.id}" data-notification-link="${link}" class="text-xs font-semibold text-brand-300 hover:text-brand-200">Buka</button>` : ''}
-                  ${unread ? `<button type="button" data-notification-id="${item.id}" class="text-xs font-semibold text-slate-300 hover:text-white">Tandai</button>` : ''}
+                  ${unread ? `<button type="button" data-notification-id="${item.id}" data-notification-link="${link}" class="text-xs font-semibold text-slate-300 hover:text-white">Tandai dibaca</button>` : ''}
                 </div>
               </div>
             </div>
@@ -952,6 +952,33 @@
         badge.classList.toggle('hidden', !(Number(data.total_unread) > 0));
       } catch (error) {
         // no-op: badge stays as is
+      }
+    }
+
+    async function markAllNotificationsRead() {
+      const panel = document.getElementById('notif-dropdown');
+      if (!panel) return;
+
+      const url = panel.dataset.notificationsReadAllUrl;
+      if (!url) return;
+
+      const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
+
+      try {
+        const response = await fetch(url, {
+          method: 'POST',
+          headers: {
+            'X-CSRF-TOKEN': csrf || '',
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+          },
+        });
+
+        if (!response.ok) throw new Error('Failed to mark all notifications read');
+
+        await loadNotificationPreview();
+      } catch (error) {
+        // no-op
       }
     }
 

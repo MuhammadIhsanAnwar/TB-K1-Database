@@ -42,6 +42,7 @@ class Product extends Model {
     // Scopes
     public function scopeActive($q)     { return $q->where('status', 'published'); }
     public function scopePublished($q)   { return $q->where('status', 'published'); }
+    public function scopeArchived($q)    { return $q->where('status', 'archived'); }
     public function scopeInStock($q)    { return $q->where('stock', '>', 0); }
     public function scopeSearch(Builder $q, string $term): Builder
     {

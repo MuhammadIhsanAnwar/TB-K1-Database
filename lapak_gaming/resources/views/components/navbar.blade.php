@@ -7,6 +7,16 @@
 @php
   /** @var \App\Models\User|null $authUser */
   $authUser = Auth::user();
+  $cartItems = collect();
+
+  if ($authUser) {
+    $cartItems = \App\Models\Cart::query()
+      ->where('user_id', $authUser->id)
+      ->with('product.seller')
+      ->latest()
+      ->take(3)
+      ->get();
+  }
 @endphp
 
 @push('styles')
@@ -415,10 +425,14 @@
           <span id="notif-badge" class="notif-dot hidden"></span>
         </button>
         <div id="notif-dropdown" data-notifications-url="{{ route('notifications.poll') }}" class="dropdown-panel absolute right-0 top-full mt-2 w-80 rounded-xl shadow-card-hover"
+             data-notifications-read-all-url="{{ route('notifications.read-all') }}"
              style="background:#0D1421;border:1px solid #1E2D45;">
           <div class="flex items-center justify-between px-4 py-3" style="border-bottom:1px solid #1E2D45;">
             <span class="font-display font-semibold text-sm text-white">Notifikasi</span>
-            <a href="{{ route('notifications.index') }}" class="text-xs text-brand-400 hover:text-brand-300">Lihat semua</a>
+            <div class="flex items-center gap-3">
+              <button type="button" onclick="markAllNotificationsRead()" class="text-xs text-slate-400 hover:text-white">Tandai semua</button>
+              <a href="{{ route('notifications.index') }}" class="text-xs text-brand-400 hover:text-brand-300">Lihat semua</a>
+            </div>
           </div>
           <div id="notif-dropdown-body" class="py-2 max-h-72 overflow-y-auto">
             <div class="px-4 py-3 text-sm text-slate-400 text-center">Klik ikon notifikasi untuk memuat pesan terbaru.</div>
@@ -438,19 +452,43 @@
       <div class="relative">
         <button onclick="toggleDropdown('cart-dropdown')" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors" style="background:#162032;border:1px solid #1E2D45;" aria-label="Cart">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+          @if($authUser && $cartItems->sum('quantity') > 0)
+            <span class="notif-dot"></span>
+          @endif
         </button>
         <div id="cart-dropdown" class="dropdown-panel absolute right-0 top-full mt-2 w-72 rounded-xl shadow-card-hover"
              style="background:#0D1421;border:1px solid #1E2D45;">
           <div class="px-4 py-3" style="border-bottom:1px solid #1E2D45;">
-            <span class="font-display font-semibold text-sm text-white">Keranjang</span>
-          </div>
-          <div class="px-4 py-8 text-center">
-            <div class="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:#162032;">
-              <svg class="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+            <div class="flex items-center justify-between gap-3">
+              <span class="font-display font-semibold text-sm text-white">Keranjang</span>
+              <a href="{{ route('cart.index') }}" class="text-xs text-brand-400 hover:text-brand-300">Lihat semua</a>
             </div>
-            <p class="text-sm text-slate-400">Keranjang kosong.</p>
-            <a href="{{ route('products.search') }}" class="mt-3 inline-block text-xs text-brand-400 hover:text-brand-300">Mulai belanja →</a>
           </div>
+          @if($authUser && $cartItems->isNotEmpty())
+            <div class="max-h-80 overflow-y-auto divide-y divide-slate-800/80">
+              @foreach($cartItems as $item)
+                <a href="{{ route('cart.index') }}" class="flex items-start gap-3 px-4 py-3 hover:bg-surface-850 transition-colors">
+                  <div class="w-10 h-10 rounded-lg overflow-hidden shrink-0" style="background:#162032;border:1px solid #1E2D45;">
+                    <img src="{{ $item->product?->image_url }}" alt="{{ $item->product?->name }}" class="w-full h-full object-cover">
+                  </div>
+                  <div class="min-w-0 flex-1">
+                    <div class="text-sm text-white font-medium truncate">{{ $item->product?->name ?? 'Produk' }}</div>
+                    <div class="mt-0.5 text-xs text-slate-500">
+                      {{ $item->quantity }} x Rp {{ number_format((float) ($item->product?->price ?? 0), 0, ',', '.') }}
+                    </div>
+                  </div>
+                </a>
+              @endforeach
+            </div>
+          @else
+            <div class="px-4 py-8 text-center">
+              <div class="w-10 h-10 rounded-xl mx-auto mb-3 flex items-center justify-center" style="background:#162032;">
+                <svg class="w-5 h-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
+              </div>
+              <p class="text-sm text-slate-400">Keranjang kosong.</p>
+              <a href="{{ route('products.search') }}" class="mt-3 inline-block text-xs text-brand-400 hover:text-brand-300">Mulai belanja →</a>
+            </div>
+          @endif
         </div>
       </div>
 

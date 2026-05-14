@@ -27,6 +27,7 @@ class Order extends Model {
         return [
             'paid_at' => 'datetime',
             'completed_at' => 'datetime',
+            'metadata' => 'array',
         ];
     }
 

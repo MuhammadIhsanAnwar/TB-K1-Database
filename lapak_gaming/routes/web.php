@@ -8,7 +8,6 @@ use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PasswordResetController;
 use App\Http\Controllers\ProductController;
-use App\Http\Controllers\VerificationController;
 use App\Http\Controllers\WalletController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\SetupController;
@@ -127,16 +126,18 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/seller/products/{produk}/edit', [SellerProductController::class, 'edit'])->name('seller.produk.edit');
     Route::put('/seller/products/{produk}', [SellerProductController::class, 'update'])->name('seller.produk.update');
     Route::delete('/seller/products/{produk}', [SellerProductController::class, 'destroy'])->name('seller.produk.destroy');
+    Route::post('/seller/products/{produk}/activate', [SellerProductController::class, 'activate'])->name('seller.produk.activate');
+    Route::delete('/seller/products/{produk}/force', [SellerProductController::class, 'forceDestroy'])->name('seller.produk.forceDestroy');
 
     // Auth
     Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
 
     // Email Verification
-    Route::get('/email/verify', [VerificationController::class, 'notice'])->name('verification.notice');
-    Route::get('/email/verify/{id}/{hash}', [VerificationController::class, 'verify'])
+    Route::get('/email/verify', 'App\\Http\\Controllers\\VerificationController@notice')->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', 'App\\Http\\Controllers\\VerificationController@verify')
         ->middleware(['signed', 'throttle:6,1'])
         ->name('verification.verify');
-    Route::post('/email/verification-notification', [VerificationController::class, 'send'])
+    Route::post('/email/verification-notification', 'App\\Http\\Controllers\\VerificationController@send')
         ->middleware('throttle:6,1')
         ->name('verification.send');
 
@@ -246,14 +247,14 @@ Route::middleware('guest')->group(function (): void {
 // Email verification (public)
 // ─────────────────────────────────────────────────────────────────────────────
 
-Route::get('/activate/{id}/{hash}', [VerificationController::class, 'activate'])
+Route::get('/activate/{id}/{hash}', 'App\\Http\\Controllers\\VerificationController@activate')
     ->name('activation.activate')
     ->middleware('signed');
 
-Route::get('/email/verify-pending', [VerificationController::class, 'pending'])
+Route::get('/email/verify-pending', 'App\\Http\\Controllers\\VerificationController@pending')
     ->name('verification.pending');
 
-Route::post('/email/verification-notification/guest', [VerificationController::class, 'resendGuest'])
+Route::post('/email/verification-notification/guest', 'App\\Http\\Controllers\\VerificationController@resendGuest')
     ->middleware('throttle:6,1')
     ->name('verification.resend.guest');
 
