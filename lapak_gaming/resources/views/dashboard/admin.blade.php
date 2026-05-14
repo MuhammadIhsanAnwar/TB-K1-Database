@@ -249,7 +249,7 @@
             <div class="mb-6 flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-white">Tren Transaksi</h3>
-                    <p class="text-[11px] text-slate-500">7 Hari Terakhir</p>
+                    <p class="text-[11px] text-slate-500">6 Bulan Terakhir</p>
                 </div>
                 <span class="rounded-lg bg-amber-500/10 px-2.5 py-1 text-[11px] font-bold text-amber-400">Order</span>
             </div>
@@ -260,10 +260,10 @@
         <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6">
             <div class="mb-6 flex items-center justify-between">
                 <div>
-                    <h3 class="font-bold text-white">Pendapatan</h3>
-                    <p class="text-[11px] text-slate-500">7 Hari Terakhir</p>
+                    <h3 class="font-bold text-white">Perputaran Uang</h3>
+                    <p class="text-[11px] text-slate-500">6 Bulan Terakhir</p>
                 </div>
-                <span class="rounded-lg bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold text-emerald-400">Revenue</span>
+                <span class="rounded-lg bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold text-emerald-400">Transaksi</span>
             </div>
             <canvas id="revenueChart" height="220"></canvas>
         </div>
@@ -273,8 +273,13 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script type="text/x-template">
+window.chartLabels = {!! json_encode($chartLabels) !!};
+window.chartTransactions = {!! json_encode($chartTransactions) !!};
+window.chartRevenue = {!! json_encode($chartRevenue) !!};
+</script>
 <script>
-    const labels = {!! json_encode($chartLabels) !!};
+    const labels = window.chartLabels;
 
     // Shared chart defaults for dark theme
     const gridColor  = 'rgba(255,255,255,0.05)';
@@ -310,7 +315,7 @@
             labels: labels,
             datasets: [{
                 label: 'Jumlah Order',
-                data: {!! json_encode($chartTransactions) !!},
+                data: window.chartTransactions,
                 borderColor: '#f59e0b',
                 backgroundColor: 'rgba(245,158,11,0.08)',
                 pointBackgroundColor: '#f59e0b',
@@ -336,7 +341,7 @@
             labels: labels,
             datasets: [{
                 label: 'Total Rupiah',
-                data: {!! json_encode($chartRevenue) !!},
+                data: window.chartRevenue,
                 backgroundColor: 'rgba(16,185,129,0.7)',
                 hoverBackgroundColor: '#10b981',
                 borderRadius: 6,

@@ -38,7 +38,7 @@ class NotificationController extends Controller
     public function markRead(Request $request, MarketplaceNotification $notification): JsonResponse
     {
         if ($notification->user_id !== $request->user()->id) {
-            return response()->json(['message' => 'Not found'], 404);
+            return response()->json(['success' => false, 'message' => 'Not found']);
         }
 
         $notification->forceFill([

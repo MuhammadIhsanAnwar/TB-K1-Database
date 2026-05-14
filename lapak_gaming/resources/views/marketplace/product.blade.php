@@ -60,7 +60,8 @@
                alt="{{ $productName }}"
                class="w-full h-72 sm:h-96 object-cover"
                loading="lazy"
-               onerror="this.onerror=null;this.src='{{ asset('images/default-product.png') }}';">
+               data-fallback="{{ asset('images/default-product.png') }}"
+               onerror="this.onerror=null;this.src=this.dataset.fallback;">
         </div>
 
         {{-- Stats bar --}}
@@ -164,6 +165,16 @@
           </div>
 
           @auth
+            @if($errors->any())
+            <div class="mb-4 p-3 bg-red-900/30 border border-red-700 rounded-lg">
+              <ul class="list-disc list-inside space-y-1 text-red-200 text-xs">
+                @foreach ($errors->all() as $error)
+                  <li>{{ $error }}</li>
+                @endforeach
+              </ul>
+            </div>
+            @endif
+
             <form method="POST" action="{{ route('checkout.store') }}" class="space-y-3">
               @csrf
               <input type="hidden" name="product_id" value="{{ data_get($product, 'id') }}">
@@ -192,8 +203,14 @@
                 Beli Sekarang
               </button>
 
-              <button type="button" class="btn-ghost w-full py-3 rounded-xl text-sm">
-                + Tambah ke Wishlist
+            </form>
+
+            <form method="POST" action="{{ route('cart.add') }}">
+              @csrf
+              <input type="hidden" name="product_id" value="{{ data_get($product, 'id') }}">
+              <input type="hidden" name="quantity" value="1">
+              <button type="submit" class="btn-ghost w-full py-3 rounded-xl text-sm">
+                + Tambah ke Keranjang
               </button>
             </form>
           @else

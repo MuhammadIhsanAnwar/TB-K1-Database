@@ -5,6 +5,7 @@ use App\Models\Cart;
 use App\Models\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller {
     public function index() {
@@ -16,10 +17,19 @@ class CartController extends Controller {
     }
 
     public function add(Request $request) {
+        $messages = [
+            'product_id.required' => 'ID produk wajib disertakan.',
+            'product_id.exists' => 'Produk tidak ditemukan atau sudah dihapus.',
+            'quantity.required' => 'Jumlah produk wajib diisi.',
+            'quantity.integer' => 'Jumlah harus berupa angka bulat.',
+            'quantity.min' => 'Jumlah produk minimal 1.',
+            'quantity.max' => 'Jumlah produk maksimal 99.',
+        ];
+
         $request->validate([
             'product_id' => 'required|exists:products,id',
             'quantity'   => 'required|integer|min:1|max:99',
-        ]);
+        ], $messages);
 
         $product = Product::findOrFail($request->product_id);
         if ($product->stock < $request->quantity) {
@@ -28,14 +38,21 @@ class CartController extends Controller {
 
         Cart::updateOrCreate(
             ['user_id' => Auth::id(), 'product_id' => $request->product_id],
-            ['quantity' => \DB::raw('quantity + ' . (int)$request->quantity)]
+            ['quantity' => DB::raw('quantity + ' . (int)$request->quantity)]
         );
 
         return back()->with('success', 'Produk ditambahkan ke keranjang!');
     }
 
     public function update(Request $request, int $id) {
-        $request->validate(['quantity' => 'required|integer|min:1|max:99']);
+        $messages = [
+            'quantity.required' => 'Jumlah produk wajib diisi.',
+            'quantity.integer' => 'Jumlah harus berupa angka bulat.',
+            'quantity.min' => 'Jumlah produk minimal 1.',
+            'quantity.max' => 'Jumlah produk maksimal 99.',
+        ];
+
+        $request->validate(['quantity' => 'required|integer|min:1|max:99'], $messages);
         Cart::where('id', $id)->where('user_id', Auth::id())
             ->update(['quantity' => $request->quantity]);
         return back()->with('success', 'Keranjang diperbarui.');

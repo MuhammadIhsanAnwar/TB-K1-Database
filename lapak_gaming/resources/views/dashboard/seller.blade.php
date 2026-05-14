@@ -4,6 +4,38 @@
 
 @section('content')
 <div class="space-y-8">
+    {{-- PENDING STATUS WARNING --}}
+    @if($user->seller_status === 'pending')
+    <div class="rounded-[2rem] border border-yellow-700/50 bg-yellow-900/20 p-6 shadow-lg">
+        <div class="flex items-start gap-4">
+            <div class="pt-1">
+                <svg class="w-6 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-lg font-bold text-yellow-200">Toko Anda Masih Dalam Verifikasi</h3>
+                <p class="text-sm text-yellow-300 mt-1">Pendaftaran toko Anda sedang ditinjau oleh tim kami. Anda akan menerima notifikasi saat status berubah. Saat ini, Anda tidak dapat menjual produk hingga persetujuan diterima.</p>
+            </div>
+        </div>
+    </div>
+    @elseif($user->seller_status === 'rejected')
+    <div class="rounded-[2rem] border border-red-700/50 bg-red-900/20 p-6 shadow-lg">
+        <div class="flex items-start gap-4">
+            <div class="pt-1">
+                <svg class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-lg font-bold text-red-200">Pengajuan Toko Ditolak</h3>
+                <p class="text-sm text-red-300 mt-1">{{ $user->seller_rejection_reason ?? 'Alasan penolakan tidak tersedia.' }}</p>
+                <a href="{{ route('seller.register.form') }}" class="text-sm text-red-400 hover:text-red-300 mt-2 inline-block underline">Ajukan Kembali →</a>
+            </div>
+        </div>
+    </div>
+    @endif
+
     {{-- STATS CARDS --}}
     <div class="grid gap-6 lg:grid-cols-3">
         <div class="rounded-[2rem] border border-slate-800 bg-slate-900 p-8 shadow-xl">

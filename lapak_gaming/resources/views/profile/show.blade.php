@@ -111,9 +111,11 @@
 
                 {{-- AVATAR --}}
                 <div
-                    class="relative flex h-24 w-24 items-center justify-center rounded-full bg-gradient-to-br from-blue-500 via-cyan-400 to-orange-400 text-3xl font-black text-white shadow-[0_0_35px_rgba(59,130,246,0.35)]">
+                    class="relative flex h-24 w-24 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-blue-500 via-cyan-400 to-orange-400 text-3xl font-black text-white shadow-[0_0_35px_rgba(59,130,246,0.35)]">
 
-                    {{ strtoupper(substr($user->name, 0, 1)) }}
+                    <img src="{{ $user->avatar_url }}"
+                        alt="Foto profil {{ $user->name }}"
+                        class="h-full w-full object-cover">
 
                     <div
                         class="absolute inset-0 rounded-full border border-white/20">

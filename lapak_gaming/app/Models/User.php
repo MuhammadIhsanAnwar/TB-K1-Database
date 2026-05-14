@@ -129,6 +129,11 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->role === 'buyer';
     }
 
+    public function isGoogleAccount(): bool
+    {
+        return ! empty($this->google_id);
+    }
+
     public function isSellerAccount(): bool
     {
         if ($this->role === 'seller') {

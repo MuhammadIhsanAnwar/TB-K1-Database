@@ -743,6 +743,10 @@
 
 <body class="page-bg text-slate-200 min-h-screen">
 
+<script type="text/x-template">
+  window.chatInboxUrl = '{!! route('chat.inbox.poll') !!}';
+</script>
+
 <div id="gaming-bg"></div>
 
   {{-- Ambient top glow --}}
@@ -799,7 +803,9 @@
   </main>
 
   {{-- Footer --}}
-  @include('components.footer')
+  @unless(request()->routeIs('admin.*'))
+    @include('components.footer')
+  @endunless
 
   {{-- ═══ CORE SCRIPTS ═══ --}}
   <script>
@@ -932,11 +938,12 @@
       if (!badge) return;
 
       try {
-        const response = await fetch('{{ route('chat.inbox.poll') }}', {
+        const response = await fetch(window.chatInboxUrl, {
+          method: 'GET',
           headers: {
             'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json',
-          },
+            'Accept': 'application/json'
+          }
         });
 
         if (!response.ok) throw new Error('Failed to load chat badge');
@@ -1061,9 +1068,12 @@ document.addEventListener('DOMContentLoaded', () => {
   </script>
 
   @if(session()->has('alert'))
+  <script type="text/x-template">
+    window.sessionAlert = {!! json_encode(session('alert')) !!};
+  </script>
   <script>
     document.addEventListener('DOMContentLoaded', function () {
-      const alertData = @json(session('alert'));
+      const alertData = window.sessionAlert;
       if (alertData && typeof Swal !== 'undefined') {
         Swal.fire({
           icon: alertData.type || 'info',

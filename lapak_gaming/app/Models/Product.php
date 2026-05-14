@@ -13,7 +13,7 @@ class Product extends Model {
     protected $fillable = [
         'seller_id', 'category_id', 'name', 'slug', 'description',
         'price', 'sale_price', 'stock', 'file_path', 'delivery_content',
-        'is_auto_delivery', 'is_featured', 'is_trending', 'image', 'type',
+        'is_auto_delivery', 'is_featured', 'is_trending', 'type',
         'status', 'meta',
     ];
 
@@ -41,7 +41,22 @@ class Product extends Model {
 
     // Scopes
     public function scopeActive($q)     { return $q->where('status', 'published'); }
+    public function scopePublished($q)   { return $q->where('status', 'published'); }
     public function scopeInStock($q)    { return $q->where('stock', '>', 0); }
+    public function scopeSearch(Builder $q, string $term): Builder
+    {
+        $term = trim($term);
+
+        if ($term === '') {
+            return $q;
+        }
+
+        return $q->where(function (Builder $query) use ($term): void {
+            $query->where('name', 'like', '%' . $term . '%')
+                ->orWhere('description', 'like', '%' . $term . '%')
+                ->orWhere('type', 'like', '%' . $term . '%');
+        });
+    }
     public function scopePopular(Builder $q): Builder
     {
         return $q->orderByDesc(
@@ -62,6 +77,31 @@ class Product extends Model {
     public function scopeOfType($q, $t) { return $q->where('type', $t); }
 
     // Helpers
+    public function getImagePathsAttribute(): array
+    {
+        $rawPath = $this->attributes['file_path'] ?? null;
+
+        if (! $rawPath) {
+            return [];
+        }
+
+        if (is_array($rawPath)) {
+            return array_values(array_filter($rawPath));
+        }
+
+        $decoded = json_decode((string) $rawPath, true);
+        if (json_last_error() === JSON_ERROR_NONE && is_array($decoded)) {
+            return array_values(array_filter($decoded));
+        }
+
+        return array_values(array_filter(array_map('trim', explode('|', (string) $rawPath))));
+    }
+
+    public function getImageAttribute(): ?string
+    {
+        return $this->image_paths[0] ?? null;
+    }
+
     public function getImageUrlAttribute(): string {
         $imagePath = $this->image ?? $this->file_path ?? null;
 
@@ -70,7 +110,7 @@ class Product extends Model {
             if (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) {
                 return $imagePath;
             }
-            return asset('storage/' . $imagePath);
+            return asset('storage/' . ltrim($imagePath, '/'));
         }
 
         return asset('images/default-product.png');

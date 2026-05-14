@@ -5,6 +5,17 @@
 <div class="max-w-3xl mx-auto px-4 py-10">
     <h1 class="text-2xl font-bold text-white mb-8">Checkout</h1>
 
+    @if($errors->any())
+    <div class="mb-6 p-4 bg-red-900/30 border border-red-700 rounded-xl">
+        <h3 class="text-red-300 font-bold mb-2">Terjadi Kesalahan:</h3>
+        <ul class="list-disc list-inside space-y-1 text-red-200 text-sm">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+    @endif
+
     <form action="{{ route('orders.store') }}" method="POST">
         @csrf
         <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">

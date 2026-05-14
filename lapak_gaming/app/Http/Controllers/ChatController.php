@@ -33,7 +33,7 @@ class ChatController extends Controller
     protected function authorizeParticipant(Conversation $conversation, User $user): void
     {
         abort_unless(
-            $conversation->buyer_id === $user->id || $conversation->seller_id === $user->id,
+            (int) $conversation->buyer_id === (int) $user->id || (int) $conversation->seller_id === (int) $user->id,
             403
         );
     }
@@ -66,7 +66,7 @@ class ChatController extends Controller
         $user = $request->user();
         $this->authorizeParticipant($conversation, $user);
         $data = $request->validate(['message' => ['required', 'string', 'max:2000']]);
-        $receiverId = $user->id === $conversation->buyer_id
+        $receiverId = (int) $user->id === (int) $conversation->buyer_id
             ? $conversation->seller_id : $conversation->buyer_id;
 
         $message = Message::create([
@@ -107,13 +107,13 @@ class ChatController extends Controller
 
     // ─── PRODUCT CHAT ────────────────────────────────────────────────────────
 
-    public function product(Request $request, Product $product): View
+    public function product(Request $request, Product $product): View|RedirectResponse
     {
         $product->load('seller');
         $user = $request->user();
         abort_unless($product->seller_id, 404);
 
-        if ($user->id === $product->seller_id) {
+        if ((int) $user->id === (int) $product->seller_id) {
             $buyerId = (int) $request->query('buyer', 0);
             $participants = Conversation::where('product_id', $product->id)
                 ->where('seller_id', $user->id)
@@ -200,14 +200,14 @@ class ChatController extends Controller
 
     public function index(Request $request, Order $order): RedirectResponse
     {
-        abort_unless($order->buyer_id === $request->user()->id || $order->seller_id === $request->user()->id, 403);
+        abort_unless((int) $order->buyer_id === (int) $request->user()->id || (int) $order->seller_id === (int) $request->user()->id, 403);
         $conversation = Conversation::findOrCreateForOrder($order->buyer_id, $order->seller_id, $order->id);
         return redirect()->route('chat.show', $conversation);
     }
 
     public function store(Request $request, Order $order): RedirectResponse
     {
-        abort_unless($order->buyer_id === $request->user()->id || $order->seller_id === $request->user()->id, 403);
+        abort_unless((int) $order->buyer_id === (int) $request->user()->id || (int) $order->seller_id === (int) $request->user()->id, 403);
         $data = $request->validate(['message' => ['required', 'string', 'max:2000']]);
         $conversation = Conversation::findOrCreateForOrder($order->buyer_id, $order->seller_id, $order->id);
         $receiverId = $order->buyer_id === $request->user()->id ? $order->seller_id : $order->buyer_id;
@@ -234,7 +234,7 @@ class ChatController extends Controller
             'receiver_id' => ['nullable', 'integer', 'exists:users,id'],
         ]);
 
-        if ($user->id === $product->seller_id) {
+        if ((int) $user->id === (int) $product->seller_id) {
             $buyerId = (int) ($data['receiver_id'] ?? 0);
             abort_unless($buyerId > 0 && $buyerId !== $user->id, 403);
         } else {
@@ -242,7 +242,7 @@ class ChatController extends Controller
         }
 
         $conversation = Conversation::findOrCreateForProduct($buyerId, $product->seller_id, $product->id);
-        $receiverId = $user->id === $buyerId ? $product->seller_id : $buyerId;
+        $receiverId = (int) $user->id === (int) $buyerId ? $product->seller_id : $buyerId;
 
         $msg = Message::create([
             'conversation_id' => $conversation->id,
@@ -255,7 +255,7 @@ class ChatController extends Controller
         $conversation->updateLastMessage($msg);
         $conversation->incrementUnread($user->id);
 
-        if ($user->id === $product->seller_id) {
+        if ((int) $user->id === (int) $product->seller_id) {
             return redirect()->route('chat.product', ['product' => $product->id, 'buyer' => $buyerId]);
         }
 
@@ -282,7 +282,7 @@ class ChatController extends Controller
         ]);
     }
 
-    private function fmt(Message $m, int $authId): array
+    private function fmt($m, int $authId): array
     {
         return [
             'id'          => $m->id,

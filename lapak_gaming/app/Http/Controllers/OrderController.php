@@ -49,10 +49,17 @@ class OrderController extends Controller {
         abort_if($order->buyer_id !== Auth::id(), 403);
         abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
 
+        $messages = [
+            'payment_method.required' => 'Metode pembayaran wajib dipilih.',
+            'payment_method.in' => 'Metode pembayaran tidak valid.',
+            'payment_proof.image' => 'File bukti pembayaran harus berupa gambar.',
+            'payment_proof.max' => 'Ukuran bukti pembayaran maksimal 2MB.',
+        ];
+
         $request->validate([
             'payment_method' => 'required|in:balance,transfer,qris,dana,ovo,gopay',
             'payment_proof'  => 'nullable|image|max:2048',
-        ]);
+        ], $messages);
 
         DB::transaction(function () use ($request, $order) {
             if ($request->payment_method === 'balance') {
@@ -86,7 +93,12 @@ class OrderController extends Controller {
     }
 
     public function store(Request $request) {
-        $request->validate(['payment_method' => 'required|string']);
+        $messages = [
+            'payment_method.required' => 'Metode pembayaran wajib dipilih.',
+            'payment_method.string' => 'Metode pembayaran harus berupa teks.',
+        ];
+
+        $request->validate(['payment_method' => 'required|string'], $messages);
 
         DB::transaction(function () use ($request) {
             $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();

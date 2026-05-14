@@ -16,11 +16,21 @@ class CheckoutController extends Controller
 {
     public function store(Request $request): RedirectResponse
     {
+        $messages = [
+            'product_id.required' => 'ID produk wajib disertakan.',
+            'product_id.exists' => 'Produk tidak ditemukan atau sudah dihapus.',
+            'quantity.integer' => 'Jumlah harus berupa angka bulat.',
+            'quantity.min' => 'Jumlah produk minimal 1.',
+            'quantity.max' => 'Jumlah produk maksimal 99.',
+            'payment_method.string' => 'Metode pembayaran harus berupa teks.',
+            'payment_method.max' => 'Metode pembayaran maksimal 50 karakter.',
+        ];
+
         $data = $request->validate([
             'product_id' => ['required', 'exists:products,id'],
             'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
             'payment_method' => ['nullable', 'string', 'max:50'],
-        ]);
+        ], $messages);
 
         $product = Product::query()->published()->findOrFail($data['product_id']);
         $quantity = (int) ($data['quantity'] ?? 1);

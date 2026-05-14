@@ -68,10 +68,16 @@
                             Pengaturan Akun
                         </a>
 
+                        @if(! $user->isGoogleAccount())
                         <a href="{{ route('settings.password') }}"
                             class="menu-item {{ $selectedTab === 'password' ? 'menu-active-blue' : 'menu-normal' }}">
                             Ubah Password
                         </a>
+                        @else
+                        <div class="menu-item menu-normal cursor-not-allowed opacity-60">
+                            Ubah Password
+                        </div>
+                        @endif
 
                         <a href="{{ route('settings.seller') }}"
                             class="menu-item {{ $selectedTab === 'seller' ? 'menu-active-orange' : 'menu-normal' }}">
@@ -323,6 +329,12 @@
                         Ubah Password
                     </h1>
 
+                    @if($user->isGoogleAccount())
+                        <div class="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-200">
+                            Akun ini login memakai Google, jadi perubahan password manual dinonaktifkan.
+                        </div>
+                    @endif
+
                     <div class="grid gap-6 lg:grid-cols-2">
 
                         <section class="card-box">
@@ -341,7 +353,7 @@
 
                                 @csrf
 
-                                <button type="submit"
+                                <button type="submit" @disabled($user->isGoogleAccount())
                                     class="submit-blue">
                                     Kirim Kode
                                 </button>
@@ -366,19 +378,19 @@
                                 <input type="text"
                                     name="verification_code"
                                     placeholder="Kode Verifikasi"
-                                    class="input-style">
+                                    class="input-style" @disabled($user->isGoogleAccount())>
 
                                 <input type="password"
                                     name="password"
                                     placeholder="Password Baru"
-                                    class="input-style">
+                                    class="input-style" @disabled($user->isGoogleAccount())>
 
                                 <input type="password"
                                     name="password_confirmation"
                                     placeholder="Konfirmasi Password"
-                                    class="input-style">
+                                    class="input-style" @disabled($user->isGoogleAccount())>
 
-                                <button type="submit"
+                                <button type="submit" @disabled($user->isGoogleAccount())
                                     class="submit-green">
                                     Perbarui Password
                                 </button>
@@ -390,6 +402,83 @@
                     </div>
 
                 {{-- SELLER --}}
+                @elseif($user->seller_status === 'pending')
+                
+                    <div class="mb-10">
+
+                        <div
+                            class="inline-flex items-center gap-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-yellow-300">
+
+                            <span class="h-2 w-2 rounded-full bg-yellow-400 animate-pulse"></span>
+                            SELLER VERIFICATION
+                        </div>
+
+                        <h1 class="mt-5 text-4xl font-black text-white">
+                            Pengajuan Seller Dalam Proses
+                        </h1>
+
+                        <p class="mt-3 text-sm leading-relaxed text-slate-400">
+                            Terima kasih telah mendaftar sebagai seller. Kami sedang meninjau pengajuan Anda dan akan memberitahu hasil verifikasi segera.
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="overflow-hidden rounded-[34px] border border-yellow-500/10 bg-gradient-to-br from-[#111827] to-[#0B1220] p-8">
+
+                        <div class="flex items-center gap-4">
+                            <svg class="w-12 h-12 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                            </svg>
+                            <div>
+                                <h2 class="text-2xl font-black text-yellow-200">Status: Menunggu Verifikasi</h2>
+                                <p class="text-sm text-yellow-300 mt-2">Pengajuan Anda sedang ditinjau oleh tim kami. Proses verifikasi biasanya memakan waktu 1-3 hari kerja. Anda akan menerima notifikasi via email saat status berubah.</p>
+                            </div>
+                        </div>
+
+                    </div>
+
+                @elseif($user->seller_status === 'rejected')
+
+                    <div class="mb-10">
+
+                        <div
+                            class="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-red-300">
+
+                            <span class="h-2 w-2 rounded-full bg-red-400"></span>
+                            SELLER REJECTED
+                        </div>
+
+                        <h1 class="mt-5 text-4xl font-black text-white">
+                            Pengajuan Seller Ditolak
+                        </h1>
+
+                        <p class="mt-3 text-sm leading-relaxed text-slate-400">
+                            Maaf, pengajuan seller Anda tidak disetujui. Silakan pelajari alasan penolakan di bawah dan coba lagi dengan informasi yang lebih lengkap.
+                        </p>
+
+                    </div>
+
+                    <div
+                        class="overflow-hidden rounded-[34px] border border-red-500/10 bg-gradient-to-br from-[#111827] to-[#0B1220] p-8">
+
+                        <div class="flex items-start gap-4 mb-6">
+                            <svg class="w-8 h-8 text-red-500 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                            <div>
+                                <h2 class="text-xl font-black text-red-200">Alasan Penolakan:</h2>
+                                <p class="text-sm text-red-300 mt-2">{{ $user->seller_rejection_reason ?? 'Alasan penolakan tidak tersedia.' }}</p>
+                            </div>
+                        </div>
+
+                        <a href="{{ route('seller.register.form') }}"
+                            class="inline-flex items-center justify-center rounded-2xl bg-red-500 px-5 py-4 text-sm font-bold text-white transition duration-300 hover:scale-[1.02] hover:bg-red-600">
+                            Ajukan Ulang
+                        </a>
+
+                    </div>
+
                 @else
 
                     <div class="mb-10">

@@ -10,6 +10,7 @@ use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
@@ -57,10 +58,17 @@ class AdminController extends Controller
             return back()->withErrors(['status' => 'Tidak dapat mengubah status akun admin lain.']);
         }
 
+        $messages = [
+            'status.required' => 'Status akun wajib dipilih.',
+            'status.in' => 'Status akun tidak valid.',
+            'suspend_reason.string' => 'Alasan suspend harus berupa teks.',
+            'suspend_reason.max' => 'Alasan suspend maksimal 1000 karakter.',
+        ];
+
         $data = $request->validate([
             'status' => ['required', 'in:active,suspended'],
             'suspend_reason' => ['nullable', 'string', 'max:1000'],
-        ]);
+        ], $messages);
 
         $updates = [
             'status' => $data['status'],
@@ -71,7 +79,7 @@ class AdminController extends Controller
         $user->forceFill($updates)->save();
 
         if ($data['status'] === 'suspended') {
-            \DB::table('sessions')->where('user_id', $user->id)->delete();
+            DB::table('sessions')->where('user_id', $user->id)->delete();
         }
 
         return back()->with('success', "Status akun {$user->name} berhasil diperbarui.");
@@ -104,9 +112,16 @@ class AdminController extends Controller
 
     public function rejectSeller(Request $request, User $user): RedirectResponse
     {
+        $messages = [
+            'rejection_reason.required' => 'Alasan penolakan wajib diisi.',
+            'rejection_reason.string' => 'Alasan penolakan harus berupa teks.',
+            'rejection_reason.min' => 'Alasan penolakan minimal 10 karakter.',
+            'rejection_reason.max' => 'Alasan penolakan maksimal 1000 karakter.',
+        ];
+
         $data = $request->validate([
             'rejection_reason' => ['required', 'string', 'min:10', 'max:1000'],
-        ]);
+        ], $messages);
 
         $user->forceFill([
             'seller_status' => 'rejected',
@@ -141,6 +156,24 @@ class AdminController extends Controller
 
     public function storeBanner(Request $request): RedirectResponse
     {
+        $messages = [
+            'title.required' => 'Judul banner wajib diisi.',
+            'title.string' => 'Judul harus berupa teks.',
+            'title.max' => 'Judul maksimal 255 karakter.',
+            'subtitle.string' => 'Subtitle harus berupa teks.',
+            'subtitle.max' => 'Subtitle maksimal 255 karakter.',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus JPEG, PNG, JPG, GIF, atau WebP.',
+            'image.max' => 'Ukuran gambar maksimal 5MB.',
+            'image_url.url' => 'URL gambar tidak valid.',
+            'image_url.max' => 'URL gambar maksimal 2048 karakter.',
+            'link_url.url' => 'Link URL tidak valid.',
+            'link_url.max' => 'Link URL maksimal 2048 karakter.',
+            'position.required' => 'Posisi banner wajib dipilih.',
+            'position.in' => 'Posisi banner tidak valid.',
+            'is_active.boolean' => 'Status aktif harus berupa boolean.',
+        ];
+
         $data = $request->validate([
             'title' => ['required', 'string', 'max:255'],
             'subtitle' => ['nullable', 'string', 'max:255'],
@@ -149,7 +182,7 @@ class AdminController extends Controller
             'link_url' => ['nullable', 'url', 'max:2048'],
             'position' => ['required', 'in:hero,featured,sidebar'],
             'is_active' => ['nullable', 'boolean'],
-        ]);
+        ], $messages);
 
         $imagePath = null;
         $imageUrl = $data['image_url'] ?? null;
@@ -198,12 +231,25 @@ class AdminController extends Controller
 
     public function sendNotification(Request $request): RedirectResponse
     {
+        $messages = [
+            'audience.required' => 'Audiens notifikasi wajib dipilih.',
+            'audience.in' => 'Audiens notifikasi tidak valid.',
+            'title.required' => 'Judul notifikasi wajib diisi.',
+            'title.string' => 'Judul harus berupa teks.',
+            'title.max' => 'Judul maksimal 255 karakter.',
+            'body.required' => 'Isi notifikasi wajib diisi.',
+            'body.string' => 'Isi harus berupa teks.',
+            'body.max' => 'Isi notifikasi maksimal 2000 karakter.',
+            'link.url' => 'Link notifikasi tidak valid.',
+            'link.max' => 'Link maksimal 2048 karakter.',
+        ];
+
         $data = $request->validate([
             'audience' => ['required', 'in:all,buyer,seller'],
             'title' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string', 'max:2000'],
             'link' => ['nullable', 'url', 'max:2048'],
-        ]);
+        ], $messages);
 
         $users = User::query()
             ->when($data['audience'] !== 'all', fn($q) => $q->where('role', $data['audience']))

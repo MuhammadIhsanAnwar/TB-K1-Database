@@ -24,10 +24,17 @@ class AuthController extends Controller
 
     public function storeLogin(Request $request): RedirectResponse
     {
+        $messages = [
+            'email.required' => 'Email wajib diisi.',
+            'email.email' => 'Format email tidak valid.',
+            'password.required' => 'Password wajib diisi.',
+            'password.string' => 'Password harus berupa teks.',
+        ];
+
         $credentials = $request->validate([
             'email'    => ['required', 'email'],
             'password' => ['required', 'string'],
-        ]);
+        ], $messages);
 
         // Check if user exists and if email is verified
         $user = User::where('email', $credentials['email'])->first();
@@ -106,17 +113,29 @@ class AuthController extends Controller
     public function storeRegister(Request $request): RedirectResponse
     {
         $messages = [
-            'email.required'          => 'Email wajib diisi.',
-            'email.email'             => 'Format email tidak valid.',
-            'email.unique'            => 'Email sudah terdaftar.',
-            'password.required'       => 'Password wajib diisi.',
-            'password.confirmed'      => 'Konfirmasi password tidak cocok.',
-            'password.min'            => 'Password minimal :min karakter.',
-            'password.*'              => 'Password harus mengandung huruf besar, huruf kecil, angka, dan simbol.',
+            'name.required'           => 'Nama lengkap wajib diisi.',
+            'name.string'             => 'Nama harus berupa teks.',
+            'name.max'                => 'Nama maksimal 255 karakter.',
+            'gender.required'         => 'Jenis kelamin wajib dipilih.',
+            'gender.in'               => 'Jenis kelamin tidak valid.',
+            'birth_date.required'     => 'Tanggal lahir wajib diisi.',
+            'birth_date.date'         => 'Format tanggal lahir tidak valid.',
+            'birth_date.before'       => 'Tanggal lahir harus sebelum hari ini.',
+            'phone.required'          => 'Nomor telepon wajib diisi.',
+            'phone.string'            => 'Nomor telepon harus berupa angka.',
+            'phone.max'               => 'Nomor telepon maksimal 20 karakter.',
             'profile_photo.required'  => 'Foto profil wajib diunggah.',
             'profile_photo.image'     => 'File yang diunggah harus berupa gambar.',
+            'profile_photo.mimes'     => 'Format gambar harus JPG, JPEG, PNG, atau WebP.',
             'profile_photo.max'       => 'Ukuran foto maksimal 5MB.',
-            'phone.required'          => 'Nomor telepon wajib diisi.',
+            'email.required'          => 'Email wajib diisi.',
+            'email.email'             => 'Format email tidak valid.',
+            'email.max'               => 'Email maksimal 255 karakter.',
+            'email.unique'            => 'Email sudah terdaftar pada sistem.',
+            'password.required'       => 'Password wajib diisi.',
+            'password.confirmed'      => 'Konfirmasi password tidak cocok.',
+            'password.min'            => 'Password minimal 8 karakter.',
+            'password.*'              => 'Password harus mengandung huruf besar, huruf kecil, angka, dan simbol.',
         ];
 
         $data = $request->validate([

@@ -8,6 +8,16 @@
         <h1 class="text-3xl font-bold text-white">Edit Produk</h1>
         <p class="mt-2 text-slate-400">Perbarui detail produk Anda.</p>
 
+        @if ($errors->any())
+            <div class="mt-6 rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-rose-200">
+                <ul class="list-disc list-inside space-y-1 text-sm">
+                    @foreach ($errors->all() as $error)
+                        <li>{{ $error }}</li>
+                    @endforeach
+                </ul>
+            </div>
+        @endif
+
         <form action="{{ route('seller.produk.update', $produk) }}" method="POST" enctype="multipart/form-data" class="mt-8 space-y-6">
             @csrf
             @method('PUT')
@@ -59,9 +69,12 @@
             </div>
 
             <label class="block">
-                <span class="text-sm font-medium text-slate-300">Gambar Produk</span>
-                <input name="image" type="file" class="mt-2 w-full text-slate-300" accept="image/*" />
-                @if($produk->image)
+                <span class="text-sm font-medium text-slate-300">Foto Produk</span>
+                <input name="images[]" type="file" class="mt-2 w-full text-slate-300" accept="image/*" multiple />
+                <p class="mt-2 text-xs text-slate-500">Maksimal 5 MB per foto, bisa pilih lebih dari satu file.</p>
+                @if($produk->image_paths)
+                    <p class="mt-2 text-sm text-slate-400">Total foto saat ini: {{ count($produk->image_paths) }}</p>
+                @elseif($produk->image)
                     <p class="mt-2 text-sm text-slate-400">Gambar saat ini: {{ $produk->image }}</p>
                 @endif
             </label>

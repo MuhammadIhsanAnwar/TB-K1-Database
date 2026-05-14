@@ -76,6 +76,38 @@
         </div>
     </div>
 
+    {{-- PENDING SELLER STATUS --}}
+    @if($user->seller_status === 'pending')
+    <div class="reveal rounded-[26px] border border-yellow-700/50 bg-yellow-900/20 p-6 shadow-lg">
+        <div class="flex items-start gap-4">
+            <div class="pt-1">
+                <svg class="w-6 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-lg font-bold text-yellow-200">Pengajuan Seller Anda Sedang Diproses</h3>
+                <p class="text-sm text-yellow-300 mt-1">Tim kami sedang meninjau pendaftaran toko Anda. Anda akan menerima notifikasi saat status berubah. Terima kasih atas kesabaran Anda!</p>
+            </div>
+        </div>
+    </div>
+    @elseif($user->seller_status === 'rejected')
+    <div class="reveal rounded-[26px] border border-red-700/50 bg-red-900/20 p-6 shadow-lg">
+        <div class="flex items-start gap-4">
+            <div class="pt-1">
+                <svg class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                </svg>
+            </div>
+            <div class="flex-1">
+                <h3 class="text-lg font-bold text-red-200">Pengajuan Seller Ditolak</h3>
+                <p class="text-sm text-red-300 mt-1">{{ $user->seller_rejection_reason ?? 'Alasan penolakan tidak tersedia.' }}</p>
+                <a href="{{ route('seller.register.form') }}" class="text-sm text-red-400 hover:text-red-300 mt-2 inline-block underline">Ajukan Kembali →</a>
+            </div>
+        </div>
+    </div>
+    @endif
+
     {{-- STATS --}}
     <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
 

@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Wallet;
+use App\Models\WalletTransaction;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\View\View;
@@ -48,6 +49,7 @@ class DashboardController extends Controller
             : null;
 
         return view('dashboard.buyer', [
+            'user' => $user,
             'orders' => $orders,
             'wallet' => $wallet,
             'notifications' => $notifications,
@@ -68,6 +70,7 @@ class DashboardController extends Controller
             : null;
 
         return view('dashboard.seller', [
+            'user' => $user,
             'products' => $products,
             'orders' => $orders,
             'wallet' => $wallet,
@@ -87,19 +90,22 @@ class DashboardController extends Controller
         $chartTransactions = collect();
         $chartRevenue = collect();
 
-        for ($i = 6; $i >= 0; $i--) {
-            $date = now()->subDays($i);
-            $chartLabels->push($date->format('d M'));
+        for ($i = 5; $i >= 0; $i--) {
+            $monthStart = now()->startOfMonth()->subMonths($i);
+            $monthEnd = (clone $monthStart)->endOfMonth();
+            $chartLabels->push($monthStart->format('M Y'));
 
             if (Schema::hasTable('orders')) {
-                // Hitung jumlah transaksi
-                $chartTransactions->push(Order::whereDate('created_at', $date->format('Y-m-d'))->count());
-
-                // FIX DISINI: Pakai 'grand_total' sesuai migration kamu
-                $revenue = Order::whereDate('created_at', $date->format('Y-m-d'))->sum('grand_total');
-                $chartRevenue->push($revenue);
+                $chartTransactions->push(Order::whereBetween('created_at', [$monthStart, $monthEnd])->count());
             } else {
                 $chartTransactions->push(0);
+            }
+
+            if (Schema::hasTable('wallet_transactions')) {
+                $chartRevenue->push(
+                    WalletTransaction::whereBetween('created_at', [$monthStart, $monthEnd])->sum('amount')
+                );
+            } else {
                 $chartRevenue->push(0);
             }
         }
