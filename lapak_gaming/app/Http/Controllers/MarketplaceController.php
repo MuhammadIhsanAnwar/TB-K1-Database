@@ -81,10 +81,6 @@ class MarketplaceController extends Controller
             ? Banner::query()->active()->where('position', 'featured')->latest()->take(6)->get()
             : collect();
 
-        $sidebarBanners = Schema::hasTable('banners')
-            ? Banner::query()->active()->where('position', 'sidebar')->latest()->take(6)->get()
-            : collect();
-
         $categoryProducts = collect();
 
         if (Schema::hasTable('products')) {
@@ -119,7 +115,6 @@ class MarketplaceController extends Controller
             'transactionCount' => $transactionCount,
             'heroBanners' => $heroBanners,
             'featuredBanners' => $featuredBanners,
-            'sidebarBanners' => $sidebarBanners,
             'categoryProducts' => $categoryProducts,
         ]);
     }

@@ -187,7 +187,7 @@ class AdminController extends Controller
             'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],
             'image_url' => ['nullable', 'url', 'max:2048'],
             'link_url' => ['nullable', 'url', 'max:2048'],
-            'position' => ['required', 'in:hero,featured,sidebar'],
+            'position' => ['required', 'in:hero,featured'],
             'is_active' => ['nullable', 'boolean'],
         ], $messages);
 
