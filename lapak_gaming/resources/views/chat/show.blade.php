@@ -620,7 +620,7 @@
                 <input type="text" id="msgInput" class="chat-input"
                        placeholder="Ketik pesan..."
                        autocomplete="off" maxlength="2000">
-                <button id="sendBtn" class="send-button">
+                <button id="sendBtn" type="button" class="send-button">
                     <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
                     </svg>
@@ -667,12 +667,13 @@ async function sendMessage() {
     const text = msgInput.value.trim();
     if (!text) return;
 
+    const tempId = 'tmp-' + Date.now();
     msgInput.value = '';
     sendBtn.disabled = true;
 
     // Optimistic UI
     appendMessage({
-        id: 'tmp-' + Date.now(),
+        id: tempId,
         is_mine: true,
         message: text,
         time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}),
@@ -687,14 +688,30 @@ async function sendMessage() {
             body: JSON.stringify({ message: text }),
         });
         const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message || 'Gagal mengirim pesan.');
+        }
+
         if (data.message) {
-            // Replace optimistic with real
-            const tmp = document.querySelector('[data-msg-id="tmp-' + (Date.now() - 1) + '"]');
+            const tmp = document.querySelector(`[data-msg-id="${tempId}"]`);
             if (tmp) tmp.remove();
             lastId = data.message.id;
         }
     } catch(e) {
         console.error(e);
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                icon: 'error',
+                title: 'Gagal mengirim',
+                text: e.message || 'Coba lagi nanti.',
+                toast: true,
+                position: 'top-end',
+                timer: 3500,
+                showConfirmButton: false,
+                timerProgressBar: true,
+            });
+        }
     } finally {
         sendBtn.disabled = false;
         msgInput.focus();
@@ -706,6 +723,10 @@ msgInput.addEventListener('keydown', function(e) {
         e.preventDefault();
         sendMessage();
     }
+});
+
+sendBtn.addEventListener('click', function() {
+    sendMessage();
 });
 
 // Poll for new messages

@@ -15,6 +15,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
 
   {{-- Tailwind CDN --}}
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <script src="https://cdn.tailwindcss.com"></script>
   <script>
 
@@ -931,7 +932,7 @@
       if (!badge) return;
 
       try {
-        const response = await fetch('/chat/poll-inbox', {
+        const response = await fetch('{{ route('chat.inbox.poll') }}', {
           headers: {
             'X-Requested-With': 'XMLHttpRequest',
             'Accept': 'application/json',
@@ -1059,6 +1060,25 @@ document.addEventListener('DOMContentLoaded', () => {
 });
   </script>
 
+  @if(session()->has('alert'))
+  <script>
+    document.addEventListener('DOMContentLoaded', function () {
+      const alertData = @json(session('alert'));
+      if (alertData && typeof Swal !== 'undefined') {
+        Swal.fire({
+          icon: alertData.type || 'info',
+          title: alertData.title || '',
+          text: alertData.text || '',
+          toast: true,
+          position: 'top-end',
+          timer: 3500,
+          showConfirmButton: false,
+          timerProgressBar: true,
+        });
+      }
+    });
+  </script>
+  @endif
   @stack('scripts')
 </body>
 </html>

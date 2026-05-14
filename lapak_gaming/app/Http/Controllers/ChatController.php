@@ -114,6 +114,43 @@ class ChatController extends Controller
         abort_unless($product->seller_id, 404);
 
         if ($user->id === $product->seller_id) {
+            $buyerId = (int) $request->query('buyer', 0);
+            $participants = Conversation::where('product_id', $product->id)
+                ->where('seller_id', $user->id)
+                ->with('buyer')
+                ->orderByDesc('last_message_at')
+                ->get()
+                ->pluck('buyer')
+                ->filter()
+                ->unique('id');
+
+            if ($buyerId > 0) {
+                $conversation = Conversation::where('product_id', $product->id)
+                    ->where('seller_id', $user->id)
+                    ->where('buyer_id', $buyerId)
+                    ->first();
+
+                if ($conversation) {
+                    $partner = $conversation->buyer;
+                    $messages = Message::where('conversation_id', $conversation->id)
+                        ->with('sender')->oldest()->get();
+
+                    $conversation->markReadFor($user->id);
+                    Message::where('conversation_id', $conversation->id)
+                        ->where('receiver_id', $user->id)->whereNull('read_at')
+                        ->update(['read_at' => now(), 'is_read' => true]);
+
+                    return view('chat.product', compact('product', 'partner', 'participants', 'messages'));
+                }
+
+                return redirect()->route('chat.product', $product)
+                    ->with('alert', [
+                        'type' => 'error',
+                        'title' => 'Percakapan tidak ditemukan',
+                        'text' => 'Silakan pilih kembali pelanggan yang ingin diajak chat.',
+                    ]);
+            }
+
             $conversations = Conversation::where('seller_id', $user->id)
                 ->where('product_id', $product->id)
                 ->with('buyer')
