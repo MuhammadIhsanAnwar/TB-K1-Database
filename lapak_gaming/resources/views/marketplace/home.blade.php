@@ -312,25 +312,6 @@ spline-viewer iframe {
         </p>
 
         <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
-          <a href="{{ route('register') }}"
-   class="dg-btn group relative inline-flex items-center justify-center overflow-hidden rounded-2xl px-7 py-4 font-display font-bold text-white transition-all duration-300">
-
-  <span class="relative z-10 flex items-center gap-3">
-    <span>Daftar Gratis Sekarang</span>
-
-    <svg class="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1"
-         fill="none"
-         viewBox="0 0 24 24"
-         stroke="currentColor">
-      <path stroke-linecap="round"
-            stroke-linejoin="round"
-            stroke-width="2"
-            d="M9 5l7 7-7 7"/>
-    </svg>
-  </span>
-
-  <span class="dg-btn-glow"></span>
-</a>
         </div>
 
         <div class="flex flex-wrap gap-6 mt-10 justify-center lg:justify-start">
