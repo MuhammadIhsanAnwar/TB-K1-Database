@@ -161,11 +161,17 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function hasRole(string $role): bool
     {
-        return match ($role) {
-            'seller' => $this->isSellerAccount(),
-            'buyer'  => in_array($this->role, ['buyer', 'seller'], true) || $this->isSellerAccount(),
-            default  => $this->role === $role,
-        };
+        // Role sistem: checkout butuh user dianggap buyer.
+        // Berdasarkan alur project: tidak ada akun khusus seller, jadi user yang seller juga harus dianggap buyer.
+        if ($role === 'buyer') {
+            return $this->role === 'buyer' || $this->role === 'seller' || $this->isSellerAccount();
+        }
+
+        if ($role === 'seller') {
+            return $this->isSellerAccount();
+        }
+
+        return $this->role === $role;
     }
 
     // ─── Attribute Accessors ─────────────────────────────────────────────────

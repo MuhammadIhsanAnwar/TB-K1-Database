@@ -104,17 +104,25 @@ class Product extends Model {
     }
 
     public function getImageUrlAttribute(): string {
-        $imagePath = $this->image ?? $this->file_path ?? null;
+        // Primary: first image path derived from file_path
+        $imagePath = $this->image_paths[0] ?? null;
 
-        if ($imagePath) {
-            // allow absolute URLs from seeders (picsum etc.)
-            if (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) {
-                return $imagePath;
-            }
-            return asset('storage/' . ltrim($imagePath, '/'));
+        // Fallback: legacy fields (in case some rows store a single image path)
+        if (! $imagePath) {
+            $imagePath = $this->image ?? $this->file_path ?? null;
         }
 
-        return asset('images/default-product.png');
+        // If still empty, return default
+        if (! $imagePath) {
+            return asset('images/default-product.png');
+        }
+
+        // allow absolute URLs from seeders (picsum etc.)
+        if (is_string($imagePath) && (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://'))) {
+            return $imagePath;
+        }
+
+        return asset('storage/' . ltrim((string) $imagePath, '/'));
     }
 
     public function getFormattedPriceAttribute(): string {
