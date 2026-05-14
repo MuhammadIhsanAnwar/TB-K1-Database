@@ -425,7 +425,6 @@
       </a>
       @endif
 
-      @auth
       {{-- Notifications --}}
       <div class="relative">
         <button onclick="toggleDropdown('notif-dropdown'); loadNotificationPreview();" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors" style="background:#162032;border:1px solid #1E2D45;" aria-label="Notifications">
