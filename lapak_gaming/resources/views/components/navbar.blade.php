@@ -418,7 +418,7 @@
     {{-- Right Action Icons --}}
     <div class="flex items-center gap-1.5 ml-auto">
 
-      @auth
+      @if($authUser)
       @if(! $authUser?->isAdmin())
       {{-- Mobile search (only for non-admin) --}}
       <a href="{{ route('products.search') }}" class="md:hidden w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors" style="background:#162032;border:1px solid #1E2D45;">
@@ -584,13 +584,13 @@
       @else
       {{-- Guest --}}
       <a href="{{ route('login') }}" class="btn-ghost py-2 px-4 text-sm rounded-xl">Masuk</a>
-      <a href="{{ route('register') }}" class="hidden sm:inline-flex dg-btn group relative items-center justify-center overflow-hidden rounded-xl px-4 py-2 font-display font-bold text-white transition-all duration-300 text-sm">
+      <a href="{{ route('register') }}" class="inline-flex dg-btn group relative items-center justify-center overflow-hidden rounded-xl px-4 py-2 font-display font-bold text-white transition-all duration-300 text-sm">
         <span class="relative z-10 flex items-center gap-2">
           <span>Daftar</span>
         </span>
         <span class="dg-btn-glow"></span>
       </a>
-      @endauth
+      @endif
     </div>
   </div>
 </header>
