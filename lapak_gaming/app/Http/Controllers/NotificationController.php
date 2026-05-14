@@ -13,13 +13,25 @@ class NotificationController extends Controller
     public function index()
     {
         $user = Auth::user();
+        $filter = request()->query('filter', 'all');
+        $filter = in_array($filter, ['all', 'transaction', 'event_reward', 'general'], true) ? $filter : 'all';
 
-        $notifications = MarketplaceNotification::query()
-            ->where('user_id', $user?->id)
+        $baseQuery = MarketplaceNotification::query()
+            ->where('user_id', $user?->id);
+
+        $counts = [
+            'all' => (clone $baseQuery)->count(),
+            'transaction' => $this->applyCategoryFilter((clone $baseQuery), 'transaction')->count(),
+            'event_reward' => $this->applyCategoryFilter((clone $baseQuery), 'event_reward')->count(),
+            'general' => $this->applyCategoryFilter((clone $baseQuery), 'general')->count(),
+        ];
+
+        $notifications = $this->applyCategoryFilter($baseQuery, $filter)
             ->latest()
-            ->paginate(15);
+            ->paginate(15)
+            ->withQueryString();
         
-        return view('notifications.index', compact('notifications'));
+        return view('notifications.index', compact('notifications', 'filter', 'counts'));
     }
 
     public function poll(Request $request): JsonResponse
@@ -73,5 +85,38 @@ class NotificationController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    private function applyCategoryFilter($query, string $filter)
+    {
+        if ($filter === 'all') {
+            return $query;
+        }
+
+        if ($filter === MarketplaceNotification::CATEGORY_EVENT_REWARD) {
+            return $query->where(function ($q): void {
+                $q->where('type', 'admin-event_reward')
+                    ->orWhere('metadata->category', MarketplaceNotification::CATEGORY_EVENT_REWARD);
+            });
+        }
+
+        if ($filter === MarketplaceNotification::CATEGORY_TRANSACTION) {
+            return $query->where(function ($q): void {
+                $q->where('type', 'transaction')
+                    ->orWhere('type', 'like', 'order-%')
+                    ->orWhere('type', 'like', 'payment-%')
+                    ->orWhere('type', 'like', 'wallet-%')
+                    ->orWhereIn('type', ['deposit', 'withdraw', 'escrow_hold'])
+                    ->orWhere('metadata->category', MarketplaceNotification::CATEGORY_TRANSACTION);
+            });
+        }
+
+        return $query->where(function ($q): void {
+            $q->where('type', '!=', 'admin-event_reward')
+                ->where('type', 'not like', 'order-%')
+                ->where('type', 'not like', 'payment-%')
+                ->where('type', 'not like', 'wallet-%')
+                ->whereNotIn('type', ['transaction', 'deposit', 'withdraw', 'escrow_hold']);
+        });
     }
 }

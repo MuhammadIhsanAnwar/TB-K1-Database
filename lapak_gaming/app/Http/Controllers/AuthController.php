@@ -92,6 +92,10 @@ class AuthController extends Controller
                 ])->onlyInput('email');
             }
 
+            Auth::logout();
+            $request->session()->regenerate();
+            $request->session()->put('reactivate_user_id', $user->id);
+
             return redirect()->route('account.reactivate.form');
         }
 
@@ -283,6 +287,21 @@ class AuthController extends Controller
 
             return redirect()->route('verification.pending', ['email' => $user->email])
                 ->with('status', 'Email verifikasi sudah dikirim. Silakan cek kotak masuk Anda.');
+        }
+
+        if ($user->deactivated_at) {
+            if ($user->deactivated_at->copy()->addMonths(6)->isPast()) {
+                $user->delete();
+
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Akun Anda telah dihapus permanen karena melewati batas waktu aktivasi.',
+                ]);
+            }
+
+            $request->session()->regenerate();
+            $request->session()->put('reactivate_user_id', $user->id);
+
+            return redirect()->route('account.reactivate.form');
         }
 
         Auth::login($user, true);

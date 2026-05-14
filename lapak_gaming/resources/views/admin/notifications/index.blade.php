@@ -21,6 +21,13 @@
                 </select>
             </div>
             <div>
+                <label class="block text-sm font-medium text-slate-300">Kategori Pesan</label>
+                <select name="category" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white" required>
+                    <option value="general">Umum</option>
+                    <option value="event_reward">Event & Hadiah</option>
+                </select>
+            </div>
+            <div>
                 <label class="block text-sm font-medium text-slate-300">Judul</label>
                 <input name="title" type="text" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white" required>
             </div>
@@ -43,7 +50,12 @@
                 @forelse ($notifications as $notification)
                     <article class="rounded-2xl border border-slate-800 bg-slate-950 p-4">
                         <div class="flex items-center justify-between gap-4">
-                            <h3 class="font-semibold text-white">{{ $notification->title }}</h3>
+                            <div class="flex flex-wrap items-center gap-2">
+                                <h3 class="font-semibold text-white">{{ $notification->title }}</h3>
+                                <span class="rounded-full border border-slate-700 bg-slate-900 px-2 py-0.5 text-[11px] text-slate-300">
+                                    {{ $notification->category_label }}
+                                </span>
+                            </div>
                             <span class="text-xs text-slate-500">{{ $notification->created_at->diffForHumans() }}</span>
                         </div>
                         <p class="mt-2 text-sm text-slate-400">{{ $notification->body }}</p>

@@ -8,8 +8,13 @@
   /** @var \App\Models\User|null $authUser */
   $authUser = Auth::user();
   $cartItems = collect();
+  $cartCount = 0;
 
   if ($authUser) {
+    $cartCount = (int) \App\Models\Cart::query()
+      ->where('user_id', $authUser->id)
+      ->sum('quantity');
+
     $cartItems = \App\Models\Cart::query()
       ->where('user_id', $authUser->id)
       ->with('product.seller')
@@ -452,8 +457,10 @@
       <div class="relative">
         <button onclick="toggleDropdown('cart-dropdown')" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors" style="background:#162032;border:1px solid #1E2D45;" aria-label="Cart">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"/></svg>
-          @if($authUser && $cartItems->sum('quantity') > 0)
-            <span class="notif-dot"></span>
+          @if($authUser && $cartCount > 0)
+            <span class="absolute -right-2 -top-2 flex min-w-[1.15rem] h-[1.15rem] items-center justify-center rounded-full border-2 border-surface-950 bg-accent-500 px-1 text-[10px] font-bold leading-none text-white">
+              {{ $cartCount > 99 ? '99+' : $cartCount }}
+            </span>
           @endif
         </button>
         <div id="cart-dropdown" class="dropdown-panel absolute right-0 top-full mt-2 w-72 rounded-xl shadow-card-hover"

@@ -88,11 +88,10 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/settings/password/code', [SettingsController::class, 'sendPasswordChangeCode'])->name('settings.password.sendCode');
     Route::put('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password.update');
     Route::post('/settings/account/delete-code', [SettingsController::class, 'sendDeletionCode'])->name('settings.account.sendDeletionCode');
+    Route::post('/settings/account/deactivation-code', [SettingsController::class, 'sendDeactivationCode'])->name('settings.account.sendDeactivationCode');
     Route::get('/settings/account/delete', [SettingsController::class, 'confirmDeletionForm'])->name('settings.account.delete');
     Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
     Route::post('/settings/deactivate', [SettingsController::class, 'deactivate'])->name('settings.deactivate');
-    Route::get('/account/reactivate', [SettingsController::class, 'reactivateForm'])->name('account.reactivate.form');
-    Route::post('/account/reactivate', [SettingsController::class, 'reactivate'])->name('account.reactivate');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -169,6 +168,7 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/notifications', [AdminController::class, 'notifications'])->name('notifications.index');
         Route::post('/notifications', [AdminController::class, 'sendNotification'])->name('notifications.send');
         Route::get('/orders', [AdminController::class, 'orders'])->name('orders.index');
+        Route::get('/orders/report/pdf', [AdminController::class, 'downloadOrdersReportPdf'])->name('orders.report.pdf');
         Route::get('/orders/{order:order_code}', [AdminController::class, 'showOrder'])->name('orders.show');
         Route::get('/terminal', fn() => redirect()->route('artisan.terminal.index'))->name('terminal.index');
 
@@ -189,6 +189,7 @@ Route::prefix('verification')->name('verification.')->group(function () {
 
     // ─── Checkout ─────────────────────────────────────────────────────────────
 
+    Route::get('/checkout/product/{product}', [CheckoutController::class, 'product'])->middleware('role:buyer')->name('checkout.product');
     Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('role:buyer')->name('checkout.store');
     Route::post('/checkout/{order}/confirm', [CheckoutController::class, 'confirm'])->middleware('role:buyer')->name('checkout.confirm');
     Route::post('/checkout/{order}/dispute', [CheckoutController::class, 'dispute'])->middleware('role:buyer')->name('checkout.dispute');
@@ -216,6 +217,9 @@ Route::prefix('verification')->name('verification.')->group(function () {
     Route::get('/chat/{order}', [ChatController::class, 'index'])->name('chat.index');
     Route::post('/chat/{order}', [ChatController::class, 'store'])->name('chat.store');
 });
+
+Route::get('/account/reactivate', [SettingsController::class, 'reactivateForm'])->name('account.reactivate.form');
+Route::post('/account/reactivate', [SettingsController::class, 'reactivate'])->name('account.reactivate');
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Setup & Migration (dev / first-run)

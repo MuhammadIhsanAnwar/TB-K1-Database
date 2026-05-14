@@ -556,9 +556,9 @@
                 <h3>{{ $product->name }}</h3>
                 <p class="product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
             </div>
-            <a href="{{ route('products.show', $product->slug) }}"
+            <a href="{{ route('checkout.product', $product) }}"
                class="ml-auto px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-colors">
-                Beli Sekarang
+                Pesan Sekarang
             </a>
         </div>
         @endif

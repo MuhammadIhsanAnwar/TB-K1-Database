@@ -107,7 +107,7 @@ class ChatController extends Controller
 
     // ─── PRODUCT CHAT ────────────────────────────────────────────────────────
 
-    public function product(Request $request, Product $product): View|RedirectResponse
+    public function product(Request $request, Product $product): RedirectResponse
     {
         $product->load('seller');
         $user = $request->user();
@@ -115,14 +115,6 @@ class ChatController extends Controller
 
         if ((int) $user->id === (int) $product->seller_id) {
             $buyerId = (int) $request->query('buyer', 0);
-            $participants = Conversation::where('product_id', $product->id)
-                ->where('seller_id', $user->id)
-                ->with('buyer')
-                ->orderByDesc('last_message_at')
-                ->get()
-                ->pluck('buyer')
-                ->filter()
-                ->unique('id');
 
             if ($buyerId > 0) {
                 $conversation = Conversation::where('product_id', $product->id)
@@ -131,19 +123,10 @@ class ChatController extends Controller
                     ->first();
 
                 if ($conversation) {
-                    $partner = $conversation->buyer;
-                    $messages = Message::where('conversation_id', $conversation->id)
-                        ->with('sender')->oldest()->get();
-
-                    $conversation->markReadFor($user->id);
-                    Message::where('conversation_id', $conversation->id)
-                        ->where('receiver_id', $user->id)->whereNull('read_at')
-                        ->update(['read_at' => now(), 'is_read' => true]);
-
-                    return view('chat.product', compact('product', 'partner', 'participants', 'messages'));
+                    return redirect()->route('chat.show', $conversation);
                 }
 
-                return redirect()->route('chat.product', $product)
+                return redirect()->route('chat.inbox')
                     ->with('alert', [
                         'type' => 'error',
                         'title' => 'Percakapan tidak ditemukan',
@@ -151,27 +134,11 @@ class ChatController extends Controller
                     ]);
             }
 
-            $conversations = Conversation::where('seller_id', $user->id)
-                ->where('product_id', $product->id)
-                ->with('buyer')
-                ->orderByDesc('last_message_at')
-                ->get();
-
-            return view('chat.product-seller', compact('product', 'conversations'));
+            return redirect()->route('chat.inbox');
         }
 
         $conversation = Conversation::findOrCreateForProduct($user->id, $product->seller_id, $product->id);
-        $partner = $product->seller;
-        $participants = collect();
-        $messages = Message::where('conversation_id', $conversation->id)
-            ->with('sender')->oldest()->get();
-
-        $conversation->markReadFor($user->id);
-        Message::where('conversation_id', $conversation->id)
-            ->where('receiver_id', $user->id)->whereNull('read_at')
-            ->update(['read_at' => now(), 'is_read' => true]);
-
-        return view('chat.product', compact('product', 'partner', 'participants', 'messages'));
+        return redirect()->route('chat.show', $conversation);
     }
 
     // ─── ORDER CHAT ──────────────────────────────────────────────────────────
@@ -255,11 +222,7 @@ class ChatController extends Controller
         $conversation->updateLastMessage($msg);
         $conversation->incrementUnread($user->id);
 
-        if ((int) $user->id === (int) $product->seller_id) {
-            return redirect()->route('chat.product', ['product' => $product->id, 'buyer' => $buyerId]);
-        }
-
-        return redirect()->route('chat.product', ['product' => $product->id]);
+        return redirect()->route('chat.show', $conversation);
     }
 
     public function pollProduct(Request $request, Product $product): JsonResponse

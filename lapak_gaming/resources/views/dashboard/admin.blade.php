@@ -66,6 +66,10 @@
                    class="rounded-xl border border-slate-700 bg-slate-800/60 px-5 py-3 text-sm font-bold text-white transition hover:border-slate-500 hover:bg-slate-700 active:scale-95">
                     Transaksi
                 </a>
+                <a href="{{ route('admin.orders.report.pdf') }}"
+                   class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-5 py-3 text-sm font-bold text-emerald-200 transition hover:border-emerald-400 hover:bg-emerald-500/20 active:scale-95">
+                    Download PDF
+                </a>
             </div>
         </div>
     </section>
@@ -146,6 +150,21 @@
             <p class="relative text-3xl font-black text-white">{{ number_format($sellerRequests) }}</p>
             <p class="mt-1 text-[11px] text-amber-500/60">Menunggu verifikasi</p>
         </div>
+
+        {{-- Pending Email Verification --}}
+        <a href="{{ route('admin.users.index', ['tab' => 'pending_verification']) }}"
+           class="stat-card group rounded-2xl border border-slate-800 border-t-2 border-t-yellow-500/70 bg-slate-900 p-5 hover:border-t-yellow-400 hover:shadow-lg hover:shadow-yellow-500/10">
+            <div class="mb-4 flex items-start justify-between">
+                <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Pending Verifikasi</p>
+                <div class="rounded-xl bg-yellow-500/10 p-2 text-yellow-400 transition group-hover:bg-yellow-500/20">
+                    <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-18 8h18a2 2 0 002-2V8a2 2 0 00-2-2H3a2 2 0 00-2 2v6a2 2 0 002 2z" />
+                    </svg>
+                </div>
+            </div>
+            <p class="text-3xl font-black text-white">{{ number_format($pendingEmailVerifications) }}</p>
+            <p class="mt-1 text-[11px] text-slate-600">Register belum verifikasi email</p>
+        </a>
 
         {{-- Produk Aktif --}}
         <div class="stat-card group rounded-2xl border border-slate-800 border-t-2 border-t-purple-500/70 bg-slate-900 p-5 hover:border-t-purple-400 hover:shadow-lg hover:shadow-purple-500/10">
@@ -249,7 +268,7 @@
             <div class="mb-6 flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-white">Tren Transaksi</h3>
-                    <p class="text-[11px] text-slate-500">6 Bulan Terakhir</p>
+                    <p class="text-[11px] text-slate-500">{{ $chartRangeLabel }}</p>
                 </div>
                 <span class="rounded-lg bg-amber-500/10 px-2.5 py-1 text-[11px] font-bold text-amber-400">Order</span>
             </div>
@@ -261,7 +280,7 @@
             <div class="mb-6 flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-white">Perputaran Uang</h3>
-                    <p class="text-[11px] text-slate-500">6 Bulan Terakhir</p>
+                    <p class="text-[11px] text-slate-500">{{ $chartRangeLabel }}</p>
                 </div>
                 <span class="rounded-lg bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold text-emerald-400">Transaksi</span>
             </div>

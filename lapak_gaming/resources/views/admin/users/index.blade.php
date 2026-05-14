@@ -134,6 +134,14 @@
           @endif
         </a>
 
+        <a href="{{ route('admin.users.index', ['tab' => 'pending_verification']) }}"
+           class="tab-btn {{ $tab === 'pending_verification' ? 'active' : '' }}">
+          Pending Verifikasi
+          @if($pendingVerifications->total() > 0)
+            <span class="tab-badge badge-pending">{{ $pendingVerifications->total() }}</span>
+          @endif
+        </a>
+
       </div>
     </div>
 
@@ -228,6 +236,67 @@
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
     {{-- TAB 2: SELLERS                                                      --}}
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
+    @if($tab === 'pending_verification')
+      <div class="overflow-hidden rounded-3xl border border-slate-800 bg-slate-900">
+        <div class="px-6 py-4 border-b border-slate-800">
+          <p class="text-sm font-medium text-slate-300">
+            Akun berikut sudah register tetapi belum melakukan verifikasi email.
+          </p>
+        </div>
+
+        @if($pendingVerifications->isEmpty())
+          <div class="py-16 text-center text-slate-500">
+            <svg class="mx-auto w-12 h-12 mb-3 text-slate-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+            </svg>
+            <p>Tidak ada akun pending verifikasi email.</p>
+          </div>
+        @else
+          <div class="overflow-x-auto">
+            <table class="data-table min-w-full divide-y divide-slate-800 text-sm text-left text-slate-300">
+              <thead class="bg-slate-950 text-xs uppercase tracking-widest text-slate-500">
+                <tr>
+                  <th class="px-5 py-3.5">Pengguna</th>
+                  <th class="px-5 py-3.5">Email</th>
+                  <th class="px-5 py-3.5">Role</th>
+                  <th class="px-5 py-3.5">Register</th>
+                  <th class="px-5 py-3.5">Status Verifikasi</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-slate-800">
+                @foreach($pendingVerifications as $user)
+                  <tr class="hover:bg-slate-800/40 transition">
+                    <td class="px-5 py-4">
+                      <div class="flex items-center gap-3">
+                        <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}"
+                             class="w-9 h-9 rounded-full object-cover border border-slate-700" />
+                        <div>
+                          <p class="font-medium text-white">{{ $user->name }}</p>
+                          <p class="text-xs text-slate-500">ID #{{ $user->id }}</p>
+                        </div>
+                      </div>
+                    </td>
+                    <td class="px-5 py-4 text-slate-400">{{ $user->email }}</td>
+                    <td class="px-5 py-4 capitalize">{{ $user->role }}</td>
+                    <td class="px-5 py-4 text-slate-500 text-xs">{{ $user->created_at->format('d M Y H:i') }}</td>
+                    <td class="px-5 py-4">
+                      <span class="pill pill-pending">
+                        <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                        Belum Verifikasi
+                      </span>
+                    </td>
+                  </tr>
+                @endforeach
+              </tbody>
+            </table>
+          </div>
+          <div class="px-5 py-4 border-t border-slate-800">
+            {{ $pendingVerifications->links() }}
+          </div>
+        @endif
+      </div>
+    @endif
+
     @if($tab === 'sellers')
       <div class="overflow-hidden rounded-3xl border border-slate-800 bg-slate-900">
         <div class="px-6 py-4 border-b border-slate-800">

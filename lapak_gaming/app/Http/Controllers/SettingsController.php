@@ -6,6 +6,7 @@ use App\Models\Order;
 use App\Models\Seller;
 use App\Models\Review;
 use App\Models\User;
+use App\Notifications\AccountDeactivationVerification;
 use App\Notifications\AccountDeletionVerification;
 use App\Notifications\PasswordChangeVerification;
 use Illuminate\Support\Facades\Cache;
@@ -142,6 +143,19 @@ class SettingsController extends Controller
         return back()->with('status', 'Kode verifikasi telah dikirim ke email Anda. Silakan periksa kotak masuk.');
     }
 
+    public function sendDeactivationCode(Request $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $code = str_pad(random_int(100000, 999999), 6, '0', STR_PAD_LEFT);
+
+        Cache::put($this->accountDeactivationCodeKey($user), Hash::make($code), now()->addMinutes(30));
+
+        $user->notify(new AccountDeactivationVerification($code));
+
+        return back()->with('status', 'Kode verifikasi nonaktif akun telah dikirim ke email Anda.');
+    }
+
     public function sendPasswordChangeCode(Request $request): RedirectResponse
     {
         /** @var User $user */
@@ -215,6 +229,11 @@ class SettingsController extends Controller
         return 'password-change-code:' . $user->id;
     }
 
+    private function accountDeactivationCodeKey(User $user): string
+    {
+        return 'account-deactivation-code:' . $user->id;
+    }
+
     public function confirmDeletionForm(): View
     {
         /** @var User $user */
@@ -227,11 +246,18 @@ class SettingsController extends Controller
 
     public function reactivateForm(): View|RedirectResponse
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = Auth::user();
 
+        if (! $user) {
+            $pendingUserId = session('reactivate_user_id');
+            $user = $pendingUserId ? User::find($pendingUserId) : null;
+        }
+
         if (! $user || ! $user->deactivated_at) {
-            return redirect()->route('home');
+            session()->forget('reactivate_user_id');
+
+            return redirect()->route('login');
         }
 
         return view('auth.reactivate-account', [
@@ -244,12 +270,38 @@ class SettingsController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
+        $data = $request->validate([
+            'deactivation_code' => ['required', 'digits:6'],
+        ], [
+            'deactivation_code.required' => 'Kode verifikasi wajib diisi.',
+            'deactivation_code.digits' => 'Kode verifikasi harus terdiri dari 6 digit.',
+        ]);
+
+        $storedCode = Cache::get($this->accountDeactivationCodeKey($user));
+
+        if (! $storedCode) {
+            return back()->withErrors([
+                'deactivation_code' => 'Kode verifikasi belum dikirim atau sudah kedaluwarsa.',
+            ]);
+        }
+
+        if (! Hash::check($data['deactivation_code'], $storedCode)) {
+            return back()->withErrors([
+                'deactivation_code' => 'Kode verifikasi tidak valid.',
+            ]);
+        }
+
         $user->forceFill([
             'deactivated_at' => now(),
         ])->save();
 
-        return redirect()->route('account.reactivate.form')
-            ->with('status', 'Akun Anda telah dinonaktifkan sementara.');
+        Cache::forget($this->accountDeactivationCodeKey($user));
+        Auth::logout();
+        $request->session()->invalidate();
+        $request->session()->regenerateToken();
+
+        return redirect()->route('home')
+            ->with('status', 'Akun Anda telah dinonaktifkan sementara. Silakan login kembali jika ingin mengaktifkannya.');
     }
 
     public function destroy(Request $request): RedirectResponse
@@ -280,13 +332,43 @@ class SettingsController extends Controller
 
     public function reactivate(Request $request): RedirectResponse
     {
-        /** @var User $user */
+        /** @var User|null $user */
         $user = Auth::user();
+
+        if (! $user) {
+            $pendingUserId = session('reactivate_user_id');
+            $user = $pendingUserId ? User::find($pendingUserId) : null;
+        }
+
+        if (! $user || ! $user->deactivated_at) {
+            session()->forget('reactivate_user_id');
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Sesi reaktivasi tidak valid. Silakan login kembali.',
+            ]);
+        }
+
+        if ($user->deactivated_at->copy()->addMonths(6)->isPast()) {
+            $user->delete();
+            session()->forget('reactivate_user_id');
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Akun Anda telah dihapus permanen karena melewati batas waktu aktivasi.',
+            ]);
+        }
 
         $user->forceFill([
             'deactivated_at' => null,
         ])->save();
 
-        return redirect()->route('home')->with('success', 'Akun berhasil diaktifkan kembali.');
+        session()->forget('reactivate_user_id');
+        Auth::login($user);
+        $request->session()->regenerate();
+
+        return redirect()->intended(match (true) {
+            $user->role === 'admin' => route('admin.dashboard'),
+            $user->isSellerAccount() => route('seller.dashboard'),
+            default => route('buyer.dashboard'),
+        })->with('success', 'Akun berhasil diaktifkan kembali.');
     }
 }

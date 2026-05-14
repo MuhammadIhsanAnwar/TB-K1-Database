@@ -5,7 +5,7 @@
     <div class="max-w-3xl mx-auto">
         <div class="rounded-3xl border border-slate-800 bg-slate-950 p-8">
             <h1 class="text-3xl font-bold text-white mb-4">Aktifkan Kembali Akun</h1>
-            <p class="text-slate-400 mb-8">Akun Anda telah dinonaktifkan. Apakah Anda ingin mengaktifkannya kembali? Anda dapat mengaktifkan akun ini dalam 6 bulan sejak dinonaktifkan.</p>
+            <p class="text-slate-400 mb-8">Login berhasil diverifikasi, tetapi akun ini sedang nonaktif. Konfirmasi dulu untuk mengaktifkan kembali akun sebelum masuk ke website.</p>
 
             @if(session('status'))
                 <div class="mb-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 text-cyan-200">{{ session('status') }}</div>
@@ -24,7 +24,7 @@
                 <h2 class="font-semibold text-white mb-3">Informasi Akun</h2>
                 <p class="text-slate-300">Email: <span class="text-white">{{ $user->email }}</span></p>
                 <p class="text-slate-300 mt-2">Dinonaktifkan pada: <span class="text-white">{{ $user->deactivated_at->format('d M Y H:i') }}</span></p>
-                <p class="text-slate-300 mt-2">Batas waktu aktivasi: <span class="text-white">{{ $user->deactivated_at->addMonths(6)->format('d M Y H:i') }}</span></p>
+                <p class="text-slate-300 mt-2">Batas waktu aktivasi: <span class="text-white">{{ $user->deactivated_at->copy()->addMonths(6)->format('d M Y H:i') }}</span></p>
             </div>
 
             <form action="{{ route('account.reactivate') }}" method="POST">

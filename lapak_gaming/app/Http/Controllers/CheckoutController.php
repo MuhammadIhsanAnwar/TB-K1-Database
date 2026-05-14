@@ -11,9 +11,62 @@ use App\Models\WalletTransaction;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
+    public function product(Request $request, Product $product): View|RedirectResponse
+    {
+        $messages = [
+            'quantity.integer' => 'Jumlah harus berupa angka bulat.',
+            'quantity.min' => 'Jumlah produk minimal 1.',
+            'quantity.max' => 'Jumlah produk maksimal 99.',
+        ];
+
+        $data = $request->validate([
+            'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
+        ], $messages);
+
+        $product->load(['seller', 'category']);
+        abort_unless($product->status === 'published', 404);
+
+        if ((int) $product->seller_id === (int) $request->user()->id) {
+            return redirect()->route('products.show', $product->slug)
+                ->with('error', 'Anda tidak bisa checkout produk sendiri.');
+        }
+
+        $quantity = (int) ($data['quantity'] ?? 1);
+
+        if ((int) $product->stock < 1) {
+            return redirect()->route('products.show', $product->slug)
+                ->with('error', 'Stok produk sedang kosong.');
+        }
+
+        if ($quantity > (int) $product->stock) {
+            return redirect()->route('products.show', $product->slug)
+                ->with('error', 'Stok produk tidak mencukupi untuk jumlah yang dipilih.');
+        }
+
+        $subtotal = $quantity * (float) $product->price;
+        $feePercent = 5;
+        $feeAmount = round($subtotal * $feePercent / 100, 2);
+        $grandTotal = $subtotal + $feeAmount;
+        $wallet = Wallet::firstOrCreate(['user_id' => $request->user()->id]);
+        $wallet->loadMissing('balanceState');
+        $availableBalance = (float) ($wallet->balanceState?->available_balance ?? 0);
+
+        return view('orders.product-checkout', compact(
+            'product',
+            'quantity',
+            'subtotal',
+            'feePercent',
+            'feeAmount',
+            'grandTotal',
+            'availableBalance'
+        ));
+    }
+
     public function store(Request $request): RedirectResponse
     {
         $messages = [
@@ -24,31 +77,61 @@ class CheckoutController extends Controller
             'quantity.max' => 'Jumlah produk maksimal 99.',
             'payment_method.string' => 'Metode pembayaran harus berupa teks.',
             'payment_method.max' => 'Metode pembayaran maksimal 50 karakter.',
+            'payment_method.in' => 'Metode pembayaran tidak valid.',
         ];
 
         $data = $request->validate([
             'product_id' => ['required', 'exists:products,id'],
             'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
-            'payment_method' => ['nullable', 'string', 'max:50'],
+            'payment_method' => ['nullable', 'string', 'max:50', 'in:wallet,balance,transfer,qris,dana,ovo,gopay'],
         ], $messages);
 
-        $product = Product::query()->published()->findOrFail($data['product_id']);
         $quantity = (int) ($data['quantity'] ?? 1);
-        $subtotal = $quantity * (float) $product->price;
-        $feePercent = 5;
-        $feeAmount = round($subtotal * $feePercent / 100, 2);
-        $grandTotal = $subtotal + $feeAmount;
+        $paymentMethod = $data['payment_method'] ?? 'wallet';
+        $paymentMethod = $paymentMethod === 'balance' ? 'wallet' : $paymentMethod;
 
-        DB::transaction(function () use ($request, $product, $quantity, $subtotal, $feeAmount, $grandTotal, $data): void {
+        $order = DB::transaction(function () use ($request, $quantity, $paymentMethod): Order {
+            $product = Product::query()
+                ->published()
+                ->lockForUpdate()
+                ->findOrFail($request->input('product_id'));
+
+            if ((int) $product->seller_id === (int) $request->user()->id) {
+                throw ValidationException::withMessages([
+                    'product_id' => 'Anda tidak bisa checkout produk sendiri.',
+                ]);
+            }
+
+            if ($quantity > (int) $product->stock) {
+                throw ValidationException::withMessages([
+                    'quantity' => 'Stok produk tidak mencukupi untuk jumlah yang dipilih.',
+                ]);
+            }
+
+            $subtotal = $quantity * (float) $product->price;
+            $feePercent = 5;
+            $feeAmount = round($subtotal * $feePercent / 100, 2);
+            $grandTotal = $subtotal + $feeAmount;
+
             $order = Order::create([
                 'buyer_id' => $request->user()->id,
                 'seller_id' => $product->seller_id,
                 'invoice_number' => 'INV-'.now()->format('YmdHis').'-'.str_pad((string) random_int(1, 9999), 4, '0', STR_PAD_LEFT),
                 'status' => 'pending_payment',
-                'payment_method' => $data['payment_method'] ?? 'wallet',
+                'payment_method' => $paymentMethod,
                 'due_at' => now()->addDays(2),
-                'metadata' => ['fee_percent' => 5],
+                'metadata' => [
+                    'fee_percent' => $feePercent,
+                    'checkout_source' => 'product',
+                ],
             ]);
+
+            $order->forceFill([
+                'subtotal' => $subtotal,
+                'fee_amount' => $feeAmount,
+                'escrow_amount' => $subtotal,
+                'grand_total' => $grandTotal,
+            ])->save();
 
             $order->financial()->create([
                 'subtotal' => $subtotal,
@@ -66,6 +149,8 @@ class CheckoutController extends Controller
                 'quantity' => $quantity,
                 'status' => 'pending',
             ]);
+
+            $product->decrement('stock', $quantity);
 
             $wallet = Wallet::firstOrCreate(['user_id' => $request->user()->id]);
             $balanceState = $wallet->balanceState()->firstOrCreate([], [
@@ -93,9 +178,12 @@ class CheckoutController extends Controller
                     'description' => 'Dana ditahan di escrow untuk invoice '.$order->invoice_number,
                 ]);
             }
+
+            return $order;
         });
 
-        return back()->with('success', 'Checkout berhasil dibuat. Lanjutkan pembayaran untuk masuk ke escrow.');
+        return redirect()->route('orders.show', $order->order_code)
+            ->with('success', 'Pesanan berhasil dibuat. Lanjutkan pembayaran untuk masuk ke escrow.');
     }
 
     public function confirm(Request $request, Order $order): RedirectResponse

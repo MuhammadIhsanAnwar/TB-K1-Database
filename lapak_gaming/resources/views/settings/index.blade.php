@@ -302,6 +302,48 @@
 
                         </section>
 
+                        <section class="card-box border-amber-500/10 bg-amber-500/[0.03]">
+
+                            <h2 class="text-xl font-bold text-white">
+                                Nonaktifkan Akun
+                            </h2>
+
+                            <p class="mt-4 text-sm text-slate-400">
+                                Kode verifikasi akan dikirim ke email sebelum akun dinonaktifkan. Setelah berhasil, Anda akan otomatis logout.
+                            </p>
+
+                            <form action="{{ route('settings.account.sendDeactivationCode') }}"
+                                method="POST"
+                                class="mt-6">
+                                @csrf
+
+                                <button type="submit"
+                                    class="w-full rounded-2xl border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm font-bold text-amber-200 transition hover:bg-amber-500/20">
+                                    Kirim Kode Nonaktif
+                                </button>
+                            </form>
+
+                            <form action="{{ route('settings.deactivate') }}"
+                                method="POST"
+                                class="mt-5 space-y-4">
+                                @csrf
+
+                                <input type="text"
+                                    name="deactivation_code"
+                                    inputmode="numeric"
+                                    maxlength="6"
+                                    placeholder="Kode Verifikasi"
+                                    class="input-style">
+
+                                <button type="submit"
+                                    onclick="return confirm('Nonaktifkan akun sekarang? Anda akan otomatis logout.')"
+                                    class="w-full rounded-2xl bg-amber-500 px-5 py-4 text-sm font-bold text-slate-950 transition hover:bg-amber-400">
+                                    Nonaktifkan Akun
+                                </button>
+                            </form>
+
+                        </section>
+
                         <section class="card-box border-rose-500/10 bg-rose-500/[0.03]">
 
                             <h2 class="text-xl font-bold text-white">

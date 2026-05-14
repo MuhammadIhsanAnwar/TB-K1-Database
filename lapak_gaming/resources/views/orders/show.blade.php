@@ -34,12 +34,16 @@
                 <div class="bg-slate-900 px-6 py-4 text-sm uppercase tracking-[0.2em] text-slate-400">Item Pesanan</div>
                 <div class="divide-y divide-slate-800">
                     @foreach($order->items as $item)
+                        @php
+                            $itemName = $item->name_snapshot ?? $item->product?->name ?? 'Produk';
+                            $itemSubtotal = (float) $item->price_snapshot * (int) $item->quantity;
+                        @endphp
                         <div class="flex flex-col gap-3 px-6 py-5 md:flex-row md:items-center md:justify-between">
                             <div>
-                                <div class="font-semibold text-white">{{ $item->product_name }}</div>
+                                <div class="font-semibold text-white">{{ $itemName }}</div>
                                 <div class="text-slate-400">Jumlah: {{ $item->quantity }}</div>
                             </div>
-                            <div class="text-right text-white">Rp {{ number_format($item->subtotal, 0, ',', '.') }}</div>
+                            <div class="text-right text-white">Rp {{ number_format($itemSubtotal, 0, ',', '.') }}</div>
                         </div>
                     @endforeach
                 </div>
