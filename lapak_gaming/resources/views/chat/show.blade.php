@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Chat — ' . ($conversation->partner(auth()->id())?->name ?? 'Percakapan'))
+@section('title', 'Chat — ' . ($conversation->seller?->name ?? $conversation->partner(auth()->id())?->name ?? 'Percakapan'))
 
 @push('styles')
 <style>
@@ -468,9 +468,17 @@
 @section('content')
 @php
     $user    = auth()->user();
-    $partner = $conversation->partner($user->id);
+    $partner = $conversation->seller ?? $conversation->partner($user->id);
     $product = $conversation->product;
     $order   = $conversation->order;
+    $chatConfig = [
+        'convId' => $conversation->id,
+        'authId' => $user->id,
+        'sendUrl' => route('chat.send', $conversation),
+        'pollUrl' => route('chat.poll', $conversation),
+        'lastId' => $messages->last()?->id ?? 0,
+        'avatarUrl' => $user->avatar_url,
+    ];
 @endphp
 
 <div class="max-w-7xl mx-auto px-4 py-4">
@@ -493,7 +501,7 @@
         <div class="overflow-y-auto flex-1" id="sideList">
             @foreach($sidebarConversations as $conv)
             @php
-                $p2     = $conv->partner($user->id);
+                $p2     = $conv->seller ?? $conv->partner($user->id);
                 $unread = $conv->unreadFor($user->id);
                 $active = $conv->id === $conversation->id;
             @endphp
@@ -633,15 +641,20 @@
 </div>
 </div>
 
+<script id="chat-config" type="application/json">
+{!! json_encode($chatConfig) !!}
+</script>
+
 @push('scripts')
 <script>
-const CONV_ID = {{ $conversation->id }};
-const AUTH_ID = {{ $user->id }};
-const SEND_URL = '{{ route('chat.send', $conversation) }}';
-const POLL_URL = '{{ route('chat.poll', $conversation) }}';
+const chatConfig = JSON.parse(document.getElementById('chat-config').textContent);
+const CONV_ID = chatConfig.convId;
+const AUTH_ID = chatConfig.authId;
+const SEND_URL = chatConfig.sendUrl;
+const POLL_URL = chatConfig.pollUrl;
 const CSRF    = document.querySelector('meta[name="csrf-token"]').content;
 
-let lastId = {{ $messages->last()?->id ?? 0 }};
+let lastId = chatConfig.lastId;
 let pollTimer;
 
 const messagesArea = document.getElementById('messagesArea');

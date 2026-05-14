@@ -23,7 +23,7 @@ class MarketplaceController extends Controller
         }
 
         $categories = Schema::hasTable('categories')
-            ? Category::query()->active()->whereNull('parent_id')->with('children')->orderBy('sort_order')->take(10)->get()
+            ? Category::query()->active()->whereNull('parent_id')->with('children')->orderBy('sort_order')->take(13)->get()
             : collect();
 
         $allCategories = Schema::hasTable('categories')

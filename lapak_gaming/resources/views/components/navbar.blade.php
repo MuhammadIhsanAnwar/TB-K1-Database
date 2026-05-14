@@ -7,6 +7,7 @@
 @php
   /** @var \App\Models\User|null $authUser */
   $authUser = Auth::user();
+  $isAdminRoute = request()->routeIs('admin.*');
   $cartItems = collect();
   $cartCount = 0;
   $avatarFallback = 'https://ui-avatars.com/api/?name=' . urlencode($authUser?->name ?? 'User') . '&background=2563eb&color=fff';
@@ -180,11 +181,15 @@
     <div>
       <p class="text-[10px] font-display font-semibold text-slate-600 uppercase tracking-widest mb-2 px-1">Kategori</p>
       <ul class="space-y-0.5">
-        @foreach($categories->take(8) as $category)
+        @foreach($categories->take(13) as $category)
         <li>
           <a href="{{ route('categories.show', $category->slug) }}"
              class="flex items-center gap-3 px-3 py-2 rounded-xl text-slate-400 hover:text-white hover:bg-surface-750 text-sm transition-all">
-            <span class="text-base leading-none">{{ $category->icon ?? '🎮' }}</span>
+            @if(!empty($category->image))
+              <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="w-5 h-5 rounded object-cover shrink-0" loading="lazy">
+            @else
+              <span class="text-base leading-none">{{ $category->icon ?? '🎮' }}</span>
+            @endif
             {{ $category->name }}
           </a>
         </li>
@@ -381,7 +386,11 @@
                 <a href="{{ route('categories.show', $cat->slug) }}"
                    class="flex items-center gap-2 px-3 py-2 rounded-lg text-sm text-slate-400 hover:text-white transition-colors"
                   >
-                  <span class="text-base">{{ $cat->icon ?? '🎮' }}</span>
+                  @if(!empty($cat->image))
+                    <img src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="w-5 h-5 rounded object-cover shrink-0" loading="lazy">
+                  @else
+                    <span class="text-base">{{ $cat->icon ?? '🎮' }}</span>
+                  @endif
                   <span class="truncate">{{ $cat->name }}</span>
                 </a>
                 @endforeach
@@ -405,6 +414,7 @@
   </nav>
 
     {{-- Search Bar (center, desktop) --}}
+    @if(! $isAdminRoute)
     <form action="{{ route('products.search') }}" method="GET" class="hidden md:flex flex-1 max-w-md mx-auto">
       <div class="relative w-full">
         <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
@@ -414,6 +424,7 @@
                class="input pl-9 pr-4 py-2 text-sm rounded-xl" />
       </div>
     </form>
+    @endif
 
     {{-- Right Action Icons --}}
     <div class="flex items-center gap-1.5 ml-auto">
@@ -427,6 +438,7 @@
       @endif
 
       {{-- Notifications --}}
+      @if(! $isAdminRoute)
       <div class="relative">
         <button onclick="toggleDropdown('notif-dropdown'); loadNotificationPreview();" class="relative w-9 h-9 rounded-lg flex items-center justify-center text-slate-400 hover:text-white transition-colors" style="background:#162032;border:1px solid #1E2D45;" aria-label="Notifications">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
@@ -447,6 +459,7 @@
           </div>
         </div>
       </div>
+      @endif
 
       @if(! $authUser?->isAdmin())
       {{-- Chat (only for non-admin) --}}

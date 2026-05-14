@@ -6,7 +6,7 @@ use App\Models\Product;
 
 class HomeController extends Controller {
     public function index() {
-        $categories = Category::active()->parent()->ordered()->with('children')->take(10)->get();
+        $categories = Category::active()->parent()->ordered()->with('children')->take(13)->get();
 
         $popularProducts = Product::active()->inStock()->popular()
             ->with(['category', 'seller'])->take(12)->get();

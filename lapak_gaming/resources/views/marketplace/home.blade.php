@@ -444,17 +444,6 @@ spline-viewer iframe {
 @if(isset($heroBanners) && $heroBanners->count())
 <section class="relative py-5 sm:py-7">
   <div class="max-w-7xl mx-auto px-4">
-    <div class="mb-4 flex items-end justify-between gap-4">
-      <div>
-        <p class="text-[10px] font-display font-semibold uppercase tracking-[0.28em] text-amber-300">Promo Terbaru</p>
-        <h2 class="mt-1 text-lg sm:text-xl font-bold text-white">Banner Iklan</h2>
-      </div>
-      <div class="hidden sm:flex items-center gap-2 text-xs text-slate-500">
-        <span class="inline-flex h-2 w-2 rounded-full bg-emerald-400"></span>
-        Auto scroll aktif
-      </div>
-    </div>
-
     <div class="overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/40 shadow-card-hover">
       <div id="banner-track" class="banner-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory p-3 sm:p-4">
           @foreach($heroBanners as $banner)
@@ -473,36 +462,6 @@ spline-viewer iframe {
           </a>
         @endforeach
       </div>
-    </div>
-  </div>
-</section>
-@endif
-
-@if(isset($featuredBanners) && $featuredBanners->count())
-<section class="pb-14">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="flex items-end justify-between gap-4 mb-6">
-      <div>
-        <h2 class="section-title font-display font-bold text-lg text-white">Banner Featured</h2>
-        <p class="text-xs text-slate-500 mt-1 pl-4">Promo unggulan untuk penawaran utama</p>
-      </div>
-    </div>
-    <div class="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
-      @foreach($featuredBanners as $banner)
-        <a href="{{ $banner->link_url ?: '#' }}" class="reveal-card group overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900 shadow-card-hover">
-          <div class="relative aspect-[3/1] overflow-hidden">
-            <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
-            <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/35 to-transparent"></div>
-            <div class="absolute inset-0 flex items-end p-5 sm:p-6">
-              <div>
-                <span class="inline-flex items-center rounded-full border border-brand-400/30 bg-brand-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-200">Featured</span>
-                <h3 class="mt-3 text-xl sm:text-2xl font-bold text-white">{{ $banner->title }}</h3>
-                <p class="mt-1 text-sm text-slate-300">{{ $banner->subtitle }}</p>
-              </div>
-            </div>
-          </div>
-        </a>
-      @endforeach
     </div>
   </div>
 </section>
@@ -613,6 +572,32 @@ spline-viewer iframe {
     </div>
   </div>
 </section>
+
+@if(isset($featuredBanners) && $featuredBanners->count())
+<section class="pb-14">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/40 shadow-card-hover">
+      <div id="featured-banner-track" class="banner-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory p-3 sm:p-4">
+        @foreach($featuredBanners as $banner)
+          <a href="{{ $banner->link_url ?: '#' }}" class="banner-slide group relative flex-none w-[92%] sm:w-[68%] lg:w-[52%] xl:w-[38%] overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900 shadow-card-hover">
+            <div class="relative aspect-[3/1] overflow-hidden">
+              <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/35 to-transparent"></div>
+              <div class="absolute inset-0 flex items-end p-5 sm:p-6">
+                <div>
+                  <span class="inline-flex items-center rounded-full border border-brand-400/30 bg-brand-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-200">Featured</span>
+                  <h3 class="mt-3 text-xl sm:text-2xl font-bold text-white">{{ $banner->title }}</h3>
+                  <p class="mt-1 text-sm text-slate-300">{{ $banner->subtitle }}</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        @endforeach
+      </div>
+    </div>
+  </div>
+</section>
+@endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- POPULAR PRODUCTS                                            --}}
@@ -1041,10 +1026,11 @@ splineEl.addEventListener('load', async (e) => {
     statCounters.forEach((counter) => statObserver.observe(counter));
   }
 
-  const bannerTrack = document.getElementById('banner-track');
+  const initBannerAutoplay = (trackId, intervalMs = 3000) => {
+    const track = document.getElementById(trackId);
+    if (!track || track.children.length <= 1) return;
 
-  if (bannerTrack && bannerTrack.children.length > 1) {
-    const slides = Array.from(bannerTrack.children);
+    const slides = Array.from(track.children);
     let currentIndex = 0;
     let autoplayTimer = null;
 
@@ -1052,8 +1038,8 @@ splineEl.addEventListener('load', async (e) => {
       const slide = slides[index];
       if (!slide) return;
 
-      bannerTrack.scrollTo({
-        left: slide.offsetLeft - bannerTrack.offsetLeft,
+      track.scrollTo({
+        left: slide.offsetLeft - track.offsetLeft,
         behavior: 'smooth',
       });
     };
@@ -1064,22 +1050,24 @@ splineEl.addEventListener('load', async (e) => {
       autoplayTimer = window.setInterval(() => {
         currentIndex = (currentIndex + 1) % slides.length;
         scrollToSlide(currentIndex);
-      }, 4200);
+      }, intervalMs);
     };
 
     const stopAutoplay = () => {
-      if (autoplayTimer) {
-        window.clearInterval(autoplayTimer);
-        autoplayTimer = null;
-      }
+      if (!autoplayTimer) return;
+      window.clearInterval(autoplayTimer);
+      autoplayTimer = null;
     };
 
-    bannerTrack.addEventListener('mouseenter', stopAutoplay);
-    bannerTrack.addEventListener('mouseleave', startAutoplay);
-    bannerTrack.addEventListener('touchstart', stopAutoplay, { passive: true });
+    track.addEventListener('mouseenter', stopAutoplay);
+    track.addEventListener('mouseleave', startAutoplay);
+    track.addEventListener('touchstart', stopAutoplay, { passive: true });
 
     startAutoplay();
-  }
+  };
+
+  initBannerAutoplay('banner-track', 3000);
+  initBannerAutoplay('featured-banner-track', 3000);
 
   document.querySelectorAll('.category-scroll-btn').forEach((button) => {
     button.addEventListener('click', () => {

@@ -238,17 +238,17 @@
                 @forelse($conversations as $conv)
                 @php
                     $user   = auth()->user();
-                    $partner = $conv->partner($user->id);
+                    $sellerDisplay = $conv->seller ?? $conv->partner($user->id);
                     $unread  = $conv->unreadFor($user->id);
                 @endphp
                 <a href="{{ route('chat.show', $conv) }}"
                    class="conv-item {{ request()->routeIs('chat.show') && request()->route('conversation') == $conv->id ? 'active' : '' }}"
-                   data-name="{{ strtolower($partner?->name ?? '') }}">
-                    <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=?' }}"
-                         class="conv-avatar" alt="{{ $partner?->name }}">
+                   data-name="{{ strtolower($sellerDisplay?->name ?? '') }}">
+                    <img src="{{ $sellerDisplay?->avatar_url ?? 'https://ui-avatars.com/api/?name=?' }}"
+                         class="conv-avatar" alt="{{ $sellerDisplay?->name }}">
                     <div class="conv-content">
                         <div class="conv-header">
-                            <span class="conv-name">{{ $partner?->name ?? 'Pengguna' }}</span>
+                            <span class="conv-name">{{ $sellerDisplay?->name ?? 'Penjual' }}</span>
                             <span class="conv-time">
                                 {{ $conv->last_message_at?->diffForHumans(null, true) ?? '' }}
                             </span>

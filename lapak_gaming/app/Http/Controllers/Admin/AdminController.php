@@ -366,7 +366,7 @@ class AdminController extends Controller
     private function pdfColumn(?string $value, int $length): string
     {
         $value = preg_replace('/\s+/', ' ', (string) $value);
-        $value = mb_substr($value, 0, $length);
+        $value = $this->safeSubstr($value, $length);
 
         return str_pad($value, $length);
     }
@@ -436,8 +436,31 @@ class AdminController extends Controller
 
     private function pdfEscape(string $value): string
     {
+        $value = $this->normalizePdfText($value);
         $value = str_replace(["\\", "(", ")", "\r", "\n"], ["\\\\", "\\(", "\\)", ' ', ' '], $value);
 
-        return mb_substr($value, 0, 130);
+        return $this->safeSubstr($value, 130);
+    }
+
+    private function safeSubstr(string $value, int $length): string
+    {
+        if (function_exists('mb_substr')) {
+            return mb_substr($value, 0, $length);
+        }
+
+        return substr($value, 0, $length);
+    }
+
+    private function normalizePdfText(string $value): string
+    {
+        // Keep simple PDF text stream stable by converting UTF-8 to a Latin-1 compatible range.
+        if (function_exists('iconv')) {
+            $converted = @iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $value);
+            if ($converted !== false) {
+                $value = $converted;
+            }
+        }
+
+        return preg_replace('/[^\x20-\x7E\xA0-\xFF]/', '', $value) ?? '';
     }
 }

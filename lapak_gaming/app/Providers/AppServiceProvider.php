@@ -55,7 +55,12 @@ class AppServiceProvider extends ServiceProvider
         // Hanya share categories jika table sudah ada
         if (Schema::hasTable('categories')) {
             try {
-                View::share('categories', Category::all());
+                View::share('categories', Category::query()
+                    ->active()
+                    ->whereNull('parent_id')
+                    ->orderBy('sort_order')
+                    ->take(13)
+                    ->get());
             } catch (\Exception $e) {
                 View::share('categories', collect());
             }

@@ -104,7 +104,7 @@
                 @forelse ($products->take(5) as $product)
                     <div class="flex items-center justify-between p-4 rounded-2xl bg-slate-950 border border-slate-800">
                         <div class="flex items-center gap-4">
-                            <img src="{{ $product->image ? asset('storage/'.$product->image) : 'https://ui-avatars.com/api/?name='.urlencode($product->name) }}" class="w-10 h-10 rounded-lg object-cover">
+                            <img src="{{ $product->image_url }}" class="w-10 h-10 rounded-lg object-cover" alt="{{ $product->name }}">
                             <div>
                                 <div class="font-bold text-white">{{ $product->name }}</div>
                                 <div class="text-[10px] text-amber-500 font-black uppercase">{{ $product->status }}</div>
