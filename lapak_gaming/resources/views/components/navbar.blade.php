@@ -467,11 +467,9 @@
             </span>
           @endif
         </button>
-        @endif
       </div>
       @endif
 
-      @if(! $authUser?->isAdmin())
       <div id="cart-dropdown" class="dropdown-panel absolute right-0 top-full mt-2 w-72 rounded-xl shadow-card-hover"
              style="background:#0D1421;border:1px solid #1E2D45;">
           <div class="px-4 py-3" style="border-bottom:1px solid #1E2D45;">
@@ -506,7 +504,6 @@
             </div>
           @endif
         </div>
-      </div>
 
       {{-- User Dropdown --}}
       <div class="relative">
