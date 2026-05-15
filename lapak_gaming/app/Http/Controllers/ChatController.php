@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Gate;
+use App\Models\Product;
 
 class ChatController extends Controller
 {
@@ -212,4 +213,44 @@ public function poll(Conversation $conversation)
 
         return response()->json(['success' => true]);
     }
-}
+
+    /**
+     * Menangani pembuatan atau pengambilan chat berdasarkan halaman produk (URL: /chat/product/{product})
+     */
+    public function product(Product $product)
+    {
+        $buyerId = Auth::id();
+        $sellerId = $product->user_id; // Sesuaikan dengan nama kolom ID Pemilik/Penjual produk di tabel products Anda (misal: user_id atau seller_id)
+
+        // Proteksi: Mencegah pengguna nge-chat diri sendiri jika itu produk mereka sendiri
+        if ((int)$buyerId === (int)$sellerId) {
+            return redirect()->back()->with('error', 'Anda tidak bisa mengirim pesan ke diri sendiri.');
+        }
+
+        // Cari apakah percakapan antara pembeli ini dan penjual ini sudah pernah dibuat sebelumnya
+        $conversation = Conversation::where(function ($query) use ($buyerId, $sellerId) {
+            $query->where('buyer_id', $buyerId)
+                  ->where('seller_id', $sellerId);
+        })->first();
+
+        // Jika belum ada percakapan sebelumnya, buat baru otomatis
+        if (!$conversation) {
+            $conversation = Conversation::create([
+                'buyer_id'  => $buyerId,
+                'seller_id' => $sellerId,
+                'last_message_at' => now(),
+            ]);
+
+            // Opsional: Anda bisa mengirimkan pesan otomatis pertama yang berisi info produk
+            // Message::create([
+            //     'conversation_id' => $conversation->id,
+            //     'sender_id'       => $buyerId,
+            //     'receiver_id'     => $sellerId,
+            //     'message'         => "Halo, saya tertarik dengan produk: " . $product->title,
+            // ]);
+        }
+
+        // Alihkan user ke halaman room chat yang sesungguhnya menggunakan method show yang sudah ada
+        return redirect()->route('chat.show', $conversation->id);
+    }
+} 
