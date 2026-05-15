@@ -72,8 +72,12 @@ public function show(Conversation $conversation)
             return response()->json(['error' => 'Unauthorized'], 403);
         }
 
-            $messages = collect([]);
-       
+            
+        $messages = $conversation->messages()
+            ->with(['sender', 'receiver'])
+            ->latest()
+            ->paginate(30);
+
         return response()->json([
             'messages' => collect($messages->items())->map(fn($m) => $m->toChat(Auth::id())),
             'next_page' => $messages->nextPageUrl()
