@@ -74,27 +74,10 @@
 
                                 {{-- Gambar Produk (Logic Anti-Broken Khusus Keranjang) --}}
                                 <div class="shrink-0 relative">
-                                    @php
-                                        // Ambil data image dari produk di dalam item keranjang
-                                        $rawImage = $item->product->image; 
-        
-                                        // Default: Pake Inisial Nama Produk kalau foto tidak ditemukan
-                                        $finalImage = 'https://ui-avatars.com/api/?name='.urlencode($item->product->name).'&background=1e293b&color=f59e0b&bold=true&size=128';
-        
-                                        if (!empty($rawImage)) {
-                                            if (str_starts_with($rawImage, 'http')) {
-                                                // 1. Jika gambarnya link internet (Faker)
-                                                $finalImage = $rawImage;
-                                            } else {
-                                                // 2. Jika gambarnya hasil upload (tambah path /storage/)
-                                                $finalImage = asset('storage/' . $rawImage);
-                                            }
-                                        }
-                                    @endphp
-
-                                    <img src="{{ $finalImage }}" 
-                                         alt="{{ $item->product->name }}" 
-                                         class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover border border-slate-700 shadow-inner">
+                                    <img src="{{ $item->product->image_url }}"
+                                         alt="{{ $item->product->name }}"
+                                         class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover border border-slate-700 shadow-inner"
+                                         onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name={{ urlencode($item->product->name) }}&background=1e293b&color=f59e0b&bold=true&size=128';">
                                 </div>
 
                                 {{-- Info Produk --}}
@@ -194,13 +177,10 @@
                                 </span>
                             </div>
 
-                            <form action="{{ route('checkout.store') }}" method="POST">
-                                @csrf
-                                <a href="{{ route('cart.checkout') }}"
-                                    class="w-full py-4 bg-amber-500 text-slate-950 font-black text-lg rounded-2xl hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/20 active:scale-95 flex items-center justify-center gap-2 uppercase">
-                                    LANJUT PEMBAYARAN
-                                </a>
-                            </form>
+                            <a href="{{ route('cart.checkout') }}"
+                               class="w-full py-4 bg-amber-500 text-slate-950 font-black text-lg rounded-2xl hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/20 active:scale-95 flex items-center justify-center gap-2 uppercase">
+                                LANJUT PEMBAYARAN
+                            </a>
 
                             <div class="mt-8 pt-6 border-t border-slate-800">
                                 <div

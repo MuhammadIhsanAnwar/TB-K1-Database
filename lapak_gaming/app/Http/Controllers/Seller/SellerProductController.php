@@ -86,16 +86,11 @@ class SellerProductController extends Controller
 
         $imagePaths = [];
 
-        // 1. Proses multiple image (Pakai Jurus Bypass ke folder Public)
+        // 1. Proses multiple image secara aman ke public disk (storage/app/public)
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $imageFile) {
                 $filename = Str::uuid()->toString() . '.' . $imageFile->getClientOriginalExtension();
-
-                // PINDAHKAN LANGSUNG KE EALASE DEPAN (public/foto_produk)
-                $imageFile->move(public_path('foto_produk'), $filename);
-
-                // Simpan path-nya tanpa kata 'storage'
-                $imagePaths[] = 'foto_produk/' . $filename;
+                $imagePaths[] = $imageFile->storeAs('foto_produk', $filename, 'public');
             }
         }
 
@@ -103,9 +98,7 @@ class SellerProductController extends Controller
         if (empty($imagePaths) && $request->hasFile('image')) {
             $legacyImage = $request->file('image');
             $filename = Str::uuid()->toString() . '.' . $legacyImage->getClientOriginalExtension();
-
-            $legacyImage->move(public_path('foto_produk'), $filename);
-            $imagePaths[] = 'foto_produk/' . $filename;
+            $imagePaths[] = $legacyImage->storeAs('foto_produk', $filename, 'public');
         }
 
         // ─── LOGIKA PEMBAGIAN KOLOM (SUDAH BENAR) ──────────────────────────
@@ -169,7 +162,11 @@ class SellerProductController extends Controller
 
             foreach ($removedIndices as $index) {
                 if (isset($imagePaths[$index])) {
-                    Storage::disk('public')->delete($imagePaths[$index]);
+                    if (Storage::disk('public')->exists($imagePaths[$index])) {
+                        Storage::disk('public')->delete($imagePaths[$index]);
+                    } elseif (file_exists(public_path($imagePaths[$index]))) {
+                        @unlink(public_path($imagePaths[$index]));
+                    }
                     unset($imagePaths[$index]);
                 }
             }

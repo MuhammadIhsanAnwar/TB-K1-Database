@@ -57,22 +57,7 @@
         {{-- Product image --}}
         <div class="mb-6 rounded-2xl overflow-hidden" style="background:#090E1A;border:1px solid #1E2D45;">
           @php
-            // 1. Ambil data mentah dari kolom 'image'
-            $rawImage = data_get($product, 'image');
-            
-            // 2. Default awal: pake image_url bawaan atau gambar default
             $displayImage = data_get($product, 'image_url') ?? asset('images/default-product.png');
-
-            if (!empty($rawImage)) {
-                if (str_starts_with($rawImage, 'http')) {
-                    // Jika gambarnya link internet (Faker)
-                    $displayImage = $rawImage;
-                } else {
-                    // Jika hasil upload (Jurus Bypass: langsung ke folder public)
-                    // Pastikan di controller sudah pakai ->move(public_path('foto_produk'), ...)
-                    $displayImage = asset($rawImage);
-                }
-            }
           @endphp
 
           <img src="{{ $displayImage }}"

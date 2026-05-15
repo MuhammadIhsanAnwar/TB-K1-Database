@@ -418,7 +418,7 @@ spline-viewer iframe {
           <div class="rounded-2xl px-4 py-2.5 backdrop-blur-md"
                style="background:rgba(9,14,26,0.88);border:1px solid rgba(37,99,235,0.45);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 14px rgba(37,99,235,0.18);">
             <div class="text-[10px] tracking-[0.18em] uppercase font-display mb-0.5" style="color:rgba(96,165,250,0.6);">Transaksi Hari Ini</div>
-            <div class="font-display font-bold text-white text-lg leading-none">12.847</div>
+            <div class="font-display font-bold text-white text-lg leading-none">{{ number_format($todayTransactions, 0, ',', '.') }}</div>
           </div>
         </div>
 
@@ -427,7 +427,7 @@ spline-viewer iframe {
           <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2 backdrop-blur-md"
                style="background:rgba(9,14,26,0.88);border:1px solid rgba(249,115,22,0.38);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 12px rgba(249,115,22,0.14);">
             <span style="font-size:14px;">⭐</span>
-            <span class="font-display font-bold text-white text-sm">4.9</span>
+            <span class="font-display font-bold text-white text-sm">{{ number_format($averageRating ?: 0, 1) }}</span>
             <span class="text-slate-500 text-xs">Rating</span>
           </div>
         </div>
@@ -668,10 +668,11 @@ spline-viewer iframe {
       <h2 class="font-display font-bold text-2xl sm:text-3xl text-white mb-3">Platform terpercaya untuk<br>semua kebutuhan gaming-mu</h2>
       <p class="text-slate-400 text-sm max-w-lg mx-auto mb-8">Bergabung dengan jutaan gamer Indonesia yang sudah percaya transaksi mereka bersama kami.</p>
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 max-w-3xl mx-auto mb-8">
-        @foreach([
+        @php $ratingBadge = number_format($averageRating ?: 0, 1); @endphp
+      @foreach([
           ['icon'=>'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z','label'=>'Escrow Aman','sub'=>'Dana terlindungi'],
           ['icon'=>'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z','label'=>'Proses Cepat','sub'=>'< 5 menit selesai'],
-          ['icon'=>'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z','label'=>'Rating Tinggi','sub'=>'4.9 dari 5 bintang'],
+          ['icon'=>'M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z','label'=>'Rating Tinggi','sub'=> $ratingBadge . ' dari 5 bintang'],
           ['icon'=>'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z','label'=>'Support 24/7','sub'=>'Siap bantu kapanpun'],
         ] as $vp)
         <div class="flex flex-col items-center text-center">

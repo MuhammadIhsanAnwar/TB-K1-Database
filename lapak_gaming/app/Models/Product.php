@@ -4,6 +4,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
 
@@ -117,12 +118,30 @@ class Product extends Model {
             return asset('images/default-product.png');
         }
 
+        if (! is_string($imagePath)) {
+            return asset('images/default-product.png');
+        }
+
         // allow absolute URLs from seeders (picsum etc.)
-        if (is_string($imagePath) && (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://'))) {
+        if (str_starts_with($imagePath, 'http://') || str_starts_with($imagePath, 'https://')) {
             return $imagePath;
         }
 
-        return asset('storage/' . ltrim((string) $imagePath, '/'));
+        $imagePath = ltrim($imagePath, '/');
+
+        if (str_starts_with($imagePath, 'storage/')) {
+            return asset($imagePath);
+        }
+
+        if (Storage::disk('public')->exists($imagePath)) {
+            return asset('storage/' . $imagePath);
+        }
+
+        if (file_exists(public_path($imagePath))) {
+            return asset($imagePath);
+        }
+
+        return asset('storage/' . $imagePath);
     }
 
     public function getFormattedPriceAttribute(): string {

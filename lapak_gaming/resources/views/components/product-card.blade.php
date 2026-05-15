@@ -6,28 +6,7 @@
 --}}
 
 @php
-    // LOGIKA PINTAR PENCARI GAMBAR
-    // 1. Coba ambil dari kolom 'image' (tempat kita nyimpen hasil upload tadi)
-    $rawImage = $product->image;
-    
-    // 2. Kalau di kolom 'image' kosong, coba cari di 'file_path' (jaga-jaga buat data lama)
-    if (empty($rawImage) && !empty($product->file_path)) {
-        $rawImage = explode('|', $product->file_path)[0]; // Ambil gambar pertama saja
-    }
-
-    // 3. Set gambar default (bawaan dari kodinganmu) kalau benar-benar zonk
-    $displayImage = $product->image_url ?? 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><rect fill="%230D1421" width="80" height="80"/><text x="50%" y="50%" text-anchor="middle" dy=".3em" font-size="28">🎮</text></svg>';
-
-    // 4. Olah path-nya jadi link yang bisa dibuka browser
-    if (!empty($rawImage)) {
-        if (str_starts_with($rawImage, 'http')) {
-            // Gambar dari link internet luar (Faker/Dummy)
-            $displayImage = $rawImage;
-        } else {
-            // Gambar asli hasil upload (tambahkan storage/ di depannya)
-            $displayImage = asset($rawImage);
-        }
-    }
+    $displayImage = $product->image_url;
 @endphp
 
 <a href="{{ route('products.show', $product->slug) }}" class="product-card group relative flex flex-col">

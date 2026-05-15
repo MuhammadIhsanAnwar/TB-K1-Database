@@ -557,9 +557,7 @@
         {{-- Product Card Context --}}
         @if($product)
         <div class="product-context">
-            @if($product->image)
-            <img src="{{ asset('storage/' . $product->image) }}" alt="">
-            @endif
+            <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
             <div class="product-info">
                 <h3>{{ $product->name }}</h3>
                 <p class="product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>

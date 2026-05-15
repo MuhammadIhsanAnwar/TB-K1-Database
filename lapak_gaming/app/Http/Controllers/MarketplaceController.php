@@ -31,7 +31,7 @@ class MarketplaceController extends Controller
             : collect();
 
         $popularProducts = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->with(['seller', 'category'])->inRandomOrder()->take(12)->get()
+            ? Product::query()->active()->inStock()->with(['seller', 'category'])->orderByDesc('views_count')->take(12)->get()
             : collect();
 
         $topupProducts = Schema::hasTable('products')
@@ -73,8 +73,13 @@ class MarketplaceController extends Controller
         $transactionCount = Schema::hasTable('orders')
             ? Order::query()->completed()->count()
             : 0;
+
+        $todayTransactions = Schema::hasTable('orders')
+            ? Order::query()->completed()->whereDate('completed_at', now())->count()
+            : 0;
+
         $heroBanners = Schema::hasTable('banners')
-            ? Banner::query()->active()->where('position', 'hero')->latest()->take(6)->get()
+            ? Banner::query()->active()->where('position', 'hero')->orderByDesc('sort_order')->latest()->take(6)->get()
             : collect();
 
         $featuredBanners = Schema::hasTable('banners')
@@ -113,6 +118,7 @@ class MarketplaceController extends Controller
             'verifiedSellers' => $verifiedSellers,
             'averageRating' => $averageRating,
             'transactionCount' => $transactionCount,
+            'todayTransactions' => $todayTransactions,
             'heroBanners' => $heroBanners,
             'featuredBanners' => $featuredBanners,
             'categoryProducts' => $categoryProducts,
