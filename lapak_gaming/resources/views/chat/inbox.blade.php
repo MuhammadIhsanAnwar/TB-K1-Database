@@ -236,23 +236,35 @@
 
             <div class="conversations-list" id="convList">
                 @forelse($conversations as $conv)
-                @php
-                    $user   = auth()->user();
-                    $sellerDisplay = $conv->seller ?? $conv->partner($user->id);
-                    $unread  = $conv->unreadFor($user->id);
-                @endphp
-                <a href="{{ route('chat.show', $conv) }}"
-                   class="conv-item {{ request()->routeIs('chat.show') && request()->route('conversation') == $conv->id ? 'active' : '' }}"
-                   data-name="{{ strtolower($sellerDisplay?->name ?? '') }}">
-                    <img src="{{ $sellerDisplay?->avatar_url ?? 'https://ui-avatars.com/api/?name=?' }}"
-                         class="conv-avatar" alt="{{ $sellerDisplay?->name }}">
-                    <div class="conv-content">
-                        <div class="conv-header">
-                            <span class="conv-name">{{ $sellerDisplay?->name ?? 'Penjual' }}</span>
-                            <span class="conv-time">
-                                {{ $conv->last_message_at?->diffForHumans(null, true) ?? '' }}
-                            </span>
-                        </div>
+               @forelse($conversations as $conv)
+@php
+    $user = auth()->user();
+    
+    // LOGIKA PARTNER: 
+    // Jika saya adalah pembeli, tampilkan data penjual. 
+    // Jika saya adalah penjual, tampilkan data pembeli.
+    $partner = ($conv->buyer_id === $user->id) ? $conv->seller : $conv->buyer;
+    
+    $unread = $conv->unreadFor($user->id);
+@endphp
+
+<a href="{{ route('chat.show', $conv) }}"
+   class="conv-item {{ request()->routeIs('chat.show') && request()->route('conversation') == $conv->id ? 'active' : '' }}"
+   data-name="{{ strtolower($partner?->name ?? '') }}">
+   
+    {{-- Gunakan $partner untuk Avatar --}}
+    <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($partner?->name ?? 'User') }}"
+         class="conv-avatar" alt="{{ $partner?->name }}">
+         
+    <div class="conv-content">
+        <div class="conv-header">
+            {{-- Gunakan $partner untuk Nama --}}
+            <span class="conv-name">{{ $partner?->name ?? 'User' }}</span>
+            <span class="conv-time">
+                {{ $conv->last_message_at?->diffForHumans(null, true) ?? '' }}
+            </span>
+        </div>
+        
                         @if($conv->product)
                         <p class="conv-context">🎮 {{ $conv->product->name }}</p>
                         @elseif($conv->order)
