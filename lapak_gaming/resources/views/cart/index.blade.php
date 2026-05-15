@@ -184,7 +184,7 @@
 
                             <form action="{{ route('checkout.store') }}" method="POST">
                                 @csrf
-                                <a href="{{ route('cart.checkout') }}"
+                                <a href="{{ route('orders.store') }}"
                                     class="w-full py-4 bg-amber-500 text-slate-950 font-black text-lg rounded-2xl hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/20 active:scale-95 flex items-center justify-center gap-2 uppercase">
                                     LANJUT PEMBAYARAN
                                 </a>
