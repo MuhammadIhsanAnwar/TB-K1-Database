@@ -17,8 +17,23 @@ class ChatController extends Controller
 
     public function inbox()
 {
-    return view('chat.inbox');
+    $user = Auth::user();
+
+    $conversations = Conversation::with([
+            'buyer',
+            'seller',
+            'messages'
+        ])
+        ->where(function ($query) use ($user) {
+            $query->where('buyer_id', $user->id)
+                  ->orWhere('seller_id', $user->id);
+        })
+        ->orderByDesc('last_message_at')
+        ->get();
+
+    return view('chat.inbox', compact('conversations'));
 }
+
     public function getConversations()
     {
         $user = Auth::user();

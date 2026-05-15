@@ -61,6 +61,23 @@ class Conversation extends Model
     }
 
     /**
+ * Compatibility helper untuk blade lama.
+ */
+public function partner(int $authId)
+{
+    return $this->getPartner($authId);
+}
+
+/**
+ * Mengambil unread count berdasarkan user login.
+ */
+public function unreadFor(int $authId): int
+{
+    return $this->buyer_id === $authId
+        ? $this->unread_buyer
+        : $this->unread_seller;
+}
+    /**
      * Cek apakah lawan bicara sedang mengetik (berlaku selama 5 detik terakhir).
      */
     public function isPartnerTyping(int $authId): bool
