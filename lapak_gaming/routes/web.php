@@ -273,3 +273,6 @@ Route::get('/aturan-penggunaan', [PageController::class, 'terms'])->name('terms'
 Route::get('/kebijakan-privasi', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/kebijakan-pengembalian-dana', [PageController::class, 'refund'])->name('refund');
 Route::get('/tentang-kami', [PageController::class, 'about'])->name('about');
+
+Route::patch('/chat/message/{message}', [ChatController::class, 'editMessage'])->name('chat.update');
+Route::delete('/chat/message/{message}', [ChatController::class, 'deleteMessage'])->name('chat.destroy');

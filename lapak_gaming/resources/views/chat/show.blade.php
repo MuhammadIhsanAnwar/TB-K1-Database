@@ -586,21 +586,35 @@
                 @if(!$isMine)
                 <img src="{{ $msg->sender?->avatar_url }}" class="message-avatar" alt="">
                 @endif
-                <div class="message-bubble {{ $isMine ? 'mine' : 'theirs' }}">
-                    <div class="bubble-content">
-                        <p class="message-text">{{ $msg->message }}</p>
-                    </div>
-                    <div class="message-time {{ $isMine ? 'mine' : 'theirs' }}">
-                        <span>{{ $msg->created_at->format('H:i') }}</span>
-                        @if($isMine)
-                        <span class="message-status">
-                            <svg class="{{ $msg->is_read ? 'text-blue-400' : 'text-gray-500' }}" fill="currentColor" viewBox="0 0 16 16">
-                                <path d="M12.354 4.354a.5.5 0 00-.708-.708L5 11.293 1.854 8.146a.5.5 0 10-.708.708l3.5 3.5a.5.5 0 00.708 0l7-7zm-4.208 7.209l-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 01.708.708l-7 7a.5.5 0 01-.708 0z"/>
-                            </svg>
-                        </span>
-                        @endif
-                    </div>
-                </div>
+               <div class="message-bubble {{ $isMine ? 'mine' : 'theirs' }}">
+    <div class="bubble-content group relative"> {{-- Tambah class group --}}
+        
+        {{-- Tombol Opsi (Hanya muncul jika pesan milik sendiri) --}}
+        @if($isMine)
+        <div class="absolute -left-10 top-0 hidden group-hover:flex gap-1">
+            <button onclick="prepareEdit('{{ $msg->id }}')" class="p-1 text-gray-500 hover:text-blue-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+            </button>
+            <button onclick="confirmDelete('{{ $msg->id }}')" class="p-1 text-gray-500 hover:text-red-400">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+        </div>
+        @endif
+
+        {{-- Cek Jika Gambar --}}
+        @if($msg->image_url)
+            <img src="{{ $msg->image_url }}" class="max-w-xs rounded-lg mb-2 cursor-pointer" onclick="window.open(this.src)">
+        @endif
+        
+        <p class="message-text" id="text-{{ $msg->id }}">{{ $msg->message }}</p>
+    </div>
+    
+    {{-- Meta data (waktu/status) tetap sama --}}
+    <div class="message-time {{ $isMine ? 'mine' : 'theirs' }}">
+        <span>{{ $msg->created_at->format('H:i') }}</span>
+        {{-- ... status icon ... --}}
+    </div>
+</div>
                 @if($isMine)
                 <img src="{{ $user->avatar_url }}" class="message-avatar mine" alt="">
                 @endif
@@ -623,15 +637,24 @@
         {{-- Input Area --}}
         <div class="chat-input-area">
             <div class="input-container">
-                <input type="text" id="msgInput" class="chat-input"
-                       placeholder="Ketik pesan..."
-                       autocomplete="off" maxlength="2000">
-                <button id="sendBtn" type="button" class="send-button">
-                    <svg fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/>
-                    </svg>
-                </button>
-            </div>
+    {{-- Tombol Lampiran --}}
+    <button type="button" onclick="document.getElementById('imgInput').click()" class="text-gray-400 hover:text-white transition-colors">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.172 7l-6.586 6.586a2 2 0 102.828 2.828l6.414-6.586a4 4 0 00-5.656-5.656l-6.415 6.585a6 6 0 108.486 8.486L20.5 13"/></svg>
+    </button>
+    <input type="file" id="imgInput" class="hidden" accept="image/*" onchange="previewImage(this)">
+
+    <input type="text" id="msgInput" class="chat-input" placeholder="Ketik pesan..." autocomplete="off">
+    
+    <button id="sendBtn" type="button" class="send-button">
+        {{-- icon send --}}
+    </button>
+</div>
+{{-- Area Preview Sebelum Kirim --}}
+<div id="imagePreviewContainer" class="hidden mt-2 p-2 bg-slate-800 rounded-lg flex items-center gap-3">
+    <img id="imagePreview" src="" class="h-12 w-12 object-cover rounded">
+    <span class="text-xs text-gray-300 flex-1 truncate" id="fileName"></span>
+    <button onclick="cancelImage()" class="text-red-400 text-xs">Batal</button>
+</div>
             <p class="text-xs text-gray-500 mt-2 text-center">Pesan terenkripsi end-to-end</p>
         </div>
 
@@ -674,6 +697,72 @@ const cacheKey = `chat_messages_${CONV_ID}`;
     }
 })();
 
+// --- LOGIC DELETE ---
+async function confirmDelete(msgId) {
+    if(!confirm('Hapus pesan ini?')) return;
+    
+    const el = document.querySelector(`[data-msg-id="${msgId}"]`);
+    el.style.opacity = '0.5'; // Visual feedback
+
+    try {
+        const res = await fetch(`/chat/message/${msgId}`, {
+            method: 'DELETE',
+            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
+        });
+        if(res.ok) el.remove(); // Hapus dari layar
+    } catch(e) {
+        el.style.opacity = '1';
+        alert('Gagal menghapus pesan');
+    }
+}
+
+// --- LOGIC EDIT ---
+let editingId = null;
+function prepareEdit(msgId) {
+    editingId = msgId;
+    const currentText = document.getElementById(`text-${msgId}`).innerText;
+    msgInput.value = currentText;
+    msgInput.focus();
+    msgInput.classList.add('bg-blue-900/30'); // Beri tanda sedang mengedit
+    sendBtn.innerHTML = '💾'; // Ganti icon jadi save
+}
+
+// Modifikasi fungsi sendMessage Anda sedikit:
+async function sendMessage() {
+    const text = msgInput.value.trim();
+    if (!text && !imgInput.files[0]) return;
+
+    if(editingId) {
+        // Eksekusi Update bukan Send
+        await updateMessage(editingId, text);
+        return;
+    }
+    
+    // ... logic send message yang lama di sini ...
+    // Tambahkan FormData jika ada image
+}
+
+async function updateMessage(id, newText) {
+    try {
+        const res = await fetch(`/chat/message/${id}`, {
+            method: 'PATCH',
+            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
+            body: JSON.stringify({ message: newText })
+        });
+        if(res.ok) {
+            document.getElementById(`text-${id}`).innerText = newText;
+            cancelEdit();
+        }
+    } catch(e) { alert('Gagal update'); }
+}
+
+function cancelEdit() {
+    editingId = null;
+    msgInput.value = '';
+    msgInput.classList.remove('bg-blue-900/30');
+    sendBtn.innerHTML = `<svg ... > icon asli </svg>`;
+}
+
 // Auto scroll to bottom on load
 function scrollBottom(smooth = true) {
     messagesArea.scrollTo({ top: messagesArea.scrollHeight, behavior: smooth ? 'smooth' : 'instant' });
@@ -689,13 +778,36 @@ document.getElementById('sideSearch')?.addEventListener('input', function() {
 });
 
 // Send message
-async function sendMessage() {
+ {
     const text = msgInput.value.trim();
     if (!text) return;
 
     const tempId = 'tmp-' + Date.now();
     msgInput.value = '';
     sendBtn.disabled = true;
+
+function previewImage(input) {
+    const container = document.getElementById('imagePreviewContainer');
+    const preview = document.getElementById('imagePreview');
+    const fileName = document.getElementById('fileName');
+
+    if (input.files && input.files[0]) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            preview.src = e.target.result;
+            fileName.textContent = input.files[0].name;
+            container.classList.remove('hidden');
+        }
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+function cancelImage() {
+    const fileInput = document.getElementById('imgInput');
+    const container = document.getElementById('imagePreviewContainer');
+    fileInput.value = '';
+    container.classList.add('hidden');
+}
 
     // Optimistic UI
     appendMessage({
@@ -752,7 +864,6 @@ async function sendMessage() {
         sendBtn.disabled = false;
         msgInput.focus();
     }
-}
 
 msgInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -816,6 +927,37 @@ function appendMessage(m) {
     try {
         localStorage.setItem(cacheKey, messagesArea.innerHTML);
     } catch (e) {}
+
+    // Logika gambar (Sesuaikan dengan properti dari Controller)
+    const imgHtml = m.attachment_url ? 
+        `<img src="${m.attachment_url}" class="max-w-xs rounded-lg mb-2 cursor-pointer" onclick="window.open(this.src)">` : '';
+
+    div.innerHTML = `
+        ${!isMine ? avatarHtml : ''}
+        <div class="message-bubble ${isMine ? 'mine' : 'theirs'}">
+            <div class="bubble-content group relative">
+                ${isMine ? `
+                <div class="absolute -left-10 top-0 hidden group-hover:flex gap-1">
+                    <button onclick="prepareEdit('${m.id}')" class="p-1 text-gray-500 hover:text-blue-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                    </button>
+                    <button onclick="confirmDelete('${m.id}')" class="p-1 text-gray-500 hover:text-red-400">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                    </button>
+                </div>` : ''}
+                
+                ${imgHtml}
+                <p class="message-text" id="text-${m.id}">${escHtml(m.message)}</p>
+            </div>
+            <div class="message-time ${isMine ? 'mine' : 'theirs'}">
+                <span>${m.time}</span>
+                ${readIcon}
+            </div>
+        </div>
+        ${isMine ? avatarHtml : ''}
+    `;
+
+    
 }
 
 function escHtml(str) {

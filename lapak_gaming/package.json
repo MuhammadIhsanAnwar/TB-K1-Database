@@ -18,7 +18,9 @@
         "alpinejs": "^3.15.12",
         "cropperjs": "^1.6.2",
         "fs": "^0.0.1-security",
-        "puppeteer": "^24.43.1"
+        "laravel-echo": "^2.3.4",
+        "puppeteer": "^24.43.1",
+        "pusher-js": "^8.5.0"
     },
     "name": "lapak_gaming",
     "version": "1.0.0",

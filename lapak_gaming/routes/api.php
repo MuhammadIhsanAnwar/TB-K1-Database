@@ -4,6 +4,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\PolicyConsentController;
 use App\Http\Controllers\ProductCommentController;
 use App\Http\Controllers\SellerChatController;
+use App\Http\Controllers\ChatController;
 
 Route::get('/health', function () {
     return response()->json(['status' => 'ok']);
@@ -39,4 +40,23 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::post('/seller/chat/send', [SellerChatController::class, 'sendMessage']);
     Route::post('/seller/chat/{senderId}/{productId}/mark-read', [SellerChatController::class, 'markAsRead']);
     Route::get('/seller/chat/analytics', [SellerChatController::class, 'getChatAnalytics']);
+});
+
+Route::middleware(['auth'])->group(function () {
+    // List percakapan di sidebar
+    Route::get('/chat/conversations', [ChatController::class, 'getConversations']);
+    
+    // Ambil isi chat (dengan pagination/infinite scroll)
+    Route::get('/chat/conversations/{conversation}/messages', [ChatController::class, 'getMessages']);
+    
+    // Kirim pesan baru
+    Route::post('/chat/messages', [ChatController::class, 'sendMessage']);
+    
+    // Fitur Modern
+    Route::patch('/chat/messages/{message}/read', [ChatController::class, 'markAsRead']);
+    Route::patch('/chat/messages/{message}/edit', [ChatController::class, 'editMessage']);
+    Route::delete('/chat/messages/{message}', [ChatController::class, 'deleteMessage']);
+    
+    // Realtime Indicator
+    Route::post('/chat/conversations/{conversation}/typing', [ChatController::class, 'updateTyping']);
 });
