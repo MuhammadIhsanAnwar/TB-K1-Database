@@ -683,6 +683,25 @@ const msgInput = document.getElementById('msgInput');
 const sendBtn = document.getElementById('sendBtn');
 const imgInput = document.getElementById('imgInput');
 
+// Set default send icon (was empty which caused button to look missing)
+sendBtn.innerHTML = `
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8">
+    </path>
+</svg>
+`;
+
+// Manage send button enabled state
+function updateSendButtonState() {
+    const hasText = msgInput.value.trim().length > 0;
+    const hasFile = imgInput.files && imgInput.files.length > 0;
+    sendBtn.disabled = !(hasText || hasFile);
+}
+msgInput.addEventListener('input', updateSendButtonState);
+imgInput.addEventListener('change', updateSendButtonState);
+updateSendButtonState();
+
 
 
 // --- LOGIC DELETE ---
@@ -760,45 +779,47 @@ document.getElementById('sideSearch')?.addEventListener('input', function() {
 });
 
 
- async function sendMessage() {
+async function sendMessage() {
 
-      if(editingId){
+    if (editingId) {
         await updateMessage(editingId, msgInput.value.trim());
         return;
     }
 
     const text = msgInput.value.trim();
-    if (!text) return;
+    const file = imgInput.files && imgInput.files[0] ? imgInput.files[0] : null;
+
+    if (!text && !file) return;
 
     sendBtn.disabled = true;
 
     const tempId = 'tmp-' + Date.now();
 
+    // Show optimistic UI (if image selected, use temporary object URL)
     appendMessage({
         id: tempId,
         is_mine: true,
-        message: text,
-        time: new Date().toLocaleTimeString('id-ID', {
-            hour: '2-digit',
-            minute: '2-digit'
-        }),
+        message: text || '',
+        time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
         avatar: '{{ $user->avatar_url }}',
         is_read: false,
+        attachment_url: file ? URL.createObjectURL(file) : null,
     });
 
+    // clear inputs in UI (but keep preview until sent)
     msgInput.value = '';
+    updateSendButtonState();
 
     try {
+        const form = new FormData();
+        form.append('message', text);
+        if (file) form.append('attachment', file);
+        form.append('conversation_id', CONV_ID);
+
         const res = await fetch(SEND_URL, {
             method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': CSRF,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                message: text
-            }),
+            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
+            body: form,
         });
 
         const data = await res.json();
@@ -807,11 +828,24 @@ document.getElementById('sideSearch')?.addEventListener('input', function() {
             throw new Error(data.message || 'Gagal mengirim pesan.');
         }
 
-        if (data.message) {
-            lastId = data.message.id;
+        if (data && data.id) {
+            lastId = data.id;
+            // Replace temp message id with real id
+            const tmpEl = document.querySelector(`[data-msg-id="${tempId}"]`);
+            if (tmpEl) {
+                tmpEl.dataset.msgId = data.id;
+                // If server returned an attachment_path, replace the optimistic image src
+                if (data.attachment_path) {
+                    const img = tmpEl.querySelector('img');
+                    if (img) img.src = `/storage/${data.attachment_path}`;
+                }
+            }
         }
 
-    } catch(e) {
+        // clear preview if any
+        cancelImage();
+
+    } catch (e) {
         console.error(e);
         alert('Gagal mengirim pesan');
     } finally {
@@ -847,39 +881,7 @@ function cancelImage() {
 
   
 
-    msgInput.value = '';
-
-    try {
-        const res = await fetch(SEND_URL, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': CSRF,
-                'Accept': 'application/json'
-            },
-            body: JSON.stringify({
-                message: text
-            }),
-        });
-
-        const data = await res.json();
-
-        if (!res.ok) {
-            throw new Error(data.message || 'Gagal mengirim pesan.');
-        }
-
-        if (data.message) {
-            lastId = data.message.id;
-        }
-
-    } catch(e) {
-        console.error(e);
-        alert('Gagal mengirim pesan');
-    } finally {
-        sendBtn.disabled = false;
-        msgInput.focus();
-    }
-}
+// end of functions
 
 msgInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
@@ -927,8 +929,9 @@ function appendMessage(m) {
     scrollBottom();
     // keep cache in sync
     // Logika gambar (Sesuaikan dengan properti dari Controller)
-    const imgHtml = m.attachment_url ? 
-        `<img src="${m.attachment_url}" class="max-w-xs rounded-lg mb-2 cursor-pointer" onclick="window.open(this.src)">` : '';
+    // Determine attachment URL: optimistic frontend may provide attachment_url; server returns attachment_path
+    const attachmentUrl = m.attachment_url || (m.attachment_path ? `/storage/${m.attachment_path}` : null);
+    const imgHtml = attachmentUrl ? `<img src="${attachmentUrl}" class="max-w-xs rounded-lg mb-2 cursor-pointer" onclick="window.open(this.src)">` : '';
 
     div.innerHTML = `
         ${!isMine ? avatarHtml : ''}
