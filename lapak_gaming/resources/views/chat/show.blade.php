@@ -679,8 +679,9 @@ let lastId = chatConfig.lastId;
 let pollTimer;
 
 const messagesArea = document.getElementById('messagesArea');
-const msgInput     = document.getElementById('msgInput');
-const sendBtn      = document.getElementById('sendBtn');
+const msgInput = document.getElementById('msgInput');
+const sendBtn = document.getElementById('sendBtn');
+const imgInput = document.getElementById('imgInput');
 
 // Local cache to preserve message bubbles between navigations/refresh
 const cacheKey = `chat_messages_${CONV_ID}`;
@@ -772,7 +773,7 @@ document.getElementById('sideSearch')?.addEventListener('input', function() {
         await updateMessage(editingId, msgInput.value.trim());
         return;
     }
-    
+
     const text = msgInput.value.trim();
     if (!text) return;
 
