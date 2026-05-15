@@ -12,8 +12,13 @@ use Illuminate\Support\Facades\Gate;
 class ChatController extends Controller
 {
     /**
-     * Mengambil daftar percakapan (Inbox Sidebar)
+     * Mengambil daftar percakapan (Inbox Sidebar
      */
+
+    public function inbox()
+{
+    return view('chat.inbox');
+}
     public function getConversations()
     {
         $user = Auth::user();
