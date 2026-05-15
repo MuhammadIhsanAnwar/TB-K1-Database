@@ -148,7 +148,8 @@ class AdminController extends Controller
 
     public function destroyUser(User $user): RedirectResponse
     {
-        if ($user->role === 'admin') return back()->withErrors(['delete' => 'Admin tidak bisa dihapus.']);
+        if ($user->role === 'admin')
+            return back()->withErrors(['delete' => 'Admin tidak bisa dihapus.']);
         $user->delete();
         return back()->with('success', 'User dihapus.');
     }
@@ -292,53 +293,54 @@ class AdminController extends Controller
 
     public function downloadOrdersReportPdf()
     {
-        $relations = ['buyer', 'seller'];
-
+        // 1. Siapkan Relasi
+        $relations = ['buyer', 'items.product'];
         if (Schema::hasTable('order_financials')) {
             $relations[] = 'financial';
         }
 
-        $orders = Order::query()
-            ->with($relations)
-            ->oldest()
-            ->get();
+        // 2. Ambil Data
+        $orders = Order::with($relations)->latest()->get();
 
-        $totalAmount = $orders->sum(fn (Order $order) => $this->reportOrderTotal($order));
-        $generatedAt = now()->format('d M Y H:i');
-        $statusCounts = $orders->groupBy('status')
-            ->map(fn ($items) => $items->count())
-            ->sortKeys();
-
-        $orderLines = $orders->map(function (Order $order): string {
-            $invoice = $this->pdfColumn($order->invoice_number ?? $order->order_code, 18);
-            $buyer = $this->pdfColumn($order->buyer?->name ?? '-', 16);
-            $seller = $this->pdfColumn($order->seller?->name ?? '-', 16);
-            $status = $this->pdfColumn($order->status_label, 18);
-            $total = str_pad('Rp ' . number_format($this->reportOrderTotal($order), 0, ',', '.'), 16, ' ', STR_PAD_LEFT);
-
-            return "{$invoice} {$buyer} {$seller} {$status} {$total}";
-        })->values();
-
-        if ($orderLines->isEmpty()) {
-            $orderLines = collect(['Belum ada transaksi.']);
+        if ($orders->isEmpty()) {
+            return back()->with('error', 'Tidak ada data transaksi untuk dicetak.');
         }
 
+        $totalAmount = $orders->sum(fn(Order $order) => $this->reportOrderTotal($order));
+        $generatedAt = now()->format('d M Y H:i');
+
+        // 3. Kelompokkan Status
+        $statusCounts = $orders->groupBy('status')
+            ->map(fn($items) => $items->count());
+
+        // 4. Susun Baris Data (Formatting Teks)
+        $orderLines = $orders->map(function (Order $order): string {
+            $invoice = $this->pdfColumn($order->invoice_number ?? $order->order_code ?? '-', 20);
+            $buyer = $this->pdfColumn($order->buyer?->name ?? 'Guest', 15);
+            $status = $this->pdfColumn(strtoupper($order->status), 15);
+            $total = str_pad('Rp ' . number_format($this->reportOrderTotal($order), 0, ',', '.'), 15, ' ', STR_PAD_LEFT);
+
+            return "{$invoice} {$buyer} {$status} {$total}";
+        });
+
+        // 5. Susun Halaman
         $pages = [];
-        foreach ($orderLines->chunk(32) as $index => $chunk) {
+        foreach ($orderLines->chunk(35) as $index => $chunk) {
             $lines = [
-                ['text' => 'Laporan Transaksi Lapak Gaming', 'size' => 16],
-                ['text' => 'Dicetak: ' . $generatedAt, 'size' => 10],
+                ['text' => 'LAPORAN TRANSAKSI LAPAK GAMING', 'size' => 14],
+                ['text' => 'Dicetak pada: ' . $generatedAt, 'size' => 9],
+                ['text' => str_repeat('=', 70), 'size' => 9],
             ];
 
             if ($index === 0) {
-                $lines[] = ['text' => 'Total transaksi: ' . number_format($orders->count()), 'size' => 10];
-                $lines[] = ['text' => 'Total nominal: Rp ' . number_format($totalAmount, 0, ',', '.'), 'size' => 10];
-                $lines[] = ['text' => 'Status: ' . ($statusCounts->map(fn ($count, $status) => $status . '=' . $count)->implode(', ') ?: '-'), 'size' => 10];
-                $lines[] = ['text' => '', 'size' => 10];
+                $lines[] = ['text' => "Ringkasan:", 'size' => 10];
+                $lines[] = ['text' => "- Total Order  : " . $orders->count(), 'size' => 9];
+                $lines[] = ['text' => "- Total Uang   : Rp " . number_format($totalAmount, 0, ',', '.'), 'size' => 9];
+                $lines[] = ['text' => str_repeat('-', 70), 'size' => 9];
             }
 
-            $lines[] = ['text' => 'Invoice            Buyer            Seller           Status                    Total', 'size' => 9];
-            $lines[] = ['text' => str_repeat('-', 95), 'size' => 9];
+            $lines[] = ['text' => $this->pdfColumn('INVOICE', 20) . $this->pdfColumn('BUYER', 15) . $this->pdfColumn('STATUS', 15) . $this->pdfColumn('TOTAL', 15, STR_PAD_LEFT), 'size' => 9];
+            $lines[] = ['text' => str_repeat('-', 70), 'size' => 9];
 
             foreach ($chunk as $line) {
                 $lines[] = ['text' => $line, 'size' => 9];
@@ -348,13 +350,74 @@ class AdminController extends Controller
         }
 
         $pdf = $this->buildSimplePdf($pages);
-        $filename = 'laporan-transaksi-' . now()->format('Ymd-His') . '.pdf';
+        $filename = 'Laporan_LapakGaming_' . now()->format('Ymd_His') . '.pdf';
 
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            'Content-Length' => strlen($pdf),
         ]);
+    }
+
+    /* ─── FUNGSI PEMBANTU (WAJIB ADA BIAR GAK ERROR) ─── */
+
+    private function reportOrderTotal($order)
+    {
+        // Cek total dari tabel financial dulu, kalau gak ada ambil total_price
+        return $order->financial?->grand_total ?? $order->total_price ?? 0;
+    }
+
+    private function pdfColumn($text, $length, $padType = STR_PAD_RIGHT)
+    {
+        return str_pad(substr($text ?? '-', 0, $length), $length, ' ', $padType);
+    }
+
+    private function buildSimplePdf($pages)
+    {
+        // Ini adalah generator PDF minimalis menggunakan format PDF raw string
+        // Sangat ringan tapi hanya bisa teks (cocok untuk laporan admin)
+        $out = "%PDF-1.4\n";
+        $objs = [];
+
+        foreach ($pages as $pIndex => $lines) {
+            $content = "BT /F1 12 Tf 50 780 Td ";
+            foreach ($lines as $line) {
+                $size = $line['size'] ?? 10;
+                $text = str_replace(['(', ')', '\\'], ['\\(', '\\)', '\\\\'], $line['text']);
+                $content .= "/F1 {$size} Tf 0 -15 Td ({$text}) Tj ";
+            }
+            $content .= "ET";
+            $objs[] = "<< /Length " . strlen($content) . " >> stream\n" . $content . "\nendstream";
+        }
+
+        $pdfBody = "";
+        $offsets = [];
+        $offsets[] = strlen($out);
+        $pdfBody .= "1 0 obj << /Type /Catalog /Pages 2 0 R >> endobj\n";
+
+        $offsets[] = strlen($out) + strlen($pdfBody);
+        $kids = "";
+        for ($i = 0; $i < count($objs); $i++)
+            $kids .= (3 + $i) . " 0 R ";
+        $pdfBody .= "2 0 obj << /Type /Pages /Kids [ {$kids} ] /Count " . count($objs) . " >> endobj\n";
+
+        for ($i = 0; $i < count($objs); $i++) {
+            $offsets[] = strlen($out) + strlen($pdfBody);
+            $pdfBody .= (3 + $i) . " 0 obj << /Type /Page /Parent 2 0 R /Resources << /Font << /F1 << /Type /Font /Subtype /Type1 /BaseFont /Courier >> >> >> /Contents " . (3 + count($objs) + $i) . " 0 R >> endobj\n";
+        }
+
+        for ($i = 0; $i < count($objs); $i++) {
+            $offsets[] = strlen($out) + strlen($pdfBody);
+            $pdfBody .= (3 + count($objs) + $i) . " 0 obj " . $objs[$i] . " endobj\n";
+        }
+
+        $xrefPos = strlen($out) + strlen($pdfBody);
+        $pdfBody .= "xref\n0 " . (3 + 2 * count($objs)) . "\n0000000000 65535 f \n";
+        foreach ($offsets as $off)
+            $pdfBody .= str_pad($off, 10, '0', STR_PAD_LEFT) . " 00000 n \n";
+
+        $pdfBody .= "trailer << /Size " . (3 + 2 * count($objs)) . " /Root 1 0 R >>\nxref\n%%EOF";
+
+        return $out . $pdfBody;
     }
 
     public function showOrder(Order $order): View
@@ -407,7 +470,7 @@ class AdminController extends Controller
             $pageIds[] = $pageId;
         }
 
-        $kids = collect($pageIds)->map(fn ($id) => "{$id} 0 R")->implode(' ');
+        $kids = collect($pageIds)->map(fn($id) => "{$id} 0 R")->implode(' ');
         $objects[2] = "<< /Type /Pages /Kids [{$kids}] /Count " . count($pageIds) . ' >>';
         ksort($objects);
 
