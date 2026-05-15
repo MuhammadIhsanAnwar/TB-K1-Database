@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
+use Illuminate\Validation\Rule;
 
 class SellerProductController extends Controller
 {
@@ -29,6 +30,44 @@ class SellerProductController extends Controller
             ->get();
 
         return view('dashboard.seller', compact('seller', 'products', 'orders'));
+    }
+
+    /**
+     * Attempt to compress an image file stored on the public disk.
+     * This is best-effort and will silently skip if GD/WEBP is not available.
+     */
+    private function compressImageOnDisk(string $relativePath): void
+    {
+        try {
+            $full = storage_path('app/public/' . ltrim($relativePath, '/'));
+            if (!file_exists($full)) return;
+
+            $ext = strtolower(pathinfo($full, PATHINFO_EXTENSION));
+            // Only handle common raster formats
+            if (!in_array($ext, ['jpg','jpeg','png','webp'])) return;
+
+            // Load image
+            $data = file_get_contents($full);
+            if (!$data) return;
+
+            $img = @imagecreatefromstring($data);
+            if (!$img) return;
+
+            // Prefer WEBP output if available
+            if (function_exists('imagewebp')) {
+                // write temporary then replace
+                imagewebp($img, $full, 80);
+            } elseif (in_array($ext, ['jpg','jpeg']) && function_exists('imagejpeg')) {
+                imagejpeg($img, $full, 82);
+            } elseif ($ext === 'png' && function_exists('imagepng')) {
+                // PNG quality: 0 (best) - 9 (worst) => convert to 6 for reasonable size
+                imagepng($img, $full, 6);
+            }
+
+            imagedestroy($img);
+        } catch (\Throwable $e) {
+            // best-effort: ignore failures
+        }
     }
 
     public function index()
@@ -74,7 +113,7 @@ class SellerProductController extends Controller
         ];
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => ['required','string','max:255', Rule::unique('products')->where(fn($q) => $q->where('seller_id', Auth::id()))],
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:100',
@@ -90,7 +129,10 @@ class SellerProductController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $imageFile) {
                 $filename = Str::uuid()->toString() . '.' . $imageFile->getClientOriginalExtension();
-                $imagePaths[] = $imageFile->storeAs('foto_produk', $filename, 'public');
+                $stored = $imageFile->storeAs('foto_produk', $filename, 'public');
+                $imagePaths[] = $stored;
+                // attempt to compress image to save bandwidth (best-effort)
+                $this->compressImageOnDisk($stored);
             }
         }
 
@@ -98,7 +140,9 @@ class SellerProductController extends Controller
         if (empty($imagePaths) && $request->hasFile('image')) {
             $legacyImage = $request->file('image');
             $filename = Str::uuid()->toString() . '.' . $legacyImage->getClientOriginalExtension();
-            $imagePaths[] = $legacyImage->storeAs('foto_produk', $filename, 'public');
+            $stored = $legacyImage->storeAs('foto_produk', $filename, 'public');
+            $imagePaths[] = $stored;
+            $this->compressImageOnDisk($stored);
         }
 
         // ─── LOGIKA PEMBAGIAN KOLOM (SUDAH BENAR) ──────────────────────────
@@ -142,7 +186,7 @@ class SellerProductController extends Controller
         ];
 
         $validated = $request->validate([
-            'name' => 'required|string|max:255',
+            'name' => ['required','string','max:255', Rule::unique('products')->ignore($produk->id)->where(fn($q) => $q->where('seller_id', Auth::id()))],
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:100',
@@ -179,12 +223,16 @@ class SellerProductController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $imageFile) {
                 $filename = Str::uuid()->toString() . '.' . $imageFile->getClientOriginalExtension();
-                $imagePaths[] = $imageFile->storeAs('foto_produk', $filename, 'public');
+                $stored = $imageFile->storeAs('foto_produk', $filename, 'public');
+                $imagePaths[] = $stored;
+                $this->compressImageOnDisk($stored);
             }
         } elseif ($request->hasFile('image')) {
             $legacyImage = $request->file('image');
             $filename = Str::uuid()->toString() . '.' . $legacyImage->getClientOriginalExtension();
-            $imagePaths[] = $legacyImage->storeAs('foto_produk', $filename, 'public');
+            $stored = $legacyImage->storeAs('foto_produk', $filename, 'public');
+            $imagePaths[] = $stored;
+            $this->compressImageOnDisk($stored);
         }
 
         if ($imagePaths) {

@@ -659,6 +659,21 @@ const messagesArea = document.getElementById('messagesArea');
 const msgInput     = document.getElementById('msgInput');
 const sendBtn      = document.getElementById('sendBtn');
 
+// Local cache to preserve message bubbles between navigations/refresh
+const cacheKey = `chat_messages_${CONV_ID}`;
+(function restoreChatFromCache() {
+    try {
+        const cached = localStorage.getItem(cacheKey);
+        if (cached && messagesArea && messagesArea.children.length <= 1) {
+            messagesArea.innerHTML = cached;
+            // ensure scroll at bottom
+            scrollBottom(false);
+        }
+    } catch (e) {
+        // ignore storage errors
+    }
+})();
+
 // Auto scroll to bottom on load
 function scrollBottom(smooth = true) {
     messagesArea.scrollTo({ top: messagesArea.scrollHeight, behavior: smooth ? 'smooth' : 'instant' });
@@ -797,6 +812,10 @@ function appendMessage(m) {
     const typing = document.getElementById('typingIndicator');
     messagesArea.insertBefore(div, typing);
     scrollBottom();
+    // keep cache in sync
+    try {
+        localStorage.setItem(cacheKey, messagesArea.innerHTML);
+    } catch (e) {}
 }
 
 function escHtml(str) {
@@ -808,6 +827,13 @@ pollTimer = setTimeout(poll, 3000);
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) clearTimeout(pollTimer);
     else pollTimer = setTimeout(poll, 1000);
+});
+
+// Persist cache on unload
+window.addEventListener('beforeunload', () => {
+    try {
+        if (messagesArea) localStorage.setItem(cacheKey, messagesArea.innerHTML);
+    } catch (e) {}
 });
 </script>
 @endpush

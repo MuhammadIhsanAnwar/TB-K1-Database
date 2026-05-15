@@ -445,7 +445,8 @@ spline-viewer iframe {
 <section class="relative py-5 sm:py-7">
   <div class="max-w-7xl mx-auto px-4">
     <div class="overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/40 shadow-card-hover">
-      <div id="banner-track" class="banner-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory p-3 sm:p-4">
+      <div class="relative">
+        <div id="banner-track" class="banner-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory p-3 sm:p-4">
           @foreach($heroBanners as $banner)
           <a href="{{ $banner->link_url ?: '#' }}" class="banner-slide group relative flex-none w-[72%] sm:w-[56%] md:w-[38%] xl:w-[28%] overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900">
             <div class="relative aspect-[4/5] overflow-hidden">
@@ -461,6 +462,13 @@ spline-viewer iframe {
             </div>
           </a>
         @endforeach
+        </div>
+        <button id="banner-prev" aria-label="Previous" class="absolute left-3 top-1/2 -translate-y-1/2 z-20 rounded-full bg-slate-800/60 p-2 hover:bg-slate-800 text-white">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
+        </button>
+        <button id="banner-next" aria-label="Next" class="absolute right-3 top-1/2 -translate-y-1/2 z-20 rounded-full bg-slate-800/60 p-2 hover:bg-slate-800 text-white">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </button>
       </div>
     </div>
   </div>
@@ -1063,6 +1071,44 @@ splineEl.addEventListener('load', async (e) => {
     track.addEventListener('mouseenter', stopAutoplay);
     track.addEventListener('mouseleave', startAutoplay);
     track.addEventListener('touchstart', stopAutoplay, { passive: true });
+    
+    // Touch swipe support
+    let touchStartX = 0;
+    let touchEndX = 0;
+    track.addEventListener('touchstart', (e) => {
+      touchStartX = e.changedTouches[0].clientX;
+      stopAutoplay();
+    }, { passive: true });
+    track.addEventListener('touchend', (e) => {
+      touchEndX = e.changedTouches[0].clientX;
+      const dx = touchEndX - touchStartX;
+      if (Math.abs(dx) > 50) {
+        if (dx < 0) { // swipe left -> next
+          currentIndex = (currentIndex + 1) % slides.length;
+        } else { // swipe right -> prev
+          currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+        }
+        scrollToSlide(currentIndex);
+      }
+      startAutoplay();
+    }, { passive: true });
+
+    // Prev/Next buttons (if present)
+    const parent = track.parentElement;
+    const prevBtn = parent?.querySelector('#banner-prev');
+    const nextBtn = parent?.querySelector('#banner-next');
+    if (prevBtn) prevBtn.addEventListener('click', () => {
+      stopAutoplay();
+      currentIndex = (currentIndex - 1 + slides.length) % slides.length;
+      scrollToSlide(currentIndex);
+      startAutoplay();
+    });
+    if (nextBtn) nextBtn.addEventListener('click', () => {
+      stopAutoplay();
+      currentIndex = (currentIndex + 1) % slides.length;
+      scrollToSlide(currentIndex);
+      startAutoplay();
+    });
 
     startAutoplay();
   };
