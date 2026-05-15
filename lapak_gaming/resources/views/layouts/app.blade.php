@@ -743,7 +743,7 @@
 
 <body class="page-bg text-slate-200 min-h-screen">
 
-<script type="text/x-template">
+<script>
   window.chatInboxUrl = '{!! route('chat.inbox.poll') !!}';
 </script>
 
