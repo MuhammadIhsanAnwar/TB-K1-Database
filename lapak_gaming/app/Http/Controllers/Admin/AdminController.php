@@ -148,7 +148,8 @@ class AdminController extends Controller
 
     public function destroyUser(User $user): RedirectResponse
     {
-        if ($user->role === 'admin') return back()->withErrors(['delete' => 'Admin tidak bisa dihapus.']);
+        if ($user->role === 'admin')
+            return back()->withErrors(['delete' => 'Admin tidak bisa dihapus.']);
         $user->delete();
         return back()->with('success', 'User dihapus.');
     }
@@ -292,52 +293,58 @@ class AdminController extends Controller
 
     public function downloadOrdersReportPdf()
     {
-        $relations = ['buyer', 'seller'];
+        // 1. Sesuaikan relasi (pakai items.product.seller kalau seller ada di produk)
+        $relations = ['buyer', 'items.product.seller'];
 
         if (Schema::hasTable('order_financials')) {
             $relations[] = 'financial';
         }
 
-        $orders = Order::query()
-            ->with($relations)
-            ->oldest()
-            ->get();
+        $orders = Order::with($relations)->oldest()->get();
 
-        $totalAmount = $orders->sum(fn (Order $order) => $this->reportOrderTotal($order));
+        if ($orders->isEmpty()) {
+            return back()->with('error', 'Tidak ada data pesanan untuk dilaporkan.');
+        }
+
+        $totalAmount = $orders->sum(fn(Order $order) => $this->reportOrderTotal($order));
         $generatedAt = now()->format('d M Y H:i');
+
         $statusCounts = $orders->groupBy('status')
-            ->map(fn ($items) => $items->count())
+            ->map(fn($items) => $items->count())
             ->sortKeys();
 
         $orderLines = $orders->map(function (Order $order): string {
-            $invoice = $this->pdfColumn($order->invoice_number ?? $order->order_code, 18);
-            $buyer = $this->pdfColumn($order->buyer?->name ?? '-', 16);
-            $seller = $this->pdfColumn($order->seller?->name ?? '-', 16);
-            $status = $this->pdfColumn($order->status_label, 18);
+            // PERBAIKAN: Gunakan status biasa kalau status_label gak ada
+            $statusText = $order->status ?? 'pending';
+
+            $invoice = $this->pdfColumn($order->invoice_number ?? $order->order_code ?? '-', 18);
+            $buyer = $this->pdfColumn($order->buyer?->name ?? 'User', 16);
+
+            // Ambil nama seller dari item pertama (karena biasanya seller per produk)
+            $sellerName = $order->items->first()?->product?->seller?->name ?? '-';
+            $seller = $this->pdfColumn($sellerName, 16);
+
+            $status = $this->pdfColumn(strtoupper($statusText), 18);
             $total = str_pad('Rp ' . number_format($this->reportOrderTotal($order), 0, ',', '.'), 16, ' ', STR_PAD_LEFT);
 
             return "{$invoice} {$buyer} {$seller} {$status} {$total}";
         })->values();
 
-        if ($orderLines->isEmpty()) {
-            $orderLines = collect(['Belum ada transaksi.']);
-        }
-
         $pages = [];
         foreach ($orderLines->chunk(32) as $index => $chunk) {
             $lines = [
-                ['text' => 'Laporan Transaksi Lapak Gaming', 'size' => 16],
+                ['text' => 'LAPORAN TRANSAKSI LAPAK GAMING', 'size' => 16],
                 ['text' => 'Dicetak: ' . $generatedAt, 'size' => 10],
             ];
 
             if ($index === 0) {
                 $lines[] = ['text' => 'Total transaksi: ' . number_format($orders->count()), 'size' => 10];
                 $lines[] = ['text' => 'Total nominal: Rp ' . number_format($totalAmount, 0, ',', '.'), 'size' => 10];
-                $lines[] = ['text' => 'Status: ' . ($statusCounts->map(fn ($count, $status) => $status . '=' . $count)->implode(', ') ?: '-'), 'size' => 10];
+                $lines[] = ['text' => 'Status: ' . ($statusCounts->map(fn($c, $s) => $s . '=' . $c)->implode(', ')), 'size' => 10];
                 $lines[] = ['text' => '', 'size' => 10];
             }
 
-            $lines[] = ['text' => 'Invoice            Buyer            Seller           Status                    Total', 'size' => 9];
+            $lines[] = ['text' => 'Invoice            Buyer            Seller           Status                   Total', 'size' => 9];
             $lines[] = ['text' => str_repeat('-', 95), 'size' => 9];
 
             foreach ($chunk as $line) {
@@ -353,114 +360,18 @@ class AdminController extends Controller
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
             'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            'Content-Length' => strlen($pdf),
         ]);
-    }
-
-    public function showOrder(Order $order): View
-    {
-        $order->load(['buyer', 'seller', 'items.product']);
-        return view('admin.orders.show', compact('order'));
-    }
-
-    private function pdfColumn(?string $value, int $length): string
-    {
-        $value = preg_replace('/\s+/', ' ', (string) $value);
-        $value = $this->safeSubstr($value, $length);
-
-        return str_pad($value, $length);
     }
 
     private function reportOrderTotal(Order $order): float
     {
-        if (Schema::hasTable('order_financials')) {
-            return (float) $order->grand_total;
-        }
-
-        return (float) ($order->getAttributes()['grand_total'] ?? 0);
-    }
-
-    private function buildSimplePdf(array $pages): string
-    {
-        $objects = [];
-        $objects[1] = '<< /Type /Catalog /Pages 2 0 R >>';
-        $objects[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>';
-        $pageIds = [];
-        $nextId = 4;
-
-        foreach ($pages as $pageLines) {
-            $stream = '';
-            $y = 800;
-
-            foreach ($pageLines as $line) {
-                $text = $this->pdfEscape((string) ($line['text'] ?? ''));
-                $size = (int) ($line['size'] ?? 10);
-                $stream .= "BT /F1 {$size} Tf 40 {$y} Td ({$text}) Tj ET\n";
-                $y -= $size >= 14 ? 24 : 15;
-            }
-
-            $contentId = $nextId++;
-            $objects[$contentId] = '<< /Length ' . strlen($stream) . " >>\nstream\n" . $stream . "endstream";
-
-            $pageId = $nextId++;
-            $objects[$pageId] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents {$contentId} 0 R >>";
-            $pageIds[] = $pageId;
-        }
-
-        $kids = collect($pageIds)->map(fn ($id) => "{$id} 0 R")->implode(' ');
-        $objects[2] = "<< /Type /Pages /Kids [{$kids}] /Count " . count($pageIds) . ' >>';
-        ksort($objects);
-
-        $pdf = "%PDF-1.4\n";
-        $offsets = [0 => 0];
-
-        foreach ($objects as $id => $body) {
-            $offsets[$id] = strlen($pdf);
-            $pdf .= "{$id} 0 obj\n{$body}\nendobj\n";
-        }
-
-        $xrefOffset = strlen($pdf);
-        $maxId = max(array_keys($objects));
-        $pdf .= "xref\n0 " . ($maxId + 1) . "\n";
-        $pdf .= "0000000000 65535 f \n";
-
-        for ($i = 1; $i <= $maxId; $i++) {
-            $pdf .= sprintf("%010d 00000 n \n", $offsets[$i] ?? 0);
-        }
-
-        $pdf .= "trailer\n<< /Size " . ($maxId + 1) . " /Root 1 0 R >>\n";
-        $pdf .= "startxref\n{$xrefOffset}\n%%EOF";
-
-        return $pdf;
-    }
-
-    private function pdfEscape(string $value): string
-    {
-        $value = $this->normalizePdfText($value);
-        $value = str_replace(["\\", "(", ")", "\r", "\n"], ["\\\\", "\\(", "\\)", ' ', ' '], $value);
-
-        return $this->safeSubstr($value, 130);
-    }
-
-    private function safeSubstr(string $value, int $length): string
-    {
-        if (function_exists('mb_substr')) {
-            return mb_substr($value, 0, $length);
-        }
-
-        return substr($value, 0, $length);
+        // PERBAIKAN: Ambil dari total_price jika grand_total kosong
+        return (float) ($order->grand_total ?? $order->total_price ?? 0);
     }
 
     private function normalizePdfText(string $value): string
     {
-        // Keep simple PDF text stream stable by converting UTF-8 to a Latin-1 compatible range.
-        if (function_exists('iconv')) {
-            $converted = @iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $value);
-            if ($converted !== false) {
-                $value = $converted;
-            }
-        }
-
-        return preg_replace('/[^\x20-\x7E\xA0-\xFF]/', '', $value) ?? '';
+        // PERBAIKAN: Lebih aman tanpa iconv jika hosting rewel
+        return preg_replace('/[^\x20-\x7E]/', '', $value) ?? '';
     }
 }
