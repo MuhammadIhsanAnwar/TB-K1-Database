@@ -84,6 +84,16 @@ public function unreadFor(int $authId): int
         return $typingAt && $typingAt->diffInSeconds(now()) < 5;
     }
 
+    public function product()
+{
+    return $this->belongsTo(Product::class);
+}
+
+public function order()
+{
+    return $this->belongsTo(Order::class);
+}
+
     /**
      * Format ringkasan percakapan untuk list inbox.
      */

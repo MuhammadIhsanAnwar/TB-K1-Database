@@ -15,7 +15,7 @@ class ChatController extends Controller
      * Mengambil daftar percakapan (Inbox Sidebar
      */
 
-    public function inbox()
+   public function inbox()
 {
     $user = Auth::user();
 

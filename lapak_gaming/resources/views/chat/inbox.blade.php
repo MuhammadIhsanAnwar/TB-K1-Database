@@ -260,9 +260,11 @@
                         @endif
                         <div class="flex justify-between items-center">
                             <span class="conv-preview {{ $unread > 0 ? 'unread' : '' }}">
-                                @if($conv->last_message)
-                                    @if($conv->last_message_sender_id === $user->id)Kamu: @endif
-                                    {{ mb_substr($conv->last_message, 0, 50) }}
+                                @if($conv->last_message_text)
+                                    @if(optional($conv->messages->last())->sender_id === $user->id)
+    Kamu:
+@endif
+                                    {{ mb_substr($conv->last_message_text, 0, 50) }}
                                 @else
                                     Belum ada pesan
                                 @endif
@@ -297,7 +299,6 @@
         </div>
 
     </div>
-</div>
 </div>
 
 @push('scripts')
