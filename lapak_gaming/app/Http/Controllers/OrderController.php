@@ -16,8 +16,23 @@ class OrderController extends Controller {
         return view('orders.index', compact('orders'));
     }
 
-    public function show(Order $order) {
-        abort_if($order->buyer_id !== Auth::id(), 403);
+    // PERUBAHAN UTAMA: Tangkap parameter string (bukan instance model)
+    public function show($order_code) {
+        // 1. Cari order berdasarkan kolom order_code atau invoice_number
+        // (Sesuaikan dengan nama kolom yang ada di tabel orders kamu, biasanya order_code)
+        $order = Order::where('order_code', $order_code)
+                      ->orWhere('invoice_number', $order_code) // Berjaga-jaga kalau namanya invoice_number
+                      ->firstOrFail();
+
+        // 2. Cek izin: Hanya boleh dilihat oleh pembeli ATAU penjual ATAU admin
+        $user = Auth::user();
+        $isBuyer = $order->buyer_id === $user->id;
+        $isSeller = $order->items()->where('seller_id', $user->id)->exists(); // Cek apakah dia seller dari salah satu item
+
+        if (!$isBuyer && !$isSeller && $user->role !== 'admin') {
+            abort(403, 'Akses Ditolak: Anda tidak memiliki akses ke pesanan ini.');
+        }
+
         $order->load('items.product.seller', 'items.review');
         return view('orders.show', compact('order'));
     }
@@ -45,7 +60,9 @@ class OrderController extends Controller {
         return view('orders.checkout', compact('cartItems', 'subtotal', 'fee', 'total'));
     }
 
-    public function pay(Request $request, Order $order) {
+    public function pay(Request $request, $order_code) {
+        $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
+        
         abort_if($order->buyer_id !== Auth::id(), 403);
         abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
 
@@ -88,7 +105,8 @@ class OrderController extends Controller {
             }
         });
 
-        return redirect()->route('orders.show', $order->order_code)
+        // Redirect menggunakan order_code
+        return redirect()->route('orders.show', $order->order_code ?? $order->invoice_number)
             ->with('success', 'Pembayaran berhasil!');
     }
 
@@ -104,19 +122,24 @@ class OrderController extends Controller {
             $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
             $subtotal = $cartItems->sum(fn($c) => $c->product->price * $c->quantity);
             $fee = round($subtotal * 0.02);
+            $grand_total = $subtotal + $fee; // Tambahkan ini karena total_price mungkin kosong
 
             $order = Order::create([
                 'buyer_id'       => Auth::id(),
                 'status'         => Order::STATUS_PENDING_PAYMENT,
                 'payment_method' => $request->payment_method,
+                'total_price'    => $grand_total, // Pastikan total price tersimpan di tabel utama (PENTING!)
             ]);
 
-            $order->financial()->create([
-                'subtotal' => $subtotal,
-                'fee_amount' => $fee,
-                'escrow_amount' => $subtotal,
-                'grand_total' => $subtotal + $fee,
-            ]);
+            // Jika kamu punya model/tabel financial, tetap simpan ke sana
+            if (method_exists($order, 'financial')) {
+                $order->financial()->create([
+                    'subtotal' => $subtotal,
+                    'fee_amount' => $fee,
+                    'escrow_amount' => $subtotal,
+                    'grand_total' => $grand_total,
+                ]);
+            }
 
             foreach ($cartItems as $item) {
                 OrderItem::create([
@@ -135,14 +158,18 @@ class OrderController extends Controller {
             // Kosongkan cart
             Cart::where('user_id', Auth::id())->delete();
 
-            session(['last_order_code' => $order->order_code]);
+            // Simpan identifier order ke session. Kita utamakan order_code, kalau tidak ada pakai invoice_number
+            $identifier = $order->order_code ?? $order->invoice_number ?? $order->id;
+            session(['last_order_code' => $identifier]);
         });
 
         return redirect()->route('orders.show', session('last_order_code'))
             ->with('success', 'Order berhasil dibuat!');
     }
 
-    public function complete(Order $order) {
+    // Pastikan parameter fungsinya juga menggunakan string order_code
+    public function complete($order_code) {
+        $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
         abort_if($order->buyer_id !== Auth::id(), 403);
         abort_if(!in_array($order->status, [Order::STATUS_PAYMENT_UPLOADED, Order::STATUS_PROCESSING], true), 422);
 
@@ -169,11 +196,12 @@ class OrderController extends Controller {
             }
         });
 
-        return redirect()->route('orders.show', $order->order_code)
+        return redirect()->route('orders.show', $order->order_code ?? $order->invoice_number)
             ->with('success', 'Order diselesaikan! Saldo seller telah diperbarui.');
     }
 
-    public function cancel(Order $order) {
+    public function cancel($order_code) {
+        $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
         abort_if($order->buyer_id !== Auth::id(), 403);
         abort_if(!in_array($order->status, [Order::STATUS_PENDING_PAYMENT, Order::STATUS_PAYMENT_UPLOADED], true), 422);
 
@@ -192,7 +220,8 @@ class OrderController extends Controller {
         return redirect()->route('orders.index')->with('success', 'Order dibatalkan.');
     }
 
-    public function uploadProof(Request $request, Order $order) {
+    public function uploadProof(Request $request, $order_code) {
+        $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
         abort_if($order->buyer_id !== Auth::id(), 403);
         $request->validate(['payment_proof' => 'required|image|max:2048']);
         $path = $request->file('payment_proof')->store('payment_proofs', 'public');
