@@ -112,6 +112,7 @@ class Message extends Model
             'message'          => $isHidden ? ($this->isDeletedForEveryone() ? 'Pesan ini telah dihapus' : null) : $this->message,
             'is_deleted'       => $this->isDeletedForEveryone(),
             'attachment_path'  => $isHidden ? null : $this->attachment_path,
+            'attachment_url'   => ($isHidden || !$this->attachment_path) ? null : asset('storage/' . $this->attachment_path),
             'attachment_type'  => $this->attachment_type,
             'is_read'          => (bool) $this->is_read,
             'time'             => $this->created_at->format('H:i'),
