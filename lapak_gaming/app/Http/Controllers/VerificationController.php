@@ -6,13 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-use Illuminate\Foundation\Auth\EmailVerificationRequest;
+use App\Models\User; // Tambahkan ini untuk mengambil data user berdasarkan ID
 
 class VerificationController extends Controller
 {
-    /**
-     * Menampilkan halaman pemberitahuan verifikasi email untuk user yang login.
-     */
     public function notice(Request $request): View|RedirectResponse
     {
         return $request->user()->hasVerifiedEmail()
@@ -20,9 +17,6 @@ class VerificationController extends Controller
             : view('auth.verify-email');
     }
 
-    /**
-     * Mengirim ulang link verifikasi email untuk user yang login.
-     */
     public function send(Request $request): RedirectResponse
     {
         if ($request->user()->hasVerifiedEmail()) {
@@ -34,25 +28,45 @@ class VerificationController extends Controller
         return back()->with('status', 'verification-link-sent');
     }
 
-    /**
-     * Memproses verifikasi email setelah link diklik.
-     */
-    public function verify(EmailVerificationRequest $request): RedirectResponse
+    public function verify(\Illuminate\Foundation\Auth\EmailVerificationRequest $request): RedirectResponse
     {
         $request->fulfill();
 
         return redirect()->route('dashboard');
     }
 
-    /**
-     * Menampilkan halaman tunggu verifikasi untuk tamu/setelah register Google (URL: /email/verify-pending).
-     */
     public function pending(Request $request): View
     {
-        // Mengembalikan view khusus verifikasi pending
-        // Jika file view Anda bernama lain (misal: 'auth.verify-email'), silakan sesuaikan
         return view('auth.verify-pending', [
             'email' => $request->query('email')
         ]);
+    }
+
+    /**
+     * Menangani aktivasi akun dari link email publik (URL: /activate/{id}/{hash})
+     */
+    public function activate(Request $request, $id, $hash): RedirectResponse
+    {
+        // 1. Cari user berdasarkan ID yang ada di URL
+        $user = User::findOrFail($id);
+
+        // 2. Validasi hash email untuk keamanan (mencegah manipulasi url)
+        if (!hash_equals(sha1($user->getEmailForVerification()), (string) $hash)) {
+            abort(403, 'Link aktivasi tidak valid.');
+        }
+
+        // 3. Jika email belum diverifikasi, tandai sebagai verified
+        if (!$user->hasVerifiedEmail()) {
+            $user->markEmailAsVerified();
+            
+            // Opsional: Picu event bawaan Laravel jika dibutuhkan package lain
+            event(new \Illuminate\Auth\Events\Verified($user));
+        }
+
+        // 4. Otomatis login-kan user setelah berhasil aktivasi (Opsional, silakan hapus baris ini jika ingin user login manual)
+        auth()->login($user);
+
+        // 5. Alihkan ke halaman dashboard dengan pesan sukses
+        return redirect()->route('dashboard')->with('verified', true);
     }
 }
