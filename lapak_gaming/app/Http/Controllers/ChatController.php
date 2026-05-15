@@ -238,7 +238,13 @@ class ChatController extends Controller
         $since = (int) $request->query('since', 0);
         $messages = Message::where('conversation_id', $conversation->id)
             ->when($since, fn($q) => $q->where('id', '>', $since))
-            ->oldest()->get();
+            ->with('sender')->oldest()->get();
+
+        Message::where('conversation_id', $conversation->id)
+            ->where('receiver_id', $user->id)->whereNull('read_at')
+            ->update(['read_at' => now(), 'is_read' => true]);
+        $conversation->markReadFor($user->id);
+
         return response()->json([
             'messages' => $messages->map(fn($m) => $this->fmt($m, $user->id)),
             'last_id'  => $messages->last()?->id ?? $since,

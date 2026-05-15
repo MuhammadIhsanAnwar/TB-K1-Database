@@ -57,7 +57,13 @@
                         MULAI BELANJA
                     </a>
                 </div>
-            @else
+                @else
+                @php
+                    $cartItemCount = $cartItems->sum(fn($item) => $item->quantity);
+                    $subtotal = $total;
+                    $fee = round($subtotal * 0.02);
+                    $grandTotal = $subtotal + $fee;
+                @endphp
                 <div class="grid gap-8 lg:grid-cols-3 items-start">
 
                     {{-- Daftar Item --}}
@@ -155,17 +161,15 @@
                             <div class="space-y-4 border-b border-slate-800 pb-6 text-sm">
                                 <div class="flex justify-between items-center">
                                     <span class="text-slate-500 font-bold uppercase tracking-tighter">Total Item</span>
-                                    <span class="text-white font-black">{{ $cartItems->count() }} Pcs</span>
+                                    <span class="text-white font-black">{{ $cartItemCount }} Pcs</span>
                                 </div>
                                 <div class="flex justify-between items-center">
                                     <span class="text-slate-500 font-bold uppercase tracking-tighter">Subtotal</span>
-                                    <span class="text-white font-black text-base">Rp
-                                        {{ number_format($cartItems->sum(fn($i) => $i->product->price), 0, ',', '.') }}</span>
+                                    <span class="text-white font-black text-base">Rp {{ number_format($subtotal, 0, ',', '.') }}</span>
                                 </div>
                                 <div class="flex justify-between items-center">
-                                    <span class="text-slate-500 font-bold uppercase tracking-tighter">Biaya Admin</span>
-                                    <span
-                                        class="text-emerald-500 font-black bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">GRATIS</span>
+                                    <span class="text-slate-500 font-bold uppercase tracking-tighter">Biaya Platform</span>
+                                    <span class="text-emerald-500 font-black bg-emerald-500/10 px-2 py-0.5 rounded text-[10px]">2%</span>
                                 </div>
                             </div>
 
@@ -173,7 +177,7 @@
                                 <span class="text-[10px] font-black text-slate-600 uppercase tracking-widest block mb-1">Total
                                     Tagihan</span>
                                 <span class="text-3xl font-black text-amber-500 italic tracking-tighter">
-                                    Rp {{ number_format($cartItems->sum(fn($i) => $i->product->price), 0, ',', '.') }}
+                                    Rp {{ number_format($grandTotal, 0, ',', '.') }}
                                 </span>
                             </div>
 
