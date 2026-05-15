@@ -25,7 +25,7 @@
             $displayImage = $rawImage;
         } else {
             // Gambar asli hasil upload (tambahkan storage/ di depannya)
-            $displayImage = asset('storage/' . $rawImage);
+            $displayImage = asset($rawImage);
         }
     }
 @endphp

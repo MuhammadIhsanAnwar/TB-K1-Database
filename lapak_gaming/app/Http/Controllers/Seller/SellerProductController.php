@@ -12,14 +12,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Str;
 
-class SellerProductController extends Controller {
-    
-    public function dashboard() {
+class SellerProductController extends Controller
+{
+
+    public function dashboard()
+    {
         $seller = Auth::user();
-        
+
         // Ambil data produk untuk dihitung di Blade
         $products = Product::where('seller_id', $seller->id)->get();
-        
+
         // Ambil data order terkait seller ini (via OrderItem)
         $orders = OrderItem::where('seller_id', $seller->id)
             ->with(['order', 'product'])
@@ -29,12 +31,13 @@ class SellerProductController extends Controller {
         return view('dashboard.seller', compact('seller', 'products', 'orders'));
     }
 
-    public function index() {
+    public function index()
+    {
         $status = request('status', 'active');
 
         $products = Product::where('seller_id', Auth::id())
             ->with(['category'])
-            ->when($status === 'active', fn ($query) => $query->active(), fn ($query) => $query->archived())
+            ->when($status === 'active', fn($query) => $query->active(), fn($query) => $query->archived())
             ->latest()
             ->paginate(15)
             ->withQueryString();
@@ -42,12 +45,14 @@ class SellerProductController extends Controller {
         return view('seller.products.index', compact('products', 'status'));
     }
 
-    public function create() {
+    public function create()
+    {
         $categories = Category::all();
         return view('seller.products.create', compact('categories'));
     }
 
-public function store(Request $request) {
+    public function store(Request $request)
+    {
         $messages = [
             'name.required' => 'Nama produk wajib diisi.',
             'name.max' => 'Nama produk maksimal 255 karakter.',
@@ -69,44 +74,48 @@ public function store(Request $request) {
         ];
 
         $validated = $request->validate([
-            'name'        => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
-            'price'       => 'required|numeric|min:100',
-            'stock'       => 'required|integer|min:0',
-            'type'        => 'required|in:topup,item,akun,voucher,gamekey',
-            'images'      => ['nullable', 'array', 'max:10'],
-            'images.*'    => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'price' => 'required|numeric|min:100',
+            'stock' => 'required|integer|min:0',
+            'type' => 'required|in:topup,item,akun,voucher,gamekey',
+            'images' => ['nullable', 'array', 'max:10'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ], $messages);
 
         $imagePaths = [];
-        
-        // Proses multiple image
-        foreach ($request->file('images', []) as $imageFile) {
-            $filename = Str::uuid()->toString() . '.' . $imageFile->getClientOriginalExtension();
-            $imagePaths[] = $imageFile->storeAs('foto_produk', $filename, 'public');
+
+        // 1. Proses multiple image (Pakai Jurus Bypass ke folder Public)
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $imageFile) {
+                $filename = Str::uuid()->toString() . '.' . $imageFile->getClientOriginalExtension();
+
+                // PINDAHKAN LANGSUNG KE EALASE DEPAN (public/foto_produk)
+                $imageFile->move(public_path('foto_produk'), $filename);
+
+                // Simpan path-nya tanpa kata 'storage'
+                $imagePaths[] = 'foto_produk/' . $filename;
+            }
         }
 
-        // Proses single image (fallback)
+        // 2. Proses single image (fallback kalau inputnya cuma 'image')
         if (empty($imagePaths) && $request->hasFile('image')) {
             $legacyImage = $request->file('image');
             $filename = Str::uuid()->toString() . '.' . $legacyImage->getClientOriginalExtension();
-            $imagePaths[] = $legacyImage->storeAs('foto_produk', $filename, 'public');
+
+            $legacyImage->move(public_path('foto_produk'), $filename);
+            $imagePaths[] = 'foto_produk/' . $filename;
         }
 
-        // ─── PERBAIKAN DI SINI ──────────────────────────────────────────
+        // ─── LOGIKA PEMBAGIAN KOLOM (SUDAH BENAR) ──────────────────────────
         if (!empty($imagePaths)) {
-            // 1. Simpan gambar pertama ke kolom 'image' biar muncul di beranda & keranjang
-            $validated['image'] = $imagePaths[0]; 
-            
-            // 2. Simpan semua path ke kolom 'file_path' untuk fitur galeri detail produk
-            $validated['file_path'] = implode('|', $imagePaths);
+            $validated['image'] = $imagePaths[0]; // Gambar utama
+            $validated['file_path'] = implode('|', $imagePaths); // Semua gambar
         } else {
-            // Kalau misal nggak ada gambar yang diupload, pastikan nilainya null
             $validated['image'] = null;
             $validated['file_path'] = null;
         }
-        // ────────────────────────────────────────────────────────────────
 
         $validated['seller_id'] = Auth::id();
         $validated['slug'] = Str::slug($validated['name']) . '-' . Str::random(4);
@@ -118,13 +127,15 @@ public function store(Request $request) {
             ->with('success', 'Produk berhasil ditambahkan!');
     }
 
-    public function edit(Product $produk) {
+    public function edit(Product $produk)
+    {
         abort_if((int) $produk->seller_id !== (int) Auth::id(), 403);
         $categories = Category::all();
         return view('seller.products.edit', compact('produk', 'categories'));
     }
 
-    public function update(Request $request, Product $produk) {
+    public function update(Request $request, Product $produk)
+    {
         abort_if((int) $produk->seller_id !== (int) Auth::id(), 403);
 
         $messages = [
@@ -138,15 +149,15 @@ public function store(Request $request) {
         ];
 
         $validated = $request->validate([
-            'name'        => 'required|string|max:255',
+            'name' => 'required|string|max:255',
             'category_id' => 'required|exists:categories,id',
             'description' => 'nullable|string',
-            'price'       => 'required|numeric|min:100',
-            'stock'       => 'required|integer|min:0',
-            'type'        => 'required|in:topup,item,akun,voucher,gamekey',
-            'status'      => 'required|in:draft,published,archived',
-            'images'      => ['nullable', 'array', 'max:10'],
-            'images.*'    => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
+            'price' => 'required|numeric|min:100',
+            'stock' => 'required|integer|min:0',
+            'type' => 'required|in:topup,item,akun,voucher,gamekey',
+            'status' => 'required|in:draft,published,archived',
+            'images' => ['nullable', 'array', 'max:10'],
+            'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'removed_images' => ['nullable', 'json'],
         ], $messages);
 
@@ -155,14 +166,14 @@ public function store(Request $request) {
         // Handle removed images
         if ($request->has('removed_images') && $request->input('removed_images') !== '[]') {
             $removedIndices = json_decode($request->input('removed_images'), true) ?? [];
-            
+
             foreach ($removedIndices as $index) {
                 if (isset($imagePaths[$index])) {
                     Storage::disk('public')->delete($imagePaths[$index]);
                     unset($imagePaths[$index]);
                 }
             }
-            
+
             // Reindex array after removal
             $imagePaths = array_values($imagePaths);
         }
@@ -191,19 +202,22 @@ public function store(Request $request) {
             ->with('success', 'Produk berhasil diperbarui!');
     }
 
-    public function destroy(Product $produk) {
+    public function destroy(Product $produk)
+    {
         abort_if((int) $produk->seller_id !== (int) Auth::id(), 403);
         $produk->update(['status' => 'archived']);
         return back()->with('success', 'Produk berhasil diarsipkan.');
     }
 
-    public function activate(Product $produk) {
+    public function activate(Product $produk)
+    {
         abort_if((int) $produk->seller_id !== (int) Auth::id(), 403);
         $produk->update(['status' => 'published']);
         return back()->with('success', 'Produk berhasil diaktifkan kembali.');
     }
 
-    public function forceDestroy(Product $produk) {
+    public function forceDestroy(Product $produk)
+    {
         abort_if((int) $produk->seller_id !== (int) Auth::id(), 403);
 
         if ($produk->orderItems()->exists()) {
