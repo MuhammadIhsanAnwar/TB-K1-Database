@@ -61,10 +61,6 @@
     box-shadow: 0 0 0 2px rgba(37, 99, 235, 0.2);
 }
 
-.search-input::placeholder {
-    color: #666666;
-}
-
 .conversations-list {
     flex: 1;
     overflow-y: auto;
@@ -201,17 +197,14 @@
     max-width: 300px;
 }
 
-/* Responsive */
 @media (max-width: 768px) {
     .inbox-container {
         height: 100vh;
         border-radius: 0;
     }
-
     .inbox-sidebar {
         width: 100%;
     }
-
     .empty-state {
         display: none;
     }
@@ -229,81 +222,81 @@
                 <h1 class="inbox-title">Pesan</h1>
                 <p class="inbox-subtitle">Semua percakapan dengan pembeli dan penjual</p>
                 <div class="search-container">
-                    <input id="searchInput" type="text" placeholder="Cari percakapan..."
-                           class="search-input">
+                    <input id="searchInput" type="text" placeholder="Cari percakapan..." class="search-input">
                 </div>
             </div>
 
             <div class="conversations-list" id="convList">
                 @forelse($conversations as $conv)
-               @forelse($conversations as $conv)
-@php
-    $user = auth()->user();
-    
-    // LOGIKA PARTNER: 
-    // Jika saya adalah pembeli, tampilkan data penjual. 
-    // Jika saya adalah penjual, tampilkan data pembeli.
-    $partner = ($conv->buyer_id === $user->id) ? $conv->seller : $conv->buyer;
-    
-    $unread = $conv->unreadFor($user->id);
-@endphp
+                    @php
+                        $user = auth()->user();
+                        // Menggunakan helper dari model Conversation untuk mendapatkan lawan bicara
+                        $partner = $conv->partner($user->id);
+                        $unread = $conv->unreadFor($user->id);
+                        // Ambil pesan terakhir untuk logika "Kamu:"
+                        $lastMsg = $conv->messages->last();
+                    @endphp
 
-<a href="{{ route('chat.show', $conv) }}"
-   class="conv-item {{ request()->routeIs('chat.show') && request()->route('conversation') == $conv->id ? 'active' : '' }}"
-   data-name="{{ strtolower($partner?->name ?? '') }}">
-   
-    {{-- Gunakan $partner untuk Avatar --}}
-    <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($partner?->name ?? 'User') }}"
-         class="conv-avatar" alt="{{ $partner?->name }}">
-         
-    <div class="conv-content">
-        <div class="conv-header">
-            {{-- Gunakan $partner untuk Nama --}}
-            <span class="conv-name">{{ $partner?->name ?? 'User' }}</span>
-            <span class="conv-time">
-                {{ $conv->last_message_at?->diffForHumans(null, true) ?? '' }}
-            </span>
-        </div>
-        
-                        @if($conv->product)
-                        <p class="conv-context">🎮 {{ $conv->product->name }}</p>
-                        @elseif($conv->order)
-                        <p class="conv-context">📦 Order #{{ $conv->order->order_code ?? $conv->order_id }}</p>
-                        @endif
-                        <div class="flex justify-between items-center">
-                            <span class="conv-preview {{ $unread > 0 ? 'unread' : '' }}">
-                                @if($conv->last_message_text)
-                                    @if(optional($conv->messages->last())->sender_id === $user->id)
-    Kamu:
-@endif
-                                    {{ mb_substr($conv->last_message_text, 0, 50) }}
-                                @else
-                                    Belum ada pesan
-                                @endif
-                            </span>
-                            @if($unread > 0)
-                            <span class="unread-badge">{{ $unread > 9 ? '9+' : $unread }}</span>
+                    <a href="{{ route('chat.show', $conv) }}"
+                       class="conv-item {{ (request()->routeIs('chat.show') && request()->route('conversation') == $conv->id) ? 'active' : '' }}"
+                       data-name="{{ strtolower($partner?->name ?? '') }}">
+                       
+                        {{-- Avatar Lawan Bicara --}}
+                        <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($partner?->name ?? 'User') }}"
+                             class="conv-avatar" alt="{{ $partner?->name }}">
+                             
+                        <div class="conv-content">
+                            <div class="conv-header">
+                                {{-- Nama Lawan Bicara --}}
+                                <span class="conv-name">{{ $partner?->name ?? 'User' }}</span>
+                                <span class="conv-time">
+                                    {{ $conv->last_message_at?->diffForHumans(null, true) ?? '' }}
+                                </span>
+                            </div>
+                            
+                            {{-- Konteks Produk/Order --}}
+                            @if($conv->product)
+                                <p class="conv-context">🎮 {{ $conv->product->name }}</p>
+                            @elseif($conv->order)
+                                <p class="conv-context">📦 Order #{{ $conv->order->order_code ?? $conv->order_id }}</p>
                             @endif
+
+                            {{-- Preview Pesan --}}
+                            <div class="flex justify-between items-center">
+                                <span class="conv-preview {{ $unread > 0 ? 'unread' : '' }}">
+                                    @if($conv->last_message)
+                                        @if($lastMsg && $lastMsg->sender_id === $user->id)
+                                            <span style="color: #666;">Kamu:</span>
+                                        @endif
+                                        {{ Str::limit($conv->last_message, 45) }}
+                                    @else
+                                        <span class="italic text-slate-600">Belum ada pesan</span>
+                                    @endif
+                                </span>
+
+                                @if($unread > 0)
+                                    <span class="unread-badge">{{ $unread > 9 ? '9+' : $unread }}</span>
+                                @endif
+                            </div>
                         </div>
-                    </div>
-                </a>
+                    </a>
                 @empty
-                <div class="flex flex-col items-center justify-center py-16 text-center px-6">
-                    <div class="text-4xl mb-3">💬</div>
-                    <p class="text-slate-400 text-sm font-medium">Belum ada percakapan</p>
-                    <p class="text-slate-500 text-xs mt-1">Chat dari halaman produk untuk memulai</p>
-                </div>
+                    <div class="flex flex-col items-center justify-center py-16 text-center px-6">
+                        <div class="text-4xl mb-3">💬</div>
+                        <p class="text-slate-400 text-sm font-medium">Belum ada percakapan</p>
+                        <p class="text-slate-500 text-xs mt-1">Chat dari halaman produk untuk memulai</p>
+                    </div>
                 @endforelse
             </div>
 
             @if($conversations->hasPages())
-            <div class="p-3 border-t border-slate-800 text-xs text-center text-slate-500">
-                {{ $conversations->links() }}
-            </div>
+                <div class="p-3 border-t border-slate-800 text-xs text-center">
+                    {{ $conversations->links() }}
+                </div>
             @endif
         </div>
 
-        {{-- Main pane: Empty state --}}
+        {{-- Main pane: Empty state (Tampil di Desktop) --}}
         <div class="empty-state">
             <div class="empty-icon">💬</div>
             <h2 class="empty-title">Pilih percakapan</h2>
@@ -318,7 +311,8 @@
 document.getElementById('searchInput').addEventListener('input', function() {
     const q = this.value.toLowerCase();
     document.querySelectorAll('#convList .conv-item').forEach(el => {
-        el.style.display = el.dataset.name.includes(q) ? '' : 'none';
+        const name = el.getAttribute('data-name');
+        el.style.display = name.includes(q) ? 'flex' : 'none';
     });
 });
 </script>
