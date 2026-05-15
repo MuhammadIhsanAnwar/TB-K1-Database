@@ -44,12 +44,12 @@ public function show(Conversation $conversation)
         'seller' => $conversation->seller_id,
     ]);
 
-    if (
-        $conversation->buyer_id !== $user->id &&
-        $conversation->seller_id !== $user->id
-    ) {
-        abort(403);
-    }
+   if (
+    (int)$conversation->buyer_id !== (int)$user->id &&
+    (int)$conversation->seller_id !== (int)$user->id
+) {
+    abort(403);
+}
 }
 
 
