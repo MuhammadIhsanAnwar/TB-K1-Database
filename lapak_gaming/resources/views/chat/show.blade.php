@@ -749,7 +749,13 @@ function cancelEdit() {
     editingId = null;
     msgInput.value = '';
     msgInput.classList.remove('bg-blue-900/30');
-    sendBtn.innerHTML = `<svg ... > icon asli </svg>`;
+sendBtn.innerHTML = `
+<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8">
+    </path>
+</svg>
+`;
 }
 
 // Auto scroll to bottom on load
@@ -852,22 +858,48 @@ function cancelImage() {
     container.classList.add('hidden');
 }
 
+   async function sendMessage() {
+
+    if(editingId){
+        await updateMessage(editingId, msgInput.value.trim());
+        return;
+    }
+
+    const text = msgInput.value.trim();
+    if (!text) return;
+
+    sendBtn.disabled = true;
+
+    const tempId = 'tmp-' + Date.now();
+
     // Optimistic UI
     appendMessage({
         id: tempId,
         is_mine: true,
         message: text,
-        time: new Date().toLocaleTimeString('id-ID', {hour:'2-digit', minute:'2-digit'}),
+        time: new Date().toLocaleTimeString('id-ID', {
+            hour:'2-digit',
+            minute:'2-digit'
+        }),
         avatar: '{{ $user->avatar_url }}',
         is_read: false,
     });
 
+    msgInput.value = '';
+
     try {
         const res = await fetch(SEND_URL, {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
-            body: JSON.stringify({ message: text }),
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': CSRF,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                message: text
+            }),
         });
+
         const data = await res.json();
 
         if (!res.ok) {
@@ -875,38 +907,17 @@ function cancelImage() {
         }
 
         if (data.message) {
-            const tmp = document.querySelector(`[data-msg-id="${tempId}"]`);
-            if (tmp) {
-                // Replace temp message with real one instead of just removing
-                const realMsg = data.message;
-                tmp.dataset.msgId = realMsg.id;
-                const bubble = tmp.querySelector('.bubble-content');
-                if (bubble) {
-                    bubble.querySelector('.message-text').textContent = realMsg.message;
-                }
-                const timeSpan = tmp.querySelector('.message-time span');
-                if (timeSpan) timeSpan.textContent = realMsg.time;
-            }
             lastId = data.message.id;
         }
+
     } catch(e) {
         console.error(e);
-        if (typeof Swal !== 'undefined') {
-            Swal.fire({
-                icon: 'error',
-                title: 'Gagal mengirim',
-                text: e.message || 'Coba lagi nanti.',
-                toast: true,
-                position: 'top-end',
-                timer: 3500,
-                showConfirmButton: false,
-                timerProgressBar: true,
-            });
-        }
+        alert('Gagal mengirim pesan');
     } finally {
         sendBtn.disabled = false;
         msgInput.focus();
     }
+}
 
 msgInput.addEventListener('keydown', function(e) {
     if (e.key === 'Enter' && !e.shiftKey) {
