@@ -31,7 +31,7 @@ class OrderController extends Controller {
             abort(403, 'AKSES DITOLAK: ANDA TIDAK MEMILIKI AKSES KE PESANAN INI.');
         }
 
-        $order->load('items.product.seller', 'items.review');
+        $order->load('items.product.seller');
         return view('orders.show', compact('order'));
     }
 
