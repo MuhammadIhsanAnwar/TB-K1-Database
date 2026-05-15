@@ -34,6 +34,57 @@ class ChatController extends Controller
     return view('chat.inbox', compact('conversations'));
 }
 
+public function show(Conversation $conversation)
+{
+    $user = Auth::user();
+
+    // Proteksi akses
+    if (
+        $conversation->buyer_id !== $user->id &&
+        $conversation->seller_id !== $user->id
+    ) {
+        abort(403);
+    }
+
+    // Ambil sidebar conversations
+    $conversations = Conversation::with([
+            'buyer',
+            'seller',
+            'messages'
+        ])
+        ->where(function ($query) use ($user) {
+            $query->where('buyer_id', $user->id)
+                  ->orWhere('seller_id', $user->id);
+        })
+        ->orderByDesc('last_message_at')
+        ->paginate(20);
+
+    // Ambil messages chat aktif
+    $messages = $conversation->messages()
+        ->with(['sender', 'receiver'])
+        ->orderBy('created_at', 'asc')
+        ->get();
+
+    // Reset unread counter
+    if ($conversation->buyer_id === $user->id) {
+        $conversation->update([
+            'unread_buyer' => 0,
+            'buyer_last_seen_at' => now(),
+        ]);
+    } else {
+        $conversation->update([
+            'unread_seller' => 0,
+            'seller_last_seen_at' => now(),
+        ]);
+    }
+
+    return view('chat.show', compact(
+        'conversation',
+        'conversations',
+        'messages'
+    ));
+}
+
     public function getConversations()
     {
         $user = Auth::user();
