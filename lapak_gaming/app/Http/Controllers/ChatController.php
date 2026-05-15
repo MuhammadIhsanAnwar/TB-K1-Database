@@ -85,6 +85,15 @@ public function show(Conversation $conversation)
     ));
 }
 
+public function product()
+{
+    return $this->belongsTo(Product::class);
+}
+
+public function order()
+{
+    return $this->belongsTo(Order::class);
+}
     public function getConversations()
     {
         $user = Auth::user();
