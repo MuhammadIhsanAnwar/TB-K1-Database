@@ -48,8 +48,8 @@ class Message extends Model
             $conversation = $message->conversation;
             if ($conversation) {
                 $updateData = [
-                    'last_message_at'   => $message->created_at,
-                    'last_message_text' => $message->attachment_path ? '[Lampiran]' : $message->message,
+                    'last_message_at' => $message->created_at,
+                    'last_message'    => $message->attachment_path ? '[Lampiran]' : $message->message,
                 ];
 
                 // Update counter unread untuk penerima

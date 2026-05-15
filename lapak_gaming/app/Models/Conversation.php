@@ -14,6 +14,7 @@ class Conversation extends Model
         'buyer_id',
         'seller_id',
         'last_message_at',
+        'last_message',
         'last_message_text',
         'unread_buyer',
         'unread_seller',
@@ -99,6 +100,11 @@ public function order()
     /**
      * Format ringkasan percakapan untuk list inbox.
      */
+    public function getLastMessageTextAttribute(): ?string
+    {
+        return $this->last_message;
+    }
+
     public function toSummary(int $authId): array
     {
         $partner = $this->getPartner($authId);
@@ -109,7 +115,7 @@ public function order()
             'partner_id'        => $partner?->id,
             'partner_name'      => $partner?->name ?? 'User',
             'partner_avatar'    => $partner?->avatar_url,
-            'last_message'      => $this->last_message_text,
+            'last_message'      => $this->last_message,
             'last_message_time' => $this->last_message_at?->diffForHumans(),
             'unread_count'      => $isBuyer ? $this->unread_buyer : $this->unread_seller,
             'is_typing'         => $this->isPartnerTyping($authId),
