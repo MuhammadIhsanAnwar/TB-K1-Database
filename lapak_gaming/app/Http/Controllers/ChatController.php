@@ -38,11 +38,6 @@ public function show(Conversation $conversation)
 {
     $user = Auth::user();
 
-    dd([
-        'auth' => $user->id,
-        'buyer' => $conversation->buyer_id,
-        'seller' => $conversation->seller_id,
-    ]);
 
    if (
     (int)$conversation->buyer_id !== (int)$user->id &&
