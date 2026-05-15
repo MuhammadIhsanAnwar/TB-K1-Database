@@ -45,30 +45,23 @@ public function show(Conversation $conversation)
         abort(403);
     }
 
-    $conversation->load([
-        'buyer',
-        'seller',
-        'product',
-        'order',
-    ]);
-
     $messages = $conversation->messages()
         ->with('sender')
         ->latest()
-        ->take(30)
+        ->take(50)
         ->get()
         ->reverse()
         ->values();
 
     $sidebarConversations = Conversation::with([
             'buyer',
-            'seller',
+            'seller'
         ])
         ->where(function ($query) use ($user) {
             $query->where('buyer_id', $user->id)
                   ->orWhere('seller_id', $user->id);
         })
-        ->orderByDesc('last_message_at')
+        ->latest('last_message_at')
         ->get();
 
     return view('chat.show', compact(
@@ -78,7 +71,29 @@ public function show(Conversation $conversation)
     ));
 }
 
+public function poll(Conversation $conversation)
+{
+    if (
+        Auth::id() !== $conversation->buyer_id &&
+        Auth::id() !== $conversation->seller_id
+    ) {
+        return response()->json(['error' => 'Unauthorized'], 403);
+    }
 
+    $messages = $conversation->messages()
+        ->with('sender')
+        ->latest()
+        ->take(50)
+        ->get()
+        ->reverse()
+        ->values();
+
+    return response()->json([
+        'messages' => $messages->map(
+            fn($m) => $m->toChat(Auth::id())
+        )
+    ]);
+}
     public function getConversations()
     {
         $user = Auth::user();
