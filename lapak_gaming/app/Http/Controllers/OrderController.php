@@ -110,13 +110,24 @@ class OrderController extends Controller {
     public function store(Request $request) {
         $messages = [
             'payment_method.required' => 'Metode pembayaran wajib dipilih.',
-            'payment_method.string' => 'Metode pembayaran harus berupa teks.',
+            'payment_method.in' => 'Metode pembayaran tidak valid.',
         ];
 
-        $request->validate(['payment_method' => 'required|string'], $messages);
+        $request->validate(['payment_method' => 'required|in:balance,transfer,qris,dana,ovo,gopay'], $messages);
 
-        DB::transaction(function () use ($request) {
-            $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
+        $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Keranjang kosong!');
+        }
+
+        foreach ($cartItems as $item) {
+            if ($item->product->stock < $item->quantity) {
+                return redirect()->route('cart.index')
+                    ->with('error', "Stok {$item->product->name} tidak mencukupi!");
+            }
+        }
+
+        DB::transaction(function () use ($request, $cartItems) {
             $subtotal = $cartItems->sum(fn($c) => $c->product->price * $c->quantity);
             $fee = round($subtotal * 0.02);
             $grand_total = $subtotal + $fee; 

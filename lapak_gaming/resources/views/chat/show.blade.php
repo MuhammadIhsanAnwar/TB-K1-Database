@@ -477,7 +477,7 @@
         'sendUrl' => route('chat.send', $conversation),
         'pollUrl' => route('chat.poll', $conversation),
         'lastId' => $messages->last()?->id ?? 0,
-        'avatarUrl' => $user->avatar_url,
+        'avatarUrl' => @json($user->avatar_url),
     ];
 @endphp
 
