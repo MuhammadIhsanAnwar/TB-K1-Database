@@ -29,7 +29,25 @@ use App\Http\Controllers\Seller\SellerStoreController;
 use App\Http\Controllers\Admin\VerificationController as AdminVerificationController;
 
 
+Route::get('/debug-link', function () {
+    // Jalur folder gudang asli
+    $target = storage_path('app/public'); 
+    
+    // Jalur jembatan yang ingin dibuat di folder public
+    $shortcut = public_path('storage'); 
 
+    // Cek apakah jembatan sudah ada
+    if (file_exists($shortcut)) {
+        return "Folder 'public/storage' masih ada. Hapus dulu lewat File Manager cPanel agar bisa dibuat ulang!";
+    }
+
+    // Perintah PHP murni untuk membuat jembatan
+    if (symlink($target, $shortcut)) {
+        return "Sukses! Jembatan storage sudah dibuat.";
+    } else {
+        return "Gagal membuat jembatan. Hubungi admin hosting.";
+    }
+});
 // ─────────────────────────────────────────────────────────────────────────────
 // Public marketplace routes
 // ─────────────────────────────────────────────────────────────────────────────
