@@ -58,78 +58,86 @@
                     </a>
                 </div>
             @else
-                <div class="grid gap-8 lg:grid-cols-3 items-start">
+                    <div class="grid gap-8 lg:grid-cols-3 items-start">
 
-                    {{-- Daftar Item --}}
-                    <div class="lg:col-span-2 space-y-4">
-                        <div class="flex items-center justify-between px-2 mb-2">
-                            <span class="text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Detail Produk</span>
-                            <span class="text-xs font-black text-slate-500 uppercase tracking-[0.2em] hidden sm:block">Total
-                                Harga</span>
-                        </div>
-
-                        @foreach($cartItems as $item)
-                            <div
-                                class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-5 flex flex-col sm:flex-row gap-5 transition-all hover:border-amber-500/40 hover:bg-slate-900 shadow-md">
-
-                                {{-- Gambar Produk (Logic Anti-Broken) --}}
-                                <div class="shrink-0">
-                                    @php
-                                        $imgPath = $item->product->image;
-                                        $imgExists = $imgPath && file_exists(public_path('storage/' . $imgPath));
-                                        $finalImage = $imgExists
-                                            ? asset('storage/' . $imgPath)
-                                            : 'https://ui-avatars.com/api/?name=' . urlencode($item->product->name) . '&background=1e293b&color=f59e0b&bold=true&size=128';
-                                    @endphp
-                                    <img src="{{ $finalImage }}" alt="{{ $item->product->name }}"
-                                        class="w-24 h-24 rounded-xl object-cover border border-slate-700 shadow-inner group-hover:border-amber-500/30 transition-all">
-                                </div>
-
-                                {{-- Info Produk --}}
-                                <div class="flex-1 flex flex-col justify-center min-w-0">
-                                    <div class="flex items-center gap-2 mb-1.5">
-                                        <span
-                                            class="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase rounded">STOK
-                                            TERSEDIA</span>
-                                        <span
-                                            class="px-2 py-0.5 bg-slate-800 text-slate-400 text-[10px] font-black uppercase rounded">{{ $item->product->type ?? 'ITEM' }}</span>
-                                    </div>
-                                    <h3
-                                        class="text-lg font-bold text-white leading-tight mb-1 truncate group-hover:text-amber-500 transition-colors">
-                                        {{ $item->product->name }}</h3>
-
-                                    <div class="flex items-center gap-2 text-xs text-slate-400">
-                                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24"
-                                            stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
-                                        Seller: <span class="text-amber-500/80 font-bold">{{ $item->product->seller->name }}</span>
-                                    </div>
-                                </div>
-
-                                {{-- Harga & Aksi --}}
-                                <div
-                                    class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-4 sm:border-l border-slate-800 sm:pl-8">
-                                    <div class="text-xl font-black text-amber-500 italic">
-                                        Rp {{ number_format($item->product->price, 0, ',', '.') }}
-                                    </div>
-
-                                    <form action="{{ route('cart.remove', $item->id) }}" method="POST">
-                                        @csrf @method('DELETE')
-                                        <button
-                                            class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-rose-500 hover:bg-rose-500/10 transition-all"
-                                            onclick="return confirm('Hapus item ini?')">
-                                            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                    d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
-                                            </svg>
-                                            Hapus
-                                        </button>
-                                    </form>
-                                </div>
+                        {{-- Daftar Item --}}
+                        <div class="lg:col-span-2 space-y-4">
+                            <div class="flex items-center justify-between px-2 mb-2">
+                                <span class="text-xs font-black text-slate-500 uppercase tracking-[0.2em]">Detail Produk</span>
+                                <span class="text-xs font-black text-slate-500 uppercase tracking-[0.2em] hidden sm:block">Total
+                                    Harga</span>
                             </div>
-                        @endforeach
+
+                            @foreach($cartItems as $item)
+                                    {{-- Gambar Produk (Logic Anti-Broken Khusus Keranjang) --}}
+                                    <div class="shrink-0 relative">
+                                        @php
+                                            // Ambil data image dari produk di dalam item keranjang
+                                            $rawImage = $item->product->image;
+
+                                            // Default: Pake Inisial Nama Produk kalau foto tidak ditemukan
+                                            $finalImage = 'https://ui-avatars.com/api/?name=' . urlencode($item->product->name) . '&background=1e293b&color=f59e0b&bold=true&size=128';
+
+                                            if (!empty($rawImage)) {
+                                                if (str_starts_with($rawImage, 'http')) {
+                                                    // 1. Jika gambarnya link internet (Faker)
+                                                    $finalImage = $rawImage;
+                                                } else {
+                                                    // 2. Jika gambarnya hasil upload (tambah path /storage/)
+                                                    $finalImage = asset('storage/' . $rawImage);
+                                                }
+                                            }
+                                        @endphp
+
+                                        <img src="{{ $finalImage }}" alt="{{ $item->product->name }}"
+                                            class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover border border-slate-700 shadow-inner">
+                                    </div>
+
+                                    {{-- Info Produk --}}
+                                    <div class="flex-1 flex flex-col justify-center min-w-0">
+                                        <div class="flex items-center gap-2 mb-1.5">
+                                            <span
+                                                class="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase rounded">STOK
+                                                TERSEDIA</span>
+                                            <span
+                                                class="px-2 py-0.5 bg-slate-800 text-slate-400 text-[10px] font-black uppercase rounded">{{ $item->product->type ?? 'ITEM' }}</span>
+                                        </div>
+                                        <h3
+                                            class="text-lg font-bold text-white leading-tight mb-1 truncate group-hover:text-amber-500 transition-colors">
+                                            {{ $item->product->name }}
+                                        </h3>
+
+                                        <div class="flex items-center gap-2 text-xs text-slate-400">
+                                            <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                    d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+                                            </svg>
+                                            Seller: <span class="text-amber-500/80 font-bold">{{ $item->product->seller->name }}</span>
+                                        </div>
+                                    </div>
+
+                                    {{-- Harga & Aksi --}}
+                                    <div
+                                        class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-4 sm:border-l border-slate-800 sm:pl-8">
+                                        <div class="text-xl font-black text-amber-500 italic">
+                                            Rp {{ number_format($item->product->price, 0, ',', '.') }}
+                                        </div>
+
+                                        <form action="{{ route('cart.remove', $item->id) }}" method="POST">
+                                            @csrf @method('DELETE')
+                                            <button
+                                                class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-rose-500 hover:bg-rose-500/10 transition-all"
+                                                onclick="return confirm('Hapus item ini?')">
+                                                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                                </svg>
+                                                Hapus
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            @endforeach
                     </div>
 
                     {{-- Sidebar --}}
@@ -195,10 +203,10 @@
                                     class="flex items-center justify-center gap-2 opacity-30 grayscale hover:grayscale-0 transition-all">
                                     <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" class="h-3"
                                         alt="Paypal">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg"
-                                        class="h-2.5" alt="Visa">
-                                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg"
-                                        class="h-4" alt="Mastercard">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" class="h-2.5"
+                                        alt="Visa">
+                                    <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" class="h-4"
+                                        alt="Mastercard">
                                 </div>
                                 <p
                                     class="mt-4 text-[9px] text-slate-600 text-center font-bold tracking-widest leading-relaxed uppercase">
@@ -210,6 +218,6 @@
 
                 </div>
             @endif
-        </div>
+    </div>
     </div>
 @endsection
