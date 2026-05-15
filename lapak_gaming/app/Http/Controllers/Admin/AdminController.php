@@ -228,7 +228,7 @@ class AdminController extends Controller
         return back()->with('success', 'Banner berhasil dihapus.');
     }
 
-// ─── 4. NOTIFICATIONS & ORDERS ───────────────────────────────────────────
+    // ─── 4. NOTIFICATIONS & ORDERS ───────────────────────────────────────────
 
     public function notifications(): View
     {
@@ -238,13 +238,28 @@ class AdminController extends Controller
 
     public function sendNotification(Request $request): RedirectResponse
     {
+        $messages = [
+            'audience.required' => 'Audiens notifikasi wajib dipilih.',
+            'audience.in' => 'Audiens notifikasi tidak valid.',
+            'category.required' => 'Kategori notifikasi wajib dipilih.',
+            'category.in' => 'Kategori notifikasi tidak valid.',
+            'title.required' => 'Judul notifikasi wajib diisi.',
+            'title.string' => 'Judul harus berupa teks.',
+            'title.max' => 'Judul maksimal 255 karakter.',
+            'body.required' => 'Isi notifikasi wajib diisi.',
+            'body.string' => 'Isi harus berupa teks.',
+            'body.max' => 'Isi notifikasi maksimal 2000 karakter.',
+            'link.url' => 'Link notifikasi tidak valid.',
+            'link.max' => 'Link maksimal 2048 karakter.',
+        ];
+
         $data = $request->validate([
             'audience' => ['required', 'in:all,buyer,seller'],
             'category' => ['required', 'in:event_reward,general'],
             'title' => ['required', 'string', 'max:255'],
             'body' => ['required', 'string', 'max:2000'],
             'link' => ['nullable', 'url', 'max:2048'],
-        ]);
+        ], $messages);
 
         $users = User::query()
             ->when($data['audience'] !== 'all', fn($q) => $q->where('role', $data['audience']))
@@ -256,11 +271,17 @@ class AdminController extends Controller
                 'title' => $data['title'],
                 'body' => $data['body'],
                 'link' => $data['link'] ?? null,
-                'type' => $data['category'] === 'event_reward' ? 'admin-event_reward' : 'admin-general',
+                'type' => $data['category'] === MarketplaceNotification::CATEGORY_EVENT_REWARD
+                    ? 'admin-event_reward'
+                    : 'admin-general',
+                'metadata' => [
+                    'category' => $data['category'],
+                    'audience' => $data['audience'],
+                ],
             ]);
         }
 
-        return back()->with('success', 'Notifikasi terkirim.');
+        return back()->with('success', 'Notifikasi berhasil dikirim ke ' . $users->count() . ' akun.');
     }
 
     public function orders(Request $request): View
@@ -269,74 +290,70 @@ class AdminController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
 
-    /**
-     * VERSI BULLETPROOF: Anti Error 500
-     */
     public function downloadOrdersReportPdf()
     {
-        // 1. Ambil relasi dengan hati-hati (seller mungkin tidak ada langsung di order)
-        $relations = ['buyer'];
-        if (Schema::hasTable('order_financials')) { $relations[] = 'financial'; }
+        $relations = ['buyer', 'seller'];
 
-        $orders = Order::with($relations)->oldest()->get();
-
-        if ($orders->isEmpty()) {
-            return back()->with('error', 'Tidak ada data untuk dicetak.');
+        if (Schema::hasTable('order_financials')) {
+            $relations[] = 'financial';
         }
 
-        // 2. Hitung total dengan fungsi yang lebih aman
-        $totalAmount = $orders->sum(fn ($o) => $this->reportOrderTotal($o));
-        $generatedAt = now()->format('d M Y H:i');
-        
-        $statusCounts = $orders->groupBy('status')->map(fn ($items) => $items->count());
+        $orders = Order::query()
+            ->with($relations)
+            ->oldest()
+            ->get();
 
-        // 3. Susun baris teks
-        $orderLines = $orders->map(function ($order) {
-            $invoice = $this->pdfColumn($order->invoice_number ?? $order->order_code ?? '-', 18);
-            $buyer   = $this->pdfColumn($order->buyer?->name ?? 'User', 16);
-            
-            // Ambil seller dari relasi items kalau relasi seller langsung kosong
-            $sellerName = $order->seller?->name ?? $order->items->first()?->product?->seller?->name ?? '-';
-            $seller  = $this->pdfColumn($sellerName, 16);
-            
-            // Pakai status mentah kalau status_label gak ada
-            $statusText = $order->status ?? 'pending';
-            $status  = $this->pdfColumn(strtoupper($statusText), 18);
-            
-            $totalVal = $this->reportOrderTotal($order);
-            $total   = str_pad('Rp ' . number_format($totalVal, 0, ',', '.'), 16, ' ', STR_PAD_LEFT);
+        $totalAmount = $orders->sum(fn (Order $order) => $this->reportOrderTotal($order));
+        $generatedAt = now()->format('d M Y H:i');
+        $statusCounts = $orders->groupBy('status')
+            ->map(fn ($items) => $items->count())
+            ->sortKeys();
+
+        $orderLines = $orders->map(function (Order $order): string {
+            $invoice = $this->pdfColumn($order->invoice_number ?? $order->order_code, 18);
+            $buyer = $this->pdfColumn($order->buyer?->name ?? '-', 16);
+            $seller = $this->pdfColumn($order->seller?->name ?? '-', 16);
+            $status = $this->pdfColumn($order->status_label, 18);
+            $total = str_pad('Rp ' . number_format($this->reportOrderTotal($order), 0, ',', '.'), 16, ' ', STR_PAD_LEFT);
 
             return "{$invoice} {$buyer} {$seller} {$status} {$total}";
-        });
+        })->values();
 
-        // 4. Proses Halaman
+        if ($orderLines->isEmpty()) {
+            $orderLines = collect(['Belum ada transaksi.']);
+        }
+
         $pages = [];
-        foreach ($orderLines->chunk(30) as $index => $chunk) {
+        foreach ($orderLines->chunk(32) as $index => $chunk) {
             $lines = [
-                ['text' => 'LAPORAN TRANSAKSI LAPAK GAMING', 'size' => 15],
-                ['text' => 'Dicetak: ' . $generatedAt, 'size' => 9],
-                ['text' => str_repeat('-', 95), 'size' => 9],
+                ['text' => 'Laporan Transaksi Lapak Gaming', 'size' => 16],
+                ['text' => 'Dicetak: ' . $generatedAt, 'size' => 10],
             ];
 
             if ($index === 0) {
-                $lines[] = ['text' => "Total: " . number_format($orders->count()) . " Order | Rp " . number_format($totalAmount, 0, ',', '.'), 'size' => 10];
-                $lines[] = ['text' => '', 'size' => 5];
+                $lines[] = ['text' => 'Total transaksi: ' . number_format($orders->count()), 'size' => 10];
+                $lines[] = ['text' => 'Total nominal: Rp ' . number_format($totalAmount, 0, ',', '.'), 'size' => 10];
+                $lines[] = ['text' => 'Status: ' . ($statusCounts->map(fn ($count, $status) => $status . '=' . $count)->implode(', ') ?: '-'), 'size' => 10];
+                $lines[] = ['text' => '', 'size' => 10];
             }
 
-            $lines[] = ['text' => 'Invoice            Buyer            Seller           Status             Total', 'size' => 9];
+            $lines[] = ['text' => 'Invoice            Buyer            Seller           Status                    Total', 'size' => 9];
             $lines[] = ['text' => str_repeat('-', 95), 'size' => 9];
 
             foreach ($chunk as $line) {
-                $lines[] = ['text' => (string)$line, 'size' => 9];
+                $lines[] = ['text' => $line, 'size' => 9];
             }
+
             $pages[] = $lines;
         }
 
         $pdf = $this->buildSimplePdf($pages);
-        
+        $filename = 'laporan-transaksi-' . now()->format('Ymd-His') . '.pdf';
+
         return response($pdf, 200, [
             'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="laporan-' . date('Ymd-His') . '.pdf"',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Content-Length' => strlen($pdf),
         ]);
     }
 
@@ -348,65 +365,102 @@ class AdminController extends Controller
 
     private function pdfColumn(?string $value, int $length): string
     {
-        $clean = preg_replace('/\s+/', ' ', (string)($value ?? ''));
-        if (function_exists('mb_substr')) {
-            $clean = mb_substr($clean, 0, $length);
-        } else {
-            $clean = substr($clean, 0, $length);
-        }
-        return str_pad($clean, $length);
+        $value = preg_replace('/\s+/', ' ', (string) $value);
+        $value = $this->safeSubstr($value, $length);
+
+        return str_pad($value, $length);
     }
 
-    private function reportOrderTotal($order): float
+    private function reportOrderTotal(Order $order): float
     {
-        // Cek semua kemungkinan kolom total biar gak null pointer
-        return (float) ($order->financial?->grand_total ?? $order->grand_total ?? $order->total_price ?? 0);
+        if (Schema::hasTable('order_financials')) {
+            return (float) $order->grand_total;
+        }
+
+        return (float) ($order->getAttributes()['grand_total'] ?? 0);
     }
 
     private function buildSimplePdf(array $pages): string
     {
-        $pdf = "%PDF-1.4\n";
-        $objs = [];
-        $objs[1] = "<< /Type /Catalog /Pages 2 0 R >>";
-        $objs[3] = "<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>"; // Pake Courier biar tabel lurus
-
+        $objects = [];
+        $objects[1] = '<< /Type /Catalog /Pages 2 0 R >>';
+        $objects[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>';
         $pageIds = [];
         $nextId = 4;
 
-        foreach ($pages as $pLines) {
-            $stream = "";
+        foreach ($pages as $pageLines) {
+            $stream = '';
             $y = 800;
-            foreach ($pLines as $l) {
-                $txt = str_replace(["\\", "(", ")"], ["\\\\", "\\(", "\\)"], $l['text'] ?? '');
-                $sz = $l['size'] ?? 10;
-                $stream .= "BT /F1 {$sz} Tf 40 {$y} Td ({$txt}) Tj ET\n";
-                $y -= ($sz >= 14 ? 22 : 14);
+
+            foreach ($pageLines as $line) {
+                $text = $this->pdfEscape((string) ($line['text'] ?? ''));
+                $size = (int) ($line['size'] ?? 10);
+                $stream .= "BT /F1 {$size} Tf 40 {$y} Td ({$text}) Tj ET\n";
+                $y -= $size >= 14 ? 24 : 15;
             }
 
-            $cId = $nextId++;
-            $objs[$cId] = "<< /Length " . strlen($stream) . " >>\nstream\n" . $stream . "endstream";
-            $pId = $nextId++;
-            $objs[$pId] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents {$cId} 0 R >>";
-            $pageIds[] = $pId;
+            $contentId = $nextId++;
+            $objects[$contentId] = '<< /Length ' . strlen($stream) . " >>\nstream\n" . $stream . "endstream";
+
+            $pageId = $nextId++;
+            $objects[$pageId] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents {$contentId} 0 R >>";
+            $pageIds[] = $pageId;
         }
 
-        $kids = implode(' ', array_map(fn($id) => "{$id} 0 R", $pageIds));
-        $objs[2] = "<< /Type /Pages /Kids [{$kids}] /Count " . count($pageIds) . " >>";
-        ksort($objs);
+        $kids = collect($pageIds)->map(fn ($id) => "{$id} 0 R")->implode(' ');
+        $objects[2] = "<< /Type /Pages /Kids [{$kids}] /Count " . count($pageIds) . ' >>';
+        ksort($objects);
 
-        $offsets = [];
-        foreach ($objs as $id => $body) {
+        $pdf = "%PDF-1.4\n";
+        $offsets = [0 => 0];
+
+        foreach ($objects as $id => $body) {
             $offsets[$id] = strlen($pdf);
             $pdf .= "{$id} 0 obj\n{$body}\nendobj\n";
         }
 
-        $xrefOff = strlen($pdf);
-        $maxId = max(array_keys($objs));
-        $pdf .= "xref\n0 " . ($maxId + 1) . "\n0000000000 65535 f \n";
+        $xrefOffset = strlen($pdf);
+        $maxId = max(array_keys($objects));
+        $pdf .= "xref\n0 " . ($maxId + 1) . "\n";
+        $pdf .= "0000000000 65535 f \n";
+
         for ($i = 1; $i <= $maxId; $i++) {
             $pdf .= sprintf("%010d 00000 n \n", $offsets[$i] ?? 0);
         }
-        $pdf .= "trailer\n<< /Size " . ($maxId + 1) . " /Root 1 0 R >>\nstartxref\n{$xrefOff}\n%%EOF";
+
+        $pdf .= "trailer\n<< /Size " . ($maxId + 1) . " /Root 1 0 R >>\n";
+        $pdf .= "startxref\n{$xrefOffset}\n%%EOF";
+
         return $pdf;
+    }
+
+    private function pdfEscape(string $value): string
+    {
+        $value = $this->normalizePdfText($value);
+        $value = str_replace(["\\", "(", ")", "\r", "\n"], ["\\\\", "\\(", "\\)", ' ', ' '], $value);
+
+        return $this->safeSubstr($value, 130);
+    }
+
+    private function safeSubstr(string $value, int $length): string
+    {
+        if (function_exists('mb_substr')) {
+            return mb_substr($value, 0, $length);
+        }
+
+        return substr($value, 0, $length);
+    }
+
+    private function normalizePdfText(string $value): string
+    {
+        // Keep simple PDF text stream stable by converting UTF-8 to a Latin-1 compatible range.
+        if (function_exists('iconv')) {
+            $converted = @iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $value);
+            if ($converted !== false) {
+                $value = $converted;
+            }
+        }
+
+        return preg_replace('/[^\x20-\x7E\xA0-\xFF]/', '', $value) ?? '';
     }
 }
