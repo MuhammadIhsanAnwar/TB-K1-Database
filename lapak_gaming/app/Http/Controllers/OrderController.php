@@ -16,21 +16,19 @@ class OrderController extends Controller {
         return view('orders.index', compact('orders'));
     }
 
-    // PERUBAHAN UTAMA: Tangkap parameter string (bukan instance model)
     public function show($order_code) {
-        // 1. Cari order berdasarkan kolom order_code atau invoice_number
-        // (Sesuaikan dengan nama kolom yang ada di tabel orders kamu, biasanya order_code)
         $order = Order::where('order_code', $order_code)
-                      ->orWhere('invoice_number', $order_code) // Berjaga-jaga kalau namanya invoice_number
+                      ->orWhere('invoice_number', $order_code)
                       ->firstOrFail();
 
-        // 2. Cek izin: Hanya boleh dilihat oleh pembeli ATAU penjual ATAU admin
         $user = Auth::user();
-        $isBuyer = $order->buyer_id === $user->id;
-        $isSeller = $order->items()->where('seller_id', $user->id)->exists(); // Cek apakah dia seller dari salah satu item
+        
+        // PAKAI == BUKAN === BIAR STRING & INTEGER NGGAK BENTROK
+        $isBuyer = $order->buyer_id == $user->id;
+        $isSeller = $order->items()->where('seller_id', $user->id)->exists();
 
-        if (!$isBuyer && !$isSeller && $user->role !== 'admin') {
-            abort(403, 'Akses Ditolak: Anda tidak memiliki akses ke pesanan ini.');
+        if (!$isBuyer && !$isSeller && $user->role != 'admin') {
+            abort(403, 'AKSES DITOLAK: ANDA TIDAK MEMILIKI AKSES KE PESANAN INI.');
         }
 
         $order->load('items.product.seller', 'items.review');
@@ -63,7 +61,8 @@ class OrderController extends Controller {
     public function pay(Request $request, $order_code) {
         $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
         
-        abort_if($order->buyer_id !== Auth::id(), 403);
+        // Pakai != (bukan !==)
+        abort_if($order->buyer_id != Auth::id(), 403);
         abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
 
         $messages = [
@@ -80,7 +79,6 @@ class OrderController extends Controller {
 
         DB::transaction(function () use ($request, $order) {
             if ($request->payment_method === 'balance') {
-                /** @var \App\Models\User $user */
                 $user = Auth::user();
                 if ($user->balance < $order->total_price) {
                     throw new \Exception('Saldo tidak mencukupi!');
@@ -105,7 +103,6 @@ class OrderController extends Controller {
             }
         });
 
-        // Redirect menggunakan order_code
         return redirect()->route('orders.show', $order->order_code ?? $order->invoice_number)
             ->with('success', 'Pembayaran berhasil!');
     }
@@ -122,16 +119,15 @@ class OrderController extends Controller {
             $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
             $subtotal = $cartItems->sum(fn($c) => $c->product->price * $c->quantity);
             $fee = round($subtotal * 0.02);
-            $grand_total = $subtotal + $fee; // Tambahkan ini karena total_price mungkin kosong
+            $grand_total = $subtotal + $fee; 
 
             $order = Order::create([
                 'buyer_id'       => Auth::id(),
                 'status'         => Order::STATUS_PENDING_PAYMENT,
                 'payment_method' => $request->payment_method,
-                'total_price'    => $grand_total, // Pastikan total price tersimpan di tabel utama (PENTING!)
+                'total_price'    => $grand_total, 
             ]);
 
-            // Jika kamu punya model/tabel financial, tetap simpan ke sana
             if (method_exists($order, 'financial')) {
                 $order->financial()->create([
                     'subtotal' => $subtotal,
@@ -151,14 +147,11 @@ class OrderController extends Controller {
                     'quantity'      => $item->quantity,
                     'subtotal'      => $item->product->price * $item->quantity,
                 ]);
-                // Kurangi stok
                 $item->product->decrement('stock', $item->quantity);
             }
 
-            // Kosongkan cart
             Cart::where('user_id', Auth::id())->delete();
 
-            // Simpan identifier order ke session. Kita utamakan order_code, kalau tidak ada pakai invoice_number
             $identifier = $order->order_code ?? $order->invoice_number ?? $order->id;
             session(['last_order_code' => $identifier]);
         });
@@ -167,18 +160,18 @@ class OrderController extends Controller {
             ->with('success', 'Order berhasil dibuat!');
     }
 
-    // Pastikan parameter fungsinya juga menggunakan string order_code
     public function complete($order_code) {
         $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
-        abort_if($order->buyer_id !== Auth::id(), 403);
+        
+        // Pakai != (bukan !==)
+        abort_if($order->buyer_id != Auth::id(), 403);
         abort_if(!in_array($order->status, [Order::STATUS_PAYMENT_UPLOADED, Order::STATUS_PROCESSING], true), 422);
 
         DB::transaction(function () use ($order) {
             $order->update(['status' => Order::STATUS_COMPLETED, 'completed_at' => now()]);
 
-            // Kredit saldo ke seller
             foreach ($order->items as $item) {
-                $sellerAmount = $item->subtotal * 0.95; // 95% ke seller, 5% platform
+                $sellerAmount = $item->subtotal * 0.95; 
                 $item->seller->addBalance($sellerAmount, "Penjualan Order #{$order->order_code}", $order->id);
                 $item->update(['delivery_status' => 'received']);
 
@@ -202,15 +195,15 @@ class OrderController extends Controller {
 
     public function cancel($order_code) {
         $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
-        abort_if($order->buyer_id !== Auth::id(), 403);
+        
+        // Pakai != (bukan !==)
+        abort_if($order->buyer_id != Auth::id(), 403);
         abort_if(!in_array($order->status, [Order::STATUS_PENDING_PAYMENT, Order::STATUS_PAYMENT_UPLOADED], true), 422);
 
         DB::transaction(function () use ($order) {
-            // Kembalikan stok
             foreach ($order->items as $item) {
                 $item->product->increment('stock', $item->quantity);
             }
-            // Refund jika sudah bayar pakai saldo
             if ($order->status === Order::STATUS_PAYMENT_UPLOADED && $order->payment_method === 'balance') {
                 $order->buyer->addBalance($order->total_price, "Refund Order #{$order->order_code}", $order->id);
             }
@@ -222,7 +215,9 @@ class OrderController extends Controller {
 
     public function uploadProof(Request $request, $order_code) {
         $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
-        abort_if($order->buyer_id !== Auth::id(), 403);
+        
+        // Pakai != (bukan !==)
+        abort_if($order->buyer_id != Auth::id(), 403);
         $request->validate(['payment_proof' => 'required|image|max:2048']);
         $path = $request->file('payment_proof')->store('payment_proofs', 'public');
         $order->update(['payment_proof' => $path, 'status' => Order::STATUS_PAYMENT_UPLOADED, 'paid_at' => now()]);
