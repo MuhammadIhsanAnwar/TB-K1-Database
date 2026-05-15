@@ -575,7 +575,7 @@
             @foreach($messages as $msg)
             @php
                 $msgDate = $msg->created_at->format('d M Y');
-                $isMine  = $msg->sender_id === $user->id;
+                $isMine  = (int)$msg->sender_id === $user->id;
             @endphp
             @if($msgDate !== $lastDate)
             <div class="date-divider"><span>{{ $msgDate }}</span></div>

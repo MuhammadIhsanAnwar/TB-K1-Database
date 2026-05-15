@@ -80,7 +80,10 @@ class Message extends Model
     {
         return $this->belongsTo(User::class, 'receiver_id');
     }
-
+    public function getImageUrlAttribute()
+    {
+        return $this->attachment_path ? asset('storage/' . $this->attachment_path) : null;
+    }
     // ── Helpers ────────────────────────────────────────────────────────────
 
     public function isDeletedForEveryone(): bool
