@@ -29,7 +29,7 @@ class ChatController extends Controller
                   ->orWhere('seller_id', $user->id);
         })
         ->orderByDesc('last_message_at')
-        ->get();
+        ->paginate(20);
 
     return view('chat.inbox', compact('conversations'));
 }
