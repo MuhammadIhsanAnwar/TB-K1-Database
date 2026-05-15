@@ -65,6 +65,8 @@ Route::middleware('auth')->group(function (): void {
     Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 
     // Orders
+    Route::get('/cart/checkout', [OrderController::class, 'checkout'])->name('cart.checkout'); // <--- TAMBAHKAN INI
+    Route::post('/cart/checkout', [OrderController::class, 'store'])->name('cart.store'); // <--- TAMBAHKAN INI
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order:order_code}', [OrderController::class, 'show'])->name('orders.show');
     Route::post('/orders/{order:order_code}/pay', [OrderController::class, 'pay'])->name('orders.pay');
