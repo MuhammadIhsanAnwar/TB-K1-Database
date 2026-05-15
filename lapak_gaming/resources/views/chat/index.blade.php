@@ -62,6 +62,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     let currentConversationId = null;
     let authId = {{ auth()->id() }};
+    let activeChannelName = null; // Variabel untuk menyimpan channel aktif
+    
     const listEl = document.getElementById('conversation-list');
     const msgContainer = document.getElementById('messages-container');
     const chatForm = document.getElementById('chat-form');
@@ -69,46 +71,90 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 1. Ambil daftar percakapan
     async function loadConversations() {
-        const res = await fetch('/chat/conversations');
-        const data = await res.json();
-        listEl.innerHTML = data.map(c => `
-            <div onclick="openChat(${c.id}, '${c.partner_name}', '${c.partner_avatar}')" 
-                 class="p-4 hover:bg-gray-50 cursor-pointer transition flex items-center space-x-3 ${currentConversationId === c.id ? 'bg-emerald-50' : ''}">
-                <img src="${c.partner_avatar || 'https://ui-avatars.com/api/?name='+c.partner_name}" class="w-12 h-12 rounded-full border">
-                <div class="flex-1 min-w-0">
-                    <div class="flex justify-between">
-                        <span class="font-bold text-gray-800 truncate text-sm">${c.partner_name}</span>
-                        <span class="text-[10px] text-gray-400">${c.last_message_time || ''}</span>
+        try {
+            const res = await fetch('/chat/conversations');
+            const data = await res.json();
+            
+            listEl.innerHTML = data.map(c => `
+                <div onclick="openChat(${c.id}, '${c.partner_name}', '${c.partner_avatar || ''}')" 
+                     class="p-4 hover:bg-gray-50 cursor-pointer transition flex items-center space-x-3 ${currentConversationId === c.id ? 'bg-emerald-50' : ''}">
+                    <img src="${c.partner_avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(c.partner_name)}" class="w-12 h-12 rounded-full border">
+                    <div class="flex-1 min-w-0">
+                        <div class="flex justify-between items-center">
+                            <span class="font-bold text-gray-800 truncate text-sm">${c.partner_name}</span>
+                            <span class="text-[10px] text-gray-400">${c.last_message_time || ''}</span>
+                        </div>
+                        <p class="text-xs text-gray-500 truncate mt-0.5">${c.last_message || 'Belum ada pesan'}</p>
                     </div>
-                    <p class="text-xs text-gray-500 truncate">${c.last_message || 'Belum ada pesan'}</p>
+                    ${c.unread_count > 0 ? `<span class="bg-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">${c.unread_count}</span>` : ''}
                 </div>
-                ${c.unread_count > 0 ? `<span class="bg-emerald-500 text-white text-[10px] px-1.5 py-0.5 rounded-full">${c.unread_count}</span>` : ''}
-            </div>
-        `).join('');
+            `).join('');
+        } catch (error) {
+            console.error("Gagal memuat percakapan:", error);
+        }
     }
 
     // 2. Buka Chat
     window.openChat = async function(id, name, avatar) {
+        // [PENTING] Tinggalkan channel Echo lama agar pesan tidak double!
+        if (activeChannelName) {
+            window.Echo.leave(activeChannelName);
+        }
+
         currentConversationId = id;
+        
+        // Tampilkan elemen Chat
         document.getElementById('chat-welcome').classList.add('hidden');
         document.getElementById('chat-header').classList.remove('hidden');
         document.getElementById('messages-container').classList.remove('hidden');
         document.getElementById('chat-footer').classList.remove('hidden');
         
         document.getElementById('active-name').innerText = name;
-        document.getElementById('active-avatar').src = avatar || 'https://ui-avatars.com/api/?name='+name;
+        document.getElementById('active-avatar').src = avatar || 'https://ui-avatars.com/api/?name=' + encodeURIComponent(name);
         
-        msgContainer.innerHTML = '<div class="text-center p-4 text-xs text-gray-400">Memuat pesan...</div>';
+        msgContainer.innerHTML = '<div class="text-center w-full p-4 text-xs text-gray-400">Memuat pesan...</div>';
         
-        const res = await fetch(\`/chat/conversations/\${id}/messages\`);
-        const data = await res.json();
-        renderMessages(data.messages);
+        try {
+            // Ambil pesan dari API
+            const res = await fetch(`/chat/conversations/${id}/messages`);
+            const data = await res.json();
+            
+            renderMessages(data.messages || data); // Sesuaikan jika response JSON bersarang
+
+            // Trigger "Mark as Read" ke server
+            fetch(`/chat/conversations/${id}/read`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            }).then(() => {
+                // Refresh list sidebar agar badge unread_count hilang
+                loadConversations(); 
+            });
+
+        } catch (error) {
+            console.error("Gagal memuat detail pesan:", error);
+            msgContainer.innerHTML = '<div class="text-center w-full p-4 text-xs text-red-500">Gagal memuat pesan.</div>';
+        }
         
-        // Listen Realtime via Laravel Echo
-        window.Echo.private(\`chat.\${id}\`)
+        // Listen Realtime via Laravel Echo (Daftar ke channel baru)
+        activeChannelName = `chat.${id}`;
+        window.Echo.private(activeChannelName)
             .listen('MessageSent', (e) => {
+                // Pastikan event ini untuk chat yang sedang dibuka
                 if(currentConversationId === id) {
-                    appendMessage(e, false);
+                    // Hanya tangkap pesan jika pengirimnya BUKAN kita
+                    // (Karena pesan kita sudah di-append langsung lewat form submit)
+                    let messageData = e.message || e; // Sesuaikan struktur Broadcast Anda
+                    if (messageData.sender_id !== authId) {
+                        appendMessage(messageData, false);
+                        // Jika chat sedang terbuka, otomatis tandai terbaca lagi ke server
+                        fetch(`/chat/conversations/${id}/read`, {
+                            method: 'POST',
+                            headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'}
+                        });
+                    }
                 }
             });
     };
@@ -117,21 +163,25 @@ document.addEventListener('DOMContentLoaded', function() {
         msgContainer.innerHTML = messages.map(m => messageHtml(m)).join('');
     }
 
-    function appendMessage(m, isMine) {
+    function appendMessage(m, isMine = false) {
         const div = document.createElement('div');
-        div.innerHTML = messageHtml(m);
+        div.innerHTML = messageHtml(m, isMine);
+        // Karena parent-nya adalah flex-col-reverse, prepend akan meletakkan elemen di "bawah" secara visual
         msgContainer.prepend(div.firstElementChild);
     }
 
-    function messageHtml(m) {
-        const isMine = m.sender_id === authId;
+    function messageHtml(m, isMineOverride = null) {
+        // Cek apakah pesan punya kita (cek via ID atau via override dari parameter)
+        const isMine = isMineOverride !== null ? isMineOverride : (m.sender_id === authId);
+        const timeString = m.time || new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'});
+        
         return `
-            <div class="flex ${isMine ? 'justify-end' : 'justify-start'} mb-1">
-                <div class="max-w-[75%] rounded-lg px-3 py-1.5 shadow-sm relative ${isMine ? 'bg-[#dcf8c6] text-gray-800' : 'bg-white text-gray-800'}">
-                    <p class="text-sm">${m.message}</p>
-                    <div class="flex items-center justify-end space-x-1 mt-0.5">
-                        <span class="text-[9px] text-gray-500">${m.time}</span>
-                        ${isMine ? \`<span class="text-blue-500">\${m.is_read ? '✓✓' : '✓'}</span>\` : ''}
+            <div class="flex ${isMine ? 'justify-end' : 'justify-start'} mb-2 w-full">
+                <div class="max-w-[75%] rounded-lg px-3 py-2 shadow-sm relative ${isMine ? 'bg-[#dcf8c6] text-gray-800 rounded-tr-none' : 'bg-white text-gray-800 rounded-tl-none'}">
+                    <p class="text-[14px] leading-snug break-words">${m.message}</p>
+                    <div class="flex items-center justify-end space-x-1 mt-1">
+                        <span class="text-[10px] text-gray-500">${timeString}</span>
+                        ${isMine ? `<span class="text-blue-500 text-[10px] ml-1">${m.is_read ? '✓✓' : '✓'}</span>` : ''}
                     </div>
                 </div>
             </div>
@@ -144,22 +194,42 @@ document.addEventListener('DOMContentLoaded', function() {
         const msg = msgInput.value.trim();
         if(!msg || !currentConversationId) return;
 
+        // Optimistic Update: Langsung render pesan di layar agar terasa instan (tidak nunggu loading)
+        const tempMsgObj = {
+            message: msg,
+            sender_id: authId,
+            is_read: false,
+            time: new Date().toLocaleTimeString('id-ID', {hour: '2-digit', minute:'2-digit'})
+        };
+        appendMessage(tempMsgObj, true);
+        
+        // Bersihkan input field
         msgInput.value = '';
-        const res = await fetch('/chat/messages', {
-            method: 'POST',
-            headers: { 
-                'Content-Type': 'application/json',
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-            },
-            body: JSON.stringify({
-                conversation_id: currentConversationId,
-                message: msg
-            })
-        });
-        const newMsg = await res.json();
-        appendMessage(newMsg, true);
+
+        try {
+            // Hit API ke Server
+            await fetch('/chat/messages', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({
+                    conversation_id: currentConversationId,
+                    message: msg
+                })
+            });
+            
+            // Refresh sidebar agar teks preview pesan terakhir terupdate
+            loadConversations();
+            
+        } catch (error) {
+            console.error("Gagal mengirim pesan", error);
+            alert("Pesan gagal terkirim, cek koneksi internet Anda.");
+        }
     });
 
+    // Jalankan pertama kali saat halaman selesai dimuat
     loadConversations();
 });
 </script>
