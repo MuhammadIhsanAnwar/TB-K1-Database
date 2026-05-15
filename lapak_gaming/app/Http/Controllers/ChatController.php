@@ -141,6 +141,11 @@ public function poll(Conversation $conversation)
             'attachment'      => 'nullable|file|max:5120', // Max 5MB
         ]);
 
+        $messageText = trim($request->input('message', ''));
+        if ($messageText === '' && ! $request->hasFile('attachment')) {
+            return response()->json(['message' => 'Pesan atau foto harus diisi.'], 422);
+        }
+
         $conversation = Conversation::findOrFail($request->conversation_id);
         $user = Auth::user();
         $receiverId = ($user->id === $conversation->buyer_id) ? $conversation->seller_id : $conversation->buyer_id;
@@ -159,7 +164,7 @@ public function poll(Conversation $conversation)
             'sender_id'       => $user->id,
             'receiver_id'     => $receiverId,
             'sender_role'     => $user->role ?? 'user',
-            'message'         => $request->message,
+            'message'         => $messageText,
             'attachment_path' => $attachmentPath,
             'attachment_type' => $attachmentType,
         ]);

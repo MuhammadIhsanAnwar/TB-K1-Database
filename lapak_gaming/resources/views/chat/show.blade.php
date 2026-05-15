@@ -929,7 +929,7 @@ async function poll() {
 }
 
 function appendMessage(m) {
-    const isMine = m.is_mine || m.sender_id === AUTH_ID;
+    const isMine = m.is_mine || Number(m.sender_id) === AUTH_ID;
     const div = document.createElement('div');
     div.className = `message-item ${isMine ? 'mine' : 'theirs'}`;
     div.dataset.msgId = m.id;
