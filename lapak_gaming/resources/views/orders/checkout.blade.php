@@ -16,7 +16,7 @@
     </div>
     @endif
 
-    <form action="{{ route('orders.store') }}" method="POST">
+    <form action="{{ route('cart.store') }}" method="POST">
         @csrf
         <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
             <h2 class="font-bold text-white mb-4">Item yang Dibeli</h2>
