@@ -683,20 +683,7 @@ const msgInput = document.getElementById('msgInput');
 const sendBtn = document.getElementById('sendBtn');
 const imgInput = document.getElementById('imgInput');
 
-// Local cache to preserve message bubbles between navigations/refresh
-const cacheKey = `chat_messages_${CONV_ID}`;
-(function restoreChatFromCache() {
-    try {
-        const cached = localStorage.getItem(cacheKey);
-        if (cached && messagesArea && messagesArea.children.length <= 1) {
-            messagesArea.innerHTML = cached;
-            // ensure scroll at bottom
-            scrollBottom(false);
-        }
-    } catch (e) {
-        // ignore storage errors
-    }
-})();
+
 
 // --- LOGIC DELETE ---
 async function confirmDelete(msgId) {
@@ -858,32 +845,7 @@ function cancelImage() {
     container.classList.add('hidden');
 }
 
-   async function sendMessage() {
-
-    if(editingId){
-        await updateMessage(editingId, msgInput.value.trim());
-        return;
-    }
-
-    const text = msgInput.value.trim();
-    if (!text) return;
-
-    sendBtn.disabled = true;
-
-    const tempId = 'tmp-' + Date.now();
-
-    // Optimistic UI
-    appendMessage({
-        id: tempId,
-        is_mine: true,
-        message: text,
-        time: new Date().toLocaleTimeString('id-ID', {
-            hour:'2-digit',
-            minute:'2-digit'
-        }),
-        avatar: '{{ $user->avatar_url }}',
-        is_read: false,
-    });
+  
 
     msgInput.value = '';
 
@@ -960,28 +922,10 @@ function appendMessage(m) {
     const avatarHtml = `<img src="${avatarSrc}" class="message-avatar ${isMine ? 'mine' : ''}" alt="">`;
     const readIcon = isMine ? `<span class="message-status"><svg class="${m.is_read ? 'text-blue-400' : 'text-gray-500'}" fill="currentColor" viewBox="0 0 16 16"><path d="M12.354 4.354a.5.5 0 00-.708-.708L5 11.293 1.854 8.146a.5.5 0 10-.708.708l3.5 3.5a.5.5 0 00.708 0l7-7zm-4.208 7.209l-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 01.708.708l-7 7a.5.5 0 01-.708 0z"/></svg></span>` : '';
 
-    div.innerHTML = `
-        ${!isMine ? avatarHtml : ''}
-        <div class="message-bubble ${isMine ? 'mine' : 'theirs'}">
-            <div class="bubble-content">
-                <p class="message-text">${escHtml(m.message)}</p>
-            </div>
-            <div class="message-time ${isMine ? 'mine' : 'theirs'}">
-                <span>${m.time}</span>
-                ${readIcon}
-            </div>
-        </div>
-        ${isMine ? avatarHtml : ''}
-    `;
-
     const typing = document.getElementById('typingIndicator');
     messagesArea.insertBefore(div, typing);
     scrollBottom();
     // keep cache in sync
-    try {
-        localStorage.setItem(cacheKey, messagesArea.innerHTML);
-    } catch (e) {}
-
     // Logika gambar (Sesuaikan dengan properti dari Controller)
     const imgHtml = m.attachment_url ? 
         `<img src="${m.attachment_url}" class="max-w-xs rounded-lg mb-2 cursor-pointer" onclick="window.open(this.src)">` : '';

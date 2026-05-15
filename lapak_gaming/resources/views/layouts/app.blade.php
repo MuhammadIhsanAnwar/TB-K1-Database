@@ -1065,7 +1065,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'plus'
     ];
 
-    for(let i = 0; i < 120; i++){
+    for(let i = 0; i < 40; i++){
 
         const particle = document.createElement('span');
 
