@@ -728,19 +728,7 @@ function prepareEdit(msgId) {
 }
 
 // Modifikasi fungsi sendMessage Anda sedikit:
-async function sendMessage() {
-    const text = msgInput.value.trim();
-    if (!text && !imgInput.files[0]) return;
 
-    if(editingId) {
-        // Eksekusi Update bukan Send
-        await updateMessage(editingId, text);
-        return;
-    }
-    
-    // ... logic send message yang lama di sini ...
-    // Tambahkan FormData jika ada image
-}
 
 async function updateMessage(id, newText) {
     try {
@@ -777,14 +765,66 @@ document.getElementById('sideSearch')?.addEventListener('input', function() {
     });
 });
 
-// Send message
- {
+
+ async function sendMessage() {
+
+      if(editingId){
+        await updateMessage(editingId, msgInput.value.trim());
+        return;
+    }
+    
     const text = msgInput.value.trim();
     if (!text) return;
 
-    const tempId = 'tmp-' + Date.now();
-    msgInput.value = '';
     sendBtn.disabled = true;
+
+    const tempId = 'tmp-' + Date.now();
+
+    appendMessage({
+        id: tempId,
+        is_mine: true,
+        message: text,
+        time: new Date().toLocaleTimeString('id-ID', {
+            hour: '2-digit',
+            minute: '2-digit'
+        }),
+        avatar: '{{ $user->avatar_url }}',
+        is_read: false,
+    });
+
+    msgInput.value = '';
+
+    try {
+        const res = await fetch(SEND_URL, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': CSRF,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                message: text
+            }),
+        });
+
+        const data = await res.json();
+
+        if (!res.ok) {
+            throw new Error(data.message || 'Gagal mengirim pesan.');
+        }
+
+        if (data.message) {
+            lastId = data.message.id;
+        }
+
+    } catch(e) {
+        console.error(e);
+        alert('Gagal mengirim pesan');
+    } finally {
+        sendBtn.disabled = false;
+        msgInput.focus();
+    }
+}
 
 function previewImage(input) {
     const container = document.getElementById('imagePreviewContainer');
@@ -793,11 +833,13 @@ function previewImage(input) {
 
     if (input.files && input.files[0]) {
         const reader = new FileReader();
+
         reader.onload = function(e) {
             preview.src = e.target.result;
             fileName.textContent = input.files[0].name;
             container.classList.remove('hidden');
         }
+
         reader.readAsDataURL(input.files[0]);
     }
 }
