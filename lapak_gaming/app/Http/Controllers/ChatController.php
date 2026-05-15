@@ -38,13 +38,20 @@ public function show(Conversation $conversation)
 {
     $user = Auth::user();
 
+    if (
+        (int)$conversation->buyer_id !== (int)$user->id &&
+        (int)$conversation->seller_id !== (int)$user->id
+    ) {
+        abort(403);
+    }
 
-   if (
-    (int)$conversation->buyer_id !== (int)$user->id &&
-    (int)$conversation->seller_id !== (int)$user->id
-) {
-    abort(403);
-}
+    $conversation->load([
+        'buyer',
+        'seller',
+        'messages.sender'
+    ]);
+
+    return view('chat.show', compact('conversation'));
 }
 
 
