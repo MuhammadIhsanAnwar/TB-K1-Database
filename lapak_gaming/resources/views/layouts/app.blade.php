@@ -1047,6 +1047,12 @@
 
   loadNotificationPreview();
   loadChatBadge();
+  setInterval(loadChatBadge, 10000);
+  document.addEventListener('visibilitychange', () => {
+      if (!document.hidden) {
+          loadChatBadge();
+      }
+  });
 });
 
 document.addEventListener('DOMContentLoaded', () => {
