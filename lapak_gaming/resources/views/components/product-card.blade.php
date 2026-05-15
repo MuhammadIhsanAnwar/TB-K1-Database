@@ -1,9 +1,22 @@
-{{--
-  Component: components/product-card.blade.php
-  Variables:
-    $product — Product model with: name, slug, image_url, formatted_price, price,
-               category(name), rating, review_count, sold_count, type, stock
+{{-- 
+  Logic pendeteksi gambar: 
+  Cek apakah gambar link luar (http) atau hasil upload sendiri (local storage)
 --}}
+@php
+    $rawImage = $product->image; // Mengambil kolom 'image' dari database
+    $displayImage = 'https://ui-avatars.com/api/?name='.urlencode($product->name).'&background=090E1A&color=2563eb&bold=true';
+
+    if ($rawImage) {
+        if (str_starts_with($rawImage, 'http')) {
+            // Jika dari Faker/Internet
+            $displayImage = $rawImage;
+        } else {
+            // Jika hasil upload manual (tambahkan /storage/ di depannya)
+            $displayImage = asset('storage/' . $rawImage);
+        }
+    }
+@endphp
+
 <a href="{{ route('products.show', $product->slug) }}" class="product-card group relative flex flex-col">
 
   {{-- Ribbon for special types --}}
@@ -15,11 +28,12 @@
 
   {{-- Product Image --}}
   <div class="relative aspect-square overflow-hidden" style="background:#090E1A;">
-    <img src="{{ $product->image_url }}"
+    {{-- Ganti src menjadi variabel $displayImage yang sudah kita olah di atas --}}
+    <img src="{{ $displayImage }}"
          alt="{{ $product->name }}"
          class="w-full h-full object-cover transition-transform duration-400 group-hover:scale-108"
          loading="lazy"
-         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect fill=%22%230D1421%22 width=%2280%22 height=%2280%22/><text x=%2250%%25%22 y=%2250%%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2228%22>🎮</text></svg>'">
+         onerror="this.src='https://ui-avatars.com/api/?name=Game&background=0D1421&color=2563eb'">
 
     {{-- Stock badge --}}
     @if(($product->stock ?? 1) === 0)
@@ -47,7 +61,10 @@
       {{ $product->name }}
     </h3>
     <div class="mt-auto">
-      <p class="font-display font-bold text-base text-white">{{ $product->formatted_price }}</p>
+      {{-- Pakai price asli jika formatted_price tidak muncul --}}
+      <p class="font-display font-bold text-base text-white">
+        {{ $product->formatted_price ?? 'Rp ' . number_format($product->price, 0, ',', '.') }}
+      </p>
       <div class="flex items-center justify-between mt-1.5">
         <div class="flex items-center gap-1">
           <svg class="w-3 h-3 text-amber-400" viewBox="0 0 20 20" fill="currentColor">
