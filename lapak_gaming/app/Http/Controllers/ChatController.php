@@ -60,9 +60,21 @@ public function show(Conversation $conversation)
         ->reverse()
         ->values();
 
+    $sidebarConversations = Conversation::with([
+            'buyer',
+            'seller',
+        ])
+        ->where(function ($query) use ($user) {
+            $query->where('buyer_id', $user->id)
+                  ->orWhere('seller_id', $user->id);
+        })
+        ->orderByDesc('last_message_at')
+        ->get();
+
     return view('chat.show', compact(
         'conversation',
-        'messages'
+        'messages',
+        'sidebarConversations'
     ));
 }
 
