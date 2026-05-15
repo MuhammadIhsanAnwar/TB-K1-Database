@@ -47,7 +47,7 @@ class SellerProductController extends Controller {
         return view('seller.products.create', compact('categories'));
     }
 
-    public function store(Request $request) {
+public function store(Request $request) {
         $messages = [
             'name.required' => 'Nama produk wajib diisi.',
             'name.max' => 'Nama produk maksimal 255 karakter.',
@@ -80,20 +80,33 @@ class SellerProductController extends Controller {
         ], $messages);
 
         $imagePaths = [];
+        
+        // Proses multiple image
         foreach ($request->file('images', []) as $imageFile) {
             $filename = Str::uuid()->toString() . '.' . $imageFile->getClientOriginalExtension();
             $imagePaths[] = $imageFile->storeAs('foto_produk', $filename, 'public');
         }
 
+        // Proses single image (fallback)
         if (empty($imagePaths) && $request->hasFile('image')) {
             $legacyImage = $request->file('image');
             $filename = Str::uuid()->toString() . '.' . $legacyImage->getClientOriginalExtension();
             $imagePaths[] = $legacyImage->storeAs('foto_produk', $filename, 'public');
         }
 
-        if ($imagePaths) {
+        // ─── PERBAIKAN DI SINI ──────────────────────────────────────────
+        if (!empty($imagePaths)) {
+            // 1. Simpan gambar pertama ke kolom 'image' biar muncul di beranda & keranjang
+            $validated['image'] = $imagePaths[0]; 
+            
+            // 2. Simpan semua path ke kolom 'file_path' untuk fitur galeri detail produk
             $validated['file_path'] = implode('|', $imagePaths);
+        } else {
+            // Kalau misal nggak ada gambar yang diupload, pastikan nilainya null
+            $validated['image'] = null;
+            $validated['file_path'] = null;
         }
+        // ────────────────────────────────────────────────────────────────
 
         $validated['seller_id'] = Auth::id();
         $validated['slug'] = Str::slug($validated['name']) . '-' . Str::random(4);
