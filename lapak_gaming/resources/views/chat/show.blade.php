@@ -211,6 +211,7 @@
 .messages-area {
     flex: 1;
     overflow-y: auto;
+    scroll-behavior: smooth;
     padding: 20px;
     background: #0a0a0a;
     background-image:
@@ -226,6 +227,7 @@
     display: flex;
     margin-bottom: 4px;
     align-items: flex-end;
+    transition: transform 0.18s ease, opacity 0.18s ease;
 }
 
 .message-item.mine {
@@ -262,6 +264,7 @@
     border-radius: 18px 18px 4px 18px;
     padding: 8px 12px;
     box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+    transition: background 0.18s ease, transform 0.18s ease;
 }
 
 .message-bubble.theirs .bubble-content {
@@ -416,18 +419,31 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: background-color 0.15s;
-    flex-shrink: 0;
-}
+        transition: background-color 0.15s, transform 0.15s;
+        flex-shrink: 0;
+    }
 
-.send-button:hover {
-    background: #1d4ed8;
-}
+    .send-button:hover {
+        transform: translateY(-1px);
+    }
 
-.send-button svg {
-    width: 18px;
-    height: 18px;
-    color: #ffffff;
+    #cancelEditBtn {
+        min-width: 32px;
+        min-height: 32px;
+        color: #9ca3af;
+        background: transparent;
+        border: 1px solid transparent;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+    }
+
+    #cancelEditBtn:hover {
+        background: rgba(255,255,255,0.08);
+        border-color: rgba(255,255,255,0.16);
+        color: #ffffff;
 }
 
 /* Responsive */
@@ -645,6 +661,7 @@
 
     <input type="text" id="msgInput" class="chat-input" placeholder="Ketik pesan..." autocomplete="off">
     
+    <button id="cancelEditBtn" type="button" class="text-gray-400 hover:text-white transition-colors hidden" onclick="cancelEdit()" title="Batal edit">✕</button>
     <button id="sendBtn" type="button" class="send-button">
         {{-- icon send --}}
     </button>
@@ -725,13 +742,19 @@ async function confirmDelete(msgId) {
 
 // --- LOGIC EDIT ---
 let editingId = null;
+const cancelEditBtn = document.getElementById('cancelEditBtn');
+
 function prepareEdit(msgId) {
     editingId = msgId;
     const currentText = document.getElementById(`text-${msgId}`).innerText;
     msgInput.value = currentText;
     msgInput.focus();
     msgInput.classList.add('bg-blue-900/30'); // Beri tanda sedang mengedit
+    msgInput.placeholder = 'Edit pesan...';
     sendBtn.innerHTML = '💾'; // Ganti icon jadi save
+    sendBtn.disabled = false;
+    cancelEditBtn.classList.remove('hidden');
+    updateSendButtonState();
 }
 
 // Modifikasi fungsi sendMessage Anda sedikit:
@@ -754,14 +777,17 @@ async function updateMessage(id, newText) {
 function cancelEdit() {
     editingId = null;
     msgInput.value = '';
+    msgInput.placeholder = 'Ketik pesan...';
     msgInput.classList.remove('bg-blue-900/30');
-sendBtn.innerHTML = `
+    cancelEditBtn.classList.add('hidden');
+    sendBtn.innerHTML = `
 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
           d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8">
     </path>
 </svg>
 `;
+    updateSendButtonState();
 }
 
 // Auto scroll to bottom on load
@@ -933,6 +959,8 @@ function appendMessage(m) {
     const div = document.createElement('div');
     div.className = `message-item ${isMine ? 'mine' : 'theirs'}`;
     div.dataset.msgId = m.id;
+    div.style.opacity = '0';
+    div.style.transform = 'translateY(10px)';
 
     const avatarSrc = m.avatar || `https://ui-avatars.com/api/?name=?&background=6366f1&color=fff`;
     const avatarHtml = `<img src="${avatarSrc}" class="message-avatar ${isMine ? 'mine' : ''}" alt="">`;
@@ -971,8 +999,10 @@ function appendMessage(m) {
         </div>
         ${isMine ? avatarHtml : ''}
     `;
-
-    
+    requestAnimationFrame(() => {
+        div.style.opacity = '1';
+        div.style.transform = 'translateY(0)';
+    });
 }
 
 function escHtml(str) {
