@@ -228,7 +228,7 @@ class AdminController extends Controller
         return back()->with('success', 'Banner berhasil dihapus.');
     }
 
-    // ─── 4. NOTIFICATIONS & ORDERS ───────────────────────────────────────────
+// ─── 4. NOTIFICATIONS & ORDERS ───────────────────────────────────────────
 
     public function notifications(): View
     {
@@ -292,56 +292,57 @@ class AdminController extends Controller
 
     public function downloadOrdersReportPdf()
     {
+        // Gunakan relasi yang benar-benar ada
         $relations = ['buyer', 'seller'];
-
         if (Schema::hasTable('order_financials')) {
             $relations[] = 'financial';
         }
 
-        $orders = Order::query()
-            ->with($relations)
-            ->oldest()
-            ->get();
+        $orders = Order::with($relations)->oldest()->get();
+
+        if ($orders->isEmpty()) {
+            return back()->with('error', 'Belum ada transaksi untuk dicetak.');
+        }
 
         $totalAmount = $orders->sum(fn (Order $order) => $this->reportOrderTotal($order));
         $generatedAt = now()->format('d M Y H:i');
+        
         $statusCounts = $orders->groupBy('status')
             ->map(fn ($items) => $items->count())
             ->sortKeys();
 
         $orderLines = $orders->map(function (Order $order): string {
-            $invoice = $this->pdfColumn($order->invoice_number ?? $order->order_code, 18);
-            $buyer = $this->pdfColumn($order->buyer?->name ?? '-', 16);
-            $seller = $this->pdfColumn($order->seller?->name ?? '-', 16);
-            $status = $this->pdfColumn($order->status_label, 18);
-            $total = str_pad('Rp ' . number_format($this->reportOrderTotal($order), 0, ',', '.'), 16, ' ', STR_PAD_LEFT);
+            // Gunakan status asli jika status_label tidak ada
+            $statusRaw = $order->status ?? 'pending';
+            
+            $invoice = $this->pdfColumn($order->invoice_number ?? $order->order_code ?? '-', 18);
+            $buyer   = $this->pdfColumn($order->buyer?->name ?? 'Guest', 16);
+            $seller  = $this->pdfColumn($order->seller?->name ?? $order->items->first()?->product?->seller?->name ?? '-', 16);
+            $status  = $this->pdfColumn(strtoupper($statusRaw), 18);
+            $total   = str_pad('Rp ' . number_format($this->reportOrderTotal($order), 0, ',', '.'), 16, ' ', STR_PAD_LEFT);
 
             return "{$invoice} {$buyer} {$seller} {$status} {$total}";
         })->values();
 
-        if ($orderLines->isEmpty()) {
-            $orderLines = collect(['Belum ada transaksi.']);
-        }
-
         $pages = [];
         foreach ($orderLines->chunk(32) as $index => $chunk) {
             $lines = [
-                ['text' => 'Laporan Transaksi Lapak Gaming', 'size' => 16],
+                ['text' => 'LAPORAN TRANSAKSI LAPAK GAMING', 'size' => 16],
                 ['text' => 'Dicetak: ' . $generatedAt, 'size' => 10],
             ];
 
             if ($index === 0) {
                 $lines[] = ['text' => 'Total transaksi: ' . number_format($orders->count()), 'size' => 10];
                 $lines[] = ['text' => 'Total nominal: Rp ' . number_format($totalAmount, 0, ',', '.'), 'size' => 10];
-                $lines[] = ['text' => 'Status: ' . ($statusCounts->map(fn ($count, $status) => $status . '=' . $count)->implode(', ') ?: '-'), 'size' => 10];
+                $lines[] = ['text' => 'Status: ' . ($statusCounts->map(fn ($c, $s) => $s . '=' . $c)->implode(', ')), 'size' => 10];
                 $lines[] = ['text' => '', 'size' => 10];
             }
 
-            $lines[] = ['text' => 'Invoice            Buyer            Seller           Status                    Total', 'size' => 9];
+            $lines[] = ['text' => 'Invoice            Buyer            Seller           Status                   Total', 'size' => 9];
             $lines[] = ['text' => str_repeat('-', 95), 'size' => 9];
 
             foreach ($chunk as $line) {
-                $lines[] = ['text' => $line, 'size' => 9];
+                $lines[] = ['text' => (string)$line, 'size' => 9];
             }
 
             $pages[] = $lines;
@@ -365,26 +366,26 @@ class AdminController extends Controller
 
     private function pdfColumn(?string $value, int $length): string
     {
-        $value = preg_replace('/\s+/', ' ', (string) $value);
-        $value = $this->safeSubstr($value, $length);
-
+        $value = preg_replace('/\s+/', ' ', (string) ($value ?? ''));
+        if (function_exists('mb_substr')) {
+            $value = mb_substr($value, 0, $length);
+        } else {
+            $value = substr($value, 0, $length);
+        }
         return str_pad($value, $length);
     }
 
     private function reportOrderTotal(Order $order): float
     {
-        if (Schema::hasTable('order_financials')) {
-            return (float) $order->grand_total;
-        }
-
-        return (float) ($order->getAttributes()['grand_total'] ?? 0);
+        // Cari angka total paling mungkin dari database
+        return (float) ($order->financial?->grand_total ?? $order->grand_total ?? $order->total_price ?? 0);
     }
 
     private function buildSimplePdf(array $pages): string
     {
         $objects = [];
         $objects[1] = '<< /Type /Catalog /Pages 2 0 R >>';
-        $objects[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>';
+        $objects[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Courier >>'; // Courier lebih stabil untuk spasi
         $pageIds = [];
         $nextId = 4;
 
@@ -396,7 +397,7 @@ class AdminController extends Controller
                 $text = $this->pdfEscape((string) ($line['text'] ?? ''));
                 $size = (int) ($line['size'] ?? 10);
                 $stream .= "BT /F1 {$size} Tf 40 {$y} Td ({$text}) Tj ET\n";
-                $y -= $size >= 14 ? 24 : 15;
+                $y -= ($size >= 14 ? 24 : 15);
             }
 
             $contentId = $nextId++;
@@ -412,8 +413,7 @@ class AdminController extends Controller
         ksort($objects);
 
         $pdf = "%PDF-1.4\n";
-        $offsets = [0 => 0];
-
+        $offsets = [];
         foreach ($objects as $id => $body) {
             $offsets[$id] = strlen($pdf);
             $pdf .= "{$id} 0 obj\n{$body}\nendobj\n";
@@ -421,46 +421,26 @@ class AdminController extends Controller
 
         $xrefOffset = strlen($pdf);
         $maxId = max(array_keys($objects));
-        $pdf .= "xref\n0 " . ($maxId + 1) . "\n";
-        $pdf .= "0000000000 65535 f \n";
+        $pdf .= "xref\n0 " . ($maxId + 1) . "\n0000000000 65535 f \n";
 
         for ($i = 1; $i <= $maxId; $i++) {
             $pdf .= sprintf("%010d 00000 n \n", $offsets[$i] ?? 0);
         }
 
-        $pdf .= "trailer\n<< /Size " . ($maxId + 1) . " /Root 1 0 R >>\n";
-        $pdf .= "startxref\n{$xrefOffset}\n%%EOF";
-
+        $pdf .= "trailer\n<< /Size " . ($maxId + 1) . " /Root 1 0 R >>\nstartxref\n{$xrefOffset}\n%%EOF";
         return $pdf;
     }
 
     private function pdfEscape(string $value): string
     {
         $value = $this->normalizePdfText($value);
-        $value = str_replace(["\\", "(", ")", "\r", "\n"], ["\\\\", "\\(", "\\)", ' ', ' '], $value);
-
-        return $this->safeSubstr($value, 130);
-    }
-
-    private function safeSubstr(string $value, int $length): string
-    {
-        if (function_exists('mb_substr')) {
-            return mb_substr($value, 0, $length);
-        }
-
-        return substr($value, 0, $length);
+        $value = str_replace(["\\", "(", ")"], ["\\\\", "\\(", "\\)"], $value);
+        return $value;
     }
 
     private function normalizePdfText(string $value): string
     {
-        // Keep simple PDF text stream stable by converting UTF-8 to a Latin-1 compatible range.
-        if (function_exists('iconv')) {
-            $converted = @iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $value);
-            if ($converted !== false) {
-                $value = $converted;
-            }
-        }
-
-        return preg_replace('/[^\x20-\x7E\xA0-\xFF]/', '', $value) ?? '';
+        // Menghapus karakter aneh tanpa iconv (lebih aman untuk hosting)
+        return preg_replace('/[^\x20-\x7E]/', '', $value) ?? '';
     }
-}
+} 
