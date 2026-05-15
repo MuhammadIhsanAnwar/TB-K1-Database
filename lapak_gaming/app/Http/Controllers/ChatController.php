@@ -48,10 +48,22 @@ public function show(Conversation $conversation)
     $conversation->load([
         'buyer',
         'seller',
-        'messages.sender'
+        'product',
+        'order',
     ]);
 
-    return view('chat.show', compact('conversation'));
+    $messages = $conversation->messages()
+        ->with('sender')
+        ->latest()
+        ->take(30)
+        ->get()
+        ->reverse()
+        ->values();
+
+    return view('chat.show', compact(
+        'conversation',
+        'messages'
+    ));
 }
 
 

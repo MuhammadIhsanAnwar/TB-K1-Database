@@ -92,7 +92,7 @@ class Message extends Model
     {
         if ($this->isDeletedForEveryone()) return true;
         if ($userId === $this->sender_id && $this->deleted_for_sender_at !== null) return true;
-        if ($userId === $this->receiver_id && $this->deleted_at_receiver_at !== null) return true;
+        if ($userId === $this->receiver_id && $this->deleted_for_receiver_at !== null) return true;
         return false;
     }
 
