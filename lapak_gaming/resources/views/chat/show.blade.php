@@ -822,10 +822,24 @@ async function sendMessage() {
             body: form,
         });
 
-        const data = await res.json();
+        let data = null;
+        try {
+            data = await res.json();
+        } catch (parseErr) {
+            // response is not JSON (likely 500 HTML), capture text
+            const text = await res.text();
+            if (!res.ok) throw new Error(text.substring(0, 200));
+        }
 
         if (!res.ok) {
-            throw new Error(data.message || 'Gagal mengirim pesan.');
+            // Try to extract useful error info from Laravel response
+            let errMsg = data?.message || null;
+            if (!errMsg && data.errors) {
+                const firstField = Object.keys(data.errors)[0];
+                errMsg = Array.isArray(data.errors[firstField]) ? data.errors[firstField][0] : JSON.stringify(data.errors[firstField]);
+            }
+            if (!errMsg) errMsg = JSON.stringify(data);
+            throw new Error(errMsg || 'Gagal mengirim pesan.');
         }
 
         if (data && data.id) {
@@ -846,8 +860,8 @@ async function sendMessage() {
         cancelImage();
 
     } catch (e) {
-        console.error(e);
-        alert('Gagal mengirim pesan');
+        console.error('Send message error:', e);
+        alert('Gagal mengirim pesan: ' + (e.message || e));
     } finally {
         sendBtn.disabled = false;
         msgInput.focus();
