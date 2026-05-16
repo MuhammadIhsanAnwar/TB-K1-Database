@@ -294,8 +294,6 @@ class AdminController extends Controller
     {
         $relations = ['buyer', 'seller'];
 
-        dd($relations);
-
         if (Schema::hasTable('order_financials')) {
             $relations[] = 'financial';
         }
@@ -304,6 +302,8 @@ class AdminController extends Controller
             ->with($relations)
             ->oldest()
             ->get();
+
+            dd($orders);
 
         $totalAmount = $orders->sum(fn (Order $order) => $this->reportOrderTotal($order));
         $generatedAt = now()->format('d M Y H:i');
