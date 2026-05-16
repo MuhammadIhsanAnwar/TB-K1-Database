@@ -151,10 +151,13 @@ class OrderController extends Controller {
             }
 
             foreach ($cartItems as $item) {
-                OrderItem::create([
+               OrderItem::create([
                     'order_id'      => $order->id,
                     'product_id'    => $item->product_id,
                     'seller_id'     => $item->product->seller_id,
+
+                    'name_snapshot' => $item->product->name,
+
                     'product_name'  => $item->product->name,
                     'price'         => $item->product->price,
                     'quantity'      => $item->quantity,
