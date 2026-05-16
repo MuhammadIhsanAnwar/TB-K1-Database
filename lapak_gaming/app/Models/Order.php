@@ -90,6 +90,10 @@ class Order extends Model {
 
     public function getFeeAmountAttribute(): float
     {
+        if (!Schema::hasTable('order_financials')) {
+            return 0;
+        }
+
         return (float) ($this->financial?->fee_amount ?? 0);
     }
 
@@ -100,16 +104,28 @@ class Order extends Model {
 
     public function getEscrowAmountAttribute(): float
     {
+        if (!Schema::hasTable('order_financials')) {
+            return 0;
+        }
+
         return (float) ($this->financial?->escrow_amount ?? 0);
     }
 
     public function getGrandTotalAttribute(): float
     {
+        if (!Schema::hasTable('order_financials')) {
+            return (float) ($this->attributes['grand_total'] ?? 0);
+        }
+
         return (float) ($this->financial?->grand_total ?? 0);
     }
 
-    public function getTotalPriceAttribute(): float
+    public function getSubtotalAttribute(): float
     {
-        return $this->getGrandTotalAttribute();
+        if (!Schema::hasTable('order_financials')) {
+            return 0;
+        }
+
+        return (float) ($this->financial?->subtotal ?? 0);
     }
 }
