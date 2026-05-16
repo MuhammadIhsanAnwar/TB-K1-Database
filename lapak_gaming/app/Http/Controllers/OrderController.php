@@ -151,18 +151,19 @@ class OrderController extends Controller {
             }
 
             foreach ($cartItems as $item) {
-               OrderItem::create([
-                    'order_id'      => $order->id,
-                    'product_id'    => $item->product_id,
-                    'seller_id'     => $item->product->seller_id,
+              OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item->product_id,
+                'seller_id' => $item->product->seller_id,
 
-                    'name_snapshot' => $item->product->name,
+                'name_snapshot' => $item->product->name,
+                'price_snapshot' => $item->product->price,
 
-                    'product_name'  => $item->product->name,
-                    'price'         => $item->product->price,
-                    'quantity'      => $item->quantity,
-                    'subtotal'      => $item->product->price * $item->quantity,
-                ]);
+                'product_name' => $item->product->name,
+                'price' => $item->product->price,
+                'quantity' => $item->quantity,
+                'subtotal' => $item->product->price * $item->quantity,
+            ]);
                 $item->product->decrement('stock', $item->quantity);
             }
 
