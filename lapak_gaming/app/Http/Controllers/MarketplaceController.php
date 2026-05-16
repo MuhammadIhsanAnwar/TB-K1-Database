@@ -109,7 +109,7 @@ class MarketplaceController extends Controller
                 ];
             })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->values();
         }
-        dd($categoryProducts->toArray());
+        
         return view('marketplace.home', [
             'categories' => $categories,
             'allCategories' => $allCategories,
