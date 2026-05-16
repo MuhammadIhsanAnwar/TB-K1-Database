@@ -57,6 +57,15 @@ class AdminController extends Controller
         return view('admin.users.index', compact('tab', 'regularUsers', 'sellers', 'applications', 'pendingVerifications', 'counts'));
     }
 
+    public function show($id)
+  {
+      // Cari data user berdasarkan ID yang diklik, kalau gak ada otomatis error 404
+      $user = User::findOrFail($id);
+      
+      // Lempar data user ke halaman detail transparan yang kita bikin kemarin
+      return view('admin.users.show', compact('user'));
+  }
+
     // ─── 2. USER ACTIONS ─────────────────────────────────────────────────────
 
     public function updateUserStatus(Request $request, User $user): RedirectResponse
