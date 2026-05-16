@@ -125,10 +125,11 @@
                 @forelse ($orders->take(5) as $item)
                     <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 flex justify-between items-center">
                         <div>
-                            <div class="text-xs font-black text-amber-500 uppercase">#{{ $item->order->invoice_number }}</div>
-                            <div class="text-sm font-bold text-white">{{ $item->product->name }}</div>
+                            {{-- Gunakan ?-> untuk menghindari error jika relasi mendadak kosong --}}
+                            <div class="text-xs font-black text-amber-500 uppercase">#{{ $item->order?->invoice_number ?? $item->order?->order_code ?? 'TANPA INVOICE' }}</div>
+                            <div class="text-sm font-bold text-white">{{ $item->product?->name ?? 'Produk Dihapus' }}</div>
                         </div>
-                        <span class="px-3 py-1 bg-slate-800 text-[10px] font-black text-slate-300 rounded-lg uppercase tracking-widest">{{ $item->order->status }}</span>
+                        <span class="px-3 py-1 bg-slate-800 text-[10px] font-black text-slate-300 rounded-lg uppercase tracking-widest">{{ $item->order?->status ?? 'PENDING' }}</span>
                     </div>
                 @empty
                     <p class="text-sm text-slate-500 italic">Belum ada orderan masuk.</p>

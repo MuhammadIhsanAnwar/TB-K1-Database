@@ -63,9 +63,12 @@ class DashboardController extends Controller
         $products = Schema::hasTable('products')
             ? Product::query()->where('seller_id', $user->id)->latest()->take(6)->get()
             : collect();
+
+        // PERBAIKAN: Ambil dari OrderItem dan load relasi order + product agar sesuai ekspektasi Blade
         $orders = Schema::hasTable('orders')
-            ? Order::query()->where('seller_id', $user->id)->latest()->take(6)->get()
+            ? \App\Models\OrderItem::query()->where('seller_id', $user->id)->with(['order', 'product'])->latest()->take(6)->get()
             : collect();
+
         $wallet = Schema::hasTable('wallets')
             ? Wallet::firstOrCreate(['user_id' => $user->id])
             : null;
