@@ -152,7 +152,8 @@ Route::middleware('auth')->group(function (): void {
     // ─── Admin Routes ─────────────────────────────────────────────────────────
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
-
+        // Tambahkan baris ini di dalam group admin kamu
+        Route::get('/users/{user}', [App\Http\Controllers\Admin\AdminController::class, 'show'])->name('users.show');
         // Kelola Akun (Satu rute untuk 3 Tab: Users, Sellers, Applications)
         Route::get('/users', [AdminController::class, 'index'])->name('users.index');
 
@@ -174,13 +175,11 @@ Route::middleware('auth')->group(function (): void {
         Route::get('/orders/report/pdf', [AdminController::class, 'downloadOrdersReportPdf'])->name('orders.report.pdf');
         Route::get('/orders/{order:order_code}', [AdminController::class, 'showOrder'])->name('orders.show');
         Route::get('/terminal', fn() => redirect()->route('artisan.terminal.index'))->name('terminal.index');
-
-        // Tambahkan baris ini di dalam group admin kamu
-        Route::get('/users/{user}', [App\Http\Controllers\Admin\AdminController::class, 'show'])->name('users.show');
+        
 
         // ─── Verification ─────────────────────────────────────────────────────
-        // ─── Verification ─────────────────────────────────────────────────────
-        Route::prefix('verification')->name('verification.')->group(function () {
+       // ─── Verification ─────────────────────────────────────────────────────
+Route::prefix('verification')->name('verification.')->group(function () {
             Route::get('/', [AdminVerificationController::class, 'index'])->name('index');
             Route::get('/{user}', [AdminVerificationController::class, 'show'])->name('show');
             Route::post('/{user}/review', [AdminVerificationController::class, 'markUnderReview'])->name('review');
@@ -215,7 +214,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/messages/{conversation}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::get('/api/messages/{conversation}/poll', [ChatController::class, 'poll'])->name('chat.poll');
     Route::get('/api/messages/inbox/poll', [ChatController::class, 'pollInbox'])->name('chat.inbox.poll');
-    Route::get('/chat/order/{order}', [ChatController::class, 'orderChat'])->name('chat.order');
+  Route::get('/chat/order/{order}', [ChatController::class, 'orderChat'])->name('chat.order');
     // Product chat
     Route::get('/chat/product/{product}', [ChatController::class, 'product'])->name('chat.product');
     Route::post('/chat/product/{product}', [ChatController::class, 'storeProduct'])->name('chat.product.store');
@@ -277,6 +276,6 @@ Route::get('/kebijakan-pengembalian-dana', [PageController::class, 'refund'])->n
 Route::get('/tentang-kami', [PageController::class, 'about'])->name('about');
 
 // Realtime Indicator
-Route::post('/chat/conversations/{conversation}/typing', [ChatController::class, 'updateTyping']);
+    Route::post('/chat/conversations/{conversation}/typing', [ChatController::class, 'updateTyping']);
 Route::patch('/chat/message/{message}', [ChatController::class, 'editMessage'])->name('chat.update');
 Route::delete('/chat/message/{message}', [ChatController::class, 'deleteMessage'])->name('chat.destroy');
