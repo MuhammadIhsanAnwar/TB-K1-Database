@@ -10,7 +10,7 @@
     }
     
     .panel-card-glass {
-        background: rgba(10, 17, 30, 0.35) !important; /* Transparansi murni 35% */
+        background: rgba(10, 17, 30, 0.35) !important;
         backdrop-filter: blur(24px) saturate(160%);
         border: 1px solid rgba(255, 255, 255, 0.06);
         box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
@@ -36,11 +36,9 @@
         letter-spacing: 0.02em;
     }
     
-    /* Auto-mapping status colors (Bisa disesuaikan dengan isi $order->status) */
     .status-completed, .status-paid { background: rgba(16, 185, 129, 0.12); border: 1px solid rgba(16, 185, 129, 0.3); color: #34d399; }
     .status-pending, .status-processing { background: rgba(245, 158, 11, 0.12); border: 1px solid rgba(245, 158, 11, 0.3); color: #fbbf24; }
     .status-cancelled, .status-failed, .status-dispute { background: rgba(239, 68, 68, 0.12); border: 1px solid rgba(239, 68, 68, 0.3); color: #f87171; }
-    /* Default Fallback */
     .status-default { background: rgba(148, 163, 184, 0.12); border: 1px solid rgba(148, 163, 184, 0.3); color: #cbd5e1; }
 </style>
 @endpush
@@ -64,7 +62,7 @@
                 <p class="text-slate-400 text-sm mt-0.5">Pantau rekaman mutasi order buyer-seller beserta status sinkronisasi payment gateway.</p>
             </div>
             
-            <div class="flex items-center gap-3">
+            <div class="flex flex-wrap items-center gap-3">
                 <a href="{{ route('admin.dashboard') }}"
                    class="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide">
                     Dashboard
@@ -81,9 +79,10 @@
 
         {{-- ── MAIN LEDGER TABLE PANEL ─────────────────────────── --}}
         <div class="rounded-3xl panel-card-glass overflow-hidden">
-            <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-400 text-sm flex items-center justify-between">
+            {{-- 🛠️ PERBAIKAN: Diubah jadi flex-col di mobile agar tidak tabrakan/terpotong --}}
+            <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-400 text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <span>Menampilkan log perputaran invoice order marketplace.</span>
-                <span class="text-xs font-mono bg-black/20 text-slate-500 px-2 py-0.5 rounded border border-white/5">Total: {{ $orders->total() }} Records</span>
+                <span class="text-xs font-mono bg-black/20 text-slate-500 px-2 py-0.5 rounded border border-white/5 w-max">Total: {{ $orders->total() }} Records</span>
             </div>
 
             @if($orders->isEmpty())
@@ -93,7 +92,7 @@
                     <p class="text-xs text-slate-600 mt-1">Seluruh invoices dari checkout pengguna akan muncul di sini.</p>
                 </div>
             @else
-                <div class="overflow-x-auto">
+                <div class="overflow-x-auto scroller-clean">
                     <table class="min-w-full divide-y divide-white/5 text-sm text-left text-slate-300">
                         <thead class="bg-black/30 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5">
                             <tr>
@@ -116,19 +115,19 @@
                                         </div>
                                     </td>
                                     
-                                    {{-- Buyer Name --}}
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
-                                            <span class="font-bold text-white tracking-tight">{{ $order->buyer?->name ?? 'Deleted User' }}</span>
+                                    {{-- 🛠️ PERBAIKAN: Hapus whitespace-nowrap agar nama panjang buyer bisa nge-wrap otomatis jika layar sempit --}}
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2 max-w-[180px]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
+                                            <span class="font-bold text-white tracking-tight break-words">{{ $order->buyer?->name ?? 'Deleted User' }}</span>
                                         </div>
                                     </td>
                                     
-                                    {{-- Seller Name --}}
-                                    <td class="px-6 py-4 whitespace-nowrap">
-                                        <div class="flex items-center gap-2">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-purple-400"></span>
-                                            <span class="font-bold text-slate-300 tracking-tight">{{ $order->seller?->name ?? 'Deleted Store' }}</span>
+                                    {{-- 🛠️ PERBAIKAN: Hapus whitespace-nowrap agar nama toko tidak memaksa tabel molor --}}
+                                    <td class="px-6 py-4">
+                                        <div class="flex items-center gap-2 max-w-[180px]">
+                                            <span class="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0"></span>
+                                            <span class="font-bold text-slate-300 tracking-tight break-words">{{ $order->seller?->name ?? 'Deleted Store' }}</span>
                                         </div>
                                     </td>
                                     
@@ -140,7 +139,6 @@
                                     {{-- Dynamic Status Pill --}}
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         @php
-                                            // Normalisasi string status database ke lowercase untuk styling class CSS
                                             $cleanStatus = strtolower($order->getAttributes()['status'] ?? '');
                                             if (in_array($cleanStatus, ['completed', 'paid', 'success'])) {
                                                 $statusClass = 'status-completed';
