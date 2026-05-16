@@ -56,16 +56,13 @@ class AdminController extends Controller
 
         return view('admin.users.index', compact('tab', 'regularUsers', 'sellers', 'applications', 'pendingVerifications', 'counts'));
     }
-
-    public function show($id)
+    
+    public function show(User $user): View
     {
-        // Cari data user berdasarkan ID yang diklik, kalau gak ada otomatis error 404
-        $user = User::findOrFail($id);
-
-        // Lempar data user ke halaman detail transparan yang kita bikin kemarin
+        // Langsung lempar model $user ke halaman view detail transparan kemarin
         return view('admin.users.show', compact('user'));
     }
-    
+
     // ─── 2. USER ACTIONS ─────────────────────────────────────────────────────
 
     public function updateUserStatus(Request $request, User $user): RedirectResponse
@@ -157,8 +154,7 @@ class AdminController extends Controller
 
     public function destroyUser(User $user): RedirectResponse
     {
-        if ($user->role === 'admin')
-            return back()->withErrors(['delete' => 'Admin tidak bisa dihapus.']);
+        if ($user->role === 'admin') return back()->withErrors(['delete' => 'Admin tidak bisa dihapus.']);
         $user->delete();
         return back()->with('success', 'User dihapus.');
     }
@@ -357,7 +353,7 @@ class AdminController extends Controller
             $pageIds[] = $pageId;
         }
 
-        $kids = collect($pageIds)->map(fn($id) => "{$id} 0 R")->implode(' ');
+        $kids = collect($pageIds)->map(fn ($id) => "{$id} 0 R")->implode(' ');
         $objects[2] = "<< /Type /Pages /Kids [{$kids}] /Count " . count($pageIds) . ' >>';
         ksort($objects);
 

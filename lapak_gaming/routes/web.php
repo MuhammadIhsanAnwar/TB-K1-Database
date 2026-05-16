@@ -152,10 +152,11 @@ Route::middleware('auth')->group(function (): void {
     // ─── Admin Routes ─────────────────────────────────────────────────────────
 
     Route::middleware('role:admin')->prefix('admin')->name('admin.')->group(function () {
-        // Tambahkan baris ini di dalam group admin kamu
-        Route::get('/users/{user}', [App\Http\Controllers\Admin\AdminController::class, 'show'])->name('users.show');
         // Kelola Akun (Satu rute untuk 3 Tab: Users, Sellers, Applications)
         Route::get('/users', [AdminController::class, 'index'])->name('users.index');
+
+        // Tambahkan baris baru ini (Otomatis bernama admin.users.show karena efek Group)
+        Route::get('/users/{user}', [AdminController::class, 'show'])->name('users.show');
 
         // Management Actions
         Route::put('/users/{user}/status', [AdminController::class, 'updateUserStatus'])->name('users.status');
