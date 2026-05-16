@@ -112,6 +112,10 @@ class SellerProductController extends Controller
             'images.*.max' => 'Ukuran tiap foto maksimal 5 MB.',
         ];
 
+        $request->merge([
+            'name' => trim(strtolower($request->name))
+        ]);
+
         $validated = $request->validate([
             'name' => ['required','string','max:255', Rule::unique('products')->where(fn($q) => $q->where('seller_id', Auth::id()))],
             'category_id' => 'required|exists:categories,id',
@@ -184,6 +188,10 @@ class SellerProductController extends Controller
             'images.array' => 'Foto produk harus dikirim sebagai daftar file.',
             'images.*.max' => 'Ukuran tiap foto maksimal 5 MB.',
         ];
+
+        $request->merge([
+            'name' => trim(strtolower($request->name))
+        ]);
 
         $validated = $request->validate([
             'name' => ['required','string','max:255', Rule::unique('products')->ignore($produk->id)->where(fn($q) => $q->where('seller_id', Auth::id()))],
