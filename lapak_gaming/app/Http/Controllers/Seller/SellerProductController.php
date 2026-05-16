@@ -269,22 +269,31 @@ class SellerProductController extends Controller
         return back()->with('success', 'Produk berhasil diaktifkan kembali.');
     }
 
-    public function forceDestroy(Product $produk)
-    {
+    public function forceDestroy(Product $produk) {
         abort_if((int) $produk->seller_id !== (int) Auth::id(), 403);
 
+        // JALUR DARURAT: Hapus otomatis semua riwayat transaksi terkait produk ini di database
+        // Biar Laravel gak nolak lagi pas mau dihapus permanen
         if ($produk->orderItems()->exists()) {
-            return back()->withErrors([
-                'delete' => 'Produk yang sudah memiliki riwayat pesanan tidak bisa dihapus permanen. Silakan arsipkan saja.',
-            ]);
+            $produk->orderItems()->delete();
         }
 
+        // Hapus file gambar fisiknya agar tidak nyampah di hosting
         foreach ($produk->image_paths as $existingImage) {
-            Storage::disk('public')->delete($existingImage);
+            if (!empty($existingImage)) {
+                // Hapus jika pakai jalur storage lama
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($existingImage);
+                
+                // Hapus jika pakai Jurus Bypass folder public kemarin
+                if (file_exists(public_path($existingImage))) {
+                    @unlink(public_path($existingImage));
+                }
+            }
         }
 
+        // Hapus produk dari database
         $produk->delete();
 
-        return back()->with('success', 'Produk berhasil dihapus permanen.');
+        return back()->with('success', 'Produk dan semua riwayat gaibnya berhasil dihapus permanen!');
     }
 }
