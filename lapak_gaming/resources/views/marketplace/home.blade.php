@@ -272,13 +272,31 @@ spline-viewer iframe {
 .reveal-delay-4 { transition-delay: .20s; }
 .reveal-delay-5 { transition-delay: .25s; }
 .reveal-delay-6 { transition-delay: .30s; }
+
+  /* ── Variasi Layout Itemku Style ──────────────────────────── */
+  .section-glow-blue {
+    background: linear-gradient(180deg, rgba(30,58,138,0.15) 0%, rgba(9,14,26,0) 100%);
+    border-top: 1px solid rgba(37,99,235,0.2);
+  }
+  .section-glow-fire {
+    background: linear-gradient(135deg, #3f0914 0%, #060a12 100%);
+    border-top: 1px solid rgba(225,29,72,0.3);
+    border-bottom: 1px solid rgba(225,29,72,0.1);
+  }
+  .glass-header {
+    background: rgba(15, 23, 42, 0.4);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255,255,255,0.05);
+  }
+  .hide-scroll::-webkit-scrollbar { display: none; }
+  .hide-scroll { -ms-overflow-style: none; scrollbar-width: none; }
 </style>
 @endpush
 
 @section('content')
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- HERO SECTION                                               --}}
+{{-- HERO SECTION                                                --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="relative overflow-hidden pt-10 pb-16" id="hero-section">
   <div class="hero-glow absolute inset-0 pointer-events-none"></div>
@@ -439,7 +457,7 @@ spline-viewer iframe {
 </section>
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- HERO BANNERS                                               --}}
+{{-- HERO BANNERS                                                --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 @if(isset($heroBanners) && $heroBanners->count())
 <section class="relative py-5 sm:py-7">
@@ -608,62 +626,102 @@ spline-viewer iframe {
 @endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- POPULAR PRODUCTS                                            --}}
+{{-- 1. PRODUK TERPOPULER (Gaya Horizontal Scroll Glassmorphism) --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="pb-14">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="flex items-center justify-between mb-6">
-      <div>
-        <h2 class="section-title font-display font-bold text-lg text-white">Produk Terpopuler</h2>
-        <p class="text-xs text-slate-500 mt-1 pl-4">Paling banyak dibeli minggu ini</p>
-      </div>
-      <a href="{{ route('products.search') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Lihat semua →</a>
-    </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-      @forelse($popularProducts as $product)
-        <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
-  @include('components.product-card', ['product' => $product])
-</div>
-      @empty
-        <div class="col-span-full py-16 text-center">
-          <div class="text-4xl mb-4">🎮</div>
-          <p class="text-slate-400">Produk populer akan segera tersedia.</p>
+<section class="pt-10 pb-16 section-glow-blue relative">
+  <div class="max-w-7xl mx-auto px-4 relative z-10">
+    <div class="glass-header rounded-3xl p-5 md:p-8 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 mb-6 shadow-2xl">
+      <div class="flex items-center gap-4">
+        <div class="w-12 h-12 rounded-2xl flex items-center justify-center bg-blue-600/20 border border-blue-500/30">
+          <span class="text-2xl">🔥</span>
         </div>
+        <div>
+          <h2 class="font-display font-bold text-2xl text-white">Lagi Rame Dibeli</h2>
+          <p class="text-sm text-blue-300 mt-1">Produk paling laris minggu ini. Jangan sampai kehabisan!</p>
+        </div>
+      </div>
+      <a href="{{ route('products.search', ['sort' => 'popular']) }}" class="btn-ghost px-5 py-2.5 rounded-xl text-sm whitespace-nowrap border border-blue-500/30 hover:bg-blue-600/20 text-blue-400">
+        Lihat Semua Popular →
+      </a>
+    </div>
+
+    {{-- Horizontal Track biar bisa digeser pakai jari/mouse --}}
+    <div class="flex gap-4 overflow-x-auto hide-scroll snap-x snap-mandatory pb-4">
+      @forelse($popularProducts as $product)
+        <div class="flex-none w-[70%] sm:w-[40%] md:w-[30%] lg:w-[22%] snap-start reveal-card reveal-delay-{{ ($loop->index % 5) + 1 }}">
+          @include('components.product-card', ['product' => $product])
+        </div>
+      @empty
+        <div class="w-full py-10 text-center text-slate-500 italic">Produk populer belum tersedia.</div>
       @endforelse
     </div>
   </div>
 </section>
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- TOP UP SECTION                                              --}}
+{{-- 2. FEATURED / PILIHAN SULTAN (Gaya Hot Promo warna Merah)   --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-@if($topupProducts->isNotEmpty())
-<section class="pb-14 reveal-card">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
-             style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
-          <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
+@if($featuredProducts->isNotEmpty())
+<section class="py-16 section-glow-fire relative overflow-hidden">
+  {{-- Ornamen Api Background --}}
+  <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-red-600/10 rounded-full blur-[100px] pointer-events-none"></div>
+
+  <div class="max-w-7xl mx-auto px-4 relative z-10">
+    <div class="flex items-center justify-between mb-8">
+      <div>
+        <div class="inline-block px-3 py-1 bg-red-500/20 border border-red-500/50 rounded-full text-red-400 text-xs font-bold tracking-widest uppercase mb-3">
+          Rekomendasi Sultan
         </div>
-        <div>
-          <h2 class="font-display font-bold text-lg text-white">⚡ Top Up Kilat</h2>
-          <p class="text-xs text-slate-500">Proses instan, langsung ke ID</p>
-        </div>
+        <h2 class="font-display font-extrabold text-3xl md:text-4xl text-white">Pilihan Terbaik Buat Kamu</h2>
       </div>
-      <a href="{{ route('products.by-type', 'topup') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Semua Top Up →</a>
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-      @foreach($topupProducts as $product)
-        <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
-  @include('components.product-card', ['product' => $product])
-</div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 lg:gap-6">
+      @foreach($featuredProducts as $product)
+        <div class="reveal-card reveal-delay-{{ ($loop->index % 4) + 1 }} transform transition-transform hover:-translate-y-2">
+          @include('components.product-card', ['product' => $product])
+        </div>
       @endforeach
     </div>
   </div>
 </section>
 @endif
 
+{{-- ═══════════════════════════════════════════════════════════ --}}
+{{-- 3. TOP UP KILAT (Gaya Asymmetrical / Grid Kotak Padat)      --}}
+{{-- ═══════════════════════════════════════════════════════════ --}}
+@if($topupProducts->isNotEmpty())
+<section class="py-16 relative">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-end justify-between mb-8 border-b border-slate-800 pb-4">
+      <div class="flex items-center gap-3">
+        <div class="text-3xl">⚡</div>
+        <div>
+          <h2 class="font-display font-bold text-2xl text-white">Top Up Instan</h2>
+          <p class="text-sm text-slate-500 mt-1">Masuk hitungan detik, harga termurah.</p>
+        </div>
+      </div>
+      <a href="{{ route('products.by-type', 'topup') }}" class="hidden sm:block text-sm text-brand-400 hover:text-brand-300 font-semibold transition-colors">
+        Jelajahi Top Up →
+      </a>
+    </div>
+
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3 md:gap-5">
+      @foreach($topupProducts as $product)
+        <div class="reveal-card reveal-delay-{{ ($loop->index % 5) + 1 }}">
+          @include('components.product-card', ['product' => $product])
+        </div>
+      @endforeach
+    </div>
+    
+    <a href="{{ route('products.by-type', 'topup') }}" class="block sm:hidden mt-6 w-full text-center py-3 rounded-xl bg-slate-800 text-white font-semibold text-sm">
+      Lihat Semua Top Up
+    </a>
+  </div>
+</section>
+@endif
+
+{{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- VALUE PROPOSITION BANNER                                    --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="pb-14">
