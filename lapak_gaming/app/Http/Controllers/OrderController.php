@@ -148,7 +148,7 @@ class OrderController extends Controller {
                     'escrow_amount' => $subtotal,
                     'grand_total' => $grand_total,
                 ]);
-            }
+            }   
 
             foreach ($cartItems as $item) {
               OrderItem::create([

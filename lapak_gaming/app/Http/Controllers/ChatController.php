@@ -57,7 +57,25 @@ public function index($id)
 
 public function orderChat(\App\Models\Order $order)
 {
-    return view('chat.order', compact('order'));
+    $buyerId = $order->buyer_id;
+    $sellerId = $order->seller_id;
+
+    // Cari conversation yang sudah ada
+    $conversation = Conversation::where(function ($q) use ($buyerId, $sellerId) {
+        $q->where('buyer_id', $buyerId)
+          ->where('seller_id', $sellerId);
+    })->first();
+
+    // Kalau belum ada, buat baru
+    if (!$conversation) {
+        $conversation = Conversation::create([
+            'buyer_id' => $buyerId,
+            'seller_id' => $sellerId,
+        ]);
+    }
+
+    // Langsung buka halaman chat modern
+    return redirect()->route('chat.show', $conversation->id);
 }
 
 public function show(Conversation $conversation)

@@ -208,6 +208,7 @@ Route::prefix('verification')->name('verification.')->group(function () {
 
     Route::get('/messages', [ChatController::class, 'inbox'])->name('chat.inbox');
     Route::get('/messages/{conversation}', [ChatController::class, 'show'])->name('chat.show');
+    Route::get('/chat/order/{order}', [ChatController::class, 'orderChat'])->name('chat.order');
     Route::post('/messages/{conversation}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::get('/api/messages/{conversation}/poll', [ChatController::class, 'poll'])->name('chat.poll');
     Route::get('/api/messages/inbox/poll', [ChatController::class, 'pollInbox'])->name('chat.inbox.poll');
