@@ -57,11 +57,6 @@ public function index($id)
 
 public function orderChat(\App\Models\Order $order)
 {
-    return redirect()->route('chat.show', ['conversation' => $order->id]);
-}
-
-public function orderChat(\App\Models\Order $order)
-{
     return view('chat.order', compact('order'));
 }
 
