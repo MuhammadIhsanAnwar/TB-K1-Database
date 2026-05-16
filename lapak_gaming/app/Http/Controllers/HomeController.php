@@ -3,6 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
+use App\Models\Banner;
 
 class HomeController extends Controller {
     public function index() {
@@ -16,6 +17,18 @@ class HomeController extends Controller {
 
         $gameKeyProducts = Product::active()->inStock()->ofType('gamekey')
             ->with(['category', 'seller'])->take(8)->get();
+
+        //Hero Banners//
+        $heroBanners = Banner::where('position', 'hero')
+            ->where('is_active', 1)
+            ->latest()
+            ->get();
+
+        //Featured Banners//
+        $featuredBanners = Banner::where('position', 'featured')
+            ->where('is_active', 1)
+            ->latest()
+            ->get();
 
         return view('home', compact(
             'categories', 'popularProducts', 'topupProducts', 'gameKeyProducts'
