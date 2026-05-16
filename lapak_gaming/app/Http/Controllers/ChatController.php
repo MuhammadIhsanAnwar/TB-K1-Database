@@ -49,6 +49,12 @@ class ChatController extends Controller
         'sellerChats'
     ));
 }
+
+public function index($id)
+{
+    return redirect()->back();
+}
+
 public function show(Conversation $conversation)
 {
     $user = Auth::user();

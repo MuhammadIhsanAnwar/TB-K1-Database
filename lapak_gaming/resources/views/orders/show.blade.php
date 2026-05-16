@@ -61,7 +61,7 @@
             </div>
 
             <div class="mt-6 grid gap-4 md:grid-cols-2">
-                <a href="{{ route('chat.index', $order) }}" class="rounded-2xl bg-sky-500 px-5 py-3 text-white hover:bg-sky-400 text-center">Chat dengan Seller</a>
+                <a href="{{ route('chat.order', $order) }}" class="rounded-2xl bg-sky-500 px-5 py-3 text-white hover:bg-sky-400 text-center">Chat dengan Seller</a>
 
                 @if(in_array($order->status, [\App\Models\Order::STATUS_PENDING_PAYMENT, \App\Models\Order::STATUS_PAYMENT_UPLOADED], true))
                     <form action="{{ route('orders.cancel', $order) }}" method="POST">

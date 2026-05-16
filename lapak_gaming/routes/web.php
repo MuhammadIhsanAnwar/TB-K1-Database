@@ -216,9 +216,6 @@ Route::prefix('verification')->name('verification.')->group(function () {
     Route::get('/chat/product/{product}', [ChatController::class, 'product'])->name('chat.product');
     Route::post('/chat/product/{product}', [ChatController::class, 'storeProduct'])->name('chat.product.store');
     Route::get('/api/chat/product/{product}', [ChatController::class, 'pollProduct'])->name('chat.product.poll');
-    // Legacy
-    Route::get('/chat/{order}', [ChatController::class, 'index'])->name('chat.index');
-    Route::post('/chat/{order}', [ChatController::class, 'store'])->name('chat.store');
 });
 
 Route::get('/account/reactivate', [SettingsController::class, 'reactivateForm'])->name('account.reactivate.form');
