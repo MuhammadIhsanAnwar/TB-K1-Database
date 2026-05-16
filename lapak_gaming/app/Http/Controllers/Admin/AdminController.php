@@ -292,6 +292,8 @@ class AdminController extends Controller
 
     public function downloadOrdersReportPdf()
     {
+        dd('masuk');
+        
         $relations = ['buyer', 'seller'];
 
         if (Schema::hasTable('order_financials')) {
@@ -347,7 +349,14 @@ class AdminController extends Controller
             $pages[] = $lines;
         }
 
-        dd($pages);
+        $pdf = $this->buildSimplePdf($pages);
+        $filename = 'laporan-transaksi-' . now()->format('Ymd-His') . '.pdf';
+
+        return response($pdf, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Content-Length' => strlen($pdf),
+        ]);
     }
 
     public function showOrder(Order $order): View
