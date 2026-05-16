@@ -389,12 +389,6 @@
 
 </div>
             </div>
-
-            @if($conversations->hasPages())
-                <div class="p-3 border-t border-slate-800 text-xs text-center">
-                    {{ $conversations->links() }}
-                </div>
-            @endif
         </div>
 
         {{-- Main pane: Empty state (Tampil di Desktop) --}}
