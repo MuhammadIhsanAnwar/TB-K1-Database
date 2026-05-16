@@ -62,6 +62,7 @@
   .tab-btn .badge-pending { 
     background: rgba(239, 68, 68, 0.2); 
     color: #f87171; 
+    animation: pulse 2s infinite;
   }
 
   /* ── Cyber Status Pills ──────────────────────────────────── */
@@ -86,7 +87,7 @@
   .modal-box-glass {
     background: rgba(13, 22, 38, 0.85) !important;
     backdrop-filter: blur(24px);
-    border: 1px solid rgba(239, 68, 68, 0.2);
+    border: 1px solid rgba(239, 68, 68, 0.2); /* Red alert accent boundary */
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
   }
 
@@ -125,10 +126,10 @@
       </div>
       <a href="{{ route('admin.dashboard') }}"
          class="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide">
-        <svg class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
         </svg>
-        Dashboard
+        KEMBALI KE DASBOR
       </a>
     </div>
 
@@ -157,19 +158,19 @@
 
         <a href="{{ route('admin.users.index', ['tab' => 'users']) }}"
            class="tab-btn {{ $tab === 'users' ? 'active' : '' }}">
-          User
+          User Reguler
           <span class="tab-badge">{{ $regularUsers->total() }}</span>
         </a>
 
         <a href="{{ route('admin.users.index', ['tab' => 'sellers']) }}"
            class="tab-btn {{ $tab === 'sellers' ? 'active' : '' }}">
-          Seller
+          Mitra Seller
           <span class="tab-badge">{{ $sellers->total() }}</span>
         </a>
 
         <a href="{{ route('admin.users.index', ['tab' => 'applications']) }}"
            class="tab-btn {{ $tab === 'applications' ? 'active' : '' }}">
-          Pengajuan Seller
+          Pengajuan Toko
           @if($applications->total() > 0)
             <span class="tab-badge badge-pending">{{ $applications->total() }}</span>
           @endif
@@ -177,7 +178,7 @@
 
         <a href="{{ route('admin.users.index', ['tab' => 'pending_verification']) }}"
            class="tab-btn {{ $tab === 'pending_verification' ? 'active' : '' }}">
-          Pending Verifikasi
+          Pending Verifikasi Email
           @if($pendingVerifications->total() > 0)
             <span class="tab-badge badge-pending">{{ $pendingVerifications->total() }}</span>
           @endif
@@ -187,42 +188,42 @@
     </div>
 
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
-    {{-- TAB: USERS                                                        --}}
+    {{-- TAB 1: REGULAR USERS                                              --}}
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
     @if($tab === 'users')
       <div class="rounded-3xl panel-card-glass overflow-hidden">
         <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-300 text-sm">
-          Daftar pengguna (buyer) terdaftar. Admin hanya dapat mengubah <strong class="text-white">status akun</strong> (aktif/suspend).
+          Daftar akun pembeli (buyer) terdaftar. Anda berhak melakukan penangguhan (<span class="text-rose-400 font-bold">suspend</span>) jika akun terindikasi curang.
         </div>
 
         @if($regularUsers->isEmpty())
           <div class="py-16 text-center text-slate-500">
             <div class="text-3xl mb-2">👥</div>
-            <p class="text-sm font-medium">Belum ada pengguna.</p>
+            <p class="text-sm font-medium">Belum ada data pengguna reguler.</p>
           </div>
         @else
           <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-white/5 text-sm text-left text-slate-300">
               <thead class="bg-black/30 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5">
                 <tr>
-                  <th class="px-6 py-4">Pengguna</th>
-                  <th class="px-6 py-4">Email</th>
-                  <th class="px-6 py-4">Bergabung</th>
-                  <th class="px-6 py-4">Status</th>
-                  <th class="px-6 py-4 text-right">Aksi</th>
+                  <th class="px-6 py-4">Nama / Pengguna</th>
+                  <th class="px-6 py-4">Alamat Email</th>
+                  <th class="px-6 py-4">Tanggal Gabung</th>
+                  <th class="px-6 py-4">Status Akun</th>
+                  <th class="px-6 py-4 text-right">Aksi Otoritas</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/5">
                 @foreach($regularUsers as $user)
                   <tr class="hover:bg-white/5 transition-colors">
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <a href="{{ route('admin.users.show', $user->id) }}" class="flex items-center gap-3 group">
-                        <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="w-9 h-9 rounded-full object-cover border border-white/10 bg-black/20 group-hover:border-amber-400 transition-colors" />
+                      <div class="flex items-center gap-3">
+                        <img src="{{ $user->avatar_url }}" alt="Avatar {{ $user->name }}" class="w-9 h-9 rounded-full object-cover border border-white/10 bg-black/20" />
                         <div>
-                          <p class="font-bold text-white group-hover:text-amber-400 transition-colors">{{ $user->name }}</p>
-                          <p class="text-xs text-slate-500 font-mono">UID #{{ $user->id }} (Klik untuk Detail)</p>
+                          <p class="font-bold text-white">{{ $user->name }}</p>
+                          <p class="text-xs text-slate-500 font-mono">UID #{{ $user->id }}</p>
                         </div>
-                      </a>
+                      </div>
                     </td>
                     <td class="px-6 py-4 text-slate-400 whitespace-nowrap font-medium">{{ $user->email }}</td>
                     <td class="px-6 py-4 text-slate-500 text-xs whitespace-nowrap font-medium">{{ $user->created_at->format('d M Y') }}</td>
@@ -232,32 +233,26 @@
                         {{ $user->status === 'active' ? 'Aktif' : 'Suspended' }}
                       </span>
                       @if($user->status === 'suspended' && $user->suspend_reason)
-                        <p class="text-[11px] text-rose-400/80 mt-1 max-w-[200px] truncate font-medium" title="{{ $user->suspend_reason }}">
-                          {{ $user->suspend_reason }}
+                        <p class="text-[11px] text-rose-400/80 mt-1 max-w-[220px] truncate font-medium" title="{{ $user->suspend_reason }}">
+                          Reason: {{ $user->suspend_reason }}
                         </p>
                       @endif
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
-                      <div class="flex items-center justify-end gap-2">
-                        <a href="{{ route('admin.users.show', $user->id) }}" 
-                           class="rounded-xl bg-brand-500/10 border border-brand-500/25 px-3.5 py-2 text-xs font-bold text-brand-400 hover:bg-brand-500 hover:text-white transition-all">
-                          Detail
-                        </a>
-                        @if($user->status === 'active')
-                          <button onclick="openSuspendModal({{ $user->id }}, '{{ addslashes($user->name) }}')"
-                                  class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-3.5 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
-                            Suspend
+                      @if($user->status === 'active')
+                        <button onclick="openSuspendModal({{ $user->id }}, '{{ addslashes($user->name) }}')"
+                                class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
+                          Suspend
+                        </button>
+                      @else
+                        <form method="POST" action="{{ route('admin.users.status', $user) }}" class="inline-block">
+                          @csrf @method('PUT')
+                          <input type="hidden" name="status" value="active" />
+                          <button type="submit" class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-xs font-bold text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 transition-all">
+                            Aktifkan Kembali
                           </button>
-                        @else
-                          <form method="POST" action="{{ route('admin.users.status', $user) }}" class="inline-block">
-                            @csrf @method('PUT')
-                            <input type="hidden" name="status" value="active" />
-                            <button type="submit" class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-2 text-xs font-bold text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 transition-all">
-                              Aktifkan
-                            </button>
-                          </form>
-                        @endif
-                      </div>
+                        </form>
+                      @endif
                     </td>
                   </tr>
                 @endforeach
@@ -272,29 +267,29 @@
     @endif
 
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
-    {{-- TAB: PENDING VERIFICATION                                         --}}
+    {{-- TAB 2: PENDING VERIFICATION                                       --}}
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
     @if($tab === 'pending_verification')
       <div class="rounded-3xl panel-card-glass overflow-hidden">
         <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-300 text-sm">
-          Akun berikut sudah register tetapi belum melakukan verifikasi email.
+          Daftar pendaftaran akun baru yang belum menyelesaikan verifikasi link email.
         </div>
 
         @if($pendingVerifications->isEmpty())
           <div class="py-16 text-center text-slate-500">
             <div class="text-3xl mb-2">✉️</div>
-            <p class="text-sm font-medium">Tidak ada akun pending verifikasi email.</p>
+            <p class="text-sm font-medium">Sempurna! Tidak ada akun tertahan di verifikasi email.</p>
           </div>
         @else
           <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-white/5 text-sm text-left text-slate-300">
               <thead class="bg-black/30 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5">
                 <tr>
-                  <th class="px-6 py-4">Pengguna</th>
-                  <th class="px-6 py-4">Email</th>
-                  <th class="px-6 py-4">Role</th>
-                  <th class="px-6 py-4">Register</th>
-                  <th class="px-6 py-4">Status Verifikasi</th>
+                  <th class="px-6 py-4">Nama Pengguna</th>
+                  <th class="px-6 py-4">Alamat Email</th>
+                  <th class="px-6 py-4">Role Akses</th>
+                  <th class="px-6 py-4">Waktu Registrasi</th>
+                  <th class="px-6 py-4">Status Log</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/5">
@@ -302,7 +297,7 @@
                   <tr class="hover:bg-white/5 transition-colors">
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="flex items-center gap-3">
-                        <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="w-9 h-9 rounded-full object-cover border border-white/10 bg-black/20" />
+                        <img src="{{ $user->avatar_url }}" alt="Avatar {{ $user->name }}" class="w-9 h-9 rounded-full object-cover border border-white/10 bg-black/20" />
                         <div>
                           <p class="font-bold text-white">{{ $user->name }}</p>
                           <p class="text-xs text-slate-500 font-mono">UID #{{ $user->id }}</p>
@@ -315,7 +310,7 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span class="pill pill-pending">
                         <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>
-                        Belum Verifikasi
+                        Unverified
                       </span>
                     </td>
                   </tr>
@@ -331,47 +326,47 @@
     @endif
 
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
-    {{-- TAB: SELLERS                                                      --}}
+    {{-- TAB 3: MITRA SELLERS                                              --}}
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
     @if($tab === 'sellers')
       <div class="rounded-3xl panel-card-glass overflow-hidden">
         <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-300 text-sm">
-          Daftar seller yang telah diverifikasi. Admin dapat suspend/aktifkan akun seller.
+          Seluruh toko mitra pedagang aktif. Anda dapat membekukan hak penjualan mereka melalui tombol suspensi.
         </div>
 
         @if($sellers->isEmpty())
           <div class="py-16 text-center text-slate-500">
             <div class="text-3xl mb-2">🏪</div>
-            <p class="text-sm font-medium">Belum ada seller yang diverifikasi.</p>
+            <p class="text-sm font-medium">Belum ada mitra pedagang (seller) terverifikasi.</p>
           </div>
         @else
           <div class="overflow-x-auto">
             <table class="min-w-full divide-y divide-white/5 text-sm text-left text-slate-300">
               <thead class="bg-black/30 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5">
                 <tr>
-                  <th class="px-6 py-4">Seller</th>
-                  <th class="px-6 py-4">Nama Toko</th>
-                  <th class="px-6 py-4">Email</th>
-                  <th class="px-6 py-4">Status Akun</th>
-                  <th class="px-6 py-4 text-right">Aksi</th>
+                  <th class="px-6 py-4">Pemilik Lapak</th>
+                  <th class="px-6 py-4">Brand / Nama Toko</th>
+                  <th class="px-6 py-4">Email Kontak</th>
+                  <th class="px-6 py-4">Status Toko</th>
+                  <th class="px-6 py-4 text-right">Tindakan Ketat</th>
                 </tr>
               </thead>
               <tbody class="divide-y divide-white/5">
                 @foreach($sellers as $seller)
                   <tr class="hover:bg-white/5 transition-colors">
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <a href="{{ route('admin.users.show', $seller->id) }}" class="flex items-center gap-3 group">
-                        <img src="{{ $seller->avatar_url }}" alt="{{ $seller->name }}" class="w-9 h-9 rounded-full object-cover border border-white/10 bg-black/20 group-hover:border-amber-400 transition-colors" />
+                      <div class="flex items-center gap-3">
+                        <img src="{{ $seller->avatar_url }}" alt="Avatar {{ $seller->name }}" class="w-9 h-9 rounded-full object-cover border border-white/10" />
                         <div>
-                          <p class="font-bold text-white group-hover:text-amber-400 transition-colors">{{ $seller->name }}</p>
-                          <p class="text-xs text-slate-500 font-mono">UID #{{ $seller->id }} (Klik untuk Detail)</p>
+                          <p class="font-bold text-white">{{ $seller->name }}</p>
+                          <p class="text-xs text-slate-500 font-mono">UID #{{ $seller->id }}</p>
                         </div>
-                      </a>
+                      </div>
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="flex items-center gap-2.5">
                         @if($seller->shop_photo)
-                          <img src="{{ $seller->shop_photo_url ?? asset('storage/' . $seller->shop_photo) }}" alt="Foto toko" class="shop-thumb" />
+                          <img src="{{ $seller->shop_photo_url ?? asset('storage/' . $seller->shop_photo) }}" alt="Shop Thumbnail" class="shop-thumb" />
                         @endif
                         <span class="text-white font-bold text-sm tracking-tight">{{ $seller->shop_name ?? $seller->name }}</span>
                       </div>
@@ -380,35 +375,29 @@
                     <td class="px-6 py-4 whitespace-nowrap">
                       <span class="pill {{ $seller->status === 'active' ? 'pill-active' : 'pill-suspended' }}">
                         <span class="w-1.5 h-1.5 rounded-full {{ $seller->status === 'active' ? 'bg-emerald-400' : 'bg-red-400' }}"></span>
-                        {{ $seller->status === 'active' ? 'Aktif' : 'Suspended' }}
+                        {{ $seller->status === 'active' ? 'Verified Lapak' : 'Suspended' }}
                       </span>
                       @if($seller->status === 'suspended' && $seller->suspend_reason)
                         <p class="text-[11px] text-rose-400/80 mt-1 max-w-[200px] truncate font-medium" title="{{ $seller->suspend_reason }}">
-                          {{ $seller->suspend_reason }}
+                          Reason: {{ $seller->suspend_reason }}
                         </p>
                       @endif
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
-                      <div class="flex items-center justify-end gap-2">
-                        <a href="{{ route('admin.users.show', $seller->id) }}" 
-                           class="rounded-xl bg-brand-500/10 border border-brand-500/25 px-3.5 py-2 text-xs font-bold text-brand-400 hover:bg-brand-500 hover:text-white transition-all">
-                          Detail
-                        </a>
-                        @if($seller->status === 'active')
-                          <button onclick="openSuspendModal({{ $seller->id }}, '{{ addslashes($seller->name) }}')"
-                                  class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-3.5 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
-                            Suspend
+                      @if($seller->status === 'active')
+                        <button onclick="openSuspendModal({{ $seller->id }}, '{{ addslashes($seller->name) }}')"
+                                class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
+                          Suspend Toko
+                        </button>
+                      @else
+                        <form method="POST" action="{{ route('admin.users.status', $seller) }}" class="inline-block">
+                          @csrf @method('PUT')
+                          <input type="hidden" name="status" value="active" />
+                          <button type="submit" class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-xs font-bold text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 transition-all">
+                            Aktifkan Kembali
                           </button>
-                        @else
-                          <form method="POST" action="{{ route('admin.users.status', $seller) }}" class="inline-block">
-                            @csrf @method('PUT')
-                            <input type="hidden" name="status" value="active" />
-                            <button type="submit" class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-3.5 py-2 text-xs font-bold text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 transition-all">
-                              Aktifkan
-                            </button>
-                          </form>
-                        @endif
-                      </div>
+                        </form>
+                      @endif
                     </td>
                   </tr>
                 @endforeach
@@ -423,80 +412,79 @@
     @endif
 
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
-    {{-- TAB: PENGAJUAN SELLER                                             --}}
+    {{-- TAB 4: APPLICATION WAITING LIST                                   --}}
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
     @if($tab === 'applications')
       <div class="space-y-4">
         @if($applications->isEmpty())
           <div class="rounded-3xl panel-card-glass py-16 text-center text-slate-500">
-            <div class="text-4xl mb-3">🛡️</div>
-            <p class="font-bold text-slate-400">Tidak ada pengajuan seller yang menunggu.</p>
-            <p class="text-xs text-slate-600 mt-1">Semua pengajuan telah diproses.</p>
+            <div class="text-4xl mb-3 animate-bounce">🛡️</div>
+            <p class="font-bold text-slate-300">Tidak Ada Berkas Pengajuan Tertunda</p>
+            <p class="text-xs text-slate-500 mt-1 max-w-xs mx-auto">Semua kiriman formulir pengajuan toko baru telah selesai diproses oleh tim administrasi.</p>
           </div>
         @else
           <div class="rounded-2xl border border-amber-500/20 bg-amber-500/5 px-5 py-3.5 backdrop-blur-md flex items-center gap-2.5">
             <span class="w-2 h-2 rounded-full bg-amber-400 animate-ping"></span>
             <p class="text-sm font-medium text-amber-300">
-              Terdapat <strong>{{ $applications->total() }}</strong> pengajuan seller menunggu verifikasi.
+              Menunggu Tindakan: Terdapat <strong class="font-extrabold text-white">{{ $applications->total() }}</strong> formulir permohonan pendaftaran mitra baru.
             </p>
           </div>
 
           @foreach($applications as $applicant)
-            <div class="rounded-3xl panel-card-glass overflow-hidden transition-all">
+            <div class="rounded-3xl panel-card-glass overflow-hidden group transition-all">
               
-              {{-- Application Card Header --}}
+              {{-- Card Header --}}
               <div class="flex flex-col sm:flex-row sm:items-center gap-4 px-6 pt-6 pb-4">
-                <img src="{{ $applicant->avatar_url }}" alt="{{ $applicant->name }}" class="w-14 h-14 rounded-2xl object-cover border border-white/5 bg-black/30 shrink-0 shadow-inner" />
+                <img src="{{ $applicant->avatar_url }}" alt="User {{ $applicant->name }}" class="w-14 h-14 rounded-2xl object-cover border border-white/5 bg-black/30 shrink-0 shadow-inner" />
                 <div class="flex-1 min-w-0">
                   <div class="flex items-center gap-2">
                     <h2 class="text-lg font-bold text-white tracking-tight">{{ $applicant->name }}</h2>
-                    <span class="pill pill-pending">Pending</span>
+                    <span class="pill pill-pending">Review Pending</span>
                   </div>
                   <p class="text-sm text-slate-400 font-medium">{{ $applicant->email }}</p>
-                  <p class="text-xs text-slate-500 font-medium mt-0.5">Pengajuan dikirim: {{ $applicant->updated_at->format('d M Y, H:i') }}</p>
+                  <p class="text-xs text-slate-500 font-medium mt-0.5">Tanggal Pengajuan: <span class="text-slate-400 font-mono">{{ $applicant->updated_at->format('d M Y, H:i') }}</span></p>
                 </div>
               </div>
 
+              {{-- Card Details Panel --}}
               <div class="border-t border-white/5 px-6 py-5 grid gap-6 sm:grid-cols-2 bg-black/10">
-                {{-- Shop Photo --}}
                 <div>
-                  <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-2">Foto Toko</p>
+                  <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-2">Unggulan Foto Spanduk Toko</p>
                   @if($applicant->shop_photo)
                     <img src="{{ $applicant->shop_photo_url ?? asset('storage/' . $applicant->shop_photo) }}"
                          alt="Foto toko {{ $applicant->shop_name }}"
-                         class="w-full max-w-xs h-40 object-cover rounded-2xl border border-white/5 bg-black/40 shadow-inner"
+                         class="w-full max-w-xs h-40 object-cover rounded-2xl border border-white/5 bg-black/40 shadow-inner hover:scale-[1.01] transition-transform"
                          onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($applicant->shop_name ?? 'Toko') }}&size=300&background=1e293b&color=94a3b8'" />
                   @else
                     <div class="w-full max-w-xs h-40 rounded-2xl border border-dashed border-white/5 bg-black/20 flex items-center justify-center text-slate-600 text-xs font-bold">
-                      Tidak ada foto
+                      NO ATTACHED IMAGE FILE
                     </div>
                   @endif
                 </div>
 
-                {{-- Shop Details --}}
                 <div class="space-y-4">
                   <div>
-                    <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-0.5">Nama Toko</p>
+                    <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-0.5">Pengajuan Nama Brand Lapak</p>
                     <p class="text-white font-bold text-lg tracking-tight text-amber-400">{{ $applicant->shop_name ?? '—' }}</p>
                   </div>
                   <div>
-                    <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-1">Deskripsi Toko</p>
-                    <p class="text-slate-300 text-sm leading-relaxed bg-black/20 p-3 rounded-xl border border-white/5">{{ $applicant->shop_description ?? '—' }}</p>
+                    <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-1">Rencana Deskripsi & Komoditas Jualan</p>
+                    <p class="text-slate-300 text-sm leading-relaxed bg-black/20 p-3 rounded-xl border border-white/5">{{ $applicant->shop_description ?? 'Tidak menyertakan deskripsi.' }}</p>
                   </div>
                 </div>
               </div>
 
-              {{-- Action Buttons --}}
-              <div class="border-t border-white/5 px-6 py-4 flex flex-col sm:flex-row gap-2.5 justify-end">
+              {{-- Footer Action Bar --}}
+              <div class="border-t border-white/5 px-6 py-4 flex flex-col sm:flex-row justify-end items-center gap-2.5">
                 <form method="POST" action="{{ route('admin.users.approve-seller', $applicant) }}" class="w-full sm:w-auto">
                   @csrf
                   <button type="submit"
-                          onclick="return confirm('Approve pengajuan seller {{ addslashes($applicant->name) }} ({{ addslashes($applicant->shop_name ?? '') }})?')"
-                          class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 px-5 py-2.5 text-xs font-bold text-slate-950 transition-all shadow-md">
+                          onclick="return confirm('Approve hak jualan dan buka lapak pedagang untuk {{ addslashes($applicant->name) }}?')"
+                          class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 px-5 py-2.5 text-xs font-bold text-slate-950 transition-all shadow-md shadow-emerald-500/5">
                     <svg class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                       <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5"/>
                     </svg>
-                    Approve Seller
+                    APPROVE PERMOHONAN
                   </button>
                 </form>
 
@@ -505,7 +493,7 @@
                   <svg class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
                   </svg>
-                  Tolak
+                  TOLAK BERKAS
                 </button>
               </div>
 
@@ -521,16 +509,17 @@
 </div>
 
 {{-- ─────────────────────────────────────────────────────────────────────── --}}
-{{-- MODAL: Suspend Akun                                                   --}}
+{{-- MODAL INTERAKTIF HUD: SUSPEND AKUN USER/SELLER                         --}}
 {{-- ─────────────────────────────────────────────────────────────────────── --}}
 <div class="modal-overlay animate-fade-in" id="suspend-modal" role="dialog" aria-modal="true" aria-labelledby="suspend-modal-title">
   <div class="w-full max-w-md rounded-3xl p-6 sm:p-7 modal-box-glass border-rose-500/30">
     <div class="flex items-center gap-2 border-b border-white/5 pb-3 mb-4">
       <span class="text-xl">⚠️</span>
-      <h3 id="suspend-modal-title" class="text-lg font-bold text-white tracking-tight">Suspend Akun</h3>
+      <h3 id="suspend-modal-title" class="text-lg font-bold text-white tracking-tight">Otoritas Penangguhan Akun</h3>
     </div>
+    
     <p class="text-xs text-slate-400 leading-relaxed mb-4">
-      Akun <strong id="suspend-user-name" class="text-white"></strong> akan disuspend dan tidak bisa login.
+      Tindakan Tegas: Akun <strong id="suspend-user-name" class="text-white font-bold"></strong> akan dibekukan permanen/sementara dan hak akses masuk aplikasi akan langsung ditolak sistem.
     </p>
 
     <form id="suspend-form" method="POST" action="">
@@ -539,19 +528,19 @@
 
       <div class="mb-5">
         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-          Alasan Suspend <span class="text-slate-500 font-normal lowercase">(akan ditampilkan ke pengguna)</span>
+          Alasan Pembekuan Lapak / Akun <span class="text-slate-500 font-normal lowercase">(muncul di sisi log user)</span>
         </label>
         <textarea name="suspend_reason" rows="4" maxlength="1000" required
           class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none resize-none"
-          placeholder="Contoh: Melanggar kebijakan marketplace — penjualan item ilegal."></textarea>
+          placeholder="Contoh: Terdeteksi melakukan penipuan transaksi top-up ilegal pada invoice pembeli atau penyalahgunaan akun dummy."></textarea>
       </div>
 
       <div class="flex gap-2.5">
-        <button type="submit" class="flex-1 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 px-5 py-3 text-xs font-bold text-white transition-all shadow-md">
-          Suspend Akun
+        <button type="submit" class="flex-1 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 px-5 py-3 text-xs font-bold text-white transition-all shadow-md shadow-rose-600/10">
+          EKSEKUSI BANNED
         </button>
         <button type="button" onclick="closeSuspendModal()" class="flex-1 rounded-xl border border-white/5 bg-white/5 px-5 py-3 text-xs font-bold text-slate-300 hover:bg-white/10 transition-colors">
-          Batal
+          BATALKAN
         </button>
       </div>
     </form>
@@ -559,16 +548,17 @@
 </div>
 
 {{-- ─────────────────────────────────────────────────────────────────────── --}}
-{{-- MODAL: Tolak Pengajuan Seller                                         --}}
+{{-- MODAL INTERAKTIF HUD: TOLAK PENGAJUAN FORM SELLER                      --}}
 {{-- ─────────────────────────────────────────────────────────────────────── --}}
 <div class="modal-overlay animate-fade-in" id="reject-modal" role="dialog" aria-modal="true" aria-labelledby="reject-modal-title">
   <div class="w-full max-w-md rounded-3xl p-6 sm:p-7 modal-box-glass border-amber-500/30">
     <div class="flex items-center gap-2 border-b border-white/5 pb-3 mb-4">
       <span class="text-xl">❌</span>
-      <h3 id="reject-modal-title" class="text-lg font-bold text-white tracking-tight">Tolak Pengajuan Seller</h3>
+      <h3 id="reject-modal-title" class="text-lg font-bold text-white tracking-tight">Tolak Pendaftaran Mitra</h3>
     </div>
+    
     <p class="text-xs text-slate-400 leading-relaxed mb-4">
-      Pengajuan dari <strong id="reject-user-name" class="text-white"></strong> akan ditolak. Pengguna akan menerima notifikasi beserta alasan penolakan.
+      Berkas formulir milik pembeli <strong id="reject-user-name" class="text-white font-bold"></strong> akan dianulir. Tuliskan alasan objektif agar user dapat memperbaiki berkas toko mereka.
     </p>
 
     <form id="reject-form" method="POST" action="">
@@ -576,20 +566,20 @@
 
       <div class="mb-5">
         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-          Alasan Penolakan <span class="text-rose-400">*</span>
+          Alasan Penolakan Berkas Resmi <span class="text-rose-400">*</span>
         </label>
         <textarea name="rejection_reason" rows="4" maxlength="1000" minlength="10" required
           class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none resize-none"
-          placeholder="Contoh: Foto toko tidak jelas. Mohon unggah foto toko yang lebih representatif."></textarea>
-        <p class="text-[10px] text-slate-500 mt-1">Minimal 10 karakter. Alasan ini akan dikirim ke pengguna.</p>
+          placeholder="Contoh: Lampiran foto logo toko buram / blur. Harap ajukan kembali dengan deskripsi segmentasi game yang lebih jelas dan resolusi foto yang proporsional."></textarea>
+        <p class="text-[10px] text-slate-500 mt-1">Batas minimal pengisian kolom deskripsi alasan adalah 10 karakter.</p>
       </div>
 
       <div class="flex gap-2.5">
-        <button type="submit" class="flex-1 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 px-5 py-3 text-xs font-bold text-white transition-all shadow-md">
-          Tolak Pengajuan
+        <button type="submit" class="flex-1 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 px-5 py-3 text-xs font-bold text-white transition-all shadow-md shadow-orange-600/10">
+          KONFIRMASI REJECT
         </button>
         <button type="button" onclick="closeRejectModal()" class="flex-1 rounded-xl border border-white/5 bg-white/5 px-5 py-3 text-xs font-bold text-slate-300 hover:bg-white/10 transition-colors">
-          Batal
+          BATALKAN
         </button>
       </div>
     </form>

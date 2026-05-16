@@ -56,12 +56,6 @@ class AdminController extends Controller
 
         return view('admin.users.index', compact('tab', 'regularUsers', 'sellers', 'applications', 'pendingVerifications', 'counts'));
     }
-    
-    public function show(User $user): View
-    {
-        // Langsung lempar model $user ke halaman view detail transparan kemarin
-        return view('admin.users.show', compact('user'));
-    }
 
     // ─── 2. USER ACTIONS ─────────────────────────────────────────────────────
 
