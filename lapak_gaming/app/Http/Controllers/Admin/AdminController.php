@@ -347,14 +347,7 @@ class AdminController extends Controller
             $pages[] = $lines;
         }
 
-        $pdf = $this->buildSimplePdf($pages);
-        $filename = 'laporan-transaksi-' . now()->format('Ymd-His') . '.pdf';
-
-        return response($pdf, 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            'Content-Length' => strlen($pdf),
-        ]);
+        dd($pages);
     }
 
     public function showOrder(Order $order): View
