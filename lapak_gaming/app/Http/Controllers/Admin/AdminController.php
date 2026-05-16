@@ -298,12 +298,11 @@ class AdminController extends Controller
             $relations[] = 'financial';
         }
 
-        $orders = Order::query()
-            ->with($relations)
+       $orders = Order::query()
             ->oldest()
             ->get();
 
-            dd($orders);
+        dd($orders);
 
         $totalAmount = $orders->sum(fn (Order $order) => $this->reportOrderTotal($order));
         $generatedAt = now()->format('d M Y H:i');
