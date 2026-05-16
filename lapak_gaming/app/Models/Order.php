@@ -83,11 +83,6 @@ class Order extends Model {
         };
     }
 
-    public function getSubtotalAttribute(): float
-    {
-        return (float) ($this->financial?->subtotal ?? 0);
-    }
-
     public function getFeeAmountAttribute(): float
     {
         if (!Schema::hasTable('order_financials')) {
