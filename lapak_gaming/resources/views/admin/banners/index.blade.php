@@ -178,16 +178,26 @@
         </form>
 
         {{-- ── DECK GRID: ACTIVE BANNER LISTS ─────────────────────── --}}
-        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
+        <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 scroller-clean">
             @forelse ($banners as $banner)
                 <article class="panel-card-glass rounded-3xl overflow-hidden flex flex-col group hover:scale-[1.01] hover:border-white/10 transition-all duration-300">
                     
                     {{-- Media Frame Component --}}
                     <div class="relative h-44 w-full bg-black/40 overflow-hidden shrink-0 border-b border-white/5">
-                        <img src="{{ $banner->image_path ? asset('storage/' . $banner->image_path) : ($banner->image_url ?? '') }}" 
+                        {{-- 🛠️ PERBAIKAN LOGIKA GAMBAR ── --}}
+                        @php
+                            // Tentukan URL utama: Upload Lokal > Link Eksternal
+                            $mainUrl = $banner->image_path ? asset('storage/' . $banner->image_path) : ($banner->image_url ?? '');
+                            
+                            // Tentukan URL cadangan jika onerror terjadi
+                            $fallbackUrl = asset('images/default-banner-fallback.webp'); 
+                        @endphp
+
+                        <img src="{{ $mainUrl }}" 
                              alt="{{ $banner->title }}" 
                              class="h-full w-full object-cover group-hover:scale-105 transition-transform duration-500"
-                             onerror="this.src='https://placehold.co/600x400/0a111e/94a3b8?text=Banner+Image+Broken'">
+                             {{-- 🛠️ PERBAIKAN ONERROR ── (Cegah Infinite Loop) --}}
+                             onerror="this.onerror=null; this.src='https://placehold.co/600x400/0a111e/94a3b8?text=Image+Missing';">
                         
                         {{-- Absolute Overlays Badges --}}
                         <div class="absolute top-3 left-3">
