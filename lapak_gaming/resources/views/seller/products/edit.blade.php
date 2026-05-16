@@ -2,15 +2,74 @@
 
 @section('title', 'Edit Produk')
 
-@section('content')
-<div class="min-h-screen bg-slate-950 py-12 px-4">
-    <div class="mx-auto max-w-4xl rounded-3xl border border-slate-800 bg-slate-900 p-8">
-        <h1 class="text-3xl font-bold text-white">Edit Produk</h1>
-        <p class="mt-2 text-slate-400">Perbarui detail produk Anda.</p>
+@push('styles')
+<style>
+    /* ── True Glassmorphism Design ────────────────────────────── */
+    .dashboard-transparent {
+        background: transparent !important; /* Biar animasi latar belakang tembus pandang */
+    }
+    
+    .form-card-glass {
+        background: rgba(10, 17, 30, 0.35) !important;
+        backdrop-filter: blur(24px) saturate(160%);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+    }
 
+    .input-glass {
+        background: rgba(5, 9, 16, 0.45) !important;
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    
+    .input-glass:focus {
+        border-color: rgba(245, 158, 11, 0.5) !important;
+        box-shadow: 0 0 14px rgba(245, 158, 11, 0.15);
+    }
+
+    /* Fix dropdown text color on select option elements */
+    .input-glass option {
+        background: #0d1421;
+        color: #e2e8f0;
+    }
+
+    /* Custom File Input Container */
+    .file-input-wrapper {
+        border: 1px dashed rgba(255, 255, 255, 0.15);
+        background: rgba(255, 255, 255, 0.02);
+        transition: all 0.2s ease;
+    }
+    .file-input-wrapper:hover {
+        border-color: rgba(245, 158, 11, 0.4);
+        background: rgba(245, 158, 11, 0.02);
+    }
+</style>
+@endpush
+
+@section('content')
+<div class="min-h-screen py-12 px-4 relative overflow-hidden dashboard-transparent">
+    {{-- Ambient Light penambah kontras --}}
+    <div class="absolute top-0 left-1/3 w-96 h-96 bg-brand-500/10 rounded-full blur-[150px] pointer-events-none"></div>
+
+    <div class="mx-auto max-w-4xl rounded-3xl p-6 sm:p-8 form-card-glass relative z-10">
+        
+        {{-- Header Form --}}
+        <div class="border-b border-white/5 pb-5">
+            <div class="flex items-center gap-2 mb-2">
+                <span class="w-2 h-2 rounded-full bg-amber-500 animate-pulse"></span>
+                <span class="text-xs font-bold uppercase tracking-widest text-amber-500/80">Modify Commodities</span>
+            </div>
+            <h1 class="text-3xl font-extrabold text-white tracking-tight">Edit Detail Produk</h1>
+            <p class="mt-1 text-slate-400 text-sm font-medium">Perbarui spesifikasi atau sesuaikan harga komoditas lapak jualan Anda.</p>
+        </div>
+
+        {{-- Error Validation Alert --}}
         @if ($errors->any())
-            <div class="mt-6 rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-rose-200">
-                <ul class="list-disc list-inside space-y-1 text-sm">
+            <div class="mt-6 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 backdrop-blur-md text-rose-300">
+                <div class="flex items-center gap-2 mb-1.5 font-bold text-sm">
+                    Refusal Alert: Ada beberapa kesalahan data input:
+                </div>
+                <ul class="list-disc list-inside space-y-1 text-xs font-medium pl-1">
                     @foreach ($errors->all() as $error)
                         <li>{{ $error }}</li>
                     @endforeach
@@ -18,83 +77,87 @@
             </div>
         @endif
 
-        <form action="{{ route('seller.produk.update', $produk) }}" method="POST" enctype="multipart/form-data" class="mt-8 space-y-6">
+        {{-- Form Start --}}
+        <form action="{{ route('seller.produk.update', $produk) }}" method="POST" enctype="multipart/form-data" class="mt-6 space-y-5">
             @csrf
             @method('PUT')
 
-            <div class="grid gap-4 lg:grid-cols-2">
-                <label class="block">
-                    <span class="text-sm font-medium text-slate-300">Nama Produk</span>
-                    <input name="name" type="text" value="{{ old('name', $produk->name) }}" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none" required />
-                </label>
-                <label class="block">
-                    <span class="text-sm font-medium text-slate-300">Harga</span>
-                    <input name="price" type="number" value="{{ old('price', $produk->price) }}" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none" required />
-                </label>
+            {{-- Row 1: Nama & Harga --}}
+            <div class="grid gap-5 lg:grid-cols-2">
+                <div class="block">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Nama Produk</span>
+                    <input name="name" type="text" value="{{ old('name', $produk->name) }}" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required />
+                </div>
+                <div class="block">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Harga (Rp)</span>
+                    <input name="price" type="number" value="{{ old('price', $produk->price) }}" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required />
+                </div>
             </div>
 
-            <div class="grid gap-4 lg:grid-cols-2">
-                <label class="block">
-                    <span class="text-sm font-medium text-slate-300">Kategori</span>
-                    <select name="category_id" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none" required>
+            {{-- Row 2: Kategori & Jenis --}}
+            <div class="grid gap-5 lg:grid-cols-2">
+                <div class="block">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Kategori Game</span>
+                    <select name="category_id" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required>
                         <option value="">Pilih kategori</option>
                         @foreach($categories as $category)
                             <option value="{{ $category->id }}" @selected(old('category_id', $produk->category_id) == $category->id)>{{ $category->name }}</option>
                         @endforeach
                     </select>
-                </label>
-                <label class="block">
-                    <span class="text-sm font-medium text-slate-300">Jenis Produk</span>
-                    <select name="type" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none" required>
-                        @foreach(['topup' => 'Topup', 'item' => 'Item', 'akun' => 'Akun', 'voucher' => 'Voucher', 'gamekey' => 'Gamekey'] as $value => $label)
+                </div>
+                <div class="block">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Jenis Layanan Produk</span>
+                    <select name="type" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required>
+                        @foreach(['topup' => '⚡ Topup Kilat', 'item' => '⚔️ Item & Skin', 'akun' => '👤 Akun Game', 'voucher' => '🎫 Voucher Digital', 'gamekey' => '🔑 Game Key'] as $value => $label)
                             <option value="{{ $value }}" @selected(old('type', $produk->type) === $value)>{{ $label }}</option>
                         @endforeach
                     </select>
-                </label>
+                </div>
             </div>
 
-            <div class="grid gap-4 lg:grid-cols-2">
-                <label class="block">
-                    <span class="text-sm font-medium text-slate-300">Stok</span>
-                    <input name="stock" type="number" value="{{ old('stock', $produk->stock) }}" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none" required />
-                </label>
-                <label class="block">
-                    <span class="text-sm font-medium text-slate-300">Status</span>
-                    <select name="status" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none" required>
-                        @foreach(['draft' => 'Draft', 'published' => 'Published', 'archived' => 'Archived'] as $value => $label)
+            {{-- Row 3: Stok & Status Publikasi --}}
+            <div class="grid gap-5 lg:grid-cols-2">
+                <div class="block">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Jumlah Stok</span>
+                    <input name="stock" type="number" value="{{ old('stock', $produk->stock) }}" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required />
+                </div>
+                <div class="block">
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Status Visibilitas Lapak</span>
+                    <select name="status" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required>
+                        @foreach(['published' => '⚡ Published (Tampilkan)', 'draft' => '💤 Draft (Sembunyikan)', 'archived' => '📁 Archived (Arsip)'] as $value => $label)
                             <option value="{{ $value }}" @selected(old('status', $produk->status) === $value)>{{ $label }}</option>
                         @endforeach
                     </select>
-                </label>
+                </div>
             </div>
 
-            <fieldset class="block">
-                <span class="text-sm font-medium text-slate-300 block mb-4">Foto Produk</span>
+            {{-- Row 4: Galeri Foto Manajemen --}}
+            <fieldset class="block border-t border-white/5 pt-4">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-3">Manajemen Galeri Foto</span>
                 
                 {{-- Existing Images Section --}}
                 @if($produk->image_paths)
-                    <div class="mb-6">
-                        <h3 class="text-sm font-semibold text-slate-300 mb-3">Foto Saat Ini</h3>
+                    <div class="mb-5">
+                        <h3 class="text-xs font-semibold text-slate-400 mb-2.5">Foto Saat Ini (Hover & klik tong sampah untuk hapus)</h3>
                         <div class="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
                             @foreach($produk->image_paths as $index => $imagePath)
-                                <div class="relative rounded-xl overflow-hidden group" data-image-index="{{ $index }}">
+                                <div class="relative rounded-xl overflow-hidden group border border-white/5 bg-black/40 backdrop-blur-sm p-1" data-image-index="{{ $index }}">
                                     <img src="{{ asset('storage/' . $imagePath) }}" 
-                                         class="w-full h-24 object-cover border border-slate-700" 
+                                         class="w-full h-24 object-cover rounded-lg" 
                                          alt="Produk {{ $index + 1 }}" />
                                     <button type="button" 
-                                            class="remove-image-btn absolute inset-0 bg-black/70 opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"
+                                            class="remove-image-btn absolute inset-1 bg-black/80 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"
                                             data-image-index="{{ $index }}">
-                                        <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                                        <svg class="w-5 h-5 text-rose-500 hover:scale-110 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
                                         </svg>
                                     </button>
-                                    <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent px-2 py-1">
-                                        <p class="text-xs text-slate-300 truncate">{{ basename($imagePath) }}</p>
+                                    <div class="absolute bottom-1 left-1 right-1 bg-black/60 px-2 py-1 rounded-b-lg">
+                                        <p class="text-[9px] font-mono text-slate-400 truncate">{{ basename($imagePath) }}</p>
                                     </div>
                                 </div>
                             @endforeach
                         </div>
-                        <p class="mt-2 text-xs text-slate-500">Arahkan ke gambar untuk menghapus</p>
                     </div>
 
                     {{-- Hidden input to track removed images --}}
@@ -102,24 +165,35 @@
                 @endif
 
                 {{-- New Images Upload Section --}}
-                <div class="mb-4">
-                    <label class="block mb-2">
-                        <span class="text-sm text-slate-400">Tambah Foto Baru</span>
-                        <input id="product-images" name="images[]" type="file" class="mt-2 w-full text-slate-300" accept="image/*" multiple />
-                    </label>
-                    <p class="text-xs text-slate-500">Maksimal 5 MB per foto, bisa pilih lebih dari satu file.</p>
+                <div class="grid gap-4 md:grid-cols-2 items-center">
+                    <div>
+                        <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Tambah Foto Tambahan</span>
+                        <div class="relative mt-2 rounded-xl p-3 file-input-wrapper flex items-center justify-center">
+                            <input id="product-images" name="images[]" type="file" class="w-full text-xs text-slate-400 cursor-pointer" accept="image/*" multiple />
+                        </div>
+                    </div>
+                    <p class="text-xs text-slate-500 md:mt-6 leading-relaxed">Pilih file gambar jika ingin menambahkan aset foto baru. Batas maksimal 5 MB per berkas foto.</p>
                 </div>
 
                 {{-- New Images Preview Section --}}
-                <div id="product-image-preview" class="mt-3 grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4"></div>
+                <div id="product-image-preview" class="mt-4 grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4"></div>
             </fieldset>
 
-            <label class="block">
-                <span class="text-sm font-medium text-slate-300">Deskripsi</span>
-                <textarea name="description" rows="5" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none">{{ old('description', $produk->description) }}</textarea>
-            </label>
+            {{-- Row 5: Deskripsi --}}
+            <div class="block border-t border-white/5 pt-4">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Deskripsi / Cara Reedem / Informasi Akun</span>
+                <textarea name="description" rows="5" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none resize-none">{{ old('description', $produk->description) }}</textarea>
+            </div>
 
-            <button type="submit" class="rounded-2xl bg-emerald-500 px-5 py-3 font-semibold text-slate-950 hover:bg-emerald-400">Perbarui Produk</button>
+            {{-- Form Actions Footer --}}
+            <div class="mt-6 border-t border-white/5 pt-5 flex items-center justify-end gap-3">
+                <a href="{{ route('seller.produk.index') }}" class="rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 px-5 py-3 text-xs font-bold text-slate-300 transition-colors tracking-wide">
+                    BATALKAN PERUBAHAN
+                </a>
+                <button type="submit" class="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 px-6 py-3 text-xs font-bold text-slate-950 transition-all shadow-md shadow-emerald-500/10 hover:scale-[1.01]">
+                    PERBARUI DATA LAPAK
+                </button>
+            </div>
         </form>
     </div>
 </div>
@@ -139,7 +213,7 @@ document.querySelectorAll('.remove-image-btn').forEach(btn => {
         }
         
         const imageDiv = this.closest('[data-image-index]');
-        imageDiv.style.opacity = '0.5';
+        imageDiv.style.opacity = '0.35';
         imageDiv.style.filter = 'grayscale(1)';
         
         // Update hidden input
@@ -148,7 +222,7 @@ document.querySelectorAll('.remove-image-btn').forEach(btn => {
         // Add remove indicator
         if (!imageDiv.querySelector('.remove-indicator')) {
             const indicator = document.createElement('div');
-            indicator.className = 'remove-indicator absolute top-1 right-1 bg-red-500 rounded-full w-5 h-5 flex items-center justify-center';
+            indicator.className = 'remove-indicator absolute top-2 right-2 bg-rose-500 shadow-lg shadow-rose-500/20 rounded-full w-5 h-5 flex items-center justify-center';
             indicator.innerHTML = '<svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>';
             imageDiv.appendChild(indicator);
         }
@@ -165,13 +239,13 @@ fileInput?.addEventListener('change', (e) => {
         const reader = new FileReader();
         reader.onload = (event) => {
             const div = document.createElement('div');
-            div.className = 'relative rounded-xl overflow-hidden group';
+            div.className = 'relative rounded-xl overflow-hidden border border-white/5 bg-black/40 backdrop-blur-md p-1.5 group';
             div.innerHTML = `
-                <img src="${event.target.result}" class="w-full h-24 object-cover border border-slate-600 bg-slate-800" alt="${file.name}">
-                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/50 to-transparent px-2 py-1">
-                    <p class="text-xs text-slate-300 truncate">${file.name}</p>
+                <img src="${event.target.result}" class="w-full h-24 object-cover rounded-lg" alt="${file.name}">
+                <div class="absolute bottom-1 left-1 right-1 bg-black/60 px-2 py-1 rounded-b-lg">
+                    <p class="text-[9px] font-mono text-slate-400 truncate">${file.name}</p>
                 </div>
-                <div class="absolute top-1 right-1 bg-blue-500 rounded-full px-2 py-1 text-xs text-white font-semibold">
+                <div class="absolute top-2 right-2 bg-blue-500 shadow-md shadow-blue-500/20 rounded px-1.5 py-0.5 text-[9px] text-white font-bold uppercase tracking-wider">
                     Baru
                 </div>
             `;
