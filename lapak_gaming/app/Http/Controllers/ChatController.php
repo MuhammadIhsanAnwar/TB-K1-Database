@@ -55,6 +55,11 @@ public function index($id)
     return redirect()->back();
 }
 
+public function orderChat(\App\Models\Order $order)
+{
+    return redirect()->route('messages.show', $order->id);
+}
+
 public function show(Conversation $conversation)
 {
     $user = Auth::user();
