@@ -292,9 +292,9 @@ class AdminController extends Controller
 
     public function downloadOrdersReportPdf()
     {
-        dd('masuk');
-        
         $relations = ['buyer', 'seller'];
+
+        dd($relations);
 
         if (Schema::hasTable('order_financials')) {
             $relations[] = 'financial';
