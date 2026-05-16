@@ -292,70 +292,7 @@ class AdminController extends Controller
 
     public function downloadOrdersReportPdf()
     {
-        $relations = ['buyer', 'seller'];
-
-        if (Schema::hasTable('order_financials')) {
-            $relations[] = 'financial';
-        }
-
-       $orders = Order::query()
-            ->oldest()
-            ->get();
-
-        dd($orders);
-
-        $totalAmount = $orders->sum(fn (Order $order) => $this->reportOrderTotal($order));
-        $generatedAt = now()->format('d M Y H:i');
-        $statusCounts = $orders->groupBy('status')
-            ->map(fn ($items) => $items->count())
-            ->sortKeys();
-
-        $orderLines = $orders->map(function (Order $order): string {
-            $invoice = $this->pdfColumn($order->invoice_number ?? $order->order_code, 18);
-            $buyer = $this->pdfColumn($order->buyer?->name ?? '-', 16);
-            $seller = $this->pdfColumn($order->seller?->name ?? '-', 16);
-            $status = $this->pdfColumn($order->status_label, 18);
-            $total = str_pad('Rp ' . number_format($this->reportOrderTotal($order), 0, ',', '.'), 16, ' ', STR_PAD_LEFT);
-
-            return "{$invoice} {$buyer} {$seller} {$status} {$total}";
-        })->values();
-
-        if ($orderLines->isEmpty()) {
-            $orderLines = collect(['Belum ada transaksi.']);
-        }
-
-        $pages = [];
-        foreach ($orderLines->chunk(32) as $index => $chunk) {
-            $lines = [
-                ['text' => 'Laporan Transaksi Lapak Gaming', 'size' => 16],
-                ['text' => 'Dicetak: ' . $generatedAt, 'size' => 10],
-            ];
-
-            if ($index === 0) {
-                $lines[] = ['text' => 'Total transaksi: ' . number_format($orders->count()), 'size' => 10];
-                $lines[] = ['text' => 'Total nominal: Rp ' . number_format($totalAmount, 0, ',', '.'), 'size' => 10];
-                $lines[] = ['text' => 'Status: ' . ($statusCounts->map(fn ($count, $status) => $status . '=' . $count)->implode(', ') ?: '-'), 'size' => 10];
-                $lines[] = ['text' => '', 'size' => 10];
-            }
-
-            $lines[] = ['text' => 'Invoice            Buyer            Seller           Status                    Total', 'size' => 9];
-            $lines[] = ['text' => str_repeat('-', 95), 'size' => 9];
-
-            foreach ($chunk as $line) {
-                $lines[] = ['text' => $line, 'size' => 9];
-            }
-
-            $pages[] = $lines;
-        }
-
-        $pdf = $this->buildSimplePdf($pages);
-        $filename = 'laporan-transaksi-' . now()->format('Ymd-His') . '.pdf';
-
-        return response($pdf, 200, [
-            'Content-Type' => 'application/pdf',
-            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
-            'Content-Length' => strlen($pdf),
-        ]);
+        dd(Order::count());
     }
 
     public function showOrder(Order $order): View
