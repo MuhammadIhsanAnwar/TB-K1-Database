@@ -20,21 +20,35 @@ class ChatController extends Controller
 {
     $user = Auth::user();
 
-    $conversations = Conversation::with([
+    // CHAT SEBAGAI BUYER
+    $buyerChats = Conversation::with([
             'buyer',
             'seller',
-            'messages'
+            'messages',
+            'product',
+            'order'
         ])
-        ->where(function ($query) use ($user) {
-            $query->where('buyer_id', $user->id)
-                  ->orWhere('seller_id', $user->id);
-        })
+        ->where('buyer_id', $user->id)
         ->orderByDesc('last_message_at')
-        ->paginate(20);
+        ->get();
 
-    return view('chat.inbox', compact('conversations'));
+    // CHAT SEBAGAI SELLER
+    $sellerChats = Conversation::with([
+            'buyer',
+            'seller',
+            'messages',
+            'product',
+            'order'
+        ])
+        ->where('seller_id', $user->id)
+        ->orderByDesc('last_message_at')
+        ->get();
+
+    return view('chat.inbox', compact(
+        'buyerChats',
+        'sellerChats'
+    ));
 }
-
 public function show(Conversation $conversation)
 {
     $user = Auth::user();

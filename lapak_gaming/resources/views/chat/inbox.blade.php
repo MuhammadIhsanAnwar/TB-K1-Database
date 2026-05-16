@@ -209,6 +209,29 @@
         display: none;
     }
 }
+
+.tab-btn {
+    flex: 1;
+    padding: 10px;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    background: #1a1a1a;
+    color: #888;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all .2s;
+}
+
+.tab-btn:hover {
+    background: #222;
+    color: #fff;
+}
+
+.active-tab {
+    background: #2563eb;
+    color: white;
+    border-color: #2563eb;
+}
 </style>
 @endpush
 
@@ -220,73 +243,151 @@
         <div class="inbox-sidebar">
             <div class="inbox-header">
                 <h1 class="inbox-title">Pesan</h1>
-                <p class="inbox-subtitle">Semua percakapan dengan pembeli dan penjual</p>
+                <p class="inbox-subtitle">Kelola chat sebagai buyer atau seller</p>
                 <div class="search-container">
                     <input id="searchInput" type="text" placeholder="Cari percakapan..." class="search-input">
                 </div>
+                <div class="flex gap-2 mt-4">
+    
+                <button id="buyerTabBtn"
+                    onclick="switchInboxTab('buyer')"
+                    class="tab-btn active-tab">
+                    Sebagai Buyer
+                </button>
+
+                <button id="sellerTabBtn"
+                    onclick="switchInboxTab('seller')"
+                    class="tab-btn">
+                    Sebagai Seller
+                </button>
+</div>
             </div>
 
             <div class="conversations-list" id="convList">
-                @forelse($conversations as $conv)
-                    @php
-                        $user = auth()->user();
-                        // Menggunakan helper dari model Conversation untuk mendapatkan lawan bicara
-                        $partner = $conv->partner($user->id);
-                        $unread = $conv->unreadFor($user->id);
-                        // Ambil pesan terakhir untuk logika "Kamu:"
-                        $lastMsg = $conv->messages->last();
-                    @endphp
+                {{-- BUYER TAB --}}
+            <div id="buyerTab">
 
-                    <a href="{{ route('chat.show', $conv) }}"
-                       class="conv-item {{ (request()->routeIs('chat.show') && request()->route('conversation') == $conv->id) ? 'active' : '' }}"
-                       data-name="{{ strtolower($partner?->name ?? '') }}">
-                       
-                        {{-- Avatar Lawan Bicara --}}
-                        <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($partner?->name ?? 'User') }}"
-                             class="conv-avatar" alt="{{ $partner?->name }}">
-                             
-                        <div class="conv-content">
-                            <div class="conv-header">
-                                {{-- Nama Lawan Bicara --}}
-                                <span class="conv-name">{{ $partner?->name ?? 'User' }}</span>
-                                <span class="conv-time">
-                                    {{ $conv->last_message_at?->diffForHumans(null, true) ?? '' }}
-                                </span>
-                            </div>
-                            
-                            {{-- Konteks Produk/Order --}}
-                            @if($conv->product)
-                                <p class="conv-context">🎮 {{ $conv->product->name }}</p>
-                            @elseif($conv->order)
-                                <p class="conv-context">📦 Order #{{ $conv->order->order_code ?? $conv->order_id }}</p>
-                            @endif
+            @forelse($buyerChats as $conv)
 
-                            {{-- Preview Pesan --}}
-                            <div class="flex justify-between items-center">
-                                <span class="conv-preview {{ $unread > 0 ? 'unread' : '' }}">
-                                    @if($conv->last_message)
-                                        @if($lastMsg && $lastMsg->sender_id === $user->id)
-                                            <span style="color: #666;">Kamu:</span>
-                                        @endif
-                                        {{ Str::limit($conv->last_message, 45) }}
-                                    @else
-                                        <span class="italic text-slate-600">Belum ada pesan</span>
-                                    @endif
-                                </span>
+                @php
+                    $user = auth()->user();
+                    $partner = $conv->seller;
+                    $unread = $conv->unreadFor($user->id);
+                    $lastMsg = $conv->messages->last();
+                @endphp
 
-                                @if($unread > 0)
-                                    <span class="unread-badge">{{ $unread > 9 ? '9+' : $unread }}</span>
-                                @endif
-                            </div>
+                <a href="{{ route('chat.show', $conv) }}"
+                class="conv-item"
+                data-name="{{ strtolower($partner?->name ?? '') }}">
+
+                    <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($partner?->name ?? 'Seller') }}"
+                        class="conv-avatar">
+
+                    <div class="conv-content">
+
+                        <div class="conv-header">
+                            <span class="conv-name">
+                                {{ $partner?->name ?? 'Seller' }}
+                            </span>
+
+                            <span class="conv-time">
+                                {{ $conv->last_message_at?->diffForHumans(null, true) }}
+                            </span>
                         </div>
-                    </a>
-                @empty
-                    <div class="flex flex-col items-center justify-center py-16 text-center px-6">
-                        <div class="text-4xl mb-3">💬</div>
-                        <p class="text-slate-400 text-sm font-medium">Belum ada percakapan</p>
-                        <p class="text-slate-500 text-xs mt-1">Chat dari halaman produk untuk memulai</p>
+
+                        <p class="conv-context">
+                            🛒 Chat sebagai Buyer
+                        </p>
+
+                        <div class="flex justify-between items-center">
+                            <span class="conv-preview {{ $unread > 0 ? 'unread' : '' }}">
+                                {{ Str::limit($conv->last_message, 45) }}
+                            </span>
+
+                            @if($unread > 0)
+                                <span class="unread-badge">
+                                    {{ $unread > 9 ? '9+' : $unread }}
+                                </span>
+                            @endif
+                        </div>
+
                     </div>
-                @endforelse
+                </a>
+
+            @empty
+
+            <div class="flex flex-col items-center justify-center py-16 text-center px-6">
+                <div class="text-4xl mb-3">🛒</div>
+                <p class="text-slate-400 text-sm font-medium">
+                    Belum ada chat buyer
+                </p>
+            </div>
+
+            @endforelse
+
+            </div>
+
+            {{-- SELLER TAB --}}
+            <div id="sellerTab" style="display:none;">
+
+            @forelse($sellerChats as $conv)
+
+                @php
+                    $user = auth()->user();
+                    $partner = $conv->buyer;
+                    $unread = $conv->unreadFor($user->id);
+                @endphp
+
+                <a href="{{ route('chat.show', $conv) }}"
+                class="conv-item"
+                data-name="{{ strtolower($partner?->name ?? '') }}">
+
+                    <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($partner?->name ?? 'Buyer') }}"
+                        class="conv-avatar">
+
+                    <div class="conv-content">
+
+                        <div class="conv-header">
+                            <span class="conv-name">
+                                {{ $partner?->name ?? 'Buyer' }}
+                            </span>
+
+                            <span class="conv-time">
+                                {{ $conv->last_message_at?->diffForHumans(null, true) }}
+                            </span>
+                        </div>
+
+                        <p class="conv-context">
+                            🏪 Chat sebagai Seller
+                        </p>
+
+                        <div class="flex justify-between items-center">
+                            <span class="conv-preview {{ $unread > 0 ? 'unread' : '' }}">
+                                {{ Str::limit($conv->last_message, 45) }}
+                            </span>
+
+                            @if($unread > 0)
+                                <span class="unread-badge">
+                                    {{ $unread > 9 ? '9+' : $unread }}
+                                </span>
+                            @endif
+                        </div>
+
+                    </div>
+                </a>
+
+            @empty
+
+            <div class="flex flex-col items-center justify-center py-16 text-center px-6">
+                <div class="text-4xl mb-3">🏪</div>
+                <p class="text-slate-400 text-sm font-medium">
+                    Belum ada chat seller
+                </p>
+            </div>
+
+@endforelse
+
+</div>
             </div>
 
             @if($conversations->hasPages())
@@ -308,13 +409,47 @@
 
 @push('scripts')
 <script>
+
+function switchInboxTab(tab)
+{
+    const buyerTab = document.getElementById('buyerTab');
+    const sellerTab = document.getElementById('sellerTab');
+
+    const buyerBtn = document.getElementById('buyerTabBtn');
+    const sellerBtn = document.getElementById('sellerTabBtn');
+
+    buyerTab.style.display = 'none';
+    sellerTab.style.display = 'none';
+
+    buyerBtn.classList.remove('active-tab');
+    sellerBtn.classList.remove('active-tab');
+
+    if (tab === 'buyer') {
+        buyerTab.style.display = 'block';
+        buyerBtn.classList.add('active-tab');
+    } else {
+        sellerTab.style.display = 'block';
+        sellerBtn.classList.add('active-tab');
+    }
+}
+
 document.getElementById('searchInput').addEventListener('input', function() {
+
     const q = this.value.toLowerCase();
-    document.querySelectorAll('#convList .conv-item').forEach(el => {
+
+    document.querySelectorAll('.conv-item').forEach(el => {
+
         const name = el.getAttribute('data-name');
-        el.style.display = name.includes(q) ? 'flex' : 'none';
+
+        el.style.display =
+            name.includes(q)
+            ? 'flex'
+            : 'none';
+
     });
+
 });
+
 </script>
 @endpush
 @endsection
