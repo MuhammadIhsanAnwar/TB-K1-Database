@@ -65,7 +65,7 @@
         <h1 class="text-3xl font-extrabold text-white tracking-tight truncate max-w-[280px] sm:max-w-md">{{ $user->name }}</h1>
         <p class="text-slate-400 text-sm font-medium">{{ $user->email }}</p>
       </div>
-      <a href="{{ route('admin.accounts') }}"
+      <a href="{{ route('admin.users.index') }}"
          class="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide shrink-0">
         <svg class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
