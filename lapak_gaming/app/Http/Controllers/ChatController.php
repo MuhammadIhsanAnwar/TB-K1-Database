@@ -62,11 +62,9 @@ public function show(Conversation $conversation)
 
     $messages = $conversation->messages()
         ->with('sender')
-        ->latest()
+        ->orderBy('created_at', 'asc')
         ->take(50)
-        ->get()
-        ->reverse()
-        ->values();
+        ->get();
 
     $sidebarConversations = Conversation::with([
             'buyer',
@@ -97,11 +95,9 @@ public function poll(Conversation $conversation)
 
     $messages = $conversation->messages()
         ->with('sender')
-        ->latest()
+        ->orderBy('created_at', 'asc')
         ->take(50)
-        ->get()
-        ->reverse()
-        ->values();
+        ->get();
 
     return response()->json([
         'messages' => $messages->map(
@@ -136,7 +132,7 @@ public function poll(Conversation $conversation)
             
         $messages = $conversation->messages()
             ->with(['sender', 'receiver'])
-            ->latest()
+            ->orderBy('created_at', 'asc')
             ->paginate(30);
 
         return response()->json([
