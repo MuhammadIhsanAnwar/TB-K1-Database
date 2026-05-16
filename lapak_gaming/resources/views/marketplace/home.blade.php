@@ -610,10 +610,6 @@ spline-viewer iframe {
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- POPULAR PRODUCTS                                            --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<div class="text-red-500 text-xs">
-    {{ $product->name }}
-    | Rating: {{ $product->rating_average ?? 0 }}
-</div>
 <section class="pb-14">
   <div class="max-w-7xl mx-auto px-4">
     <div class="flex items-center justify-between mb-6">
