@@ -134,9 +134,10 @@ class OrderController extends Controller {
 
             $order = Order::create([
                 'buyer_id'       => Auth::id(),
+                'invoice_number' => 'INV-' . strtoupper(Str::random(10)),
                 'status'         => Order::STATUS_PENDING_PAYMENT,
                 'payment_method' => $request->payment_method,
-                'total_price'    => $grand_total, 
+                'total_price'    => $grand_total,
             ]);
 
             if (method_exists($order, 'financial')) {
