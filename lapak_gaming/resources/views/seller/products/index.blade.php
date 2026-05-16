@@ -1,3 +1,7 @@
+@php
+use Illuminate\Support\Facades\Storage;
+@endphp
+
 @extends('layouts.app')
 
 @section('title', 'Kelola Produk')
@@ -34,7 +38,7 @@
             @forelse($products as $product)
                 <div class="group rounded-[2.5rem] border border-slate-800 bg-slate-900 p-8 transition-all hover:border-amber-500/30">
                     <div class="flex flex-col gap-6 md:flex-row md:items-center">
-                        <img src="{{ $product->image_url }}" 
+                        <img src="{{ Storage::url($product->image) }}"
                              class="w-24 h-24 rounded-3xl object-cover border-2 border-slate-800 group-hover:border-amber-500/50 transition-all">
                         
                         <div class="flex-1">
