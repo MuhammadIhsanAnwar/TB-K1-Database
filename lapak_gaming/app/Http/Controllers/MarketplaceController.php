@@ -31,9 +31,9 @@ class MarketplaceController extends Controller
             : collect();
 
         // Select highly rated products but randomize order each refresh to keep homepage dynamic
-        $popularProducts = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->with(['seller', 'category'])->topRated()->inRandomOrder()->take(12)->get()
-            : collect();
+        $popularProducts = Schema::hasTable('products')? Product::query()->active()->inStock()->with(['seller', 'category'])->get()->sortByDesc(function ($product) {
+            return ($product->rating_average ?? 0) + rand(0, 3);
+        })->take(12) : collect();
 
         $topupProducts = Schema::hasTable('products')
             ? Product::query()->active()->inStock()->ofType('topup')->with(['seller', 'category'])->inRandomOrder()->take(8)->get()
@@ -98,11 +98,14 @@ class MarketplaceController extends Controller
                         ->inStock()
                         ->where('category_id', $category->id)
                         ->with(['seller', 'category'])
-                        ->orderByDesc('is_featured')
-                        ->orderByDesc('views_count')
-                        ->latest()
-                        ->take(12)
-                        ->get(),
+                        ->get()
+                    ->sortByDesc(function ($product) {
+                        return
+                            ($product->rating_average ?? 0) * 2 +
+                            ($product->views_count ?? 0) / 100 +
+                            rand(0, 5);
+                    })
+                    ->take(12),
                 ];
             })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->values();
         }
