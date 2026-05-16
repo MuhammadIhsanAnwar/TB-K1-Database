@@ -292,7 +292,9 @@ class AdminController extends Controller
 
     public function downloadOrdersReportPdf()
     {
-        dd(Order::count());
+        $orders = Order::all();
+
+        dd($orders);
     }
 
     public function showOrder(Order $order): View
