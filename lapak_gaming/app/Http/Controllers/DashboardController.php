@@ -30,7 +30,6 @@ class DashboardController extends Controller
         }
 
         return match ($request->user()->role) {
-            'seller' => $this->seller($request),
             'admin' => $this->admin($request),
             default => $this->buyer($request),
         };
