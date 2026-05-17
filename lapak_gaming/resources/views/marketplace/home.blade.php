@@ -608,157 +608,233 @@ spline-viewer iframe {
 @endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- POPULAR PRODUCTS                                            --}}
+{{-- POPULAR PRODUCTS — NEW EXPERIENCE                          --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="pb-14">
+<section class="pb-20 overflow-hidden">
+
   <div class="max-w-7xl mx-auto px-4">
-    <div class="flex items-center justify-between mb-6">
+
+    {{-- HEADER --}}
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-4 mb-8">
+
       <div>
-        <h2 class="section-title font-display font-bold text-lg text-white">Produk Terpopuler</h2>
-        <p class="text-xs text-slate-500 mt-1 pl-4">Paling banyak dibeli minggu ini</p>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full
+                    bg-cyan-500/10 border border-cyan-500/20
+                    text-cyan-300 text-xs font-bold mb-4">
+          🔥 HOT MARKET
+        </div>
+
+        <h2 class="font-display text-3xl md:text-4xl font-extrabold text-white leading-tight">
+          Produk Paling Dicari
+        </h2>
+
+        <p class="text-slate-400 mt-2 max-w-xl">
+          Produk gaming paling hype minggu ini dengan transaksi tertinggi di marketplace.
+        </p>
       </div>
-      <a href="{{ route('products.search') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Lihat semua →</a>
-    </div>
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
 
-@forelse($popularProducts as $product)
+      <a href="{{ route('products.search') }}"
+         class="group inline-flex items-center gap-2 text-sm font-semibold text-cyan-300 hover:text-white transition">
 
-    {{-- CARD BESAR --}}
-    @if($loop->index % 7 == 0)
+        Jelajahi Semua
 
-    <div class="col-span-2 row-span-2 bg-[#111827] rounded-3xl overflow-hidden border border-cyan-500/30 hover:scale-[1.02] transition duration-300 group relative">
+        <svg class="w-4 h-4 transition group-hover:translate-x-1"
+             fill="none"
+             viewBox="0 0 24 24"
+             stroke="currentColor">
 
-        <div class="absolute top-3 left-3 z-10 bg-cyan-500 text-white text-xs px-3 py-1 rounded-full font-bold">
-            🔥 Trending
-        </div>
+          <path stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5l7 7-7 7"/>
 
-        <img
-            src="{{ Storage::url($product->image) }}"
-            alt="{{ $product->name }}"
-            class="w-full h-72 object-cover group-hover:scale-105 transition duration-500"
-        >
-
-        <div class="p-5">
-
-            <h2 class="text-white text-2xl font-bold mb-2 line-clamp-2">
-                {{ $product->name }}
-            </h2>
-
-            <p class="text-gray-400 text-sm line-clamp-2 mb-4">
-                {{ $product->description }}
-            </p>
-
-            <div class="flex items-center justify-between">
-
-                <span class="text-cyan-400 text-2xl font-extrabold">
-                    Rp {{ number_format($product->price, 0, ',', '.') }}
-                </span>
-
-                <div class="text-yellow-400 text-sm font-semibold">
-                    ⭐ {{ number_format($product->average_rating ?? 5, 1) }}
-                </div>
-
-            </div>
-
-        </div>
+        </svg>
+      </a>
 
     </div>
 
-    {{-- CARD HORIZONTAL --}}
-    @elseif($loop->index % 5 == 0)
+    {{-- TOP FEATURED --}}
+    @if($popularProducts->count())
 
-    <div class="col-span-2 bg-[#1f2937] rounded-2xl overflow-hidden flex border border-purple-500/20 hover:border-purple-400 transition duration-300">
+    @php
+      $featured = $popularProducts->first();
+    @endphp
 
-        <img
-            src="{{ Storage::url($product->image) }}"
-            alt="{{ $product->name }}"
-            class="w-40 h-full object-cover"
-        >
+    <div class="relative rounded-[34px] overflow-hidden border border-cyan-500/20 mb-8 group">
 
-        <div class="flex-1 p-4 flex flex-col justify-between">
+      {{-- BACKGROUND IMAGE --}}
+      <img
+        src="{{ Storage::url($featured->image) }}"
+        alt="{{ $featured->name }}"
+        class="absolute inset-0 w-full h-full object-cover group-hover:scale-105 transition duration-700"
+      >
 
-            <div>
+      {{-- OVERLAY --}}
+      <div class="absolute inset-0 bg-gradient-to-r from-[#020617] via-[#020617]/85 to-[#020617]/20"></div>
 
-                <div class="inline-block bg-purple-500/20 text-purple-300 text-xs px-2 py-1 rounded-full mb-2">
-                    Premium
-                </div>
+      {{-- CONTENT --}}
+      <div class="relative z-10 p-8 md:p-12 min-h-[420px] flex items-end">
 
-                <h3 class="text-white text-lg font-bold line-clamp-2">
-                    {{ $product->name }}
-                </h3>
+        <div class="max-w-2xl">
+
+          <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full
+                      bg-red-500/15 border border-red-500/30
+                      text-red-300 text-xs font-bold mb-5">
+
+            🔥 TRENDING #1
+          </div>
+
+          <h3 class="text-4xl md:text-6xl font-black text-white leading-tight mb-4">
+            {{ $featured->name }}
+          </h3>
+
+          <p class="text-slate-300 text-base md:text-lg leading-relaxed max-w-xl mb-8 line-clamp-3">
+            {{ $featured->description }}
+          </p>
+
+          <div class="flex flex-wrap items-center gap-4">
+
+            <div class="text-3xl md:text-4xl font-black text-cyan-300">
+              Rp {{ number_format($featured->price,0,',','.') }}
+            </div>
+
+            <div class="flex items-center gap-2 px-4 py-2 rounded-2xl
+                        bg-black/30 border border-white/10">
+
+              <span class="text-yellow-400 text-lg">⭐</span>
+
+              <span class="text-white font-bold">
+                {{ number_format($featured->average_rating ?? 5,1) }}
+              </span>
 
             </div>
 
-            <div class="flex items-center justify-between mt-3">
+            <a href="{{ route('products.show', $featured->slug) }}"
+               class="dg-btn relative overflow-hidden px-6 py-3 rounded-2xl text-white font-bold">
 
-                <span class="text-cyan-400 font-bold text-lg">
-                    Rp {{ number_format($product->price, 0, ',', '.') }}
-                </span>
+              <span class="relative z-10">Beli Sekarang</span>
+              <span class="dg-btn-glow"></span>
 
-                <div class="text-yellow-400 text-sm">
-                    ⭐ {{ number_format($product->average_rating ?? 5, 1) }}
-                </div>
+            </a>
 
-            </div>
+          </div>
 
         </div>
 
-    </div>
-
-    {{-- CARD NORMAL --}}
-    @else
-
-    <div class="bg-[#111827] rounded-2xl overflow-hidden border border-gray-700 hover:border-cyan-400 transition duration-300 hover:-translate-y-1 group">
-
-        <div class="relative overflow-hidden">
-
-            <img
-                src="{{ Storage::url($product->image) }}"
-                alt="{{ $product->name }}"
-                class="w-full h-52 object-cover group-hover:scale-110 transition duration-500"
-            >
-
-            <div class="absolute top-3 right-3 bg-black/70 text-yellow-400 text-xs px-2 py-1 rounded-full">
-                ⭐ {{ number_format($product->average_rating ?? 5, 1) }}
-            </div>
-
-        </div>
-
-        <div class="p-4">
-
-            <h3 class="text-white font-bold text-lg line-clamp-2 mb-2">
-                {{ $product->name }}
-            </h3>
-
-            <div class="flex items-center justify-between mt-4">
-
-                <span class="text-cyan-400 font-extrabold text-lg">
-                    Rp {{ number_format($product->price, 0, ',', '.') }}
-                </span>
-
-                <a href="{{ route('products.show', $product->slug) }}"
-                   class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-3 py-2 rounded-xl transition duration-300">
-                    Beli
-                </a>
-
-            </div>
-
-        </div>
+      </div>
 
     </div>
 
     @endif
 
-@empty
-        <div class="col-span-full py-16 text-center">
-          <div class="text-4xl mb-4">🎮</div>
-          <p class="text-slate-400">Produk populer akan segera tersedia.</p>
-        </div>
-      @endforelse
-    </div>
-  </div>
-</section>
+    {{-- HORIZONTAL PRODUCT SLIDER --}}
+    <div class="flex gap-5 overflow-x-auto pb-3 snap-x snap-mandatory banner-track">
 
+      @foreach($popularProducts->skip(1) as $product)
+
+      <div class="group flex-none w-[82%] sm:w-[48%] lg:w-[32%] snap-start">
+
+        <div class="relative h-full rounded-[28px] overflow-hidden
+                    border border-slate-800
+                    bg-[#0B1120]
+                    hover:border-cyan-500/40
+                    transition duration-300">
+
+          {{-- IMAGE --}}
+          <div class="relative overflow-hidden">
+
+            <img
+              src="{{ Storage::url($product->image) }}"
+              alt="{{ $product->name }}"
+              class="w-full h-64 object-cover group-hover:scale-110 transition duration-700"
+            >
+
+            {{-- OVERLAY --}}
+            <div class="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/20 to-transparent"></div>
+
+            {{-- RATING --}}
+            <div class="absolute top-4 right-4
+                        flex items-center gap-1
+                        px-3 py-1 rounded-full
+                        bg-black/60 backdrop-blur-md
+                        border border-white/10">
+
+              <span class="text-yellow-400 text-sm">⭐</span>
+
+              <span class="text-white text-xs font-bold">
+                {{ number_format($product->average_rating ?? 5,1) }}
+              </span>
+
+            </div>
+
+          </div>
+
+          {{-- CONTENT --}}
+          <div class="p-5">
+
+            <div class="mb-4">
+
+              <h3 class="text-white text-xl font-bold line-clamp-2 mb-2">
+                {{ $product->name }}
+              </h3>
+
+              <p class="text-slate-400 text-sm line-clamp-2">
+                {{ $product->description }}
+              </p>
+
+            </div>
+
+            <div class="flex items-center justify-between">
+
+              <div>
+
+                <div class="text-xs text-slate-500 mb-1">
+                  Harga Mulai
+                </div>
+
+                <div class="text-cyan-300 text-2xl font-black">
+                  Rp {{ number_format($product->price,0,',','.') }}
+                </div>
+
+              </div>
+
+              <a href="{{ route('products.show', $product->slug) }}"
+                 class="w-12 h-12 rounded-2xl
+                        bg-cyan-400
+                        hover:bg-cyan-300
+                        flex items-center justify-center
+                        text-black
+                        transition">
+
+                <svg class="w-5 h-5"
+                     fill="none"
+                     viewBox="0 0 24 24"
+                     stroke="currentColor">
+
+                  <path stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"/>
+
+                </svg>
+
+              </a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
+      @endforeach
+
+    </div>
+
+  </div>
+
+</section>
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- TOP UP SECTION                                              --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
