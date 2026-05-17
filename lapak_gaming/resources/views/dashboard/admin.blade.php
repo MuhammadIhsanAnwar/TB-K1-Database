@@ -5,42 +5,94 @@
 @section('content')
 
 <style>
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(16px); }
-        to   { opacity: 1; transform: translateY(0); }
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: revealUp .8s ease forwards;
     }
-    @keyframes pulse-dot {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50%       { opacity: .5; transform: scale(.75); }
+
+    .reveal-delay-1 {
+        animation-delay: .15s;
     }
-    .anim-fade-up { animation: fadeUp .5s ease both; }
-    .anim-delay-1 { animation-delay: .08s; }
-    .anim-delay-2 { animation-delay: .16s; }
-    .anim-delay-3 { animation-delay: .24s; }
-    .anim-delay-4 { animation-delay: .32s; }
-    .live-dot { animation: pulse-dot 1.5s ease infinite; }
 
-    /* Stat card accent glow on hover */
-    .stat-card { transition: border-color .2s, box-shadow .2s, transform .2s; }
-    .stat-card:hover { transform: translateY(-2px); }
+    .reveal-delay-2 {
+        animation-delay: .3s;
+    }
 
-    /* Quick link icon scale */
-    .quick-link-icon { transition: transform .25s cubic-bezier(.34,1.56,.64,1); }
-    .quick-link:hover .quick-link-icon { transform: scale(1.15) rotate(-3deg); }
+    .reveal-delay-3 {
+        animation-delay: .45s;
+    }
 
-    /* Subtle grid texture on header */
-    .header-grid {
-        background-image: radial-gradient(rgba(255,255,255,.04) 1px, transparent 1px);
-        background-size: 24px 24px;
+    .reveal-delay-4 {
+        animation-delay: .6s;
+    }
+
+    @keyframes revealUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .glass-card {
+        background: rgba(11, 18, 32, 0.95);
+        border: 1px solid rgba(59, 130, 246, 0.15);
+        box-shadow:
+            0 0 50px rgba(37, 99, 235, 0.06),
+            inset 0 1px 0 rgba(255,255,255,0.03);
+        backdrop-filter: blur(18px);
+    }
+
+    .dashboard-card {
+        transition: all .35s ease;
+    }
+
+    .dashboard-card:hover {
+        transform: translateY(-6px);
+        border-color: rgba(96,165,250,.45);
+        box-shadow:
+            0 0 40px rgba(59,130,246,.15),
+            0 15px 40px rgba(0,0,0,.35);
+    }
+
+    .glow-blue {
+        box-shadow: 0 0 35px rgba(59,130,246,.18);
+    }
+
+    .glow-emerald {
+        box-shadow: 0 0 35px rgba(16,185,129,.18);
+    }
+
+    .glow-orange {
+        box-shadow: 0 0 35px rgba(249,115,22,.18);
+    }
+
+    .live-dot {
+        animation: pulseDot 1.5s infinite;
+    }
+
+    @keyframes pulseDot {
+        0%,100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+
+        50% {
+            transform: scale(.7);
+            opacity: .5;
+        }
     }
 </style>
-
 <div class="space-y-6 animate-fade-in">
 
     {{-- ═══════════════════════════════════════════════
          HEADER
     ═══════════════════════════════════════════════ --}}
-    <section class="anim-fade-up relative overflow-hidden rounded-2xl border border-slate-800 bg-slate-950 p-8 shadow-2xl header-grid">
+    <section class="reveal relative overflow-hidden rounded-[30px]
+            border border-blue-500/20
+            bg-gradient-to-br from-[#060816] via-[#091225] to-[#0B1730]
+            px-8 py-8
+            shadow-[0_0_80px_rgba(37,99,235,0.12)]">
         {{-- Ambient glow --}}
         <div class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-amber-500/10 blur-3xl"></div>
         <div class="pointer-events-none absolute -bottom-16 left-1/3 h-48 w-64 rounded-full bg-amber-500/5 blur-3xl"></div>
@@ -59,7 +111,7 @@
             </div>
             <div class="flex shrink-0 gap-3">
                 <a href="{{ route('admin.users.index') }}"
-                   class="rounded-xl bg-amber-500 px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:-translate-y-0.5 hover:bg-amber-400 active:translate-y-0">
+                   class="rounded-2xl bg-amber-500 transition duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,158,11,0.35)] px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:-translate-y-0.5 hover:bg-amber-400 active:translate-y-0">
                     Kelola Akun
                 </a>
                 <a href="{{ route('admin.orders.index') }}"
@@ -82,7 +134,7 @@
     <div class="anim-fade-up anim-delay-1 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
 
         {{-- Total Users --}}
-        <div class="stat-card group rounded-2xl border border-slate-800 border-t-2 border-t-blue-500/70 bg-slate-900 p-5 hover:border-t-blue-400 hover:shadow-lg hover:shadow-blue-500/10">
+        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-blue-500/70 bg-[#0B1220]/95 p-5 hover:border-t-blue-400 hover:shadow-lg hover:shadow-blue-500/10">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Total User</p>
                 <div class="rounded-xl bg-blue-500/10 p-2 text-blue-400 transition group-hover:bg-blue-500/20">
@@ -96,7 +148,7 @@
         </div>
 
         {{-- Buyers --}}
-        <div class="stat-card group rounded-2xl border border-slate-800 border-t-2 border-t-indigo-500/70 bg-slate-900 p-5 hover:border-t-indigo-400 hover:shadow-lg hover:shadow-indigo-500/10">
+        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-indigo-500/70 bg-[#0B1220]/95 p-5 hover:border-t-indigo-400 hover:shadow-lg hover:shadow-indigo-500/10">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Buyer</p>
                 <div class="rounded-xl bg-indigo-500/10 p-2 text-indigo-400 transition group-hover:bg-indigo-500/20">
@@ -110,7 +162,7 @@
         </div>
 
         {{-- Verified Sellers --}}
-        <div class="stat-card group rounded-2xl border border-slate-800 border-t-2 border-t-emerald-500/70 bg-slate-900 p-5 hover:border-t-emerald-400 hover:shadow-lg hover:shadow-emerald-500/10">
+        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-emerald-500/70 bg-[#0B1220]/95 p-5 hover:border-t-emerald-400 hover:shadow-lg hover:shadow-emerald-500/10">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-emerald-600/80">Verified Seller</p>
                 <div class="rounded-xl bg-emerald-500/10 p-2 text-emerald-400 transition group-hover:bg-emerald-500/20">
@@ -124,7 +176,7 @@
         </div>
 
         {{-- Suspended --}}
-        <div class="stat-card group rounded-2xl border border-slate-800 border-t-2 border-t-rose-500/70 bg-slate-900 p-5 hover:border-t-rose-400 hover:shadow-lg hover:shadow-rose-500/10">
+        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-rose-500/70 bg-[#0B1220]/95 p-5 hover:border-t-rose-400 hover:shadow-lg hover:shadow-rose-500/10">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-rose-600/80">Akun Suspend</p>
                 <div class="rounded-xl bg-rose-500/10 p-2 text-rose-400 transition group-hover:bg-rose-500/20">
@@ -138,7 +190,7 @@
         </div>
 
         {{-- Request Seller — highlighted card --}}
-        <div class="stat-card group relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-slate-900 p-5 hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/10 sm:col-span-2 lg:col-span-1">
+        <div class="reveal dashboard-card glass-card group relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-slate-900 p-5 hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/10 sm:col-span-2 lg:col-span-1">
             <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-amber-400/10 blur-2xl"></div>
             <div class="relative mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-amber-500">Request Seller</p>
@@ -153,7 +205,7 @@
 
         {{-- Pending Email Verification --}}
         <a href="{{ route('admin.users.index', ['tab' => 'pending_verification']) }}"
-           class="stat-card group rounded-2xl border border-slate-800 border-t-2 border-t-yellow-500/70 bg-slate-900 p-5 hover:border-t-yellow-400 hover:shadow-lg hover:shadow-yellow-500/10">
+           class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-yellow-500/70 bg-[#0B1220]/95 p-5 hover:border-t-yellow-400 hover:shadow-lg hover:shadow-yellow-500/10">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Pending Verifikasi</p>
                 <div class="rounded-xl bg-yellow-500/10 p-2 text-yellow-400 transition group-hover:bg-yellow-500/20">
@@ -167,10 +219,10 @@
         </a>
 
         {{-- Produk Aktif --}}
-        <div class="stat-card group rounded-2xl border border-slate-800 border-t-2 border-t-purple-500/70 bg-slate-900 p-5 hover:border-t-purple-400 hover:shadow-lg hover:shadow-purple-500/10">
+        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-purple-500/70 bg-[#0B1220]/95 p-5 hover:border-t-purple-400 hover:shadow-lg hover:shadow-purple-500/10">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Produk Aktif</p>
-                <div class="rounded-xl bg-purple-500/10 p-2 text-purple-400 transition group-hover:bg-purple-500/20">
+                <div class="rounded-[26px] bg-purple-500/10 p-2 text-purple-400 transition group-hover:bg-purple-500/20">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4" />
                     </svg>
@@ -181,10 +233,10 @@
         </div>
 
         {{-- Total Transaksi — spans 2 cols --}}
-        <div class="stat-card group rounded-2xl border border-slate-800 border-t-2 border-t-cyan-500/70 bg-slate-900 p-5 hover:border-t-cyan-400 hover:shadow-lg hover:shadow-cyan-500/10 sm:col-span-2">
+        <div class="reveal dashboard-card glass-card group rounded-[26px] border border-blue-500/20 border-t-2 border-t-cyan-500/70 bg-[#0B1220]/95 p-5 hover:border-t-cyan-400 hover:shadow-lg hover:shadow-cyan-500/10 sm:col-span-2">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Total Transaksi Selesai</p>
-                <div class="rounded-xl bg-cyan-500/10 p-2 text-cyan-400 transition group-hover:bg-cyan-500/20">
+                <div class="rounded-[26px] bg-cyan-500/10 p-2 text-cyan-400 transition group-hover:bg-cyan-500/20">
                     <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
                     </svg>
@@ -202,11 +254,10 @@
     <div class="anim-fade-up anim-delay-2 grid gap-4 lg:grid-cols-3">
 
         <a href="{{ route('admin.users.index') }}"
-           class="quick-link group rounded-2xl border border-slate-800 bg-slate-900 p-7 transition hover:border-amber-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-amber-500/5">
-            <div class="quick-link-icon mb-6 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-amber-500/10 text-amber-500">
+           class="quick-link reveal dashboard-card glass-card group rounded-[30px]border border-blue-500/20 bg-[#0B1220]/95 p-7 transition hover:border-amber-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-amber-500/5">
+            <div class="quick-link-icon mb-6 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-amber-500/10 text-amber-500">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1。724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
                 </svg>
             </div>
             <div class="flex items-start justify-between">
@@ -221,8 +272,8 @@
         </a>
 
         <a href="{{ route('admin.banners.index') }}"
-           class="quick-link group rounded-2xl border border-slate-800 bg-slate-900 p-7 transition hover:border-blue-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-blue-500/5">
-            <div class="quick-link-icon mb-6 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-blue-500/10 text-blue-500">
+           class="quick-link reveal dashboard-card glass-card group rounded-[30px] border border-blue-500/20 bg-[#0B1220]/95 p-7 transition hover:border-blue-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-blue-500/5">
+            <div class="quick-link-icon mb-6 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-blue-500/10 text-blue-500">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -239,8 +290,8 @@
         </a>
 
         <a href="{{ route('admin.notifications.index') }}"
-           class="quick-link group rounded-2xl border border-slate-800 bg-slate-900 p-7 transition hover:border-purple-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-purple-500/5">
-            <div class="quick-link-icon mb-6 inline-flex h-11 w-11 items-center justify-center rounded-xl bg-purple-500/10 text-purple-500">
+           class="quick-link reveal dashboard-card glass-card group rounded-[30px]-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-7 transition hover:border-purple-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-purple-500/5">
+            <div class="quick-link-icon mb-6 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-purple-500/10 text-purple-500">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
@@ -264,7 +315,7 @@
     <div class="anim-fade-up anim-delay-3 grid gap-4 lg:grid-cols-2">
 
         {{-- Grafik Transaksi --}}
-        <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+        <div class="rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-6">
             <div class="mb-6 flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-white">Tren Transaksi</h3>
@@ -276,7 +327,7 @@
         </div>
 
         {{-- Grafik Keuangan --}}
-        <div class="rounded-2xl border border-slate-800 bg-slate-900 p-6">
+        <div class="rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-6">
             <div class="mb-6 flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-white">Perputaran Uang</h3>
@@ -373,6 +424,28 @@ window.chartRevenue = {!! json_encode($chartRevenue) !!};
             scales: sharedScales
         }
     });
+
+    document.addEventListener('DOMContentLoaded', () => {
+    const cards = document.querySelectorAll('.dashboard-card');
+
+    cards.forEach(card => {
+        card.addEventListener('mousemove', e => {
+            const rect = card.getBoundingClientRect();
+
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            card.style.background =
+                `radial-gradient(circle at ${x}px ${y}px,
+                rgba(59,130,246,0.10),
+                rgba(11,18,32,0.95) 45%)`;
+        });
+
+        card.addEventListener('mouseleave', () => {
+            card.style.background = 'rgba(11,18,32,0.95)';
+        });
+    });
+});
 </script>
 
 @endsection
