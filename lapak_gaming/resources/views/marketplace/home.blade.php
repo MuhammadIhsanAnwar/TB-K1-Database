@@ -476,78 +476,550 @@ spline-viewer iframe {
 @endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- CATEGORY SHORTCUTS                                          --}}
+{{-- CATEGORY SHORTCUTS — PREMIUM GRID                         --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="pb-14">
+<section class="pb-16">
+
   <div class="max-w-7xl mx-auto px-4">
-    <div class="flex items-center justify-between mb-6">
-      <h2 class="section-title font-display font-bold text-lg text-white">Kategori Game</h2>
-      <a href="{{ route('products.search') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Lihat semua →</a>
-    </div>
-    <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-3">
-      @foreach($categories as $cat)
-      <a href="{{ route('categories.show', $cat->slug) }}" 
-        class="cat-btn reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }} flex flex-col items-center gap-2.5 p-3 group">
-        <div class="w-12 h-12 rounded-xl flex items-center justify-center overflow-hidden transition-transform group-hover:scale-110"
-             style="background:#162032;">
-          @if($cat->image)
-            <img src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="w-10 h-10 object-cover rounded-lg">
-          @else
-            <span class="text-2xl">{{ $cat->icon ?? '🎮' }}</span>
-          @endif
+
+    {{-- HEADER --}}
+    <div class="flex items-center justify-between mb-8">
+
+      <div>
+
+        <div class="inline-flex items-center gap-2
+                    px-4 py-1.5 rounded-full
+                    border border-cyan-400/15
+                    bg-cyan-400/5
+                    text-cyan-300
+                    text-xs font-bold tracking-wide mb-4">
+
+          🎮 EXPLORE GAME CATEGORY
+
         </div>
-        <span class="text-[11px] text-slate-300 text-center font-medium leading-tight">
-          {{ \Illuminate\Support\Str::limit($cat->name, 12) }}
-        </span>
+
+        <h2 class="text-3xl md:text-4xl font-black text-white">
+          Kategori Game
+        </h2>
+
+        <p class="text-slate-400 mt-2 text-sm">
+          Temukan kebutuhan gaming favoritmu lebih cepat
+        </p>
+
+      </div>
+
+      <a href="{{ route('products.search') }}"
+         class="hidden md:flex items-center gap-2
+                text-cyan-300 hover:text-white transition font-semibold">
+
+        Lihat Semua →
       </a>
-      @endforeach
+
     </div>
+
+    {{-- CATEGORY GRID --}}
+    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-5">
+
+      @foreach($categories as $cat)
+
+      <a href="{{ route('categories.show', $cat->slug) }}"
+         class="group relative overflow-hidden rounded-[28px]
+                border border-slate-800
+                bg-gradient-to-b from-[#111827] to-[#060b16]
+                p-5 hover:border-cyan-400/40
+                transition duration-500 hover:-translate-y-1">
+
+        {{-- GLOW --}}
+        <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500">
+
+          <div class="absolute -top-10 right-0 w-32 h-32 rounded-full
+                      bg-cyan-400/10 blur-3xl"></div>
+
+          <div class="absolute bottom-0 left-0 w-24 h-24 rounded-full
+                      bg-blue-500/10 blur-2xl"></div>
+
+        </div>
+
+        {{-- ICON --}}
+        <div class="relative z-10">
+
+          <div class="w-16 h-16 rounded-2xl
+                      bg-gradient-to-br from-cyan-400/15 to-blue-500/10
+                      border border-cyan-400/10
+                      flex items-center justify-center
+                      overflow-hidden
+                      mb-5
+                      group-hover:scale-110 group-hover:rotate-3
+                      transition duration-500">
+
+            @if($cat->image)
+
+              <img src="{{ $cat->image_url }}"
+                   alt="{{ $cat->name }}"
+                   class="w-12 h-12 object-cover rounded-xl">
+
+            @else
+
+              <span class="text-3xl">
+                {{ $cat->icon ?? '🎮' }}
+              </span>
+
+            @endif
+
+          </div>
+
+          {{-- CONTENT --}}
+          <h3 class="text-white font-bold text-lg leading-tight mb-2
+                     group-hover:text-cyan-300 transition">
+
+            {{ \Illuminate\Support\Str::limit($cat->name, 18) }}
+
+          </h3>
+
+          <div class="flex items-center justify-between">
+
+            <span class="text-slate-500 text-xs">
+              Explore →
+            </span>
+
+            <div class="w-8 h-8 rounded-full
+                        bg-cyan-400/10
+                        border border-cyan-400/10
+                        flex items-center justify-center
+                        text-cyan-300
+                        group-hover:bg-cyan-400
+                        group-hover:text-black
+                        transition">
+
+              →
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </a>
+
+      @endforeach
+
+    </div>
+
   </div>
+
 </section>
 
+
+{{-- ═══════════════════════════════════════════════════════════ --}}
+{{-- ALL CATEGORY PRODUCTS — PREMIUM VARIATIVE                 --}}
+{{-- ═══════════════════════════════════════════════════════════ --}}
 @if(isset($categoryProducts) && $categoryProducts->count())
-<section class="pb-20">
-  <div class="max-w-7xl mx-auto px-4 space-y-8">
-    <div class="flex items-end justify-between gap-4">
+
+<section class="pb-24">
+
+  <div class="max-w-7xl mx-auto px-4 space-y-14">
+
+    {{-- HEADER --}}
+    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-5">
+
       <div>
-        <h2 class="section-title font-display font-bold text-lg text-white">Semua Kategori Produk</h2>
-        <p class="text-xs text-slate-500 mt-1 pl-4">Geser produk ke kanan dan kiri di setiap kategori</p>
+
+        <div class="inline-flex items-center gap-2
+                    px-4 py-1.5 rounded-full
+                    bg-orange-400/10 border border-orange-400/20
+                    text-orange-300 text-xs font-bold mb-4">
+
+          🔥 PREMIUM COLLECTION
+
+        </div>
+
+        <h2 class="text-3xl md:text-5xl font-black text-white">
+          Semua Kategori Produk
+        </h2>
+
+        <p class="text-slate-400 mt-3">
+          Desain lebih immersive untuk pengalaman marketplace premium
+        </p>
+
       </div>
-      <a href="{{ route('products.search') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Lihat semua produk →</a>
+
+      <a href="{{ route('products.search') }}"
+         class="hidden md:flex items-center gap-2
+                px-5 py-3 rounded-2xl
+                bg-white/5 border border-white/10
+                hover:bg-cyan-400 hover:text-black
+                text-white transition font-semibold">
+
+        Jelajahi Semua Produk →
+
+      </a>
+
     </div>
 
-      @foreach($categoryProducts as $group)
-  @php
+
+    @foreach($categoryProducts as $group)
+
+    @php
       $category = $group['category'];
       $products = $group['products'];
-  @endphp
-      <section class="reveal-card rounded-[28px] border border-slate-800 bg-slate-950/60 p-4 sm:p-5 shadow-card-hover">
-        <div class="flex items-center justify-between gap-3 mb-4">
-          <div>
-            <h3 class="font-display text-xl font-bold text-white">{{ $category->name }}</h3>
-            <p class="text-xs text-slate-500 mt-1">{{ $products->count() }} produk tersedia</p>
+      $layout = $loop->index % 3;
+    @endphp
+
+
+    {{-- ═════════════ STYLE 1 ═════════════ --}}
+    @if($layout == 0)
+
+    <section class="relative overflow-hidden rounded-[34px]
+                    border border-cyan-400/10
+                    bg-gradient-to-br from-[#07111f] via-[#0b1322] to-[#050816]
+                    p-6 md:p-8">
+
+      {{-- BG GLOW --}}
+      <div class="absolute top-0 right-0 w-72 h-72 bg-cyan-400/10 blur-3xl rounded-full"></div>
+
+      {{-- TOP --}}
+      <div class="relative z-10 flex items-center justify-between mb-8">
+
+        <div>
+
+          <div class="inline-flex items-center gap-2
+                      px-3 py-1 rounded-full
+                      bg-cyan-400/10 border border-cyan-400/20
+                      text-cyan-300 text-xs font-bold mb-4">
+
+            ⚡ HOT CATEGORY
+
           </div>
-          <div class="flex items-center gap-2">
-            <button type="button" class="category-scroll-btn rounded-xl border border-slate-800 bg-slate-900 p-2 text-slate-300 hover:text-white" data-target="category-track-{{ $category->id }}" data-dir="left" aria-label="Scroll kiri">
-              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
-            </button>
-            <button type="button" class="category-scroll-btn rounded-xl border border-slate-800 bg-slate-900 p-2 text-slate-300 hover:text-white" data-target="category-track-{{ $category->id }}" data-dir="right" aria-label="Scroll kanan">
-              <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-            </button>
-          </div>
+
+          <h3 class="text-3xl font-black text-white">
+            {{ $category->name }}
+          </h3>
+
+          <p class="text-slate-400 mt-2 text-sm">
+            {{ $products->count() }} produk tersedia
+          </p>
+
         </div>
 
-        <div id="category-track-{{ $category->id }}" class="category-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory pb-2">
-          @foreach($products as $product)
-            <div class="flex-none w-[72%] sm:w-[40%] md:w-[28%] xl:w-[20%] snap-start">
-              @include('components.product-card', ['product' => $product])
+        <a href="{{ route('categories.show', $category->slug) }}"
+           class="hidden md:flex items-center gap-2
+                  px-4 py-2 rounded-xl
+                  border border-cyan-400/20
+                  bg-cyan-400/5 text-cyan-300
+                  hover:bg-cyan-400 hover:text-black transition">
+
+          Explore →
+        </a>
+
+      </div>
+
+      {{-- PRODUCT --}}
+      <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-5 relative z-10">
+
+        @foreach($products->take(5) as $product)
+
+        <div class="group relative overflow-hidden rounded-[26px]
+                    border border-white/5
+                    bg-white/[0.03]
+                    hover:border-cyan-400/30
+                    transition duration-500">
+
+          <div class="relative overflow-hidden">
+
+            <img src="{{ Storage::url($product->image) }}"
+                 class="w-full h-52 object-cover group-hover:scale-110 transition duration-700">
+
+            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+
+            <div class="absolute top-3 left-3
+                        px-2 py-1 rounded-full
+                        bg-cyan-400 text-black
+                        text-[10px] font-black">
+
+              TRENDING
+
             </div>
-          @endforeach
+
+          </div>
+
+          <div class="p-4">
+
+            <h4 class="text-white font-bold line-clamp-2 mb-3">
+              {{ $product->name }}
+            </h4>
+
+            <div class="flex items-center justify-between">
+
+              <div>
+
+                <div class="text-slate-500 text-[11px]">
+                  Harga Mulai
+                </div>
+
+                <div class="text-cyan-300 font-black text-lg">
+                  Rp {{ number_format($product->price,0,',','.') }}
+                </div>
+
+              </div>
+
+              <a href="{{ route('products.show', $product->slug) }}"
+                 class="w-11 h-11 rounded-xl
+                        bg-cyan-400 text-black
+                        flex items-center justify-center
+                        font-black hover:scale-110 transition">
+
+                →
+
+              </a>
+
+            </div>
+
+          </div>
+
         </div>
-      </section>
+
+        @endforeach
+
+      </div>
+
+    </section>
+
+
+    {{-- ═════════════ STYLE 2 ═════════════ --}}
+    @elseif($layout == 1)
+
+    <section class="rounded-[34px]
+                    border border-purple-500/10
+                    bg-gradient-to-r from-[#09090f] via-[#111827] to-[#0f172a]
+                    p-6 md:p-8">
+
+      <div class="flex flex-col lg:flex-row gap-8">
+
+        {{-- LEFT --}}
+        <div class="lg:w-[320px]">
+
+          <div class="sticky top-24">
+
+            <div class="inline-flex items-center gap-2
+                        px-3 py-1 rounded-full
+                        bg-purple-500/10 border border-purple-500/20
+                        text-purple-300 text-xs font-bold mb-4">
+
+              👑 PREMIUM PICKS
+
+            </div>
+
+            <h3 class="text-4xl font-black text-white leading-tight mb-4">
+              {{ $category->name }}
+            </h3>
+
+            <p class="text-slate-400 text-sm mb-6">
+              Produk pilihan terbaik dengan tampilan immersive modern.
+            </p>
+
+            <a href="{{ route('categories.show', $category->slug) }}"
+               class="inline-flex items-center gap-2
+                      px-5 py-3 rounded-2xl
+                      bg-purple-500 text-white
+                      hover:scale-105 transition font-bold">
+
+              Explore Category →
+            </a>
+
+          </div>
+
+        </div>
+
+        {{-- RIGHT --}}
+        <div class="flex-1">
+
+          <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
+
+            @foreach($products->take(6) as $product)
+
+            <div class="group rounded-[28px]
+                        overflow-hidden
+                        border border-white/5
+                        bg-black/20
+                        hover:border-purple-400/30
+                        transition duration-500">
+
+              <div class="relative overflow-hidden">
+
+                <img src="{{ Storage::url($product->image) }}"
+                     class="w-full h-56 object-cover group-hover:scale-105 transition duration-700">
+
+              </div>
+
+              <div class="p-5">
+
+                <div class="flex items-center justify-between mb-3">
+
+                  <div class="text-yellow-400 text-sm">
+                    ⭐ {{ number_format($product->average_rating ?? 5,1) }}
+                  </div>
+
+                  <div class="text-[10px] px-2 py-1 rounded-full
+                              bg-purple-500/10 text-purple-300 border border-purple-500/20">
+
+                    VERIFIED
+
+                  </div>
+
+                </div>
+
+                <h4 class="text-white text-lg font-bold line-clamp-2 mb-4">
+                  {{ $product->name }}
+                </h4>
+
+                <div class="flex items-center justify-between">
+
+                  <div class="text-purple-300 text-2xl font-black">
+                    Rp {{ number_format($product->price,0,',','.') }}
+                  </div>
+
+                  <a href="{{ route('products.show', $product->slug) }}"
+                     class="text-white hover:text-purple-300 transition font-bold">
+
+                    Detail →
+                  </a>
+
+                </div>
+
+              </div>
+
+            </div>
+
+            @endforeach
+
+          </div>
+
+        </div>
+
+      </div>
+
+    </section>
+
+
+    {{-- ═════════════ STYLE 3 ═════════════ --}}
+    @else
+
+    <section class="rounded-[36px]
+                    overflow-hidden
+                    border border-orange-400/10
+                    bg-[#0a0f1c]">
+
+      {{-- HEADER --}}
+      <div class="relative px-6 md:px-8 py-8 border-b border-white/5 overflow-hidden">
+
+        <div class="absolute inset-0">
+
+          <div class="absolute left-0 top-0 w-72 h-72 bg-orange-400/10 blur-3xl rounded-full"></div>
+
+        </div>
+
+        <div class="relative z-10 flex items-center justify-between">
+
+          <div>
+
+            <div class="inline-flex items-center gap-2
+                        px-3 py-1 rounded-full
+                        bg-orange-400/10 border border-orange-400/20
+                        text-orange-300 text-xs font-bold mb-4">
+
+              🚀 BEST DEALS
+
+            </div>
+
+            <h3 class="text-3xl font-black text-white">
+              {{ $category->name }}
+            </h3>
+
+          </div>
+
+          <a href="{{ route('categories.show', $category->slug) }}"
+             class="hidden md:flex items-center gap-2
+                    text-orange-300 hover:text-white transition font-bold">
+
+            View More →
+          </a>
+
+        </div>
+
+      </div>
+
+      {{-- PRODUCTS --}}
+      <div class="grid md:grid-cols-2 xl:grid-cols-4">
+
+        @foreach($products->take(4) as $product)
+
+        <div class="group relative border-r border-b border-white/5 p-5">
+
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500">
+
+            <div class="absolute inset-0 bg-gradient-to-b from-orange-400/5 to-transparent"></div>
+
+          </div>
+
+          <div class="relative z-10">
+
+            <div class="overflow-hidden rounded-2xl mb-5">
+
+              <img src="{{ Storage::url($product->image) }}"
+                   class="w-full h-52 object-cover group-hover:scale-110 transition duration-700">
+
+            </div>
+
+            <div class="text-slate-500 text-xs mb-2">
+              Digital Product
+            </div>
+
+            <h4 class="text-white font-bold text-lg line-clamp-2 mb-4">
+              {{ $product->name }}
+            </h4>
+
+            <div class="flex items-center justify-between">
+
+              <div>
+
+                <div class="text-orange-300 text-2xl font-black">
+                  Rp {{ number_format($product->price,0,',','.') }}
+                </div>
+
+              </div>
+
+              <a href="{{ route('products.show', $product->slug) }}"
+                 class="w-11 h-11 rounded-full
+                        border border-orange-400/20
+                        text-orange-300
+                        flex items-center justify-center
+                        hover:bg-orange-400 hover:text-black
+                        transition">
+
+                →
+
+              </a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+        @endforeach
+
+      </div>
+
+    </section>
+
+    @endif
+
     @endforeach
+
   </div>
+
 </section>
+
 @endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
