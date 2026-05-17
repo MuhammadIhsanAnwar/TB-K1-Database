@@ -4,55 +4,187 @@
 
 @push('styles')
 <style>
-    /* ── True Glassmorphism Tech Theme ─────────────────────────── */
-    .dashboard-transparent {
-        background: transparent !important; /* Paksa transparan agar elemen bergerak di belakang terlihat jelas */
-    }
-    
-    .panel-card-glass {
-        background: rgba(10, 17, 30, 0.35) !important; /* Di-tipiskan jadi 35% agar tembus pandang */
-        backdrop-filter: blur(24px) saturate(160%); /* Efek blur kaca premium */
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.4);
-        transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-    
-    .panel-card-glass:hover {
-        border-color: rgba(37, 99, 235, 0.35);
-        background: rgba(13, 22, 38, 0.5) !important;
-        transform: translateY(-3px);
-        box-shadow: 0 16px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(37, 99, 235, 0.15);
-    }
 
-    /* ── Sub Item List di dalam Kaca ───────────────────────────── */
-    .sub-item-glass {
-        background: rgba(255, 255, 255, 0.02) !important;
-        border: 1px solid rgba(255, 255, 255, 0.04);
-        backdrop-filter: blur(8px);
-        transition: all 0.2s ease;
-    }
+/* ───────────────────────────────────────────────────────────
+   PREMIUM SELLER MOTION SYSTEM
+─────────────────────────────────────────────────────────── */
 
-    .sub-item-glass:hover {
-        background: rgba(255, 255, 255, 0.05) !important;
-        border-color: rgba(255, 255, 255, 0.1);
-    }
+.dashboard-wrapper{
+  max-width:1400px;
+  margin:0 auto;
+  padding-inline:24px;
+}
 
-    /* ── Status Order Neon Badges ─────────────────────────────── */
-    .status-badge {
-        font-weight: 700;
-        text-transform: uppercase;
-        letter-spacing: 0.05em;
-    }
-    .status-success, .status-completed {
-        background: rgba(16, 185, 129, 0.15);
-        border: 1px solid rgba(16, 185, 129, 0.4);
-        color: #34d399;
-    }
-    .status-pending, .status-processing {
-        background: rgba(245, 158, 11, 0.15);
-        border: 1px solid rgba(245, 158, 11, 0.4);
-        color: #fbbf24;
-    }
+@media(min-width:1280px){
+  .dashboard-wrapper{
+    padding-inline:40px;
+  }
+}
+
+.section-spacing{
+  margin-top:2rem;
+}
+
+/* ── Floating Ambient Glow ───────────────────────────── */
+.dashboard-transparent::before{
+  content:'';
+  position:absolute;
+  inset:-20%;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(59,130,246,.08), transparent 30%),
+    radial-gradient(circle at 80% 30%, rgba(168,85,247,.08), transparent 30%),
+    radial-gradient(circle at 50% 80%, rgba(245,158,11,.06), transparent 35%);
+  filter:blur(80px);
+  pointer-events:none;
+}
+
+/* ── Glass Card Improved ─────────────────────────────── */
+.panel-card-glass{
+  position:relative;
+  overflow:hidden;
+  border-radius:28px;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(15,23,42,.58),
+      rgba(2,6,23,.78)
+    ) !important;
+
+  backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(255,255,255,.06);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.03);
+
+  transition:
+    transform .35s ease,
+    border-color .35s ease,
+    box-shadow .35s ease,
+    background .35s ease;
+}
+
+.panel-card-glass:hover{
+  transform:translateY(-4px);
+
+  border-color:rgba(255,255,255,.12);
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(20,30,50,.72),
+      rgba(2,6,23,.88)
+    ) !important;
+
+  box-shadow:
+    0 20px 40px rgba(0,0,0,.45),
+    0 0 0 1px rgba(255,255,255,.02);
+}
+
+/* ── Glow Border Animation ───────────────────────────── */
+.panel-card-glass::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  padding:1px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.08),
+      transparent,
+      rgba(255,255,255,.03)
+    );
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  -webkit-mask-composite:xor;
+  pointer-events:none;
+}
+
+/* ── Reveal Animation ───────────────────────────────── */
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:
+    opacity .8s ease,
+    transform .8s ease;
+}
+
+.reveal.active{
+  opacity:1;
+  transform:none;
+}
+
+/* ── Smooth Hover ───────────────────────────────────── */
+.sub-item-glass{
+  background:rgba(255,255,255,.02) !important;
+  border:1px solid rgba(255,255,255,.04);
+  backdrop-filter:blur(8px);
+
+  transition:
+    transform .25s ease,
+    background .25s ease,
+    border-color .25s ease;
+}
+
+.sub-item-glass:hover{
+  transform:translateY(-2px);
+  background:rgba(255,255,255,.05) !important;
+  border-color:rgba(255,255,255,.1);
+}
+
+/* ── Premium Status Badge ───────────────────────────── */
+.status-badge{
+  font-weight:700;
+  text-transform:uppercase;
+  letter-spacing:.05em;
+}
+
+.status-success,
+.status-completed{
+  background:rgba(16,185,129,.15);
+  border:1px solid rgba(16,185,129,.4);
+  color:#34d399;
+}
+
+.status-pending,
+.status-processing{
+  background:rgba(245,158,11,.15);
+  border:1px solid rgba(245,158,11,.4);
+  color:#fbbf24;
+}
+
+/* ── Button Motion ──────────────────────────────────── */
+button,
+a{
+  transition:
+    all .25s ease;
+}
+
+/* ── Scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar{
+  width:10px;
+  height:10px;
+}
+
+::-webkit-scrollbar-track{
+  background:#020617;
+}
+
+::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,.08);
+  border-radius:999px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:rgba(255,255,255,.15);
+}
+
 </style>
 @endpush
 
@@ -61,7 +193,7 @@
     {{-- Ambient Light penambah kontras teks di atas background bergerak --}}
     <div class="absolute top-0 right-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-[150px] pointer-events-none"></div>
 
-    <div class="max-w-7xl mx-auto px-4 space-y-8 relative z-10">
+    <div class="dashboard-wrapper space-y-8 relative z-10">
         
         {{-- ── WELCOME HEADER ───────────────────────────────────── --}}
         <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800/40 pb-6">
@@ -111,7 +243,7 @@
         {{-- ── STATS CARDS GRID (TRANSPARENT) ────────────────────── --}}
         <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {{-- Card 1: Saldo --}}
-            <div class="rounded-2xl p-6 panel-card-glass flex items-center justify-between group">
+            <div class="rounded-2xl p-6 panel-card-glass flex items-center justify-between group reveal">
                 <div class="space-y-1">
                     <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Saldo Hasil Penjualan</div>
                     <div class="text-3xl font-extrabold text-amber-400">
@@ -272,4 +404,28 @@
         </div>
     </div>
 </div>
+
+@push('scripts')
+<script>
+
+const reveals = document.querySelectorAll('.reveal');
+
+function revealOnScroll() {
+    reveals.forEach((element) => {
+        const windowHeight = window.innerHeight;
+        const revealTop = element.getBoundingClientRect().top;
+        const revealPoint = 80;
+
+        if (revealTop < windowHeight - revealPoint) {
+            element.classList.add('active');
+        }
+    });
+}
+
+window.addEventListener('scroll', revealOnScroll);
+window.addEventListener('load', revealOnScroll);
+
+</script>
+@endpush
+
 @endsection
