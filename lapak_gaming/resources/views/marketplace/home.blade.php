@@ -534,8 +534,13 @@ spline-viewer iframe {
 
       @foreach($categories as $cat)
 
-     <a href="{{ route('categories.show', $cat->slug) }}"
-      class="cat-btn reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}
+      <a href="{{ route('categories.show', $cat->slug) }}"
+   class="cat-btn reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}
+                group relative overflow-hidden rounded-[28px]
+                border border-slate-800
+                bg-gradient-to-b from-[#111827] to-[#060b16]
+                p-5 hover:border-cyan-400/40
+                transition duration-500 hover:-translate-y-1">
 
         {{-- GLOW --}}
         <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500">
