@@ -31,6 +31,14 @@
     min-width: 0;
 }
 
+.chat-input {
+    transition: all .15s ease;
+}
+
+.chat-input:focus {
+    transform: translateY(-1px);
+}
+
 /* Sidebar Header */
 .sidebar-header {
     padding: 16px;
@@ -259,7 +267,7 @@
 }
 
 .message-bubble.mine .bubble-content {
-    background: linear-gradient(135deg, #2563eb, #1d4ed8);
+    background: #2563eb;
     color: #ffffff;
     border-radius: 18px 18px 4px 18px;
     padding: 8px 12px;
@@ -268,7 +276,7 @@
 }
 
 .message-bubble.theirs .bubble-content {
-    background: #1a1a1a;
+    background: #202c33;
     color: #ffffff;
     border-radius: 18px 18px 18px 4px;
     padding: 8px 12px;
@@ -306,6 +314,21 @@
 .message-status svg {
     width: 12px;
     height: 12px;
+}
+
+.message-item {
+    animation: msgIn .18s ease;
+}
+
+@keyframes msgIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px) scale(.98);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
 }
 
 /* Date Divider */
@@ -421,11 +444,16 @@
     justify-content: center;
         transition: background-color 0.15s, transform 0.15s;
         flex-shrink: 0;
+    box-shadow: 0 4px 14px rgba(37,99,235,.35);
     }
 
     .send-button:hover {
-        transform: translateY(-1px);
+        transform: transform: scale(1.05);
     }
+
+    .send-button:active {
+    transform: scale(.96);
+}
 
     #cancelEditBtn {
         min-width: 32px;
@@ -478,6 +506,8 @@
         padding: 12px;
     }
 }
+
+
 </style>
 @endpush
 
@@ -800,7 +830,16 @@ function cancelEdit() {
 
 // Auto scroll to bottom on load
 function scrollBottom(smooth = true) {
-    messagesArea.scrollTo({ top: messagesArea.scrollHeight, behavior: smooth ? 'smooth' : 'instant' });
+
+    requestAnimationFrame(() => {
+
+        messagesArea.scrollTo({
+            top: messagesArea.scrollHeight + 500,
+            behavior: smooth ? 'smooth' : 'auto'
+        });
+
+    });
+
 }
 scrollBottom(false);
 
@@ -839,6 +878,7 @@ async function sendMessage() {
         is_read: false,
         attachment_url: file ? URL.createObjectURL(file) : null,
     });
+    scrollBottom();
 
     // clear inputs in UI (but keep preview until sent)
     msgInput.value = '';
@@ -947,7 +987,13 @@ async function poll() {
     try {
         const url = `${POLL_URL}?since=${lastId}`;
         const res = await fetch(url, {
-            headers: { 'Accept': 'application/json', 'X-CSRF-TOKEN': CSRF }
+            method: 'GET',
+            cache: 'no-store',
+            headers: {
+                'Accept': 'application/json',
+                'X-CSRF-TOKEN': CSRF,
+                'Cache-Control': 'no-cache'
+            }
         });
         const data = await res.json();
         if (data.messages && data.messages.length) {
@@ -956,13 +1002,18 @@ async function poll() {
                     appendMessage(m);
                 }
             });
-            lastId = data.last_id || lastId;
+            if (data.messages.length) {
+            lastId = data.messages[data.messages.length - 1].id;
+        }
         }
     } catch(e) {}
-    pollTimer = setTimeout(poll, 3000);
+    pollTimer = setTimeout(poll, 800);
 }
 
 function appendMessage(m) {
+    if(document.querySelector(`[data-msg-id="${m.id}"]`)) {
+    return;
+}
     const isMine = m.is_mine || Number(m.sender_id) === AUTH_ID;
     const div = document.createElement('div');
     div.className = `message-item ${isMine ? 'mine' : 'theirs'}`;
@@ -1001,7 +1052,7 @@ function appendMessage(m) {
                 <p class="message-text" id="text-${m.id}">${escHtml(m.message)}</p>
             </div>
             <div class="message-time ${isMine ? 'mine' : 'theirs'}">
-                <span>${m.time}</span>
+                <span>${m.time || formatTimeRealtime(m.created_at)}</span>
                 ${readIcon}
             </div>
         </div>
@@ -1013,15 +1064,41 @@ function appendMessage(m) {
     });
 }
 
+refreshSidebar();
+async function refreshSidebar() {
+
+    try {
+
+        const res = await fetch(window.location.href, {
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        });
+
+        const html = await res.text();
+
+        const parser = new DOMParser();
+        const doc = parser.parseFromString(html, 'text/html');
+
+        const newSidebar = doc.getElementById('sideList');
+
+        if (newSidebar) {
+            document.getElementById('sideList').innerHTML = newSidebar.innerHTML;
+        }
+
+    } catch(e) {}
+
+}
+
 function escHtml(str) {
     return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
 }
 
 // Start polling
-pollTimer = setTimeout(poll, 3000);
+pollTimer = setTimeout(poll, 800);
 document.addEventListener('visibilitychange', () => {
     if (document.hidden) clearTimeout(pollTimer);
-    else pollTimer = setTimeout(poll, 1000);
+    else pollTimer = setTimeout(poll, 300);
 });
 
 // Persist cache on unload
@@ -1030,6 +1107,18 @@ window.addEventListener('beforeunload', () => {
         if (messagesArea) localStorage.setItem(cacheKey, messagesArea.innerHTML);
     } catch (e) {}
 });
+
+function formatTimeRealtime(dateString) {
+
+    const date = new Date(dateString);
+
+    return date.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+
+}
+
 </script>
 @endpush
 @endsection
