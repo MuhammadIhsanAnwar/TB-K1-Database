@@ -16,6 +16,39 @@
     box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
   }
 
+  /* ── Layout Spacing Improvement ───────────────────────────── */
+.dashboard-wrapper {
+  max-width: 1350px; /* jangan full layar */
+  margin: 0 auto;
+}
+
+.section-spacing {
+  margin-top: 2rem;
+}
+
+.panel-card-glass {
+  border-radius: 28px;
+  padding: 1.25rem;
+}
+
+/* table biar ada napas */
+.table-wrapper {
+  padding: 0.5rem 0.5rem 1rem;
+}
+
+/* card application seller */
+.application-card {
+  max-width: 1180px;
+  margin: 0 auto;
+}
+
+/* responsive spacing */
+@media (min-width: 1536px) {
+  .dashboard-wrapper {
+    max-width: 1450px;
+  }
+}
+
   /* ── Premium E-Sports Navigation Tabs ────────────────────── */
   .glossy-tabs {
     background: rgba(9, 14, 23, 0.5);
@@ -112,7 +145,7 @@
   {{-- Ambient Glow Light --}}
   <div class="absolute top-0 right-1/4 w-96 h-96 bg-brand-500/5 rounded-full blur-[150px] pointer-events-none"></div>
 
-  <div class="max-w-7xl mx-auto px-4 space-y-6 relative z-10">
+  <div class="dashboard-container px-6 lg:px-8 space-y-8 relative z-10">
 
     {{-- ── HEADER CONTROL ───────────────────────────────────── --}}
     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-white/5 pb-5">
@@ -153,7 +186,7 @@
     @endif
 
     {{-- ── TAB NAVIGATION PANEL ─────────────────────────────── --}}
-    <div class="overflow-x-auto">
+    <div class="overflow-x-auto table-wrapper">
       <div class="inline-flex gap-1 rounded-2xl p-1.5 glossy-tabs min-w-max">
 
         <a href="{{ route('admin.users.index', ['tab' => 'users']) }}"
@@ -191,7 +224,7 @@
     {{-- TAB 1: REGULAR USERS                                              --}}
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
     @if($tab === 'users')
-      <div class="rounded-3xl panel-card-glass overflow-hidden">
+      <div class="rounded-3xl panel-card-glass overflow-hidden section-spacing">
         <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-300 text-sm">
           Daftar akun pembeli (buyer) terdaftar. Anda berhak melakukan penangguhan (<span class="text-rose-400 font-bold">suspend</span>) jika akun terindikasi curang.
         </div>
@@ -202,7 +235,7 @@
             <p class="text-sm font-medium">Belum ada data pengguna reguler.</p>
           </div>
         @else
-          <div class="overflow-x-auto">
+          <div class="overflow-x-auto table-wrapper">
             <table class="min-w-full divide-y divide-white/5 text-sm text-left text-slate-300">
               <thead class="bg-black/30 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5">
                 <tr>
@@ -270,7 +303,7 @@
     {{-- TAB 2: PENDING VERIFICATION                                       --}}
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
     @if($tab === 'pending_verification')
-      <div class="rounded-3xl panel-card-glass overflow-hidden">
+      <div class="rounded-3xl panel-card-glass overflow-hidden section-spacing">
         <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-300 text-sm">
           Daftar pendaftaran akun baru yang belum menyelesaikan verifikasi link email.
         </div>
@@ -281,7 +314,7 @@
             <p class="text-sm font-medium">Sempurna! Tidak ada akun tertahan di verifikasi email.</p>
           </div>
         @else
-          <div class="overflow-x-auto">
+          <div class="overflow-x-auto table-wrapper">
             <table class="min-w-full divide-y divide-white/5 text-sm text-left text-slate-300">
               <thead class="bg-black/30 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5">
                 <tr>
@@ -329,7 +362,7 @@
     {{-- TAB 3: MITRA SELLERS                                              --}}
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
     @if($tab === 'sellers')
-      <div class="rounded-3xl panel-card-glass overflow-hidden">
+      <div class="rounded-3xl panel-card-glass overflow-hidden section-spacing">
         <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-300 text-sm">
           Seluruh toko mitra pedagang aktif. Anda dapat membekukan hak penjualan mereka melalui tombol suspensi.
         </div>
@@ -340,7 +373,7 @@
             <p class="text-sm font-medium">Belum ada mitra pedagang (seller) terverifikasi.</p>
           </div>
         @else
-          <div class="overflow-x-auto">
+          <div class="overflow-x-auto table-wrapper">
             <table class="min-w-full divide-y divide-white/5 text-sm text-left text-slate-300">
               <thead class="bg-black/30 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5">
                 <tr>
@@ -431,7 +464,7 @@
           </div>
 
           @foreach($applications as $applicant)
-            <div class="rounded-3xl panel-card-glass overflow-hidden group transition-all">
+            <div class="rounded-3xl panel-card-glass overflow-hidden group transition-all application-card">
               
               {{-- Card Header --}}
               <div class="flex flex-col sm:flex-row sm:items-center gap-4 px-6 pt-6 pb-4">
