@@ -27,6 +27,8 @@ use App\Http\Controllers\PageController;
 use App\Http\Controllers\SellerRegistrationController;
 use App\Http\Controllers\Seller\SellerStoreController;
 use App\Http\Controllers\Admin\VerificationController as AdminVerificationController;
+use App\Http\Controllers\VerificationController;
+
 
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -262,6 +264,8 @@ Route::get('/email/verify-pending', 'App\\Http\\Controllers\\VerificationControl
 Route::post('/email/verification-notification/guest', 'App\\Http\\Controllers\\VerificationController@resendGuest')
     ->middleware('throttle:6,1')
     ->name('verification.resend.guest');
+
+Route::post('/email/verification-notification/guest', [VerificationController::class, 'resendGuest']);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Static pages

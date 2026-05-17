@@ -179,6 +179,7 @@ class AuthController extends Controller
         });
 
         $sent = $user->sendEmailVerificationNotification();
+        session(['guest_email' => $user->email]);
 
         if (! $sent) {
             return redirect()->route('verification.pending', ['email' => $user->email])

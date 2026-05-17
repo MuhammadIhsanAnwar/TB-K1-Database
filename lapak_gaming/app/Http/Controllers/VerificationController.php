@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use App\Models\User; // Tambahkan ini untuk mengambil data user berdasarkan ID
+use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
@@ -16,6 +17,27 @@ class VerificationController extends Controller
             ? redirect()->route('dashboard')
             : view('auth.verify-email');
     }
+
+    public function resendGuest(Request $request)
+{
+    $email = session('guest_email');
+
+    if (!$email) {
+        return back()->with('error', 'Email tidak ditemukan.');
+    }
+
+    // cari user berdasarkan email
+    $user = \App\Models\User::where('email', $email)->first();
+
+    if (!$user) {
+        return back()->with('error', 'User tidak ditemukan.');
+    }
+
+    // kirim ulang email verifikasi
+    $user->sendEmailVerificationNotification();
+
+    return back()->with('success', 'Email verifikasi berhasil dikirim ulang.');
+}
 
     public function send(Request $request): RedirectResponse
     {
