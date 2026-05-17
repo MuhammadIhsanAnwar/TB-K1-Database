@@ -24,10 +24,10 @@
   <div class="relative aspect-square overflow-hidden" style="background:#090E1A;">
     {{-- SRC NYA KITA GANTI JADI $displayImage --}}
     <img src="{{ $displayImage }}"
-         alt="{{ $product->name }}"
-         class="w-full h-full object-cover transition-transform duration-400 group-hover:scale-108"
-         loading="lazy"
-         onerror="this.src='data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 80 80%22><rect fill=%22%230D1421%22 width=%2280%22 height=%2280%22/><text x=%2250%%25%22 y=%2250%%25%22 text-anchor=%22middle%22 dy=%22.3em%22 font-size=%2228%22>🎮</text></svg>'">
+     alt="{{ $product->name }}"
+     class="w-full h-full object-cover transition-transform duration-400 group-hover:scale-108"
+     loading="lazy"
+     onerror="this.src='https://placehold.co/600x600/0f172a/38bdf8?text=Lapak+Gaming'">
 
     {{-- Stock badge --}}
     @if(($product->stock ?? 1) === 0)
