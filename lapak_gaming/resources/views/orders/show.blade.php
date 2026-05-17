@@ -30,10 +30,15 @@
 <div class="min-h-screen py-12 px-4 bg-[#060816]">
     <div class="mx-auto max-w-5xl space-y-6">
         <div class="reveal relative overflow-hidden rounded-[30px] border border-blue-500/20 bg-[#0B1220]/95 p-8 shadow-[0_0_80px_rgba(37,99,235,0.08)]">
+            <div class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.15),transparent_35%)]"></div>
+        <div class="relative z-10">
+            </div>
+            <div class="space-y-8">
+                </div>
             <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <div>
-                    <h1 class="text-3xl font-bold text-white">{{ $order->invoice_number }}</h1>
-                    <p class="mt-2 text-slate-400">Status: {{ $order->status_label }}</p>
+                    <h1 class="text-3xl md:text-5xl font-black tracking-tight text-white">{{ $order->invoice_number }}</h1>
+                    <p class="mt-3 text-sm text-slate-400">Status: {{ $order->status_label }}</p>
                 </div>
                 <div class="space-y-1 text-right text-slate-300">
                     <div>Grand Total</div>
@@ -44,18 +49,18 @@
             <div class="mt-8 grid gap-4 md:grid-cols-2">
                 <div class="rounded-3xl border border border-white/5 bg-white/[0.03] p-5">
                     <h2 class="text-lg font-semibold text-white">Buyer</h2>
-                    <p class="mt-2 text-slate-400">{{ $order->buyer->name ?? '-' }}</p>
+                    <p class="mt-3 text-sm text-slate-400">{{ $order->buyer->name ?? '-' }}</p>
                     <p class="text-slate-500">{{ $order->buyer->email ?? '-' }}</p>
                 </div>
                 <div class="rounded-3xl border border border-white/5 bg-white/[0.03] p-5">
                     <h2 class="text-lg font-semibold text-white">Seller</h2>
-                    <p class="mt-2 text-slate-400">{{ $order->seller->name ?? '-' }}</p>
+                    <p class="mt-3 text-sm text-slate-400">{{ $order->seller->name ?? '-' }}</p>
                     <p class="text-slate-500">{{ $order->seller->email ?? '-' }}</p>
                 </div>
             </div>
 
-            <div class="border border-white/5 bg-white/[0.03]border border-white/5 bg-white/[0.03]">
-                <div class="border-b border-white/5 bg-white/[0.03] px-6 py-4 text-sm uppercase tracking-[0.2em] text-blue-300"> Pesanan</div>
+            <div class="mt-8 overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0F172A]/70 shadow-[0_0_40px_rgba(37,99,235,0.05)]">
+                <div class="border-b border-white/5 bg-white/[0.02] px-6 py-5 text-[11px] font-bold uppercase tracking-[0.3em] text-blue-300">Pesanan</div>
                 <div class="divide-y divide-slate-800">
                     @foreach($order->items as $item)
                         @php
@@ -73,12 +78,12 @@
                 </div>
             </div>
 
-            <div class="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
-                <div class="rounded-3xl border border border-white/5 bg-white/[0.03] p-5">
+            <div class="mt-8 flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                <div class="rounded-[26px] border border-white/5 bg-white/[0.03] p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
                     <div class="text-slate-400">Metode Pembayaran</div>
                     <div class="mt-2 text-white">{{ $order->payment_method ?? 'Belum dipilih' }}</div>
                 </div>
-                <div class="rounded-3xl border border border-white/5 bg-white/[0.03] p-5">
+                <div class="rounded-[26px] border border-white/5 bg-white/[0.03] p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
                     <div class="text-slate-400">Tanggal Pesanan</div>
                     <div class="mt-2 text-white">{{ $order->created_at->translatedFormat('d F Y H:i') }}</div>
                 </div>
@@ -90,7 +95,7 @@
                 @if(in_array($order->status, [\App\Models\Order::STATUS_PENDING_PAYMENT, \App\Models\Order::STATUS_PAYMENT_UPLOADED], true))
                     <form action="{{ route('orders.cancel', $order) }}" method="POST">
                         @csrf
-                        <button type="submit" class="w-full rounded-[22px] border border-red-500/20 bg-red-500/10 px-5 py-3 font-semibold text-red-300 transition duration-300 hover:-translate-y-1 hover:bg-red-500/20">Batalkan Order</button>
+                        <button type="submit" class="w-full rounded-[26px] border border-red-500/20 bg-red-500/10 px-5 py-4 text-base font-bold text-red-300 transition duration-300 hover:-translate-y-1 hover:bg-red-500/20 hover:shadow-[0_0_25px_rgba(239,68,68,0.15)]">Batalkan Order</button>
                     </form>
                 @endif
             </div>
@@ -107,13 +112,13 @@
             @elseif($order->status === \App\Models\Order::STATUS_PENDING_PAYMENT)
             <div class="mt-6 rounded-3xl border border border-white/5 bg-white/[0.03] p-6">
                 <h2 class="text-lg font-semibold text-white">Lanjutkan Pembayaran</h2>
-                <p class="mt-2 text-slate-400">Metode pembayaran: <span class="font-semibold text-white">{{ ucfirst(str_replace('_', ' ', $order->payment_method ?? 'Belum dipilih')) }}</span></p>
+                <p class="mt-3 text-sm text-slate-400">Metode pembayaran: <span class="font-semibold text-white">{{ ucfirst(str_replace('_', ' ', $order->payment_method ?? 'Belum dipilih')) }}</span></p>
 
                 @if($order->payment_method === 'balance')
                     <form action="{{ route('orders.pay', $order) }}" method="POST" class="mt-4">
                         @csrf
                         <input type="hidden" name="payment_method" value="balance">
-                        <button type="submit" class="w-full rounded-[22px] border border-emerald-500/20 bg-emerald-500/10 px-5 py-3 font-semibold text-emerald-300 transition duration-300 hover:-translate-y-1 hover:bg-emerald-500/20">Bayar dengan Saldo</button>
+                        <button type="submit" class="w-full rounded-[26px] border border-red-500/20 bg-red-500/10 px-5 py-4 text-base font-bold text-red-300 transition duration-300 hover:-translate-y-1 hover:bg-red-500/20 hover:shadow-[0_0_25px_rgba(239,68,68,0.15)]">Bayar dengan Saldo</button>
                     </form>
                 @else
                     <form action="{{ route('orders.proof', $order) }}" method="POST" enctype="multipart/form-data" class="mt-4 space-y-4">
@@ -122,7 +127,7 @@
                             Unggah bukti pembayaran (gambar)
                             <input type="file" name="payment_proof" accept="image/*" class="mt-2 w-full rounded-[20px] border border-white/10 bg-white/[0.03] px-4 py-3 text-slate-100 file:mr-4 file:rounded-xl file:border-0 file:bg-blue-500/20 file:px-4 file:py-2 file:text-blue-300" required>
                         </label>
-                        <button type="submit" class="w-full rounded-[22px] border border-emerald-500/20 bg-emerald-500/10 px-5 py-3 font-semibold text-emerald-300 transition duration-300 hover:-translate-y-1 hover:bg-emerald-500/20">Kirim Bukti Pembayaran</button>
+                        <button type="submit" class="w-full rounded-[24px] border border-white/10 object-cover transition duration-300 hover:scale-[1.01] max-h-[500px]">Kirim Bukti Pembayaran</button>
                     </form>
                 @endif
             </div>
