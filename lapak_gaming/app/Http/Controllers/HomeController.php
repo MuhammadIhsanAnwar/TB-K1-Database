@@ -31,7 +31,13 @@ class HomeController extends Controller {
             ->get();
 
         return view('home', compact(
-            'categories', 'popularProducts', 'topupProducts', 'gameKeyProducts'
+            'categories',
+            'popularProducts',
+            'topupProducts',
+            'gameKeyProducts',
+            'heroBanners',
+            'featuredBanners'
         ));
+        
     }
 }
