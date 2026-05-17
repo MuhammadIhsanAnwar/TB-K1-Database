@@ -534,12 +534,8 @@ spline-viewer iframe {
 
       @foreach($categories as $cat)
 
-      <a href="{{ route('categories.show', $cat->slug) }}"
-         class="group relative overflow-hidden rounded-[28px]
-                border border-slate-800
-                bg-gradient-to-b from-[#111827] to-[#060b16]
-                p-5 hover:border-cyan-400/40
-                transition duration-500 hover:-translate-y-1">
+     <a href="{{ route('categories.show', $cat->slug) }}"
+      class="cat-btn reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}
 
         {{-- GLOW --}}
         <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500">
@@ -781,12 +777,7 @@ spline-viewer iframe {
 
           @foreach($products as $product)
 
-          <div class="flex-none
-                      w-[78%]
-                      sm:w-[48%]
-                      lg:w-[31%]
-                      xl:w-[24%]
-                      snap-start">
+          <div class="flex-none w-[72%] sm:w-[40%] md:w-[28%] xl:w-[20%] snap-start reveal-card reveal-up reveal-delay-{{ ($loop->index % 6) + 1 }}">
 
             <div class="group relative h-full rounded-[30px]
                         overflow-hidden
@@ -1140,7 +1131,7 @@ spline-viewer iframe {
 {{-- PREMIUM DISCOVERY SECTION                                  --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 
-<section class="pb-20 relative overflow-hidden">
+<section class="pb-20 reveal-card relative overflow-hidden">
 
     {{-- Background Glow --}}
     <div class="absolute inset-0 pointer-events-none">
