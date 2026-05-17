@@ -1097,8 +1097,7 @@ spline-viewer iframe {
 
       {{-- TRACK --}}
       <div id="premium-topup-track"
-           class="flex gap-5 overflow-x-auto banner-track
-                  snap-x snap-mandatory scroll-smooth pb-4">
+           class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4">
 
         @foreach($topupProducts as $product)
 
@@ -1133,7 +1132,7 @@ spline-viewer iframe {
                           from-[#020617] via-[#020617]/30 to-transparent">
               </div>
 
-              {{-- BADGES --}}
+              {{-- BADGE --}}
               <div class="absolute top-4 left-4">
 
                 <div class="px-3 py-1.5 rounded-full
@@ -1189,7 +1188,6 @@ spline-viewer iframe {
             {{-- CONTENT --}}
             <div class="p-5">
 
-              {{-- MINI FEATURES --}}
               <div class="flex items-center gap-2 mb-5">
 
                 <div class="px-3 py-2 rounded-xl
@@ -1212,7 +1210,6 @@ spline-viewer iframe {
 
               </div>
 
-              {{-- PRICE --}}
               <div class="flex items-end justify-between gap-3">
 
                 <div>
@@ -1255,16 +1252,14 @@ spline-viewer iframe {
 
       </div>
 
-      {{-- SLIDER DOTS / BAR --}}
-      <div id="premium-topup-dots"
-           class="flex items-center justify-center gap-2 mt-6">
+      {{-- DOTS --}}
+      <div class="flex items-center justify-center gap-2 mt-6">
 
         @foreach($topupProducts as $product)
 
         <button
-          class="premium-dot w-10 h-1.5 rounded-full
-                 bg-white/10 hover:bg-cyan-400/60
-                 transition duration-300"
+          class="premium-dot w-12 h-1.5 rounded-full
+                 bg-white/10 transition duration-300"
           data-index="{{ $loop->index }}">
         </button>
 
@@ -1784,86 +1779,6 @@ splineEl.addEventListener('load', async (e) => {
       startAutoplay();
     }, { passive: true });
 
-
-document.addEventListener('DOMContentLoaded', () => {
-
-  const track = document.getElementById('premium-topup-track');
-  const slides = document.querySelectorAll('.premium-slide');
-  const dots = document.querySelectorAll('.premium-dot');
-
-  if (!track || !slides.length) return;
-
-  let current = 0;
-  let autoSlide;
-
-  function goToSlide(index) {
-
-    const slide = slides[index];
-
-    if (!slide) return;
-
-    track.scrollTo({
-      left: slide.offsetLeft - 10,
-      behavior: 'smooth'
-    });
-
-    dots.forEach(dot => {
-      dot.classList.remove('bg-cyan-400');
-      dot.classList.add('bg-white/10');
-    });
-
-    if (dots[index]) {
-      dots[index].classList.remove('bg-white/10');
-      dots[index].classList.add('bg-cyan-400');
-    }
-
-    current = index;
-
-  }
-
-  function startAutoSlide() {
-
-    autoSlide = setInterval(() => {
-
-      current++;
-
-      if (current >= slides.length) {
-        current = 0;
-      }
-
-      goToSlide(current);
-
-    }, 3500);
-
-  }
-
-  function stopAutoSlide() {
-    clearInterval(autoSlide);
-  }
-
-  dots.forEach((dot, index) => {
-
-    dot.addEventListener('click', () => {
-
-      stopAutoSlide();
-      goToSlide(index);
-      startAutoSlide();
-
-    });
-
-  });
-
-  track.addEventListener('mouseenter', stopAutoSlide);
-  track.addEventListener('mouseleave', startAutoSlide);
-
-  track.addEventListener('touchstart', stopAutoSlide, { passive: true });
-  track.addEventListener('touchend', startAutoSlide, { passive: true });
-
-  goToSlide(0);
-  startAutoSlide();
-
-});
-
     // Prev/Next buttons (if present)
     const parent = track.parentElement;
     const prevBtn = parent?.querySelector('#banner-prev');
@@ -1901,6 +1816,108 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
   });
+
+});
+
+document.addEventListener('DOMContentLoaded', function () {
+
+  const track = document.getElementById('premium-topup-track');
+  const slides = document.querySelectorAll('.premium-slide');
+  const dots = document.querySelectorAll('.premium-dot');
+
+  if (!track || slides.length === 0) return;
+
+  let currentIndex = 0;
+  let autoSlide;
+
+  // ACTIVE DOT
+  function updateDots(index) {
+
+    dots.forEach((dot, i) => {
+
+      if (i === index) {
+
+        dot.classList.remove('bg-white/10');
+        dot.classList.add('bg-cyan-400');
+
+      } else {
+
+        dot.classList.remove('bg-cyan-400');
+        dot.classList.add('bg-white/10');
+
+      }
+
+    });
+
+  }
+
+  // GO TO SLIDE
+  function goToSlide(index) {
+
+    const slide = slides[index];
+
+    if (!slide) return;
+
+    track.scrollTo({
+      left: slide.offsetLeft,
+      behavior: 'smooth'
+    });
+
+    currentIndex = index;
+
+    updateDots(index);
+
+  }
+
+  // AUTO LOOP
+  function startSlider() {
+
+    autoSlide = setInterval(() => {
+
+      currentIndex++;
+
+      if (currentIndex >= slides.length) {
+        currentIndex = 0;
+      }
+
+      goToSlide(currentIndex);
+
+    }, 3000);
+
+  }
+
+  function stopSlider() {
+
+    clearInterval(autoSlide);
+
+  }
+
+  // DOT CLICK
+  dots.forEach((dot, index) => {
+
+    dot.addEventListener('click', () => {
+
+      stopSlider();
+
+      goToSlide(index);
+
+      startSlider();
+
+    });
+
+  });
+
+  // HOVER STOP
+  track.addEventListener('mouseenter', stopSlider);
+  track.addEventListener('mouseleave', startSlider);
+
+  // TOUCH STOP
+  track.addEventListener('touchstart', stopSlider, { passive: true });
+  track.addEventListener('touchend', startSlider, { passive: true });
+
+  // INIT
+  updateDots(0);
+  startSlider();
 
 });
 
