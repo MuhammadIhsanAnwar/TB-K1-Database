@@ -45,6 +45,7 @@
 
     .dashboard-card {
         transition: all .35s ease;
+        min-height: 150px;
     }
 
     .dashboard-card:hover {
@@ -82,8 +83,14 @@
             opacity: .5;
         }
     }
+
+    .quick-link {
+    min-height: 180px;
+}
+
+    
 </style>
-<div class="space-y-6 animate-fade-in">
+<div class="mx-auto max-w-7xl space-y-10 px-5 py-8 animate-fade-in">
 
     {{-- ═══════════════════════════════════════════════
          HEADER
@@ -91,7 +98,7 @@
     <section class="reveal relative overflow-hidden rounded-[30px]
             border border-blue-500/20
             bg-gradient-to-br from-[#060816] via-[#091225] to-[#0B1730]
-            px-8 py-8
+            px-8 py-7
             shadow-[0_0_80px_rgba(37,99,235,0.12)]">
         {{-- Ambient glow --}}
         <div class="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-amber-500/10 blur-3xl"></div>
@@ -103,8 +110,8 @@
                     <span class="live-dot h-1.5 w-1.5 rounded-full bg-amber-400"></span>
                     Admin Control Center
                 </span>
-                <h1 class="mt-3 text-3xl font-black tracking-tight text-white lg:text-4xl">Panel Admin Utama</h1>
-                <p class="mt-2 max-w-xl text-sm leading-relaxed text-slate-400">
+                <h1 class="mt-4 text-4xl font-black tracking-tight text-white lg:text-4xl">Panel Admin Utama</h1>
+                <p class="mt-4 max-w-xl text-sm leading-relaxed text-slate-400">
                     Kelola ekosistem marketplace: verifikasi seller, moderasi akun, manajemen iklan banner,
                     hingga pemantauan seluruh transaksi secara real-time.
                 </p>
@@ -131,10 +138,10 @@
          Row 1: 4 kolom — Total User, Buyer, Seller, Suspend
          Row 2: Request Seller (lebar), Produk, Transaksi (2 col)
     ═══════════════════════════════════════════════ --}}
-    <div class="anim-fade-up anim-delay-1 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+    <div class="anim-fade-up anim-delay-1 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
 
         {{-- Total Users --}}
-        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-blue-500/70 bg-[#0B1220]/95 p-5 hover:border-t-blue-400 hover:shadow-lg hover:shadow-blue-500/10">
+        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-blue-500/70 bg-[#0B1220]/95 p-4 hover:border-t-blue-400 hover:shadow-lg hover:shadow-blue-500/10">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Total User</p>
                 <div class="rounded-xl bg-blue-500/10 p-2 text-blue-400 transition group-hover:bg-blue-500/20">
@@ -143,12 +150,12 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-3xl font-black text-white">{{ number_format($totalUsers) }}</p>
+            <p class="text-2xl font-black text-white">{{ number_format($totalUsers) }}</p>
             <p class="mt-1 text-[11px] text-slate-600">Pengguna terdaftar</p>
         </div>
 
         {{-- Buyers --}}
-        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-indigo-500/70 bg-[#0B1220]/95 p-5 hover:border-t-indigo-400 hover:shadow-lg hover:shadow-indigo-500/10">
+        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-indigo-500/70 bg-[#0B1220]/95 p-4 hover:border-t-indigo-400 hover:shadow-lg hover:shadow-indigo-500/10">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Buyer</p>
                 <div class="rounded-xl bg-indigo-500/10 p-2 text-indigo-400 transition group-hover:bg-indigo-500/20">
@@ -157,12 +164,12 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-3xl font-black text-white">{{ number_format($buyers) }}</p>
+            <p class="text-2xl font-black text-white">{{ number_format($buyers) }}</p>
             <p class="mt-1 text-[11px] text-slate-600">Pembeli aktif</p>
         </div>
 
         {{-- Verified Sellers --}}
-        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-emerald-500/70 bg-[#0B1220]/95 p-5 hover:border-t-emerald-400 hover:shadow-lg hover:shadow-emerald-500/10">
+        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-emerald-500/70 bg-[#0B1220]/95 p-4 hover:border-t-emerald-400 hover:shadow-lg hover:shadow-emerald-500/10">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-emerald-600/80">Verified Seller</p>
                 <div class="rounded-xl bg-emerald-500/10 p-2 text-emerald-400 transition group-hover:bg-emerald-500/20">
@@ -171,12 +178,12 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-3xl font-black text-white">{{ number_format($sellers) }}</p>
+            <p class="text-2xl font-black text-white">{{ number_format($sellers) }}</p>
             <p class="mt-1 text-[11px] text-slate-600">Seller terverifikasi</p>
         </div>
 
         {{-- Suspended --}}
-        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-rose-500/70 bg-[#0B1220]/95 p-5 hover:border-t-rose-400 hover:shadow-lg hover:shadow-rose-500/10">
+        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-rose-500/70 bg-[#0B1220]/95 p-4 hover:border-t-rose-400 hover:shadow-lg hover:shadow-rose-500/10">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-rose-600/80">Akun Suspend</p>
                 <div class="rounded-xl bg-rose-500/10 p-2 text-rose-400 transition group-hover:bg-rose-500/20">
@@ -185,12 +192,12 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-3xl font-black text-white">{{ number_format($suspendedUsers) }}</p>
+            <p class="text-2xl font-black text-white">{{ number_format($suspendedUsers) }}</p>
             <p class="mt-1 text-[11px] text-slate-600">Akun dinonaktifkan</p>
         </div>
 
         {{-- Request Seller — highlighted card --}}
-        <div class="reveal dashboard-card glass-card group relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-slate-900 p-5 hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/10 sm:col-span-2 lg:col-span-1">
+        <div class="reveal dashboard-card glass-card group relative overflow-hidden rounded-2xl border border-amber-500/30 bg-gradient-to-br from-amber-500/10 to-slate-900 p-4 hover:border-amber-500/60 hover:shadow-lg hover:shadow-amber-500/10 sm:col-span-2 lg:col-span-1">
             <div class="pointer-events-none absolute -right-6 -top-6 h-24 w-24 rounded-full bg-amber-400/10 blur-2xl"></div>
             <div class="relative mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-amber-500">Request Seller</p>
@@ -199,13 +206,13 @@
                     Live
                 </div>
             </div>
-            <p class="relative text-3xl font-black text-white">{{ number_format($sellerRequests) }}</p>
+            <p class="relative text-2xl font-black text-white">{{ number_format($sellerRequests) }}</p>
             <p class="mt-1 text-[11px] text-amber-500/60">Menunggu verifikasi</p>
         </div>
 
         {{-- Pending Email Verification --}}
         <a href="{{ route('admin.users.index', ['tab' => 'pending_verification']) }}"
-           class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-yellow-500/70 bg-[#0B1220]/95 p-5 hover:border-t-yellow-400 hover:shadow-lg hover:shadow-yellow-500/10">
+           class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-yellow-500/70 bg-[#0B1220]/95 p-4 hover:border-t-yellow-400 hover:shadow-lg hover:shadow-yellow-500/10">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Pending Verifikasi</p>
                 <div class="rounded-xl bg-yellow-500/10 p-2 text-yellow-400 transition group-hover:bg-yellow-500/20">
@@ -214,12 +221,12 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-3xl font-black text-white">{{ number_format($pendingEmailVerifications) }}</p>
+            <p class="text-2xl font-black text-white">{{ number_format($pendingEmailVerifications) }}</p>
             <p class="mt-1 text-[11px] text-slate-600">Register belum verifikasi email</p>
         </a>
 
         {{-- Produk Aktif --}}
-        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-purple-500/70 bg-[#0B1220]/95 p-5 hover:border-t-purple-400 hover:shadow-lg hover:shadow-purple-500/10">
+        <div class="reveal dashboard-card glass-card group rounded-2xl border border-blue-500/20 border-t-2 border-t-purple-500/70 bg-[#0B1220]/95 p-4 hover:border-t-purple-400 hover:shadow-lg hover:shadow-purple-500/10">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Produk Aktif</p>
                 <div class="rounded-[26px] bg-purple-500/10 p-2 text-purple-400 transition group-hover:bg-purple-500/20">
@@ -228,12 +235,12 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-3xl font-black text-white">{{ number_format($products) }}</p>
+            <p class="text-2xl font-black text-white">{{ number_format($products) }}</p>
             <p class="mt-1 text-[11px] text-slate-600">Listing tersedia</p>
         </div>
 
         {{-- Total Transaksi — spans 2 cols --}}
-        <div class="reveal dashboard-card glass-card group rounded-[26px] border border-blue-500/20 border-t-2 border-t-cyan-500/70 bg-[#0B1220]/95 p-5 hover:border-t-cyan-400 hover:shadow-lg hover:shadow-cyan-500/10 sm:col-span-2">
+        <div class="reveal dashboard-card glass-card group rounded-[26px] border border-blue-500/20 border-t-2 border-t-cyan-500/70 bg-[#0B1220]/95 p-4 hover:border-t-cyan-400 hover:shadow-lg hover:shadow-cyan-500/10 sm:col-span-2">
             <div class="mb-4 flex items-start justify-between">
                 <p class="text-[11px] font-bold uppercase tracking-widest text-slate-500">Total Transaksi Selesai</p>
                 <div class="rounded-[26px] bg-cyan-500/10 p-2 text-cyan-400 transition group-hover:bg-cyan-500/20">
@@ -242,22 +249,26 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-3xl font-black text-white">{{ number_format($orders) }}</p>
+            <p class="text-2xl font-black text-white">{{ number_format($orders) }}</p>
             <p class="mt-1 text-[11px] text-slate-600">Order berhasil diselesaikan</p>
         </div>
 
     </div>
 
+    <h2 class="text-sm font-bold tracking-[0.25em] text-blue-400 uppercase">
+    Akses Cepat
+</h2>
+
     {{-- ═══════════════════════════════════════════════
          QUICK LINKS
     ═══════════════════════════════════════════════ --}}
-    <div class="anim-fade-up anim-delay-2 grid gap-4 lg:grid-cols-3">
+    <div class="anim-fade-up anim-delay-2 grid gap-6 xl:grid-cols-3">
 
         <a href="{{ route('admin.users.index') }}"
-           class="quick-link reveal dashboard-card glass-card group rounded-[30px]border border-blue-500/20 bg-[#0B1220]/95 p-7 transition hover:border-amber-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-amber-500/5">
-            <div class="quick-link-icon mb-6 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-amber-500/10 text-amber-500">
+           class="quick-link reveal dashboard-card glass-card group rounded-[30px]border border-blue-500/20 bg-[#0B1220]/95 p-6 transition hover:border-amber-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-amber-500/5">
+            <div class="quick-link-icon mb-4 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-amber-500/10 text-amber-500">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1。724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37a1.724 1.724 0 002.572-1.065z" />
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1。724 1.724 0 00-1.065-2。57２c-１．７５６－．４２６－１．７５６－２．９２４ ０－３．３５a１．７２４ １．７２４ ０ ００１．０６６－２．５７３c－．９４－１．５４３＋．８２６－３．３１ ＋２．３７－２．３７a１．７２４ １．７２４ ０ ００２．５７２－１．０６５z" />
                 </svg>
             </div>
             <div class="flex items-start justify-between">
@@ -272,8 +283,8 @@
         </a>
 
         <a href="{{ route('admin.banners.index') }}"
-           class="quick-link reveal dashboard-card glass-card group rounded-[30px] border border-blue-500/20 bg-[#0B1220]/95 p-7 transition hover:border-blue-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-blue-500/5">
-            <div class="quick-link-icon mb-6 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-blue-500/10 text-blue-500">
+           class="quick-link reveal dashboard-card glass-card group rounded-[30px] border border-blue-500/20 bg-[#0B1220]/95 p-6 transition hover:border-blue-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-blue-500/5">
+            <div class="quick-link-icon mb-4 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-blue-500/10 text-blue-500">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
                 </svg>
@@ -290,8 +301,8 @@
         </a>
 
         <a href="{{ route('admin.notifications.index') }}"
-           class="quick-link reveal dashboard-card glass-card group rounded-[30px]-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-7 transition hover:border-purple-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-purple-500/5">
-            <div class="quick-link-icon mb-6 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-purple-500/10 text-purple-500">
+           class="quick-link reveal dashboard-card glass-card group rounded-[30px]-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-6 transition hover:border-purple-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-purple-500/5">
+            <div class="quick-link-icon mb-4 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-purple-500/10 text-purple-500">
                 <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
@@ -312,30 +323,30 @@
     {{-- ═══════════════════════════════════════════════
          CHARTS
     ═══════════════════════════════════════════════ --}}
-    <div class="anim-fade-up anim-delay-3 grid gap-4 lg:grid-cols-2">
+    <div class="anim-fade-up anim-delay-3 grid gap-6 lg:grid-cols-2">
 
         {{-- Grafik Transaksi --}}
         <div class="rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-6">
-            <div class="mb-6 flex items-center justify-between">
+            <div class="mb-4 flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-white">Tren Transaksi</h3>
                     <p class="text-[11px] text-slate-500">{{ $chartRangeLabel }}</p>
                 </div>
                 <span class="rounded-lg bg-amber-500/10 px-2.5 py-1 text-[11px] font-bold text-amber-400">Order</span>
             </div>
-            <canvas id="transactionChart" height="220"></canvas>
+            <canvas id="transactionChart" height="150"></canvas>
         </div>
 
         {{-- Grafik Keuangan --}}
         <div class="rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-6">
-            <div class="mb-6 flex items-center justify-between">
+            <div class="mb-4 flex items-center justify-between">
                 <div>
                     <h3 class="font-bold text-white">Perputaran Uang</h3>
                     <p class="text-[11px] text-slate-500">{{ $chartRangeLabel }}</p>
                 </div>
                 <span class="rounded-lg bg-emerald-500/10 px-2.5 py-1 text-[11px] font-bold text-emerald-400">Transaksi</span>
             </div>
-            <canvas id="revenueChart" height="220"></canvas>
+            <canvas id="revenueChart" height="150"></canvas>
         </div>
 
     </div>
