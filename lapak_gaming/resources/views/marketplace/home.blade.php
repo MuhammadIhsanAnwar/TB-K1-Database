@@ -1036,75 +1036,201 @@ spline-viewer iframe {
 
 </section>
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- TOPUP SECTION — HORIZONTAL EXPERIENCE                     --}}
+{{-- TOPUP SECTION — PREMIUM CYBER EXPERIENCE                  --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 @if($topupProducts->isNotEmpty())
 
-<section class="pb-20 overflow-hidden">
+<section class="pb-24 relative overflow-hidden">
 
-  <div class="max-w-7xl mx-auto px-4">
+  {{-- BACKGROUND GLOW --}}
+  <div class="absolute inset-0 pointer-events-none">
 
-    <div class="flex items-center justify-between mb-8">
+    <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[300px]
+                bg-cyan-500/10 blur-[140px] rounded-full"></div>
+
+    <div class="absolute bottom-0 right-0 w-[400px] h-[250px]
+                bg-blue-500/10 blur-[120px] rounded-full"></div>
+
+  </div>
+
+  <div class="max-w-7xl mx-auto px-4 relative z-10">
+
+    {{-- HEADER --}}
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6 mb-10">
 
       <div>
 
         <div class="inline-flex items-center gap-2
-                    px-3 py-1 rounded-full
-                    bg-blue-500/10 border border-blue-500/20
-                    text-blue-300 text-xs font-bold mb-4">
+                    px-4 py-2 rounded-full
+                    bg-cyan-400/10
+                    border border-cyan-400/20
+                    backdrop-blur-xl
+                    text-cyan-300 text-[11px] font-black tracking-[0.25em]
+                    uppercase mb-5">
 
-          ⚡ INSTANT DELIVERY
+          <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
+
+          Instant Gaming Service
 
         </div>
 
-        <h2 class="text-3xl md:text-4xl font-black text-white">
-          Top Up Favorit
+        <h2 class="text-4xl md:text-5xl font-black text-white leading-tight">
+
+          Top Up
+          <span class="bg-gradient-to-r from-cyan-300 via-blue-400 to-cyan-200
+                       bg-clip-text text-transparent">
+            Favorit Gamer
+          </span>
+
         </h2>
 
-        <p class="text-slate-400 mt-2">
-          Proses tercepat untuk semua game populer
+        <p class="text-slate-400 mt-4 max-w-2xl text-sm md:text-base leading-relaxed">
+          Experience top up premium dengan proses super cepat,
+          visual modern, dan transaksi aman untuk semua game favoritmu.
         </p>
 
       </div>
 
       <a href="{{ route('products.by-type', 'topup') }}"
-         class="hidden md:flex items-center gap-2 text-cyan-300 hover:text-white transition">
+         class="group hidden md:flex items-center gap-3
+                px-6 py-4 rounded-2xl
+                bg-white/[0.03]
+                border border-white/10
+                hover:border-cyan-400/30
+                hover:bg-cyan-400/10
+                backdrop-blur-xl
+                transition duration-300">
 
-        Semua Top Up →
+        <span class="text-white font-semibold">
+          Jelajahi Semua
+        </span>
+
+        <div class="w-10 h-10 rounded-xl
+                    bg-cyan-400 text-black
+                    flex items-center justify-center
+                    group-hover:translate-x-1 transition">
+
+          →
+
+        </div>
 
       </a>
 
     </div>
 
-    <div class="flex gap-5 overflow-x-auto pb-3 banner-track snap-x snap-mandatory">
+    {{-- HORIZONTAL PREMIUM TRACK --}}
+    <div class="flex gap-6 overflow-x-auto banner-track snap-x snap-mandatory pb-4">
 
       @foreach($topupProducts as $product)
 
-      <div class="flex-none w-[88%] sm:w-[52%] lg:w-[32%] snap-start">
+      <div class="flex-none w-[92%] sm:w-[72%] lg:w-[44%] xl:w-[38%] snap-start">
 
-        <div class="group relative rounded-[30px]
+        <div class="group relative h-full rounded-[34px]
                     overflow-hidden
-                    border border-slate-800
-                    bg-[#081120]
-                    hover:border-cyan-500/40
-                    transition duration-300">
+                    border border-white/10
+                    bg-gradient-to-b from-[#0f172a] to-[#020617]
+                    hover:border-cyan-400/30
+                    transition duration-500">
+
+          {{-- BORDER GLOW --}}
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500">
+
+            <div class="absolute inset-0 rounded-[34px]
+                        border border-cyan-400/20"></div>
+
+            <div class="absolute -inset-[1px]
+                        rounded-[34px]
+                        bg-gradient-to-r
+                        from-cyan-400/10
+                        via-blue-400/5
+                        to-transparent blur-xl"></div>
+
+          </div>
 
           {{-- IMAGE --}}
-          <div class="relative overflow-hidden">
+          <div class="relative h-[320px] overflow-hidden">
 
-            <img src="{{ Storage::url($product->image) }}"
-                 alt="{{ $product->name }}"
-                 class="w-full h-72 object-cover group-hover:scale-110 transition duration-700">
+            <img
+              src="{{ Storage::url($product->image) }}"
+              alt="{{ $product->name }}"
+              class="w-full h-full object-cover
+                     group-hover:scale-110
+                     transition duration-700"
+            >
 
-            <div class="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/30 to-transparent"></div>
+            {{-- OVERLAY --}}
+            <div class="absolute inset-0
+                        bg-gradient-to-t
+                        from-[#020617] via-[#020617]/30 to-transparent">
+            </div>
 
-            <div class="absolute top-4 left-4">
+            {{-- TOP BADGES --}}
+            <div class="absolute top-5 left-5 flex items-center gap-3">
 
-              <div class="px-3 py-1 rounded-full
-                          bg-cyan-400/15 border border-cyan-400/20
-                          text-cyan-300 text-xs font-bold">
+              <div class="px-4 py-2 rounded-full
+                          bg-cyan-400/15
+                          border border-cyan-400/20
+                          backdrop-blur-xl
+                          text-cyan-300 text-[11px]
+                          font-black tracking-[0.15em]">
 
-                INSTANT
+                ⚡ INSTANT
+
+              </div>
+
+              <div class="px-4 py-2 rounded-full
+                          bg-white/10
+                          border border-white/10
+                          backdrop-blur-xl
+                          text-white text-[11px]
+                          font-semibold">
+
+                TOP SELLER
+
+              </div>
+
+            </div>
+
+            {{-- FLOATING RATING --}}
+            <div class="absolute top-5 right-5">
+
+              <div class="flex items-center gap-2
+                          px-4 py-2 rounded-2xl
+                          bg-black/40
+                          border border-white/10
+                          backdrop-blur-xl">
+
+                <span class="text-yellow-400">⭐</span>
+
+                <span class="text-white text-sm font-bold">
+                  {{ number_format($product->average_rating ?? 5,1) }}
+                </span>
+
+              </div>
+
+            </div>
+
+            {{-- BOTTOM CONTENT ON IMAGE --}}
+            <div class="absolute bottom-0 left-0 right-0 p-6">
+
+              <div class="flex items-end justify-between gap-5">
+
+                <div>
+
+                  <div class="text-[11px] uppercase tracking-[0.25em]
+                              text-cyan-300/80 font-bold mb-2">
+
+                    Premium Gaming Service
+
+                  </div>
+
+                  <h3 class="text-3xl font-black text-white leading-tight line-clamp-2">
+
+                    {{ $product->name }}
+
+                  </h3>
+
+                </div>
 
               </div>
 
@@ -1115,40 +1241,94 @@ spline-viewer iframe {
           {{-- CONTENT --}}
           <div class="p-6">
 
-            <div class="mb-5">
+            {{-- FEATURES --}}
+            <div class="grid grid-cols-3 gap-3 mb-6">
 
-              <h3 class="text-2xl font-black text-white line-clamp-2 mb-2">
-                {{ $product->name }}
-              </h3>
+              <div class="rounded-2xl
+                          bg-white/[0.03]
+                          border border-white/5
+                          p-3 text-center">
 
-              <p class="text-slate-400 text-sm line-clamp-2">
-                {{ $product->description }}
-              </p>
+                <div class="text-cyan-300 text-lg mb-1">⚡</div>
+
+                <div class="text-[11px] text-slate-400">
+                  Instan
+                </div>
+
+              </div>
+
+              <div class="rounded-2xl
+                          bg-white/[0.03]
+                          border border-white/5
+                          p-3 text-center">
+
+                <div class="text-cyan-300 text-lg mb-1">🛡️</div>
+
+                <div class="text-[11px] text-slate-400">
+                  Aman
+                </div>
+
+              </div>
+
+              <div class="rounded-2xl
+                          bg-white/[0.03]
+                          border border-white/5
+                          p-3 text-center">
+
+                <div class="text-cyan-300 text-lg mb-1">24/7</div>
+
+                <div class="text-[11px] text-slate-400">
+                  Support
+                </div>
+
+              </div>
 
             </div>
 
-            <div class="flex items-center justify-between">
+            {{-- PRICE + CTA --}}
+            <div class="flex items-end justify-between gap-5">
 
               <div>
 
-                <div class="text-xs text-slate-500 mb-1">
-                  Harga Mulai
+                <div class="text-xs text-slate-500 mb-2">
+                  Harga Mulai Dari
                 </div>
 
-                <div class="text-cyan-300 text-3xl font-black">
+                <div class="text-4xl font-black
+                            bg-gradient-to-r from-cyan-200 to-blue-400
+                            bg-clip-text text-transparent">
+
                   Rp {{ number_format($product->price,0,',','.') }}
+
                 </div>
 
               </div>
 
               <a href="{{ route('products.show', $product->slug) }}"
-                 class="w-14 h-14 rounded-2xl
-                        bg-cyan-400 hover:bg-cyan-300
-                        text-black
-                        flex items-center justify-center
-                        font-bold transition">
+                 class="group/btn relative overflow-hidden
+                        px-6 py-4 rounded-2xl
+                        bg-gradient-to-r
+                        from-cyan-400 to-blue-500
+                        text-black font-black
+                        hover:scale-105
+                        transition duration-300">
 
-                →
+                <span class="relative z-10 flex items-center gap-3">
+
+                  Top Up
+
+                  <span class="group-hover/btn:translate-x-1 transition">
+                    →
+                  </span>
+
+                </span>
+
+                <div class="absolute inset-0
+                            translate-y-full
+                            group-hover/btn:translate-y-0
+                            transition duration-500
+                            bg-white/20">
+                </div>
 
               </a>
 
