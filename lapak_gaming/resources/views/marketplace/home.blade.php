@@ -551,188 +551,203 @@ spline-viewer iframe {
 @endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- QUICK ACCESS — BENTO GRID VERSION                         --}}
+{{-- PREMIUM QUICK ACCESS                                       --}}
+{{-- GANTI FULL SECTION "QUICK ACCESS — TYPE BUTTONS" DENGAN INI --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="pb-20">
 
-  <div class="max-w-7xl mx-auto px-4">
+<section class="pb-24 relative overflow-hidden">
 
-    <div class="flex items-center justify-between mb-7">
-
-      <div>
-        <h2 class="font-display text-2xl font-black text-white">
-          Akses Cepat
-        </h2>
-
-        <p class="text-slate-500 text-sm mt-1">
-          Semua kebutuhan gaming dalam satu tempat
-        </p>
-      </div>
-
+    {{-- Background Glow --}}
+    <div class="absolute inset-0 pointer-events-none">
+        <div class="absolute top-0 left-0 w-[400px] h-[400px] bg-cyan-500/10 blur-[120px] rounded-full"></div>
+        <div class="absolute bottom-0 right-0 w-[400px] h-[400px] bg-purple-500/10 blur-[120px] rounded-full"></div>
     </div>
 
-    <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-[180px]">
+    <div class="max-w-7xl mx-auto px-4 relative z-10">
 
-      {{-- TOPUP --}}
-      <a href="{{ route('products.by-type', 'topup') }}"
-         class="group relative overflow-hidden rounded-[32px]
-                col-span-2 row-span-2
-                border border-blue-500/20
-                bg-gradient-to-br from-blue-500/20 via-cyan-500/10 to-[#060B16]
-                p-7 flex flex-col justify-between">
+        {{-- HEADER --}}
+        <div class="text-center mb-12">
 
-        <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-cyan-400/20 blur-3xl"></div>
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-400/20 bg-cyan-400/5 backdrop-blur-xl mb-5">
 
-        <div class="relative z-10">
+                <span class="w-2 h-2 rounded-full bg-cyan-400 animate-pulse"></span>
 
-          <div class="w-16 h-16 rounded-2xl
-                      bg-white/10
-                      border border-white/10
-                      flex items-center justify-center
-                      text-4xl mb-5">
+                <span class="text-cyan-300 text-xs uppercase tracking-[0.25em] font-bold">
+                    Gaming Services
+                </span>
 
-            ⚡
+            </div>
 
-          </div>
+            <h2 class="font-display text-4xl sm:text-5xl font-black text-white leading-tight">
 
-          <div class="inline-flex px-3 py-1 rounded-full
-                      bg-cyan-400/10 border border-cyan-400/20
-                      text-cyan-300 text-xs font-bold mb-4">
+                Akses Cepat
+                <span class="bg-gradient-to-r from-cyan-300 via-blue-400 to-purple-400 bg-clip-text text-transparent">
+                    Kebutuhan Gaming
+                </span>
 
-            TERCEPAT
+            </h2>
 
-          </div>
-
-          <h3 class="text-4xl font-black text-white leading-tight">
-            Top Up
-            <br>
-            Instan
-          </h3>
+            <p class="text-slate-400 mt-5 max-w-2xl mx-auto leading-relaxed">
+                Pilih layanan favoritmu dengan tampilan premium,
+                transaksi cepat, dan pengalaman gaming terbaik.
+            </p>
 
         </div>
 
-        <div class="relative z-10 flex items-center justify-between">
+        {{-- PREMIUM GRID --}}
+        <div class="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-6">
 
-          <p class="text-slate-300 text-sm max-w-xs">
-            Diamond langsung masuk ke akun hanya dalam hitungan detik.
-          </p>
+            @foreach([
+                [
+                    'type'=>'topup',
+                    'icon'=>'⚡',
+                    'label'=>'Top Up Game',
+                    'desc'=>'Diamond & UC instan otomatis',
+                    'gradient'=>'from-cyan-500/20 via-blue-500/10 to-transparent',
+                    'border'=>'border-cyan-400/20',
+                    'glow'=>'bg-cyan-400/20',
+                    'badge'=>'Instant',
+                    'badgeColor'=>'text-cyan-300 bg-cyan-400/10 border-cyan-400/20',
+                ],
 
-          <div class="w-14 h-14 rounded-2xl bg-cyan-400 text-black flex items-center justify-center">
-            →
-          </div>
+                [
+                    'type'=>'joki',
+                    'icon'=>'🏆',
+                    'label'=>'Jasa Joki',
+                    'desc'=>'Push rank cepat & aman',
+                    'gradient'=>'from-orange-500/20 via-yellow-500/10 to-transparent',
+                    'border'=>'border-orange-400/20',
+                    'glow'=>'bg-orange-400/20',
+                    'badge'=>'Popular',
+                    'badgeColor'=>'text-orange-300 bg-orange-400/10 border-orange-400/20',
+                ],
+
+                [
+                    'type'=>'akun',
+                    'icon'=>'👤',
+                    'label'=>'Akun Sultan',
+                    'desc'=>'Akun premium ready stock',
+                    'gradient'=>'from-purple-500/20 via-fuchsia-500/10 to-transparent',
+                    'border'=>'border-purple-400/20',
+                    'glow'=>'bg-purple-400/20',
+                    'badge'=>'Premium',
+                    'badgeColor'=>'text-purple-300 bg-purple-400/10 border-purple-400/20',
+                ],
+
+                [
+                    'type'=>'item',
+                    'icon'=>'⚔️',
+                    'label'=>'Item & Skin',
+                    'desc'=>'Skin rare & item eksklusif',
+                    'gradient'=>'from-emerald-500/20 via-green-500/10 to-transparent',
+                    'border'=>'border-emerald-400/20',
+                    'glow'=>'bg-emerald-400/20',
+                    'badge'=>'Hot',
+                    'badgeColor'=>'text-emerald-300 bg-emerald-400/10 border-emerald-400/20',
+                ],
+            ] as $index => $qt)
+
+            <a href="{{ route('products.by-type', $qt['type']) }}"
+               class="group relative overflow-hidden rounded-[30px] border {{ $qt['border'] }} bg-white/[0.03] backdrop-blur-xl p-6 hover:-translate-y-2 transition-all duration-500">
+
+                {{-- Hover Glow --}}
+                <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500">
+
+                    <div class="absolute inset-0 bg-gradient-to-br {{ $qt['gradient'] }}"></div>
+
+                    <div class="absolute -top-10 -right-10 w-40 h-40 {{ $qt['glow'] }} blur-[80px] rounded-full"></div>
+
+                </div>
+
+                {{-- Floating Border --}}
+                <div class="absolute inset-[1px] rounded-[29px] border border-white/5 pointer-events-none"></div>
+
+                <div class="relative z-10 flex flex-col h-full">
+
+                    {{-- TOP --}}
+                    <div class="flex items-start justify-between mb-8">
+
+                        {{-- ICON --}}
+                        <div class="relative">
+
+                            <div class="absolute inset-0 blur-2xl opacity-40 {{ $qt['glow'] }}"></div>
+
+                            <div class="relative w-20 h-20 rounded-3xl bg-white/[0.04] border border-white/10 backdrop-blur-xl flex items-center justify-center text-4xl group-hover:scale-110 transition duration-500">
+
+                                {{ $qt['icon'] }}
+
+                            </div>
+
+                        </div>
+
+                        {{-- BADGE --}}
+                        <div class="px-3 py-1.5 rounded-full border text-[10px] uppercase tracking-[0.18em] font-bold backdrop-blur-xl {{ $qt['badgeColor'] }}">
+
+                            {{ $qt['badge'] }}
+
+                        </div>
+
+                    </div>
+
+                    {{-- CONTENT --}}
+                    <div class="flex-1">
+
+                        <h3 class="text-2xl font-black text-white leading-tight mb-3">
+                            {{ $qt['label'] }}
+                        </h3>
+
+                        <p class="text-slate-400 leading-relaxed text-sm">
+                            {{ $qt['desc'] }}
+                        </p>
+
+                    </div>
+
+                    {{-- BOTTOM --}}
+                    <div class="flex items-center justify-between mt-8 pt-6 border-t border-white/5">
+
+                        <div class="flex items-center gap-2">
+
+                            <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+
+                            <span class="text-xs text-slate-400">
+                                Online 24/7
+                            </span>
+
+                        </div>
+
+                        <div class="w-12 h-12 rounded-2xl border border-white/10 bg-white/[0.04] flex items-center justify-center text-white group-hover:bg-white group-hover:text-black group-hover:scale-110 transition-all duration-300">
+
+                            <svg class="w-5 h-5"
+                                 fill="none"
+                                 viewBox="0 0 24 24"
+                                 stroke="currentColor">
+
+                                <path stroke-linecap="round"
+                                      stroke-linejoin="round"
+                                      stroke-width="2.3"
+                                      d="M14 5l7 7m0 0l-7 7m7-7H3"/>
+
+                            </svg>
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </a>
+
+            @endforeach
 
         </div>
-
-      </a>
-
-      {{-- JOKI --}}
-      <a href="{{ route('products.by-type', 'joki') }}"
-         class="group relative overflow-hidden rounded-[32px]
-                row-span-2
-                border border-orange-500/20
-                bg-gradient-to-b from-orange-500/15 to-[#0B1220]
-                p-6 flex flex-col justify-between">
-
-        <div class="absolute bottom-0 left-0 right-0 h-32 bg-orange-500/10 blur-3xl"></div>
-
-        <div class="relative z-10">
-
-          <div class="text-5xl mb-5">🏆</div>
-
-          <div class="inline-flex px-3 py-1 rounded-full
-                      bg-orange-500/10 border border-orange-500/20
-                      text-orange-300 text-xs font-bold mb-4">
-
-            POPULER
-
-          </div>
-
-          <h3 class="text-3xl font-black text-white leading-tight">
-            Jasa
-            <br>
-            Joki
-          </h3>
-
-        </div>
-
-        <div class="relative z-10">
-
-          <p class="text-slate-400 text-sm mb-5">
-            Push rank lebih cepat bersama player profesional.
-          </p>
-
-          <div class="w-12 h-12 rounded-2xl bg-orange-400 text-black flex items-center justify-center">
-            →
-          </div>
-
-        </div>
-
-      </a>
-
-      {{-- AKUN --}}
-      <a href="{{ route('products.by-type', 'akun') }}"
-         class="group relative overflow-hidden rounded-[28px]
-                border border-purple-500/20
-                bg-gradient-to-br from-purple-500/15 to-[#0B1220]
-                p-5 flex items-center justify-between">
-
-        <div>
-
-          <div class="text-4xl mb-3">👤</div>
-
-          <h3 class="text-xl font-black text-white">
-            Akun Game
-          </h3>
-
-          <p class="text-slate-400 text-sm mt-1">
-            Ready stock
-          </p>
-
-        </div>
-
-        <div class="text-3xl text-purple-300">
-          ↗
-        </div>
-
-      </a>
-
-      {{-- ITEM --}}
-      <a href="{{ route('products.by-type', 'item') }}"
-         class="group relative overflow-hidden rounded-[28px]
-                border border-emerald-500/20
-                bg-gradient-to-br from-emerald-500/15 to-[#0B1220]
-                p-5 flex items-center justify-between">
-
-        <div>
-
-          <div class="text-4xl mb-3">⚔️</div>
-
-          <h3 class="text-xl font-black text-white">
-            Item & Skin
-          </h3>
-
-          <p class="text-slate-400 text-sm mt-1">
-            Harga terbaik
-          </p>
-
-        </div>
-
-        <div class="text-3xl text-emerald-300">
-          ↗
-        </div>
-
-      </a>
 
     </div>
-
-  </div>
 
 </section>
 
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- PREMIUM DISCOVERY SECTION                                  --}}
-{{-- Ganti FULL section "POPULAR PRODUCTS" lama dengan ini      --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 
 <section class="pb-20 relative overflow-hidden">
