@@ -44,6 +44,15 @@
     display: none;
   }
 
+  .category-track::-webkit-scrollbar {
+    display: none;
+}
+
+.category-track {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+}
+
   .banner-slide {
     scroll-snap-align: start;
   }
