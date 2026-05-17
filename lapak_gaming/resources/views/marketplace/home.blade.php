@@ -272,6 +272,18 @@ spline-viewer iframe {
 .reveal-delay-4 { transition-delay: .20s; }
 .reveal-delay-5 { transition-delay: .25s; }
 .reveal-delay-6 { transition-delay: .30s; }
+
+.category-premium-track{
+  scrollbar-width:none;
+}
+
+.category-premium-track::-webkit-scrollbar{
+  display:none;
+}
+
+.category-premium-track{
+  -webkit-overflow-scrolling:touch;
+}
 </style>
 @endpush
 
@@ -611,46 +623,51 @@ spline-viewer iframe {
 
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- ALL CATEGORY PRODUCTS — PREMIUM VARIATIVE                 --}}
+{{-- ALL CATEGORY PRODUCTS — ULTRA PREMIUM AUTO SLIDER         --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 @if(isset($categoryProducts) && $categoryProducts->count())
 
-<section class="pb-24">
+<section class="pb-28 overflow-hidden">
 
   <div class="max-w-7xl mx-auto px-4 space-y-14">
 
     {{-- HEADER --}}
-    <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-5">
+    <div class="flex flex-col lg:flex-row lg:items-end lg:justify-between gap-6">
 
       <div>
 
         <div class="inline-flex items-center gap-2
-                    px-4 py-1.5 rounded-full
-                    bg-orange-400/10 border border-orange-400/20
-                    text-orange-300 text-xs font-bold mb-4">
+                    px-4 py-2 rounded-full
+                    bg-white/[0.04]
+                    border border-cyan-400/10
+                    backdrop-blur-xl
+                    text-cyan-300 text-xs font-black tracking-[0.15em] uppercase mb-5">
 
-          🔥 PREMIUM COLLECTION
+          ✦ Curated Gaming Collection
 
         </div>
 
-        <h2 class="text-3xl md:text-5xl font-black text-white">
-          Semua Kategori Produk
+        <h2 class="text-4xl md:text-6xl font-black text-white leading-none">
+          Semua Kategori
         </h2>
 
-        <p class="text-slate-400 mt-3">
-          Desain lebih immersive untuk pengalaman marketplace premium
+        <p class="text-slate-400 mt-4 text-base md:text-lg max-w-2xl">
+          Pengalaman marketplace gaming premium dengan desain modern,
+          auto-slider smooth, dan visual immersive.
         </p>
 
       </div>
 
       <a href="{{ route('products.search') }}"
-         class="hidden md:flex items-center gap-2
-                px-5 py-3 rounded-2xl
-                bg-white/5 border border-white/10
-                hover:bg-cyan-400 hover:text-black
-                text-white transition font-semibold">
+         class="hidden md:flex items-center gap-3
+                px-6 py-4 rounded-2xl
+                border border-white/10
+                bg-white/[0.03]
+                backdrop-blur-xl
+                text-white hover:bg-cyan-400 hover:text-black
+                transition duration-300 font-bold">
 
-        Jelajahi Semua Produk →
+        Explore All Products →
 
       </a>
 
@@ -662,226 +679,218 @@ spline-viewer iframe {
     @php
       $category = $group['category'];
       $products = $group['products'];
-      $layout = $loop->index % 3;
     @endphp
 
+    <section class="relative overflow-hidden rounded-[38px]
+                    border border-white/10
+                    bg-gradient-to-br from-[#07101d] via-[#0b1220] to-[#04070f]
+                    backdrop-blur-2xl">
 
-    {{-- ═════════════ STYLE 1 ═════════════ --}}
-    @if($layout == 0)
+      {{-- PREMIUM GLOW --}}
+      <div class="absolute inset-0 overflow-hidden pointer-events-none">
 
-    <section class="relative overflow-hidden rounded-[34px]
-                    border border-cyan-400/10
-                    bg-gradient-to-br from-[#07111f] via-[#0b1322] to-[#050816]
-                    p-6 md:p-8">
+        <div class="absolute -top-20 -right-10 w-[340px] h-[340px]
+                    bg-cyan-400/10 blur-3xl rounded-full"></div>
 
-      {{-- BG GLOW --}}
-      <div class="absolute top-0 right-0 w-72 h-72 bg-cyan-400/10 blur-3xl rounded-full"></div>
-
-      {{-- TOP --}}
-      <div class="relative z-10 flex items-center justify-between mb-8">
-
-        <div>
-
-          <div class="inline-flex items-center gap-2
-                      px-3 py-1 rounded-full
-                      bg-cyan-400/10 border border-cyan-400/20
-                      text-cyan-300 text-xs font-bold mb-4">
-
-            ⚡ HOT CATEGORY
-
-          </div>
-
-          <h3 class="text-3xl font-black text-white">
-            {{ $category->name }}
-          </h3>
-
-          <p class="text-slate-400 mt-2 text-sm">
-            {{ $products->count() }} produk tersedia
-          </p>
-
-        </div>
-
-        <a href="{{ route('categories.show', $category->slug) }}"
-           class="hidden md:flex items-center gap-2
-                  px-4 py-2 rounded-xl
-                  border border-cyan-400/20
-                  bg-cyan-400/5 text-cyan-300
-                  hover:bg-cyan-400 hover:text-black transition">
-
-          Explore →
-        </a>
+        <div class="absolute bottom-0 left-0 w-[240px] h-[240px]
+                    bg-blue-500/10 blur-3xl rounded-full"></div>
 
       </div>
 
-      {{-- PRODUCT --}}
-      <div class="grid grid-cols-2 md:grid-cols-4 xl:grid-cols-5 gap-5 relative z-10">
+      {{-- HEADER --}}
+      <div class="relative z-10 px-7 md:px-10 pt-8 md:pt-10 pb-6">
 
-        @foreach($products->take(5) as $product)
+        <div class="flex items-center justify-between gap-5">
 
-        <div class="group relative overflow-hidden rounded-[26px]
-                    border border-white/5
-                    bg-white/[0.03]
-                    hover:border-cyan-400/30
-                    transition duration-500">
+          <div class="flex items-center gap-5">
 
-          <div class="relative overflow-hidden">
+            {{-- ICON --}}
+            <div class="w-16 h-16 rounded-3xl
+                        bg-gradient-to-br from-cyan-400/20 to-blue-500/10
+                        border border-cyan-400/15
+                        flex items-center justify-center
+                        overflow-hidden
+                        shadow-[0_0_30px_rgba(34,211,238,0.12)]">
 
-            <img src="{{ Storage::url($product->image) }}"
-                 class="w-full h-52 object-cover group-hover:scale-110 transition duration-700">
+              @if($category->image)
 
-            <div class="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent"></div>
+                <img src="{{ $category->image_url }}"
+                     class="w-12 h-12 object-cover rounded-2xl">
 
-            <div class="absolute top-3 left-3
-                        px-2 py-1 rounded-full
-                        bg-cyan-400 text-black
-                        text-[10px] font-black">
+              @else
 
-              TRENDING
+                <span class="text-3xl">
+                  {{ $category->icon ?? '🎮' }}
+                </span>
+
+              @endif
 
             </div>
 
-          </div>
+            {{-- TEXT --}}
+            <div>
 
-          <div class="p-4">
+              <div class="inline-flex items-center gap-2
+                          px-3 py-1 rounded-full
+                          bg-cyan-400/10
+                          border border-cyan-400/10
+                          text-cyan-300 text-[10px] font-black tracking-[0.15em]
+                          uppercase mb-3">
 
-            <h4 class="text-white font-bold line-clamp-2 mb-3">
-              {{ $product->name }}
-            </h4>
-
-            <div class="flex items-center justify-between">
-
-              <div>
-
-                <div class="text-slate-500 text-[11px]">
-                  Harga Mulai
-                </div>
-
-                <div class="text-cyan-300 font-black text-lg">
-                  Rp {{ number_format($product->price,0,',','.') }}
-                </div>
+                Premium Category
 
               </div>
 
-              <a href="{{ route('products.show', $product->slug) }}"
-                 class="w-11 h-11 rounded-xl
-                        bg-cyan-400 text-black
-                        flex items-center justify-center
-                        font-black hover:scale-110 transition">
+              <h3 class="text-3xl md:text-4xl font-black text-white">
+                {{ $category->name }}
+              </h3>
 
-                →
-
-              </a>
+              <p class="text-slate-400 text-sm mt-2">
+                {{ $products->count() }} produk tersedia
+              </p>
 
             </div>
 
           </div>
 
-        </div>
+          {{-- BUTTON --}}
+          <a href="{{ route('categories.show', $category->slug) }}"
+             class="hidden md:flex items-center gap-2
+                    px-5 py-3 rounded-2xl
+                    border border-white/10
+                    bg-white/[0.03]
+                    text-cyan-300
+                    hover:bg-cyan-400 hover:text-black
+                    transition duration-300 font-bold">
 
-        @endforeach
+            Explore →
+
+          </a>
+
+        </div>
 
       </div>
 
-    </section>
 
+      {{-- SLIDER --}}
+      <div class="relative z-10 pb-10">
 
-    {{-- ═════════════ STYLE 2 ═════════════ --}}
-    @elseif($layout == 1)
+        {{-- TRACK --}}
+        <div class="category-premium-track flex gap-5 overflow-x-auto px-7 md:px-10 scroll-smooth snap-x snap-mandatory"
+             data-category-slider>
 
-    <section class="rounded-[34px]
-                    border border-purple-500/10
-                    bg-gradient-to-r from-[#09090f] via-[#111827] to-[#0f172a]
-                    p-6 md:p-8">
+          @foreach($products as $product)
 
-      <div class="flex flex-col lg:flex-row gap-8">
+          <div class="flex-none
+                      w-[78%]
+                      sm:w-[48%]
+                      lg:w-[31%]
+                      xl:w-[24%]
+                      snap-start">
 
-        {{-- LEFT --}}
-        <div class="lg:w-[320px]">
-
-          <div class="sticky top-24">
-
-            <div class="inline-flex items-center gap-2
-                        px-3 py-1 rounded-full
-                        bg-purple-500/10 border border-purple-500/20
-                        text-purple-300 text-xs font-bold mb-4">
-
-              👑 PREMIUM PICKS
-
-            </div>
-
-            <h3 class="text-4xl font-black text-white leading-tight mb-4">
-              {{ $category->name }}
-            </h3>
-
-            <p class="text-slate-400 text-sm mb-6">
-              Produk pilihan terbaik dengan tampilan immersive modern.
-            </p>
-
-            <a href="{{ route('categories.show', $category->slug) }}"
-               class="inline-flex items-center gap-2
-                      px-5 py-3 rounded-2xl
-                      bg-purple-500 text-white
-                      hover:scale-105 transition font-bold">
-
-              Explore Category →
-            </a>
-
-          </div>
-
-        </div>
-
-        {{-- RIGHT --}}
-        <div class="flex-1">
-
-          <div class="grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
-
-            @foreach($products->take(6) as $product)
-
-            <div class="group rounded-[28px]
+            <div class="group relative h-full rounded-[30px]
                         overflow-hidden
                         border border-white/5
-                        bg-black/20
-                        hover:border-purple-400/30
+                        bg-white/[0.03]
+                        backdrop-blur-xl
+                        hover:border-cyan-400/30
                         transition duration-500">
 
+              {{-- HOVER GLOW --}}
+              <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500">
+
+                <div class="absolute inset-0
+                            bg-gradient-to-b
+                            from-cyan-400/10
+                            via-transparent
+                            to-transparent"></div>
+
+              </div>
+
+              {{-- IMAGE --}}
               <div class="relative overflow-hidden">
 
                 <img src="{{ Storage::url($product->image) }}"
-                     class="w-full h-56 object-cover group-hover:scale-105 transition duration-700">
+                     alt="{{ $product->name }}"
+                     class="w-full h-56 object-cover
+                            group-hover:scale-110
+                            transition duration-700 ease-out">
 
-              </div>
+                <div class="absolute inset-0
+                            bg-gradient-to-t
+                            from-[#020617]
+                            via-[#020617]/20
+                            to-transparent"></div>
 
-              <div class="p-5">
+                {{-- BADGES --}}
+                <div class="absolute top-4 left-4 flex flex-col gap-2">
 
-                <div class="flex items-center justify-between mb-3">
+                  <div class="px-3 py-1 rounded-full
+                              bg-cyan-400 text-black
+                              text-[10px] font-black tracking-wide">
 
-                  <div class="text-yellow-400 text-sm">
-                    ⭐ {{ number_format($product->average_rating ?? 5,1) }}
+                    HOT
+
                   </div>
 
-                  <div class="text-[10px] px-2 py-1 rounded-full
-                              bg-purple-500/10 text-purple-300 border border-purple-500/20">
+                  <div class="px-3 py-1 rounded-full
+                              bg-black/50 backdrop-blur-xl
+                              border border-white/10
+                              text-white text-[10px] font-semibold">
 
-                    VERIFIED
+                    ⭐ {{ number_format($product->average_rating ?? 5, 1) }}
 
                   </div>
 
                 </div>
 
-                <h4 class="text-white text-lg font-bold line-clamp-2 mb-4">
-                  {{ $product->name }}
-                </h4>
+              </div>
 
-                <div class="flex items-center justify-between">
+              {{-- CONTENT --}}
+              <div class="p-5">
 
-                  <div class="text-purple-300 text-2xl font-black">
-                    Rp {{ number_format($product->price,0,',','.') }}
+                <div class="mb-5">
+
+                  <div class="text-slate-500 text-[11px] uppercase tracking-[0.12em] mb-2">
+                    Digital Product
+                  </div>
+
+                  <h4 class="text-white text-lg font-black line-clamp-2 leading-snug
+                             group-hover:text-cyan-300 transition">
+
+                    {{ $product->name }}
+
+                  </h4>
+
+                </div>
+
+                {{-- FOOTER --}}
+                <div class="flex items-end justify-between gap-3">
+
+                  <div>
+
+                    <div class="text-slate-500 text-xs mb-1">
+                      Harga Mulai
+                    </div>
+
+                    <div class="text-cyan-300 text-2xl font-black leading-none">
+                      Rp {{ number_format($product->price,0,',','.') }}
+                    </div>
+
                   </div>
 
                   <a href="{{ route('products.show', $product->slug) }}"
-                     class="text-white hover:text-purple-300 transition font-bold">
+                     class="w-12 h-12 rounded-2xl
+                            bg-white/[0.05]
+                            border border-white/10
+                            flex items-center justify-center
+                            text-white
+                            hover:bg-cyan-400 hover:text-black
+                            hover:scale-110
+                            transition duration-300">
 
-                    Detail →
+                    →
+
                   </a>
 
                 </div>
@@ -890,9 +899,32 @@ spline-viewer iframe {
 
             </div>
 
-            @endforeach
-
           </div>
+
+          @endforeach
+
+        </div>
+
+
+        {{-- SLIDER INDICATOR --}}
+        <div class="flex justify-center gap-2 mt-8">
+
+          @foreach($products as $product)
+
+            @if($loop->index < 6)
+
+            <button class="category-dot
+                           w-10 h-[4px]
+                           rounded-full
+                           bg-white/10
+                           hover:bg-cyan-400
+                           transition"
+                    data-category-dot>
+            </button>
+
+            @endif
+
+          @endforeach
 
         </div>
 
@@ -900,6 +932,13 @@ spline-viewer iframe {
 
     </section>
 
+    @endforeach
+
+  </div>
+
+</section>
+
+@endif
 
     {{-- ═════════════ STYLE 3 ═════════════ --}}
     @else
@@ -2390,6 +2429,89 @@ document.addEventListener('DOMContentLoaded', function () {
   // INIT
   updateDots(0);
   startSlider();
+
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+
+  const sliders = document.querySelectorAll('[data-category-slider]');
+
+  sliders.forEach((slider) => {
+
+    const cards = slider.children;
+    if (!cards.length) return;
+
+    let current = 0;
+    let autoplay;
+
+    const startSlider = () => {
+
+      autoplay = setInterval(() => {
+
+        current++;
+
+        if (current >= cards.length) {
+          current = 0;
+        }
+
+        slider.scrollTo({
+          left: cards[current].offsetLeft - 40,
+          behavior: 'smooth'
+        });
+
+        updateDots(current);
+
+      }, 3500);
+
+    };
+
+    const stopSlider = () => {
+      clearInterval(autoplay);
+    };
+
+    const dots = slider.parentElement.querySelectorAll('[data-category-dot]');
+
+    function updateDots(index){
+
+      dots.forEach(dot => {
+        dot.classList.remove('bg-cyan-400');
+        dot.classList.add('bg-white/10');
+      });
+
+      if(dots[index % dots.length]){
+        dots[index % dots.length].classList.remove('bg-white/10');
+        dots[index % dots.length].classList.add('bg-cyan-400');
+      }
+
+    }
+
+    dots.forEach((dot, index) => {
+
+      dot.addEventListener('click', () => {
+
+        current = index;
+
+        slider.scrollTo({
+          left: cards[index].offsetLeft - 40,
+          behavior: 'smooth'
+        });
+
+        updateDots(index);
+
+      });
+
+    });
+
+    slider.addEventListener('mouseenter', stopSlider);
+    slider.addEventListener('mouseleave', startSlider);
+
+    slider.addEventListener('touchstart', stopSlider, { passive:true });
+    slider.addEventListener('touchend', startSlider, { passive:true });
+
+    updateDots(0);
+    startSlider();
+
+  });
 
 });
 
