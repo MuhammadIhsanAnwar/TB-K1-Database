@@ -6,8 +6,8 @@
 --}}
 
 @php
-    $displayImage = !empty($product->image_url)
-        ? $product->image_url
+    $displayImage = !empty($product->image)
+        ? asset('storage/' . $product->image)
         : 'https://placehold.co/600x600/0f172a/38bdf8?text=Lapak+Gaming';
 @endphp
 
@@ -27,7 +27,7 @@
      alt="{{ $product->name }}"
      class="w-full h-full object-cover transition-transform duration-400 group-hover:scale-108"
      loading="lazy"
-     onerror="this.src='https://placehold.co/600x600/0f172a/38bdf8?text=Lapak+Gaming'">
+     onerror="this.onerror=null;this.src='https://placehold.co/600x600/0f172a/38bdf8?text=Lapak+Gaming';">
 
     {{-- Stock badge --}}
     @if(($product->stock ?? 1) === 0)
