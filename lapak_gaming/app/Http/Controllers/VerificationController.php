@@ -7,7 +7,6 @@ use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use App\Models\User; // Tambahkan ini untuk mengambil data user berdasarkan ID
-use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
