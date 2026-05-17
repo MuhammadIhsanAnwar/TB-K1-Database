@@ -160,7 +160,7 @@
         {{-- ── QUICK ACTIONS MACRO NAVIGATION ────────────────────── --}}
         <div class="grid gap-4 sm:grid-cols-3">
             <a href="{{ route('seller.produk.create') }}" 
-               class="flex items-center justify-between p-5 bg-gradient-to-r from-amber-500/80 to-orange-500/80 backdrop-blur-md rounded-2xl transition-all hover:scale-[1.01] active:scale-[0.99] shadow-lg shadow-amber-500/5 group text-slate-950">
+               class="flex items-center justify-between p-5 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] rounded-2xl group">
                 <div>
                     <h3 class="text-lg font-bold tracking-tight text-slate-950">Tambah Produk</h3>
                     <p class="text-slate-950/70 text-xs font-medium mt-0.5">Buka etalase jualan baru</p>
