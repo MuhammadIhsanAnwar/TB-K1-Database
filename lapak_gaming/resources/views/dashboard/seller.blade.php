@@ -162,8 +162,8 @@
             <a href="{{ route('seller.produk.create') }}" 
                class="flex items-center justify-between p-5 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] rounded-2xl group">
                 <div>
-                    <h3 class="text-lg font-bold tracking-tight text-slate-950">Tambah Produk</h3>
-                    <p class="text-slate-950/70 text-xs font-medium mt-0.5">Buka etalase jualan baru</p>
+                    <h3 class="text-lg font-bold text-white tracking-tight">Tambah Produk</h3>
+                    <p class="text-slate-400 text-xs font-medium mt-0.5">Buka etalase jualan baru</p>
                 </div>
                 <div class="bg-white/20 p-2.5 rounded-xl">
                     <svg class="w-5 h-5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
