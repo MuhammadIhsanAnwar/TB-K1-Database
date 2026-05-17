@@ -804,14 +804,11 @@ spline-viewer iframe {
               </div>
 
               {{-- IMAGE --}}
-              <div class="relative overflow-hidden">
+              <div class="relative aspect-[16/10] overflow-hidden">
 
                 <img src="{{ Storage::url($product->image) }}"
-                     alt="{{ $product->name }}"
-                     class="w-full h-56 object-cover
-                            group-hover:scale-110
-                            transition duration-700 ease-out">
-
+                     class="absolute inset-0 w-full h-full object-cover"
+                     alt="{{ $product->name }}">
                 <div class="absolute inset-0
                             bg-gradient-to-t
                             from-[#020617]
@@ -1216,7 +1213,7 @@ spline-viewer iframe {
                             class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
                         >
 
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/70 to-transparent"></div>
+                        <div class="absolute inset-0 bg-gradient-to-t from-[#020617]/80 via-[#020617]/20 to-transparent"></div>
                         <div class="absolute inset-0 bg-gradient-to-r from-[#020617]/90 to-transparent"></div>
                     </div>
 
