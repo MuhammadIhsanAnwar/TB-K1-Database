@@ -724,347 +724,632 @@
 @push('scripts')
 <script>
 const chatConfig = JSON.parse(document.getElementById('chat-config').textContent);
-const CONV_ID = chatConfig.convId;
-const AUTH_ID = chatConfig.authId;
+
+const CONV_ID  = chatConfig.convId;
+const AUTH_ID  = chatConfig.authId;
 const SEND_URL = chatConfig.sendUrl;
 const POLL_URL = chatConfig.pollUrl;
-const CSRF    = document.querySelector('meta[name="csrf-token"]').content;
 
-let lastId = chatConfig.lastId;
-let pollTimer;
+const CSRF = document.querySelector('meta[name="csrf-token"]').content;
 
-const messagesArea = document.getElementById('messagesArea');
-const msgInput = document.getElementById('msgInput');
-const sendBtn = document.getElementById('sendBtn');
-const imgInput = document.getElementById('imgInput');
+let lastId = Number(chatConfig.lastId || 0);
+let pollController = null;
+let editingId = null;
+let isPolling = false;
 
-// Set default send icon (was empty which caused button to look missing)
-sendBtn.innerHTML = `
+const messagesArea  = document.getElementById('messagesArea');
+const msgInput      = document.getElementById('msgInput');
+const sendBtn       = document.getElementById('sendBtn');
+const imgInput      = document.getElementById('imgInput');
+const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+
+// ======================================================
+// SEND ICON
+// ======================================================
+
+const SEND_ICON = `
 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8">
+        d="M22 2L11 13">
+    </path>
+    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+        d="M22 2L15 22L11 13L2 9L22 2Z">
     </path>
 </svg>
 `;
 
-// Manage send button enabled state
-function updateSendButtonState() {
-    const hasText = msgInput.value.trim().length > 0;
-    const hasFile = imgInput.files && imgInput.files.length > 0;
-    sendBtn.disabled = !(hasText || hasFile);
+sendBtn.innerHTML = SEND_ICON;
+
+
+// ======================================================
+// SCROLL
+// ======================================================
+
+function scrollBottom(smooth = true) {
+    requestAnimationFrame(() => {
+        messagesArea.scrollTo({
+            top: messagesArea.scrollHeight,
+            behavior: smooth ? 'smooth' : 'auto'
+        });
+    });
 }
+
+scrollBottom(false);
+
+
+// ======================================================
+// FORMAT TIME REALTIME
+// ======================================================
+
+function formatTimeRealtime(dateString) {
+
+    const date = new Date(dateString);
+
+    return date.toLocaleTimeString('id-ID', {
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+    });
+
+}
+
+
+// ======================================================
+// UPDATE ALL TIMES EVERY 15 SEC
+// ======================================================
+
+function refreshAllMessageTimes() {
+
+    document.querySelectorAll('[data-time]').forEach(el => {
+
+        const raw = el.dataset.time;
+
+        if(raw) {
+            el.innerText = formatTimeRealtime(raw);
+        }
+
+    });
+
+}
+
+setInterval(refreshAllMessageTimes, 15000);
+
+
+// ======================================================
+// ESCAPE HTML
+// ======================================================
+
+function escHtml(str = '') {
+
+    return str
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+
+}
+
+
+// ======================================================
+// SEND BUTTON STATE
+// ======================================================
+
+function updateSendButtonState() {
+
+    const hasText = msgInput.value.trim().length > 0;
+    const hasFile = imgInput.files.length > 0;
+
+    sendBtn.disabled = !(hasText || hasFile);
+
+    if(sendBtn.disabled) {
+        sendBtn.style.opacity = '.5';
+        sendBtn.style.cursor = 'not-allowed';
+    } else {
+        sendBtn.style.opacity = '1';
+        sendBtn.style.cursor = 'pointer';
+    }
+
+}
+
 msgInput.addEventListener('input', updateSendButtonState);
 imgInput.addEventListener('change', updateSendButtonState);
+
 updateSendButtonState();
 
 
+// ======================================================
+// SIDEBAR SEARCH
+// ======================================================
 
-// --- LOGIC DELETE ---
-async function confirmDelete(msgId) {
-    if(!confirm('Hapus pesan ini?')) return;
-    
-    const el = document.querySelector(`[data-msg-id="${msgId}"]`);
-    el.style.opacity = '0.5'; // Visual feedback
+document.getElementById('sideSearch')?.addEventListener('input', function () {
 
-    try {
-        const res = await fetch(`/chat/message/${msgId}`, {
-            method: 'DELETE',
-            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' }
-        });
-        if(res.ok) el.remove(); // Hapus dari layar
-    } catch(e) {
-        el.style.opacity = '1';
-        alert('Gagal menghapus pesan');
-    }
-}
-
-// --- LOGIC EDIT ---
-let editingId = null;
-const cancelEditBtn = document.getElementById('cancelEditBtn');
-
-function prepareEdit(msgId) {
-    editingId = msgId;
-    const currentText = document.getElementById(`text-${msgId}`).innerText;
-    msgInput.value = currentText;
-    msgInput.focus();
-    msgInput.classList.add('bg-blue-900/30'); // Beri tanda sedang mengedit
-    msgInput.placeholder = 'Edit pesan...';
-    sendBtn.innerHTML = '💾'; // Ganti icon jadi save
-    sendBtn.disabled = false;
-    cancelEditBtn.classList.remove('hidden');
-    updateSendButtonState();
-}
-
-// Modifikasi fungsi sendMessage Anda sedikit:
-
-
-async function updateMessage(id, newText) {
-    try {
-        const res = await fetch(`/chat/message/${id}`, {
-            method: 'PATCH',
-            headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': CSRF },
-            body: JSON.stringify({ message: newText })
-        });
-        if(res.ok) {
-            document.getElementById(`text-${id}`).innerText = newText;
-            cancelEdit();
-        }
-    } catch(e) { alert('Gagal update'); }
-}
-
-function cancelEdit() {
-    editingId = null;
-    msgInput.value = '';
-    msgInput.placeholder = 'Ketik pesan...';
-    msgInput.classList.remove('bg-blue-900/30');
-    cancelEditBtn.classList.add('hidden');
-    sendBtn.innerHTML = `
-<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-          d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8">
-    </path>
-</svg>
-`;
-    updateSendButtonState();
-}
-
-// Auto scroll to bottom on load
-function scrollBottom(smooth = true) {
-
-    requestAnimationFrame(() => {
-
-        messagesArea.scrollTo({
-            top: messagesArea.scrollHeight + 500,
-            behavior: smooth ? 'smooth' : 'auto'
-        });
-
-    });
-
-}
-scrollBottom(false);
-
-// Search sidebar
-document.getElementById('sideSearch')?.addEventListener('input', function() {
     const q = this.value.toLowerCase();
+
     document.querySelectorAll('#sideList .conv-item').forEach(el => {
-        el.style.display = (el.dataset.name || '').includes(q) ? '' : 'none';
+
+        el.style.display = (el.dataset.name || '').includes(q)
+            ? ''
+            : 'none';
+
     });
+
 });
 
 
-async function sendMessage() {
+// ======================================================
+// PREVIEW IMAGE
+// ======================================================
 
-    if (editingId) {
-        await updateMessage(editingId, msgInput.value.trim());
+function previewImage(input) {
+
+    const container = document.getElementById('imagePreviewContainer');
+    const preview   = document.getElementById('imagePreview');
+    const fileName  = document.getElementById('fileName');
+
+    if(input.files && input.files[0]) {
+
+        const reader = new FileReader();
+
+        reader.onload = function(e) {
+
+            preview.src = e.target.result;
+            fileName.textContent = input.files[0].name;
+
+            container.classList.remove('hidden');
+
+        };
+
+        reader.readAsDataURL(input.files[0]);
+
+    }
+
+    updateSendButtonState();
+
+}
+
+
+function cancelImage() {
+
+    imgInput.value = '';
+
+    document.getElementById('imagePreviewContainer')
+        .classList.add('hidden');
+
+    updateSendButtonState();
+
+}
+
+
+// ======================================================
+// EDIT MESSAGE
+// ======================================================
+
+function prepareEdit(msgId) {
+
+    editingId = msgId;
+
+    const currentText = document.getElementById(`text-${msgId}`).innerText;
+
+    msgInput.value = currentText;
+
+    msgInput.focus();
+
+    msgInput.placeholder = 'Edit pesan...';
+
+    msgInput.classList.add('bg-blue-900/30');
+
+    sendBtn.innerHTML = '💾';
+
+    cancelEditBtn.classList.remove('hidden');
+
+    updateSendButtonState();
+
+}
+
+
+function cancelEdit() {
+
+    editingId = null;
+
+    msgInput.value = '';
+
+    msgInput.placeholder = 'Ketik pesan...';
+
+    msgInput.classList.remove('bg-blue-900/30');
+
+    sendBtn.innerHTML = SEND_ICON;
+
+    cancelEditBtn.classList.add('hidden');
+
+    updateSendButtonState();
+
+}
+
+
+async function updateMessage(id, newText) {
+
+    try {
+
+        const res = await fetch(`/chat/message/${id}`, {
+            method: 'PATCH',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': CSRF,
+                'Accept': 'application/json'
+            },
+            body: JSON.stringify({
+                message: newText
+            })
+        });
+
+        if(!res.ok) throw new Error();
+
+        document.getElementById(`text-${id}`).innerText = newText;
+
+        cancelEdit();
+
+    } catch(e) {
+
+        alert('Gagal update pesan');
+
+    }
+
+}
+
+
+// ======================================================
+// DELETE MESSAGE
+// ======================================================
+
+async function confirmDelete(msgId) {
+
+    if(!confirm('Hapus pesan ini?')) return;
+
+    const el = document.querySelector(`[data-msg-id="${msgId}"]`);
+
+    try {
+
+        const res = await fetch(`/chat/message/${msgId}`, {
+            method: 'DELETE',
+            headers: {
+                'X-CSRF-TOKEN': CSRF,
+                'Accept': 'application/json'
+            }
+        });
+
+        if(!res.ok) throw new Error();
+
+        el.remove();
+
+    } catch(e) {
+
+        alert('Gagal menghapus pesan');
+
+    }
+
+}
+
+
+// ======================================================
+// APPEND MESSAGE
+// ======================================================
+
+function appendMessage(m) {
+
+    if(document.querySelector(`[data-msg-id="${m.id}"]`)) {
         return;
     }
 
-    const text = msgInput.value.trim();
-    const file = imgInput.files && imgInput.files[0] ? imgInput.files[0] : null;
+    const isMine = m.is_mine || Number(m.sender_id) === AUTH_ID;
 
-    if (!text && !file) return;
+    const div = document.createElement('div');
+
+    div.className = `message-item ${isMine ? 'mine' : 'theirs'}`;
+    div.dataset.msgId = m.id;
+
+    const avatarSrc =
+        m.avatar ||
+        `https://ui-avatars.com/api/?name=?&background=2563eb&color=fff`;
+
+    const avatarHtml = `
+        <img src="${avatarSrc}"
+             class="message-avatar ${isMine ? 'mine' : ''}"
+             alt="">
+    `;
+
+    const attachmentUrl =
+        m.attachment_url ||
+        (m.attachment_path
+            ? `/storage/${m.attachment_path}`
+            : null);
+
+    const imgHtml = attachmentUrl
+        ? `
+            <img src="${attachmentUrl}"
+                 class="max-w-xs rounded-2xl mb-2 cursor-pointer hover:opacity-90 transition"
+                 onclick="window.open(this.src)">
+        `
+        : '';
+
+    const readIcon = isMine
+        ? `
+        <span class="message-status">
+            <svg class="${m.is_read ? 'text-blue-400' : 'text-gray-500'}"
+                fill="currentColor"
+                viewBox="0 0 16 16">
+                <path d="M12.354 4.354a.5.5 0 00-.708-.708L5 11.293 1.854 8.146a.5.5 0 10-.708.708l3.5 3.5a.5.5 0 00.708 0l7-7z"/>
+            </svg>
+        </span>
+        `
+        : '';
+
+    div.innerHTML = `
+
+        ${!isMine ? avatarHtml : ''}
+
+        <div class="message-bubble ${isMine ? 'mine' : 'theirs'}">
+
+            <div class="bubble-content group relative">
+
+                ${isMine ? `
+                <div class="absolute -left-10 top-0 hidden group-hover:flex gap-1">
+
+                    <button onclick="prepareEdit('${m.id}')"
+                        class="p-1 text-gray-500 hover:text-blue-400 transition">
+
+                        <svg class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24">
+
+                            <path stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M15.232 5.232l3.536 3.536m-2.036-5.036
+                                a2.5 2.5 0 113.536 3.536L6.5
+                                21.036H3v-3.572L16.732 3.732z"/>
+                        </svg>
+
+                    </button>
+
+                    <button onclick="confirmDelete('${m.id}')"
+                        class="p-1 text-gray-500 hover:text-red-400 transition">
+
+                        <svg class="w-4 h-4"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24">
+
+                            <path stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M19 7l-.867 12.142A2 2 0
+                                0116.138 21H7.862a2 2 0
+                                01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4
+                                a1 1 0 00-1-1h-4a1 1 0 00-1
+                                1v3M4 7h16"/>
+                        </svg>
+
+                    </button>
+
+                </div>
+                ` : ''}
+
+                ${imgHtml}
+
+                <p class="message-text"
+                   id="text-${m.id}">
+                   ${escHtml(m.message || '')}
+                </p>
+
+            </div>
+
+            <div class="message-time ${isMine ? 'mine' : 'theirs'}">
+
+                <span data-time="${m.created_at}">
+                    ${m.time || formatTimeRealtime(m.created_at)}
+                </span>
+
+                ${readIcon}
+
+            </div>
+
+        </div>
+
+        ${isMine ? avatarHtml : ''}
+
+    `;
+
+    const typing = document.getElementById('typingIndicator');
+
+    messagesArea.insertBefore(div, typing);
+
+    requestAnimationFrame(() => {
+
+        div.style.opacity = '1';
+        div.style.transform = 'translateY(0)';
+
+    });
+
+    scrollBottom();
+
+}
+
+
+// ======================================================
+// SEND MESSAGE
+// ======================================================
+
+async function sendMessage() {
+
+    if(editingId) {
+
+        await updateMessage(
+            editingId,
+            msgInput.value.trim()
+        );
+
+        return;
+
+    }
+
+    const text = msgInput.value.trim();
+    const file = imgInput.files[0];
+
+    if(!text && !file) return;
 
     sendBtn.disabled = true;
 
     const tempId = 'tmp-' + Date.now();
 
-    // Show optimistic UI (if image selected, use temporary object URL)
     appendMessage({
         id: tempId,
+        sender_id: AUTH_ID,
         is_mine: true,
-        message: text || '',
-        time: new Date().toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' }),
-        avatar: '{{ $user->avatar_url }}',
-        is_read: false,
-        attachment_url: file ? URL.createObjectURL(file) : null,
+        message: text,
+        created_at: new Date().toISOString(),
+        avatar: chatConfig.avatarUrl,
+        attachment_url: file
+            ? URL.createObjectURL(file)
+            : null,
+        is_read: false
     });
-    scrollBottom();
 
-    // clear inputs in UI (but keep preview until sent)
     msgInput.value = '';
+
     updateSendButtonState();
 
     try {
+
         const form = new FormData();
+
         form.append('message', text);
-        if (file) form.append('attachment', file);
+
+        if(file) {
+            form.append('attachment', file);
+        }
+
         form.append('conversation_id', CONV_ID);
 
         const res = await fetch(SEND_URL, {
             method: 'POST',
-            headers: { 'X-CSRF-TOKEN': CSRF, 'Accept': 'application/json' },
-            body: form,
+            headers: {
+                'X-CSRF-TOKEN': CSRF,
+                'Accept': 'application/json'
+            },
+            body: form
         });
 
-        let data = null;
-        try {
-            data = await res.json();
-        } catch (parseErr) {
-            // response is not JSON (likely 500 HTML), capture text
-            const text = await res.text();
-            if (!res.ok) throw new Error(text.substring(0, 200));
+        const data = await res.json();
+
+        if(!res.ok) {
+            throw new Error(data.message || 'Gagal kirim');
         }
 
-        if (!res.ok) {
-            // Try to extract useful error info from Laravel response
-            let errMsg = data?.message || null;
-            if (!errMsg && data.errors) {
-                const firstField = Object.keys(data.errors)[0];
-                errMsg = Array.isArray(data.errors[firstField]) ? data.errors[firstField][0] : JSON.stringify(data.errors[firstField]);
-            }
-            if (!errMsg) errMsg = JSON.stringify(data);
-            throw new Error(errMsg || 'Gagal mengirim pesan.');
+        lastId = Number(data.id);
+
+        const tempEl = document.querySelector(
+            `[data-msg-id="${tempId}"]`
+        );
+
+        if(tempEl) {
+
+            tempEl.dataset.msgId = data.id;
+
         }
 
-        if (data && data.id) {
-            lastId = data.id;
-            // Replace temp message id with real id
-            const tmpEl = document.querySelector(`[data-msg-id="${tempId}"]`);
-            if (tmpEl) {
-                tmpEl.dataset.msgId = data.id;
-                // If server returned an attachment_path, replace the optimistic image src
-                if (data.attachment_path) {
-                    const img = tmpEl.querySelector('img');
-                    if (img) img.src = `/storage/${data.attachment_path}`;
-                }
-            }
-        }
-
-        // clear preview if any
         cancelImage();
 
-    } catch (e) {
-        console.error('Send message error:', e);
-        alert('Gagal mengirim pesan: ' + (e.message || e));
+    } catch(e) {
+
+        console.error(e);
+
+        alert(e.message);
+
     } finally {
+
         sendBtn.disabled = false;
+
         msgInput.focus();
+
+        updateSendButtonState();
+
     }
+
 }
 
-function previewImage(input) {
-    const container = document.getElementById('imagePreviewContainer');
-    const preview = document.getElementById('imagePreview');
-    const fileName = document.getElementById('fileName');
 
-    if (input.files && input.files[0]) {
-        const reader = new FileReader();
+// ======================================================
+// REALTIME POLLING
+// ======================================================
 
-        reader.onload = function(e) {
-            preview.src = e.target.result;
-            fileName.textContent = input.files[0].name;
-            container.classList.remove('hidden');
-        }
+async function pollMessages() {
 
-        reader.readAsDataURL(input.files[0]);
-    }
-}
+    if(isPolling) return;
 
-function cancelImage() {
-    const fileInput = document.getElementById('imgInput');
-    const container = document.getElementById('imagePreviewContainer');
-    fileInput.value = '';
-    container.classList.add('hidden');
-}
+    isPolling = true;
 
-  
-
-// end of functions
-
-msgInput.addEventListener('keydown', function(e) {
-    if (e.key === 'Enter' && !e.shiftKey) {
-        e.preventDefault();
-        sendMessage();
-    }
-});
-
-sendBtn.addEventListener('click', function() {
-    sendMessage();
-});
-
-// Poll for new messages
-async function poll() {
     try {
-        const url = `${POLL_URL}?since=${lastId}`;
-        const res = await fetch(url, {
-            method: 'GET',
-            cache: 'no-store',
-            headers: {
-                'Accept': 'application/json',
-                'X-CSRF-TOKEN': CSRF,
-                'Cache-Control': 'no-cache'
-            }
-        });
-        const data = await res.json();
-        if (data.messages && data.messages.length) {
-            data.messages.forEach(m => {
-                if (!document.querySelector(`[data-msg-id="${m.id}"]`)) {
-                    appendMessage(m);
+
+        if(pollController) {
+            pollController.abort();
+        }
+
+        pollController = new AbortController();
+
+        const res = await fetch(
+            `${POLL_URL}?since=${lastId}&_=${Date.now()}`,
+            {
+                method: 'GET',
+                cache: 'no-store',
+                signal: pollController.signal,
+                headers: {
+                    'Accept': 'application/json',
+                    'Cache-Control': 'no-cache'
                 }
+            }
+        );
+
+        const data = await res.json();
+
+        if(data.messages && data.messages.length > 0) {
+
+            data.messages.forEach(m => {
+
+                appendMessage(m);
+
             });
-            if (data.messages.length) {
-            lastId = data.messages[data.messages.length - 1].id;
+
+            lastId = Number(
+                data.messages[data.messages.length - 1].id
+            );
+
+            refreshSidebar();
+
         }
+
+    } catch(e) {
+
+        if(e.name !== 'AbortError') {
+            console.log(e);
         }
-    } catch(e) {}
-    pollTimer = setTimeout(poll, 800);
+
+    } finally {
+
+        isPolling = false;
+
+        setTimeout(pollMessages, 1200);
+
+    }
+
 }
 
-function appendMessage(m) {
-    if(document.querySelector(`[data-msg-id="${m.id}"]`)) {
-    return;
-}
-    const isMine = m.is_mine || Number(m.sender_id) === AUTH_ID;
-    const div = document.createElement('div');
-    div.className = `message-item ${isMine ? 'mine' : 'theirs'}`;
-    div.dataset.msgId = m.id;
-    div.style.opacity = '0';
-    div.style.transform = 'translateY(10px)';
 
-    const avatarSrc = m.avatar || `https://ui-avatars.com/api/?name=?&background=6366f1&color=fff`;
-    const avatarHtml = `<img src="${avatarSrc}" class="message-avatar ${isMine ? 'mine' : ''}" alt="">`;
-    const readIcon = isMine ? `<span class="message-status"><svg class="${m.is_read ? 'text-blue-400' : 'text-gray-500'}" fill="currentColor" viewBox="0 0 16 16"><path d="M12.354 4.354a.5.5 0 00-.708-.708L5 11.293 1.854 8.146a.5.5 0 10-.708.708l3.5 3.5a.5.5 0 00.708 0l7-7zm-4.208 7.209l-.896-.897.707-.707.543.543 6.646-6.647a.5.5 0 01.708.708l-7 7a.5.5 0 01-.708 0z"/></svg></span>` : '';
+// ======================================================
+// REFRESH SIDEBAR
+// ======================================================
 
-    const typing = document.getElementById('typingIndicator');
-    messagesArea.insertBefore(div, typing);
-    scrollBottom();
-    // keep cache in sync
-    // Logika gambar (Sesuaikan dengan properti dari Controller)
-    // Determine attachment URL: optimistic frontend may provide attachment_url; server returns attachment_path
-    const attachmentUrl = m.attachment_url || (m.attachment_path ? `/storage/${m.attachment_path}` : null);
-    const imgHtml = attachmentUrl ? `<img src="${attachmentUrl}" class="max-w-xs rounded-lg mb-2 cursor-pointer" onclick="window.open(this.src)">` : '';
-
-    div.innerHTML = `
-        ${!isMine ? avatarHtml : ''}
-        <div class="message-bubble ${isMine ? 'mine' : 'theirs'}">
-            <div class="bubble-content group relative">
-                ${isMine ? `
-                <div class="absolute -left-10 top-0 hidden group-hover:flex gap-1">
-                    <button onclick="prepareEdit('${m.id}')" class="p-1 text-gray-500 hover:text-blue-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-                    </button>
-                    <button onclick="confirmDelete('${m.id}')" class="p-1 text-gray-500 hover:text-red-400">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-                    </button>
-                </div>` : ''}
-                
-                ${imgHtml}
-                <p class="message-text" id="text-${m.id}">${escHtml(m.message)}</p>
-            </div>
-            <div class="message-time ${isMine ? 'mine' : 'theirs'}">
-                <span>${m.time || formatTimeRealtime(m.created_at)}</span>
-                ${readIcon}
-            </div>
-        </div>
-        ${isMine ? avatarHtml : ''}
-    `;
-    requestAnimationFrame(() => {
-        div.style.opacity = '1';
-        div.style.transform = 'translateY(0)';
-    });
-}
-
-refreshSidebar();
 async function refreshSidebar() {
 
     try {
@@ -1078,46 +1363,62 @@ async function refreshSidebar() {
         const html = await res.text();
 
         const parser = new DOMParser();
+
         const doc = parser.parseFromString(html, 'text/html');
 
         const newSidebar = doc.getElementById('sideList');
 
-        if (newSidebar) {
-            document.getElementById('sideList').innerHTML = newSidebar.innerHTML;
+        if(newSidebar) {
+
+            document.getElementById('sideList').innerHTML =
+                newSidebar.innerHTML;
+
         }
 
     } catch(e) {}
 
 }
 
-function escHtml(str) {
-    return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
 
-// Start polling
-pollTimer = setTimeout(poll, 800);
+// ======================================================
+// EVENTS
+// ======================================================
+
+msgInput.addEventListener('keydown', function(e) {
+
+    if(e.key === 'Enter' && !e.shiftKey) {
+
+        e.preventDefault();
+
+        sendMessage();
+
+    }
+
+});
+
+sendBtn.addEventListener('click', sendMessage);
+
+
+// ======================================================
+// TAB ACTIVE / INACTIVE
+// ======================================================
+
 document.addEventListener('visibilitychange', () => {
-    if (document.hidden) clearTimeout(pollTimer);
-    else pollTimer = setTimeout(poll, 300);
+
+    if(!document.hidden) {
+
+        pollMessages();
+
+    }
+
 });
 
-// Persist cache on unload
-window.addEventListener('beforeunload', () => {
-    try {
-        if (messagesArea) localStorage.setItem(cacheKey, messagesArea.innerHTML);
-    } catch (e) {}
-});
 
-function formatTimeRealtime(dateString) {
+// ======================================================
+// START
+// ======================================================
 
-    const date = new Date(dateString);
-
-    return date.toLocaleTimeString('id-ID', {
-        hour: '2-digit',
-        minute: '2-digit'
-    });
-
-}
+pollMessages();
 
 </script>
 @endpush
