@@ -1215,16 +1215,13 @@ spline-viewer iframe {
                    class="lg:col-span-7 relative rounded-[34px] overflow-hidden group border border-white/10 bg-[#0B1120] min-h-[540px]">
 
                     {{-- IMAGE --}}
-                    <div class="absolute inset-0">
-                        <img
-                            src="{{ Storage::url($product->image) }}"
-                            alt="{{ $product->name }}"
-                            class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
-                        >
+                      <div class="relative h-44 bg-red-500">
 
-                        <div class="absolute inset-0 bg-gradient-to-t from-[#020617]/80 via-[#020617]/20 to-transparent"></div>
-                        <div class="absolute inset-0 bg-gradient-to-r from-[#020617]/90 to-transparent"></div>
-                    </div>
+                      <img src="{{ Storage::url($product->image) }}"
+                          alt="TEST"
+                          style="width:100%; height:100%; object-fit:cover;">
+
+                  </div>
 
                     {{-- TOP BADGES --}}
                     <div class="absolute top-6 left-6 z-20 flex flex-wrap gap-3">
