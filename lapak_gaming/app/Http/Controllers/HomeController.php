@@ -1,30 +1,42 @@
 <?php
+
 namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\Product;
 use App\Models\Banner;
 
-class HomeController extends Controller {
-    public function index() {
-        $categories = Category::active()->parent()->ordered()->with('children')->take(13)->get();
+class HomeController extends Controller
+{
+    public function index()
+    {
+        $categories = Category::active()->parent()->ordered()
+            ->with('children')
+            ->take(13)
+            ->get();
 
         $popularProducts = Product::active()->inStock()->popular()
-            ->with(['category', 'seller'])->take(12)->get();
+            ->with(['category', 'seller'])
+            ->take(12)
+            ->get();
 
         $topupProducts = Product::active()->inStock()->ofType('topup')
-            ->with(['category', 'seller'])->take(8)->get();
+            ->with(['category', 'seller'])
+            ->take(8)
+            ->get();
 
         $gameKeyProducts = Product::active()->inStock()->ofType('gamekey')
-            ->with(['category', 'seller'])->take(8)->get();
+            ->with(['category', 'seller'])
+            ->take(8)
+            ->get();
 
-        //Hero Banners//
+        // Hero Banner
         $heroBanners = Banner::where('position', 'hero')
             ->where('is_active', 1)
             ->latest()
             ->get();
 
-        //Featured Banners//
+        // Featured Banner
         $featuredBanners = Banner::where('position', 'featured')
             ->where('is_active', 1)
             ->latest()
@@ -38,6 +50,5 @@ class HomeController extends Controller {
             'heroBanners',
             'featuredBanners'
         ));
-        
     }
 }
