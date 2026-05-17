@@ -551,61 +551,184 @@ spline-viewer iframe {
 @endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- QUICK ACCESS — TYPE BUTTONS                                 --}}
+{{-- QUICK ACCESS — BENTO GRID VERSION                         --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="pb-14">
+<section class="pb-20">
+
   <div class="max-w-7xl mx-auto px-4">
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
-      @foreach([
-        ['type'=>'topup','icon'=>'⚡','label'=>'Top Up','desc'=>'Langsung ke akun','class'=>'bg-blue-500/10 border-blue-500/30','badge'=>'Tercepat'],
-        ['type'=>'joki', 'icon'=>'🏆','label'=>'Jasa Joki','desc'=>'Naik rank dijamin','class'=>'bg-orange-500/10 border-orange-500/25','badge'=>'Populer'],
-        ['type'=>'akun', 'icon'=>'👤','label'=>'Akun Game','desc'=>'Ready stock','class'=>'bg-purple-500/10 border-purple-500/25','badge'=>''],
-        ['type'=>'item', 'icon'=>'⚔️','label'=>'Item & Skin','desc'=>'Harga termurah','class'=>'bg-emerald-500/10 border-emerald-500/25','badge'=>''],
-      ] as $qt)
-      <a href="{{ route('products.by-type', $qt['type']) }}"
-   class="reveal-card reveal-delay-{{ ($loop->index % 4) + 1 }} flex items-center gap-3 p-4 rounded-2xl transition-all hover:scale-[1.02] hover:shadow-card {{ $qt['class'] }}">
-        <span class="text-3xl shrink-0">{{ $qt['icon'] }}</span>
-        <div class="flex-1 min-w-0">
-          <div class="flex items-center gap-2">
-            <span class="font-display font-bold text-white text-sm">{{ $qt['label'] }}</span>
-            @if($qt['badge'])<span class="badge badge-orange" style="font-size:0.55rem;">{{ $qt['badge'] }}</span>@endif
-          </div>
-          <span class="text-xs text-slate-400">{{ $qt['desc'] }}</span>
-        </div>
-        <svg class="w-4 h-4 text-slate-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
-        </svg>
-      </a>
-      @endforeach
+
+    <div class="flex items-center justify-between mb-7">
+
+      <div>
+        <h2 class="font-display text-2xl font-black text-white">
+          Akses Cepat
+        </h2>
+
+        <p class="text-slate-500 text-sm mt-1">
+          Semua kebutuhan gaming dalam satu tempat
+        </p>
+      </div>
+
     </div>
+
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-5 auto-rows-[180px]">
+
+      {{-- TOPUP --}}
+      <a href="{{ route('products.by-type', 'topup') }}"
+         class="group relative overflow-hidden rounded-[32px]
+                col-span-2 row-span-2
+                border border-blue-500/20
+                bg-gradient-to-br from-blue-500/20 via-cyan-500/10 to-[#060B16]
+                p-7 flex flex-col justify-between">
+
+        <div class="absolute -right-10 -top-10 w-44 h-44 rounded-full bg-cyan-400/20 blur-3xl"></div>
+
+        <div class="relative z-10">
+
+          <div class="w-16 h-16 rounded-2xl
+                      bg-white/10
+                      border border-white/10
+                      flex items-center justify-center
+                      text-4xl mb-5">
+
+            ⚡
+
+          </div>
+
+          <div class="inline-flex px-3 py-1 rounded-full
+                      bg-cyan-400/10 border border-cyan-400/20
+                      text-cyan-300 text-xs font-bold mb-4">
+
+            TERCEPAT
+
+          </div>
+
+          <h3 class="text-4xl font-black text-white leading-tight">
+            Top Up
+            <br>
+            Instan
+          </h3>
+
+        </div>
+
+        <div class="relative z-10 flex items-center justify-between">
+
+          <p class="text-slate-300 text-sm max-w-xs">
+            Diamond langsung masuk ke akun hanya dalam hitungan detik.
+          </p>
+
+          <div class="w-14 h-14 rounded-2xl bg-cyan-400 text-black flex items-center justify-center">
+            →
+          </div>
+
+        </div>
+
+      </a>
+
+      {{-- JOKI --}}
+      <a href="{{ route('products.by-type', 'joki') }}"
+         class="group relative overflow-hidden rounded-[32px]
+                row-span-2
+                border border-orange-500/20
+                bg-gradient-to-b from-orange-500/15 to-[#0B1220]
+                p-6 flex flex-col justify-between">
+
+        <div class="absolute bottom-0 left-0 right-0 h-32 bg-orange-500/10 blur-3xl"></div>
+
+        <div class="relative z-10">
+
+          <div class="text-5xl mb-5">🏆</div>
+
+          <div class="inline-flex px-3 py-1 rounded-full
+                      bg-orange-500/10 border border-orange-500/20
+                      text-orange-300 text-xs font-bold mb-4">
+
+            POPULER
+
+          </div>
+
+          <h3 class="text-3xl font-black text-white leading-tight">
+            Jasa
+            <br>
+            Joki
+          </h3>
+
+        </div>
+
+        <div class="relative z-10">
+
+          <p class="text-slate-400 text-sm mb-5">
+            Push rank lebih cepat bersama player profesional.
+          </p>
+
+          <div class="w-12 h-12 rounded-2xl bg-orange-400 text-black flex items-center justify-center">
+            →
+          </div>
+
+        </div>
+
+      </a>
+
+      {{-- AKUN --}}
+      <a href="{{ route('products.by-type', 'akun') }}"
+         class="group relative overflow-hidden rounded-[28px]
+                border border-purple-500/20
+                bg-gradient-to-br from-purple-500/15 to-[#0B1220]
+                p-5 flex items-center justify-between">
+
+        <div>
+
+          <div class="text-4xl mb-3">👤</div>
+
+          <h3 class="text-xl font-black text-white">
+            Akun Game
+          </h3>
+
+          <p class="text-slate-400 text-sm mt-1">
+            Ready stock
+          </p>
+
+        </div>
+
+        <div class="text-3xl text-purple-300">
+          ↗
+        </div>
+
+      </a>
+
+      {{-- ITEM --}}
+      <a href="{{ route('products.by-type', 'item') }}"
+         class="group relative overflow-hidden rounded-[28px]
+                border border-emerald-500/20
+                bg-gradient-to-br from-emerald-500/15 to-[#0B1220]
+                p-5 flex items-center justify-between">
+
+        <div>
+
+          <div class="text-4xl mb-3">⚔️</div>
+
+          <h3 class="text-xl font-black text-white">
+            Item & Skin
+          </h3>
+
+          <p class="text-slate-400 text-sm mt-1">
+            Harga terbaik
+          </p>
+
+        </div>
+
+        <div class="text-3xl text-emerald-300">
+          ↗
+        </div>
+
+      </a>
+
+    </div>
+
   </div>
+
 </section>
 
-@if(isset($featuredBanners) && $featuredBanners->count())
-<section class="pb-14">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/40 shadow-card-hover">
-      <div id="featured-banner-track" class="banner-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory p-3 sm:p-4">
-        @foreach($featuredBanners as $banner)
-          <a href="{{ $banner->link_url ?: '#' }}" class="banner-slide group relative flex-none w-[92%] sm:w-[68%] lg:w-[52%] xl:w-[38%] overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900 shadow-card-hover">
-            <div class="relative aspect-[3/1] overflow-hidden">
-              <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
-              <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/35 to-transparent"></div>
-              <div class="absolute inset-0 flex items-end p-5 sm:p-6">
-                <div>
-                  <span class="inline-flex items-center rounded-full border border-brand-400/30 bg-brand-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-brand-200">Featured</span>
-                  <h3 class="mt-3 text-xl sm:text-2xl font-bold text-white">{{ $banner->title }}</h3>
-                  <p class="mt-1 text-sm text-slate-300">{{ $banner->subtitle }}</p>
-                </div>
-              </div>
-            </div>
-          </a>
-        @endforeach
-      </div>
-    </div>
-  </div>
-</section>
-@endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- POPULAR PRODUCTS — NEW EXPERIENCE                          --}}
@@ -836,34 +959,140 @@ spline-viewer iframe {
 
 </section>
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- TOP UP SECTION                                              --}}
+{{-- TOPUP SECTION — HORIZONTAL EXPERIENCE                     --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 @if($topupProducts->isNotEmpty())
-<section class="pb-14 reveal-card">
+
+<section class="pb-20 overflow-hidden">
+
   <div class="max-w-7xl mx-auto px-4">
-    <div class="flex items-center justify-between mb-6">
-      <div class="flex items-center gap-3">
-        <div class="w-8 h-8 rounded-lg flex items-center justify-center"
-             style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">
-          <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="h-4 w-4 rounded-sm object-contain bg-white/10 p-0.5">
+
+    <div class="flex items-center justify-between mb-8">
+
+      <div>
+
+        <div class="inline-flex items-center gap-2
+                    px-3 py-1 rounded-full
+                    bg-blue-500/10 border border-blue-500/20
+                    text-blue-300 text-xs font-bold mb-4">
+
+          ⚡ INSTANT DELIVERY
+
         </div>
-        <div>
-          <h2 class="font-display font-bold text-lg text-white">⚡ Top Up Kilat</h2>
-          <p class="text-xs text-slate-500">Proses instan, langsung ke ID</p>
-        </div>
+
+        <h2 class="text-3xl md:text-4xl font-black text-white">
+          Top Up Favorit
+        </h2>
+
+        <p class="text-slate-400 mt-2">
+          Proses tercepat untuk semua game populer
+        </p>
+
       </div>
-      <a href="{{ route('products.by-type', 'topup') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Semua Top Up →</a>
+
+      <a href="{{ route('products.by-type', 'topup') }}"
+         class="hidden md:flex items-center gap-2 text-cyan-300 hover:text-white transition">
+
+        Semua Top Up →
+
+      </a>
+
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+
+    <div class="flex gap-5 overflow-x-auto pb-3 banner-track snap-x snap-mandatory">
+
       @foreach($topupProducts as $product)
-        <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
-  @include('components.product-card', ['product' => $product])
-</div>
+
+      <div class="flex-none w-[88%] sm:w-[52%] lg:w-[32%] snap-start">
+
+        <div class="group relative rounded-[30px]
+                    overflow-hidden
+                    border border-slate-800
+                    bg-[#081120]
+                    hover:border-cyan-500/40
+                    transition duration-300">
+
+          {{-- IMAGE --}}
+          <div class="relative overflow-hidden">
+
+            <img src="{{ Storage::url($product->image) }}"
+                 alt="{{ $product->name }}"
+                 class="w-full h-72 object-cover group-hover:scale-110 transition duration-700">
+
+            <div class="absolute inset-0 bg-gradient-to-t from-[#020617] via-[#020617]/30 to-transparent"></div>
+
+            <div class="absolute top-4 left-4">
+
+              <div class="px-3 py-1 rounded-full
+                          bg-cyan-400/15 border border-cyan-400/20
+                          text-cyan-300 text-xs font-bold">
+
+                INSTANT
+
+              </div>
+
+            </div>
+
+          </div>
+
+          {{-- CONTENT --}}
+          <div class="p-6">
+
+            <div class="mb-5">
+
+              <h3 class="text-2xl font-black text-white line-clamp-2 mb-2">
+                {{ $product->name }}
+              </h3>
+
+              <p class="text-slate-400 text-sm line-clamp-2">
+                {{ $product->description }}
+              </p>
+
+            </div>
+
+            <div class="flex items-center justify-between">
+
+              <div>
+
+                <div class="text-xs text-slate-500 mb-1">
+                  Harga Mulai
+                </div>
+
+                <div class="text-cyan-300 text-3xl font-black">
+                  Rp {{ number_format($product->price,0,',','.') }}
+                </div>
+
+              </div>
+
+              <a href="{{ route('products.show', $product->slug) }}"
+                 class="w-14 h-14 rounded-2xl
+                        bg-cyan-400 hover:bg-cyan-300
+                        text-black
+                        flex items-center justify-center
+                        font-bold transition">
+
+                →
+
+              </a>
+
+            </div>
+
+          </div>
+
+        </div>
+
+      </div>
+
       @endforeach
+
     </div>
+
   </div>
+
 </section>
+
 @endif
+
 
 {{-- VALUE PROPOSITION BANNER                                    --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
@@ -901,41 +1130,115 @@ spline-viewer iframe {
 </section>
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- FAQ SECTION (ACCORDION)                                     --}}
+{{-- FAQ — GLASSMORPHISM VERSION                               --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="pb-20 reveal-card reveal-delay-2">
+<section class="pb-24">
+
   <div class="max-w-7xl mx-auto px-4">
-    <div class="space-y-3">
-      @php
-      $faqs = [
-        ['q'=>'Marketplace Games Terbesar dan Terlengkap','a'=>'Lapak Gaming adalah marketplace destinasi utama bagi para gamers untuk yang mencari kenyamanan dan keandalan dalam bertransaksi digital. Dengan berbagai produk digital yang tersedia, Lapak Gaming menyediakan solusi lengkap untuk kebutuhan hiburan Anda.'],
-        ['q'=>'Apa itu Lapak Gaming?','a'=>'Kami adalah platform perantara (escrow) yang menjamin keamanan transaksi antara penjual dan pembeli produk game di Indonesia. Semua transaksi dilindungi oleh sistem garansi kami.'],
-        ['q'=>'Top-Up Game Terlengkap','a'=>'Nikmati layanan top up berbagai game populer seperti Mobile Legends, Free Fire, dan Genshin Impact dengan proses instan dan harga yang sangat bersaing.'],
-        ['q'=>'Voucher Digital untuk Berbagai Kebutuhan','a'=>'Selain kebutuhan gaming, kami juga menyediakan voucher digital untuk berbagai layanan populer lainnya guna mendukung segala aktivitas hiburan Anda setiap hari.'],
-      ];
-      @endphp
 
-      @foreach($faqs as $index => $faq)
-      <div class="faq-item group">
-        <button type="button" data-faq-index="{{ $index }}"
-          class="js-faq-toggle w-full flex items-center justify-between p-5 text-left bg-gray-900/50 border border-gray-800 rounded-2xl hover:border-blue-500/50 transition-all duration-300">
-          <span class="font-display font-bold text-white text-sm md:text-base">{{ $faq['q'] }}</span>
-          <svg id="icon-{{ $index }}" class="w-5 h-5 text-slate-500 transition-transform duration-300"
-               fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-          </svg>
-        </button>
-        <div id="faq-{{ $index }}" class="max-h-0 overflow-hidden transition-all duration-300 ease-in-out">
-          <div class="p-5 text-sm text-slate-400 leading-relaxed border-x border-b border-gray-800 rounded-b-2xl -mt-2 bg-gray-900/30">
-            {{ $faq['a'] }}
-          </div>
+    <div class="grid lg:grid-cols-2 gap-10 items-start">
+
+      {{-- LEFT --}}
+      <div class="sticky top-24">
+
+        <div class="inline-flex items-center gap-2
+                    px-3 py-1 rounded-full
+                    bg-cyan-500/10 border border-cyan-500/20
+                    text-cyan-300 text-xs font-bold mb-5">
+
+          SUPPORT CENTER
+
         </div>
-      </div>
-      @endforeach
-    </div>
-  </div>
-</section>
 
+        <h2 class="text-4xl md:text-5xl font-black text-white leading-tight mb-5">
+          Pertanyaan
+          <br>
+          yang sering
+          <br>
+          ditanyakan
+        </h2>
+
+        <p class="text-slate-400 text-lg leading-relaxed max-w-lg">
+          Semua informasi penting mengenai transaksi,
+          keamanan, top up, hingga sistem marketplace
+          tersedia di sini.
+        </p>
+
+      </div>
+
+      {{-- RIGHT --}}
+      <div class="space-y-4">
+
+        @php
+        $faqs = [
+          [
+            'q'=>'Marketplace Games Terbesar dan Terlengkap',
+            'a'=>'Lapak Gaming adalah marketplace destinasi utama bagi para gamers untuk yang mencari kenyamanan dan keandalan dalam bertransaksi digital.'
+          ],
+          [
+            'q'=>'Apa itu Lapak Gaming?',
+            'a'=>'Kami adalah platform perantara escrow yang menjamin keamanan transaksi antara penjual dan pembeli produk game di Indonesia.'
+          ],
+          [
+            'q'=>'Top-Up Game Terlengkap',
+            'a'=>'Nikmati layanan top up berbagai game populer dengan proses instan dan harga terbaik.'
+          ],
+          [
+            'q'=>'Voucher Digital',
+            'a'=>'Kami juga menyediakan voucher digital untuk berbagai kebutuhan hiburan digital.'
+          ],
+        ];
+        @endphp
+
+        @foreach($faqs as $index => $faq)
+
+        <div class="overflow-hidden rounded-[28px]
+                    border border-white/10
+                    bg-white/[0.03]
+                    backdrop-blur-xl">
+
+          <button type="button"
+                  data-faq-index="{{ $index }}"
+                  class="js-faq-toggle w-full p-6 flex items-center justify-between text-left">
+
+            <span class="text-lg font-bold text-white pr-5">
+              {{ $faq['q'] }}
+            </span>
+
+            <div id="icon-{{ $index }}"
+                 class="w-10 h-10 rounded-2xl
+                        bg-white/5
+                        border border-white/10
+                        flex items-center justify-center
+                        text-cyan-300
+                        transition duration-300">
+
+              +
+
+            </div>
+
+          </button>
+
+          <div id="faq-{{ $index }}"
+               class="max-h-0 overflow-hidden transition-all duration-300">
+
+            <div class="px-6 pb-6 text-slate-400 leading-relaxed">
+              {{ $faq['a'] }}
+            </div>
+
+          </div>
+
+        </div>
+
+        @endforeach
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
 @push('scripts')
 {{--
   ══════════════════════════════════════════════════════════════
