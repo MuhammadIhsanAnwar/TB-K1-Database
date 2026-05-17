@@ -941,7 +941,6 @@ spline-viewer iframe {
 @endif
 
     {{-- ═════════════ STYLE 3 ═════════════ --}}
-    @else
 
     <section class="rounded-[36px]
                     overflow-hidden
