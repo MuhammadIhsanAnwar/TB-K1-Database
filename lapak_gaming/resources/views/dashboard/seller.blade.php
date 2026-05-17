@@ -165,7 +165,7 @@
                     <h3 class="text-lg font-bold text-white tracking-tight">Tambah Produk</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Buka etalase jualan baru</p>
                 </div>
-                <div class="bg-white/20 p-2.5 rounded-xl">
+                <div class="bg-white/5 p-2.5 rounded-xl">
                     <svg class="w-5 h-5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                     </svg>
