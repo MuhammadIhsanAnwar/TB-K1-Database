@@ -4,6 +4,155 @@
 
 @push('styles')
 <style>
+
+  /* ───────────────────────────────────────────────────────────
+   PREMIUM ADMIN MOTION SYSTEM
+─────────────────────────────────────────────────────────── */
+
+.dashboard-wrapper{
+  max-width:1400px;
+  margin:0 auto;
+  padding-inline:24px;
+}
+
+@media(min-width:1280px){
+  .dashboard-wrapper{
+    padding-inline:40px;
+  }
+}
+
+.section-spacing{
+  margin-top:2rem;
+}
+
+/* ── Floating Ambient Glow ───────────────────────────── */
+.dashboard-transparent::before{
+  content:'';
+  position:absolute;
+  inset:-20%;
+  background:
+    radial-gradient(circle at 20% 20%, rgba(59,130,246,.08), transparent 30%),
+    radial-gradient(circle at 80% 30%, rgba(168,85,247,.08), transparent 30%),
+    radial-gradient(circle at 50% 80%, rgba(245,158,11,.06), transparent 35%);
+  filter:blur(80px);
+  pointer-events:none;
+}
+
+/* ── Glass Card Improved ─────────────────────────────── */
+.panel-card-glass{
+  position:relative;
+  overflow:hidden;
+  border-radius:28px;
+  padding:1rem;
+  background:
+    linear-gradient(
+      180deg,
+      rgba(15,23,42,.58),
+      rgba(2,6,23,.78)
+    ) !important;
+
+  backdrop-filter:blur(24px) saturate(160%);
+  border:1px solid rgba(255,255,255,.06);
+
+  box-shadow:
+    0 10px 30px rgba(0,0,0,.35),
+    inset 0 1px 0 rgba(255,255,255,.03);
+
+  transition:
+    transform .35s ease,
+    border-color .35s ease,
+    box-shadow .35s ease;
+}
+
+.panel-card-glass:hover{
+  transform:translateY(-4px);
+  border-color:rgba(255,255,255,.12);
+
+  box-shadow:
+    0 20px 40px rgba(0,0,0,.45),
+    0 0 0 1px rgba(255,255,255,.02);
+}
+
+/* ── Glow Border Animation ───────────────────────────── */
+.panel-card-glass::after{
+  content:'';
+  position:absolute;
+  inset:0;
+  border-radius:inherit;
+  padding:1px;
+
+  background:
+    linear-gradient(
+      135deg,
+      rgba(255,255,255,.08),
+      transparent,
+      rgba(255,255,255,.03)
+    );
+
+  -webkit-mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
+
+  -webkit-mask-composite:xor;
+  pointer-events:none;
+}
+
+/* ── Reveal Animation ───────────────────────────────── */
+.reveal{
+  opacity:0;
+  transform:translateY(24px);
+  transition:
+    opacity .8s ease,
+    transform .8s ease;
+}
+
+.reveal.active{
+  opacity:1;
+  transform:none;
+}
+
+/* ── Smooth Table ───────────────────────────────────── */
+.table-wrapper{
+  padding-top:.5rem;
+}
+
+tbody tr{
+  transition:
+    background .25s ease,
+    transform .25s ease;
+}
+
+tbody tr:hover{
+  background:rgba(255,255,255,.03);
+  transform:scale(.995);
+}
+
+/* ── Button Premium ─────────────────────────────────── */
+button,
+a{
+  transition:
+    all .25s ease;
+}
+
+/* ── Scrollbar ──────────────────────────────────────── */
+::-webkit-scrollbar{
+  width:10px;
+  height:10px;
+}
+
+::-webkit-scrollbar-track{
+  background:#020617;
+}
+
+::-webkit-scrollbar-thumb{
+  background:rgba(255,255,255,.08);
+  border-radius:999px;
+}
+
+::-webkit-scrollbar-thumb:hover{
+  background:rgba(255,255,255,.15);
+}
+
   /* ── True Glassmorphism Control Panel ─────────────────────── */
   .dashboard-transparent {
     background: transparent !important; /* Memaksa latar belakang tembus pandang */
