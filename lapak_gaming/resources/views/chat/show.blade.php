@@ -784,12 +784,15 @@ scrollBottom(false);
 
 function formatTimeRealtime(dateString) {
 
+    if(!dateString) return '';
+
     const date = new Date(dateString);
 
     return date.toLocaleTimeString('id-ID', {
         hour: '2-digit',
         minute: '2-digit',
-        hour12: false
+        hour12: false,
+        timeZone: 'Asia/Jakarta'
     });
 
 }
@@ -1059,10 +1062,11 @@ function appendMessage(m) {
     `;
 
     const attachmentUrl =
-        m.attachment_url ||
-        (m.attachment_path
-            ? `/storage/${m.attachment_path}`
-            : null);
+    m.image_url ||
+    m.attachment_url ||
+    (m.attachment_path
+        ? `/storage/${m.attachment_path}`
+        : null);
 
     const imgHtml = attachmentUrl
         ? `
@@ -1148,7 +1152,7 @@ function appendMessage(m) {
             <div class="message-time ${isMine ? 'mine' : 'theirs'}">
 
                 <span data-time="${m.created_at}">
-                    ${m.time || formatTimeRealtime(m.created_at)}
+                    ${m.time}
                 </span>
 
                 ${readIcon}
