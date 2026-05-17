@@ -619,12 +619,137 @@ spline-viewer iframe {
       </div>
       <a href="{{ route('products.search') }}" class="text-sm text-brand-400 hover:text-brand-300 transition-colors">Lihat semua →</a>
     </div>
-    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-      @forelse($popularProducts as $product)
-        <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
-  @include('components.product-card', ['product' => $product])
-</div>
-      @empty
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-5">
+
+@forelse($popularProducts as $product)
+
+    {{-- CARD BESAR --}}
+    @if($loop->index % 7 == 0)
+
+    <div class="col-span-2 row-span-2 bg-[#111827] rounded-3xl overflow-hidden border border-cyan-500/30 hover:scale-[1.02] transition duration-300 group relative">
+
+        <div class="absolute top-3 left-3 z-10 bg-cyan-500 text-white text-xs px-3 py-1 rounded-full font-bold">
+            🔥 Trending
+        </div>
+
+        <img
+            src="{{ Storage::url($product->image) }}"
+            alt="{{ $product->name }}"
+            class="w-full h-72 object-cover group-hover:scale-105 transition duration-500"
+        >
+
+        <div class="p-5">
+
+            <h2 class="text-white text-2xl font-bold mb-2 line-clamp-2">
+                {{ $product->name }}
+            </h2>
+
+            <p class="text-gray-400 text-sm line-clamp-2 mb-4">
+                {{ $product->description }}
+            </p>
+
+            <div class="flex items-center justify-between">
+
+                <span class="text-cyan-400 text-2xl font-extrabold">
+                    Rp {{ number_format($product->price, 0, ',', '.') }}
+                </span>
+
+                <div class="text-yellow-400 text-sm font-semibold">
+                    ⭐ {{ number_format($product->average_rating ?? 5, 1) }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- CARD HORIZONTAL --}}
+    @elseif($loop->index % 5 == 0)
+
+    <div class="col-span-2 bg-[#1f2937] rounded-2xl overflow-hidden flex border border-purple-500/20 hover:border-purple-400 transition duration-300">
+
+        <img
+            src="{{ Storage::url($product->image) }}"
+            alt="{{ $product->name }}"
+            class="w-40 h-full object-cover"
+        >
+
+        <div class="flex-1 p-4 flex flex-col justify-between">
+
+            <div>
+
+                <div class="inline-block bg-purple-500/20 text-purple-300 text-xs px-2 py-1 rounded-full mb-2">
+                    Premium
+                </div>
+
+                <h3 class="text-white text-lg font-bold line-clamp-2">
+                    {{ $product->name }}
+                </h3>
+
+            </div>
+
+            <div class="flex items-center justify-between mt-3">
+
+                <span class="text-cyan-400 font-bold text-lg">
+                    Rp {{ number_format($product->price, 0, ',', '.') }}
+                </span>
+
+                <div class="text-yellow-400 text-sm">
+                    ⭐ {{ number_format($product->average_rating ?? 5, 1) }}
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    {{-- CARD NORMAL --}}
+    @else
+
+    <div class="bg-[#111827] rounded-2xl overflow-hidden border border-gray-700 hover:border-cyan-400 transition duration-300 hover:-translate-y-1 group">
+
+        <div class="relative overflow-hidden">
+
+            <img
+                src="{{ Storage::url($product->image) }}"
+                alt="{{ $product->name }}"
+                class="w-full h-52 object-cover group-hover:scale-110 transition duration-500"
+            >
+
+            <div class="absolute top-3 right-3 bg-black/70 text-yellow-400 text-xs px-2 py-1 rounded-full">
+                ⭐ {{ number_format($product->average_rating ?? 5, 1) }}
+            </div>
+
+        </div>
+
+        <div class="p-4">
+
+            <h3 class="text-white font-bold text-lg line-clamp-2 mb-2">
+                {{ $product->name }}
+            </h3>
+
+            <div class="flex items-center justify-between mt-4">
+
+                <span class="text-cyan-400 font-extrabold text-lg">
+                    Rp {{ number_format($product->price, 0, ',', '.') }}
+                </span>
+
+                <a href="{{ route('products.show', $product->slug) }}"
+                   class="bg-cyan-500 hover:bg-cyan-400 text-black font-bold px-3 py-2 rounded-xl transition duration-300">
+                    Beli
+                </a>
+
+            </div>
+
+        </div>
+
+    </div>
+
+    @endif
+
+@empty
         <div class="col-span-full py-16 text-center">
           <div class="text-4xl mb-4">🎮</div>
           <p class="text-slate-400">Produk populer akan segera tersedia.</p>

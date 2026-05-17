@@ -14,7 +14,6 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
-use Barryvdh\DomPDF\Facade\Pdf;
 
 class AdminController extends Controller
 {
@@ -291,18 +290,83 @@ class AdminController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
 
-   public function downloadOrdersReportPdf()
-{
-    $orders = Order::with(['buyer', 'seller'])
-        ->latest()
-        ->get();
+        public function downloadOrdersReportPdf()
+    {
+        $orders = Order::with(['buyer', 'seller'])
+            ->latest()
+            ->get();
 
-    $pdf = Pdf::loadView('admin.pdf.orders-report', [
-        'orders' => $orders
-    ]);
+        $pages = [];
+        $lines = [];
 
-    return $pdf->download('laporan-pesanan.pdf');
-}
+        $lines[] = [
+            'text' => 'LAPORAN PESANAN LAPAK GAMING',
+            'size' => 16,
+        ];
+
+        $lines[] = [
+            'text' => 'Tanggal Export: ' . now()->format('d M Y H:i'),
+            'size' => 10,
+        ];
+
+        $lines[] = [
+            'text' => ' ',
+            'size' => 10,
+        ];
+
+        foreach ($orders as $index => $order) {
+            $buyer = $order->buyer->name ?? 'Unknown';
+            $seller = $order->seller->name ?? 'Unknown';
+            $status = strtoupper($order->status ?? '-');
+            $total = number_format($this->reportOrderTotal($order), 0, ',', '.');
+
+            $lines[] = [
+                'text' => ($index + 1) . '. Order #' . $order->id,
+                'size' => 12,
+            ];
+
+            $lines[] = [
+                'text' => 'Buyer  : ' . $buyer,
+                'size' => 10,
+            ];
+
+            $lines[] = [
+                'text' => 'Seller : ' . $seller,
+                'size' => 10,
+            ];
+
+            $lines[] = [
+                'text' => 'Status : ' . $status,
+                'size' => 10,
+            ];
+
+            $lines[] = [
+                'text' => 'Total  : Rp ' . $total,
+                'size' => 10,
+            ];
+
+            $lines[] = [
+                'text' => '----------------------------------------',
+                'size' => 10,
+            ];
+
+            // Maksimal isi 35 line per halaman
+            if (count($lines) >= 35) {
+                $pages[] = $lines;
+                $lines = [];
+            }
+        }
+
+        if (!empty($lines)) {
+            $pages[] = $lines;
+        }
+
+        $pdfContent = $this->buildSimplePdf($pages);
+
+        return response($pdfContent)
+            ->header('Content-Type', 'application/pdf')
+            ->header('Content-Disposition', 'attachment; filename="laporan-pesanan.pdf"');
+    }
 
     public function showOrder(Order $order): View
     {
