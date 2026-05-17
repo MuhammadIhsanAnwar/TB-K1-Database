@@ -941,7 +941,7 @@ spline-viewer iframe {
 {{-- GANTI FULL SECTION "QUICK ACCESS — TYPE BUTTONS" DENGAN INI --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 
-<section class="pb-24 relative overflow-hidden">
+<section class="pb-14 reveal-card reveal-up">
 
     {{-- Background Glow --}}
     <div class="absolute inset-0 pointer-events-none">
