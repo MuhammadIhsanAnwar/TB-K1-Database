@@ -165,7 +165,7 @@
                     <h3 class="text-lg font-bold text-white tracking-tight">Tambah Produk</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Buka etalase jualan baru</p>
                 </div>
-                <div class="bg-white/5 p-2.5 rounded-xl">
+                <div class="bg-white/5 p-2.5 rounded-xl group-hover:bg-blue-500 group-hover:text-slate-950 transition-colors text-slate-400">
                     <svg class="w-5 h-5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                     </svg>
@@ -178,7 +178,7 @@
                     <h3 class="text-lg font-bold text-white tracking-tight">Kelola Etalase</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Stok harian & arsip barang</p>
                 </div>
-                <div class="bg-white/5 p-2.5 rounded-xl group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors text-slate-400">
+                <div class="bg-white/5 p-2.5 rounded-xl group-hover:bg-blue-500 group-hover:text-slate-950 transition-colors text-slate-400">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                     </svg>
@@ -191,7 +191,7 @@
                     <h3 class="text-lg font-bold text-white tracking-tight">Pesan Pelanggan</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Balas pertanyaan & negosiasi</p>
                 </div>
-                <div class="bg-white/5 p-2.5 rounded-xl group-hover:bg-brand-500 group-hover:text-white transition-colors text-slate-400">
+                <div class="bg-white/5 p-2.5 rounded-xl group-hover:bg-blue-500 group-hover:text-slate-950 transition-colors text-slate-400">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a.863.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
