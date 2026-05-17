@@ -1050,8 +1050,6 @@ spline-viewer iframe {
 
     </section>
 
-    @endforeach
-
   </div>
 
 </section>
