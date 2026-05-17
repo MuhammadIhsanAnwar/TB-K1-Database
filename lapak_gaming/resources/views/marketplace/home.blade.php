@@ -753,7 +753,7 @@ spline-viewer iframe {
 
           </div>
 
-          {{-- BUTTON --}}
+          {{-- BUTTON
           <a href="{{ route('categories.show', $category->slug) }}"
              class="hidden md:flex items-center gap-2
                     px-5 py-3 rounded-2xl
@@ -765,7 +765,7 @@ spline-viewer iframe {
 
             Explore →
 
-          </a>
+          </a> --}}
 
         </div>
 
