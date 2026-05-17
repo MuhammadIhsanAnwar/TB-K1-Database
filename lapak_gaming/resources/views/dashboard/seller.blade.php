@@ -4,207 +4,82 @@
 
 @push('styles')
 <style>
+    .reveal {
+        opacity: 0;
+        transform: translateY(30px);
+        animation: revealUp .8s ease forwards;
+    }
 
-/* ───────────────────────────────────────────────────────────
-   PREMIUM SELLER MOTION SYSTEM
-─────────────────────────────────────────────────────────── */
+    .reveal-delay-1 {
+        animation-delay: .15s;
+    }
 
-.dashboard-wrapper{
-  max-width:1400px;
-  margin:0 auto;
-  padding-inline:24px;
-}
+    .reveal-delay-2 {
+        animation-delay: .3s;
+    }
 
-@media(min-width:1280px){
-  .dashboard-wrapper{
-    padding-inline:40px;
-  }
-}
+    .reveal-delay-3 {
+        animation-delay: .45s;
+    }
 
-.section-spacing{
-  margin-top:2rem;
-}
-
-/* ── Floating Ambient Glow ───────────────────────────── */
-.dashboard-transparent::before{
-  content:'';
-  position:absolute;
-  inset:-20%;
-  background:
-    radial-gradient(circle at 20% 20%, rgba(59,130,246,.08), transparent 30%),
-    radial-gradient(circle at 80% 30%, rgba(168,85,247,.08), transparent 30%),
-    radial-gradient(circle at 50% 80%, rgba(245,158,11,.06), transparent 35%);
-  filter:blur(80px);
-  pointer-events:none;
-}
-
-/* ── Glass Card Improved ─────────────────────────────── */
-.panel-card-glass{
-  position:relative;
-  overflow:hidden;
-  border-radius:28px;
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(15,23,42,.58),
-      rgba(2,6,23,.78)
-    ) !important;
-
-  backdrop-filter:blur(24px) saturate(160%);
-  border:1px solid rgba(255,255,255,.06);
-
-  box-shadow:
-    0 10px 30px rgba(0,0,0,.35),
-    inset 0 1px 0 rgba(255,255,255,.03);
-
-  transition:
-    transform .35s ease,
-    border-color .35s ease,
-    box-shadow .35s ease,
-    background .35s ease;
-}
-
-.panel-card-glass:hover{
-  transform:translateY(-4px);
-
-  border-color:rgba(255,255,255,.12);
-
-  background:
-    linear-gradient(
-      180deg,
-      rgba(20,30,50,.72),
-      rgba(2,6,23,.88)
-    ) !important;
-
-  box-shadow:
-    0 20px 40px rgba(0,0,0,.45),
-    0 0 0 1px rgba(255,255,255,.02);
-}
-
-/* ── Glow Border Animation ───────────────────────────── */
-.panel-card-glass::after{
-  content:'';
-  position:absolute;
-  inset:0;
-  border-radius:inherit;
-  padding:1px;
-
-  background:
-    linear-gradient(
-      135deg,
-      rgba(255,255,255,.08),
-      transparent,
-      rgba(255,255,255,.03)
-    );
-
-  -webkit-mask:
-    linear-gradient(#fff 0 0) content-box,
-    linear-gradient(#fff 0 0);
-
-  -webkit-mask-composite:xor;
-  pointer-events:none;
-}
-
-/* ── Reveal Animation ───────────────────────────────── */
-.reveal{
-  opacity:0;
-  transform:translateY(24px);
-  transition:
-    opacity .8s ease,
-    transform .8s ease;
-}
-
-.reveal.active{
-  opacity:1;
-  transform:none;
-}
-
-/* ── Smooth Hover ───────────────────────────────────── */
-.sub-item-glass{
-  background:rgba(255,255,255,.02) !important;
-  border:1px solid rgba(255,255,255,.04);
-  backdrop-filter:blur(8px);
-
-  transition:
-    transform .25s ease,
-    background .25s ease,
-    border-color .25s ease;
-}
-
-.sub-item-glass:hover{
-  transform:translateY(-2px);
-  background:rgba(255,255,255,.05) !important;
-  border-color:rgba(255,255,255,.1);
-}
-
-/* ── Premium Status Badge ───────────────────────────── */
-.status-badge{
-  font-weight:700;
-  text-transform:uppercase;
-  letter-spacing:.05em;
-}
-
-.status-success,
-.status-completed{
-  background:rgba(16,185,129,.15);
-  border:1px solid rgba(16,185,129,.4);
-  color:#34d399;
-}
-
-.status-pending,
-.status-processing{
-  background:rgba(245,158,11,.15);
-  border:1px solid rgba(245,158,11,.4);
-  color:#fbbf24;
-}
-
-/* ── Button Motion ──────────────────────────────────── */
-button,
-a{
-  transition:
-    all .25s ease;
-}
-
-/* ── Scrollbar ──────────────────────────────────────── */
-::-webkit-scrollbar{
-  width:10px;
-  height:10px;
-}
-
-::-webkit-scrollbar-track{
-  background:#020617;
-}
-
-::-webkit-scrollbar-thumb{
-  background:rgba(255,255,255,.08);
-  border-radius:999px;
-}
-
-::-webkit-scrollbar-thumb:hover{
-  background:rgba(255,255,255,.15);
-}
-
+    @keyframes revealUp {
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
 </style>
 @endpush
 
 @section('content')
-<div class="min-h-screen py-10 relative overflow-hidden dashboard-transparent">
+<div class="mx-auto mt-10 max-w-7xl space-y-7 px-4 md:px-6">
     {{-- Ambient Light penambah kontras teks di atas background bergerak --}}
     <div class="absolute top-0 right-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-[150px] pointer-events-none"></div>
 
     <div class="dashboard-wrapper space-y-8 relative z-10">
         
-        {{-- ── WELCOME HEADER ───────────────────────────────────── --}}
-        <div class="flex flex-col md:flex-row md:items-center md:justify-between border-b border-slate-800/40 pb-6">
-            <div>
-                <h1 class="text-3xl font-extrabold text-white tracking-tight">Pusat Kendali Seller</h1>
-                <p class="text-slate-400 text-sm mt-1">Selamat datang kembali, <span class="text-brand-400 font-semibold">{{ $user->name }}</span>. Pantau performa tokomu hari ini.</p>
+        <div
+    class="reveal relative overflow-hidden rounded-[30px] border border-blue-500/20 bg-gradient-to-br from-[#060816] via-[#091225] to-[#0B1730] px-7 py-8 shadow-[0_0_80px_rgba(37,99,235,0.12)]">
+
+    <div
+        class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.18),transparent_35%)]">
+    </div>
+
+    <div class="relative z-10 flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
+
+        <div class="max-w-2xl">
+            <div
+                class="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-blue-300 backdrop-blur-xl">
+
+                <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+
+                SELLER DASHBOARD
             </div>
-            <div class="mt-4 md:mt-0 text-xs text-slate-400 font-medium px-4 py-2 rounded-xl border border-white/5 bg-black/20 backdrop-blur-md">
-                Status Akun: <span class="text-emerald-400 font-bold uppercase tracking-wider">Verified Seller</span>
+
+            <h1
+                class="mt-5 text-3xl font-black leading-tight text-white md:text-5xl">
+                Pusat Kendali Seller
+            </h1>
+
+            <p class="mt-4 max-w-xl text-sm leading-relaxed text-slate-300 md:text-[15px]">
+                Kelola toko, pantau pesanan, atur produk, dan lihat performa penjualan tokomu secara real-time.
+            </p>
+        </div>
+
+        <div
+            class="hidden lg:flex h-[180px] w-[180px] items-center justify-center rounded-full border border-blue-500/20 bg-blue-500/5 backdrop-blur-2xl">
+
+            <div
+                class="absolute h-[220px] w-[220px] rounded-full bg-blue-500/10 blur-3xl">
+            </div>
+
+            <div class="relative z-10 text-7xl">
+                🛒
             </div>
         </div>
+
+    </div>
+</div>
 
         {{-- ── PENDING / REJECTED STATUS WARNING ─────────────────── --}}
         @if($user->seller_status === 'pending')
@@ -241,9 +116,9 @@ a{
         @endif
 
         {{-- ── STATS CARDS GRID (TRANSPARENT) ────────────────────── --}}
-        <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+        <div class="reveal reveal-delay-1 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {{-- Card 1: Saldo --}}
-            <div class="rounded-2xl p-6 panel-card-glass flex items-center justify-between group reveal">
+            <div class="rounded-2xl p-6 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] flex items-center justify-between group reveal">
                 <div class="space-y-1">
                     <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Saldo Hasil Penjualan</div>
                     <div class="text-3xl font-extrabold text-amber-400">
@@ -256,7 +131,7 @@ a{
             </div>
             
             {{-- Card 2: Produk Aktif --}}
-            <div class="rounded-2xl p-6 panel-card-glass flex items-center justify-between group">
+            <div class="rounded-2xl p-6 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] flex items-center justify-between group">
                 <div class="space-y-1">
                     <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Katalog Produk Aktif</div>
                     <div class="text-3xl font-extrabold text-white tracking-tight">
@@ -269,7 +144,7 @@ a{
             </div>
 
             {{-- Card 3: Total Order --}}
-            <div class="rounded-2xl p-6 panel-card-glass flex items-center justify-between group">
+            <div class="rounded-2xl p-6 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] flex items-center justify-between group">
                 <div class="space-y-1">
                     <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Pesanan Masuk</div>
                     <div class="text-3xl font-extrabold text-white tracking-tight">
@@ -298,7 +173,7 @@ a{
             </a>
             
             <a href="{{ route('seller.produk.index') }}" 
-               class="flex items-center justify-between p-5 panel-card-glass rounded-2xl group">
+               class="flex items-center justify-between p-5 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] rounded-2xl group">
                 <div>
                     <h3 class="text-lg font-bold text-white tracking-tight">Kelola Etalase</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Stok harian & arsip barang</p>
@@ -311,7 +186,7 @@ a{
             </a>
             
             <a href="{{ route('chat.inbox') }}" 
-               class="flex items-center justify-between p-5 panel-card-glass rounded-2xl group">
+               class="flex items-center justify-between p-5 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] rounded-2xl group">
                 <div>
                     <h3 class="text-lg font-bold text-white tracking-tight">Pesan Pelanggan</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Balas pertanyaan & negosiasi</p>
@@ -328,7 +203,7 @@ a{
         <div class="grid gap-8 lg:grid-cols-2">
             
             {{-- Left Column: Products Preview --}}
-            <section class="rounded-2xl p-6 panel-card-glass space-y-5">
+            <section class="rounded-2xl p-6 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] space-y-5">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
                         <span>📦</span> Katalog Dagangan Terbaru
@@ -338,7 +213,7 @@ a{
                 
                 <div class="space-y-3">
                     @forelse ($products->take(5) as $product)
-                        <div class="flex items-center justify-between p-3.5 rounded-xl sub-item-glass">
+                        <div class="flex items-center justify-between p-3.5 rounded-xl rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04] hover:-translate-y-1">
                             <div class="flex items-center gap-3 min-w-0">
                                 <img src="{{ $product->image_url }}" class="w-9 h-9 rounded-lg object-cover bg-black/40 border border-white/5" alt="Thumbnail {{ $product->name }}">
                                 <div class="min-w-0">
@@ -362,7 +237,7 @@ a{
             </section>
 
             {{-- Right Column: Orders Preview --}}
-            <section class="rounded-2xl p-6 panel-card-glass space-y-5">
+            <section class="rounded-2xl p-6 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] space-y-5">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
                         <span>📥</span> Antrean Pesanan Masuk
@@ -372,7 +247,7 @@ a{
                 
                 <div class="space-y-3">
                     @forelse ($orders->take(5) as $item)
-                        <div class="p-3.5 rounded-xl sub-item-glass flex items-center justify-between gap-4">
+                        <div class="p-3.5 rounded-xl rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04] hover:-translate-y-1 flex items-center justify-between gap-4">
                             <div class="min-w-0">
                                 <div class="text-[10px] font-bold text-brand-400 uppercase tracking-wider">
                                     #{{ $item->order?->invoice_number ?? $item->order?->order_code ?? 'INV-UNKNWN' }}
