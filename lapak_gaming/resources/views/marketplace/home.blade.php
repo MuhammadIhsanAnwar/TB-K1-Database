@@ -803,42 +803,51 @@ spline-viewer iframe {
 
               </div>
 
-              {{-- IMAGE --}}
-              <div class="relative aspect-[16/10] overflow-hidden">
+                            {{-- IMAGE --}}
+              <div class="relative h-44 overflow-hidden">
 
-                <img src="{{ Storage::url($product->image) }}"
-                     class="absolute inset-0 w-full h-full object-cover"
-                     alt="{{ $product->name }}">
-                <div class="absolute inset-0
-                            bg-gradient-to-t
-                            from-[#020617]
-                            via-[#020617]/20
-                            to-transparent"></div>
+                  <img src="{{ Storage::url($product->image) }}"
+                      alt="{{ $product->name }}"
+                      class="w-full h-full object-cover
+                              group-hover:scale-110
+                              transition duration-700">
 
-                {{-- BADGES --}}
-                <div class="absolute top-4 left-4 flex flex-col gap-2">
+                  {{-- OVERLAY --}}
+                  <div class="absolute inset-0
+                              bg-gradient-to-t
+                              from-[#020617]
+                              via-[#020617]/20
+                              to-transparent">
+                  </div>
 
-                  <div class="px-3 py-1 rounded-full
-                              bg-cyan-400 text-black
-                              text-[10px] font-black tracking-wide">
+                  {{-- BADGE --}}
+                  <div class="absolute top-3 left-3 z-10">
 
-                    HOT
+                      <div class="px-3 py-1 rounded-full
+                                  bg-cyan-400 text-black
+                                  text-[10px] font-black shadow-lg">
+
+                          HOT
+
+                      </div>
 
                   </div>
 
-                  <div class="px-3 py-1 rounded-full
-                              bg-black/50 backdrop-blur-xl
-                              border border-white/10
-                              text-white text-[10px] font-semibold">
+                  {{-- RATING --}}
+                  <div class="absolute top-14 left-3 z-10">
 
-                    ⭐ {{ number_format($product->average_rating ?? 5, 1) }}
+                      <div class="px-2 py-1 rounded-full
+                                  bg-black/70 backdrop-blur-md
+                                  border border-white/10
+                                  text-[10px] text-yellow-300 font-bold">
+
+                          ⭐ 5.0
+
+                      </div>
 
                   </div>
-
-                </div>
 
               </div>
-
               {{-- CONTENT --}}
               <div class="p-5">
 
