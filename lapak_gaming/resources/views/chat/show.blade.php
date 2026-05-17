@@ -484,7 +484,9 @@
 @section('content')
 @php
     $user    = auth()->user();
-    $partner = $conversation->seller ?? $conversation->partner($user->id);
+    $partner = $role === 'seller'
+    ? $conversation->buyer
+    : $conversation->seller;
     $product = $conversation->product;
     $order   = $conversation->order;
     $chatConfig = [
@@ -503,7 +505,7 @@
     {{-- Sidebar --}}
     <div class="chat-sidebar">
         <div class="sidebar-header">
-            <a href="{{ route('chat.inbox') }}" class="flex items-center gap-2 text-slate-400 hover:text-white mb-3 transition-colors">
+            <a href="{{ route('chat.inbox', ['tab' => $role]) }}" class="flex items-center gap-2 text-slate-400 hover:text-white mb-3 transition-colors">
                 <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/>
                 </svg>
@@ -521,7 +523,10 @@
                 $unread = $conv->unreadFor($user->id);
                 $active = $conv->id === $conversation->id;
             @endphp
-            <a href="{{ route('chat.show', $conv) }}"
+            <a href="{{ route('chat.show', [
+                    'conversation' => $conv->id,
+                    'role' => $role
+                ]) }}"
                class="conv-item {{ $active ? 'active' : '' }}"
                data-name="{{ strtolower($p2?->name ?? '') }}">
                 <img src="{{ $p2?->avatar_url ?? 'https://ui-avatars.com/api/?name=?' }}"
@@ -554,6 +559,9 @@
                  class="chat-header-avatar" alt="{{ $partner?->name }}">
             <div class="chat-header-info">
                 <h2>{{ $partner?->name ?? 'Pengguna' }}</h2>
+                <p class="text-xs text-blue-400 mt-1">
+                    {{ $role === 'seller' ? 'Mode Seller' : 'Mode Buyer' }}
+                </p>
                 @if($product)
                 <p>🎮 {{ $product->name }}</p>
                 @elseif($order)

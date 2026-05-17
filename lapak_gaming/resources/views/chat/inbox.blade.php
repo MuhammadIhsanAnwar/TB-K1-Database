@@ -276,7 +276,7 @@
                     $lastMsg = $conv->messages->last();
                 @endphp
 
-                <a href="{{ route('chat.show', $conv) }}"
+                <a href="{{ route('chat.show', ['conversation' => $conv->id, 'role' => 'buyer']) }}"
                 class="conv-item"
                 data-name="{{ strtolower($partner?->name ?? '') }}">
 
@@ -338,7 +338,7 @@
                     $unread = $conv->unreadFor($user->id);
                 @endphp
 
-                <a href="{{ route('chat.show', $conv) }}"
+                <a href="{{ route('chat.show', ['conversation' => $conv->id, 'role' => 'seller']) }}"
                 class="conv-item"
                 data-name="{{ strtolower($partner?->name ?? '') }}">
 

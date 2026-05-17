@@ -78,39 +78,46 @@ public function orderChat(\App\Models\Order $order)
     return redirect()->route('chat.show', $conversation->id);
 }
 
-public function show(Conversation $conversation)
+public function show(Request $request, Conversation $conversation)
 {
-    $user = Auth::user();
+    $user = auth()->user();
 
-    if (
-        (int)$conversation->buyer_id !== (int)$user->id &&
-        (int)$conversation->seller_id !== (int)$user->id
-    ) {
-        abort(403);
+    $role = $request->get('role', 'buyer');
+
+    if ($role === 'seller') {
+
+        $sidebarConversations = Conversation::with([
+                'buyer',
+                'seller',
+                'messages'
+            ])
+            ->where('seller_id', $user->id)
+            ->latest('last_message_at')
+            ->get();
+
+    } else {
+
+        $sidebarConversations = Conversation::with([
+                'buyer',
+                'seller',
+                'messages'
+            ])
+            ->where('buyer_id', $user->id)
+            ->latest('last_message_at')
+            ->get();
     }
 
     $messages = $conversation->messages()
         ->with('sender')
-        ->orderBy('created_at', 'asc')
-        ->take(50)
+        ->orderBy('created_at')
         ->get();
 
-    $sidebarConversations = Conversation::with([
-            'buyer',
-            'seller'
-        ])
-        ->where(function ($query) use ($user) {
-            $query->where('buyer_id', $user->id)
-                  ->orWhere('seller_id', $user->id);
-        })
-        ->latest('last_message_at')
-        ->get();
-
-    return view('chat.show', compact(
-        'conversation',
-        'messages',
-        'sidebarConversations'
-    ));
+    return view('chat.show', [
+        'conversation' => $conversation,
+        'messages' => $messages,
+        'sidebarConversations' => $sidebarConversations,
+        'role' => $role,
+    ]);
 }
 
 public function poll(Conversation $conversation)
