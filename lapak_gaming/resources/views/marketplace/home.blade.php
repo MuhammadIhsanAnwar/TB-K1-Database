@@ -454,7 +454,7 @@ spline-viewer iframe {
 {{-- HERO BANNERS                                               --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 @if(isset($heroBanners) && $heroBanners->count())
-<section class="relative py-5 sm:py-7">
+<section class="relative py-5 sm:py-7 reveal-card reveal-up">
   <div class="max-w-7xl mx-auto px-4">
     <div class="overflow-hidden rounded-[28px] border border-slate-800 bg-slate-950/40 shadow-card-hover">
       <div class="relative">
@@ -1426,7 +1426,7 @@ spline-viewer iframe {
 {{-- ═══════════════════════════════════════════════════════════ --}}
 @if($topupProducts->isNotEmpty())
 
-<section class="pb-20 relative overflow-hidden">
+<section class="pb-20 overflow-hidden reveal-card reveal-up">
 
   {{-- BG GLOW --}}
   <div class="absolute inset-0 pointer-events-none">
@@ -1664,7 +1664,7 @@ spline-viewer iframe {
 
 {{-- VALUE PROPOSITION BANNER                                    --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="pb-14">
+<section class="pb-14 reveal-card reveal-up">
   <div class="max-w-7xl mx-auto px-4">
     <div class="reveal-card reveal-delay-2 rounded-2xl p-8 sm:p-12 relative overflow-hidden text-center"
          style="background:linear-gradient(135deg,rgba(37,99,235,0.15) 0%,rgba(249,115,22,0.08) 100%);border:1px solid rgba(37,99,235,0.25);">
