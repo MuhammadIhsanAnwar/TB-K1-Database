@@ -753,7 +753,7 @@ spline-viewer iframe {
 
           </div>
 
-          {{-- BUTTON
+          {{-- BUTTON --}}
           <a href="{{ route('categories.show', $category->slug) }}"
              class="hidden md:flex items-center gap-2
                     px-5 py-3 rounded-2xl
@@ -765,7 +765,7 @@ spline-viewer iframe {
 
             Explore →
 
-          </a> --}}
+          </a>
 
         </div>
 
@@ -939,52 +939,6 @@ spline-viewer iframe {
 </section>
 
 @endif
-
-    {{-- ═════════════ STYLE 3 ═════════════ --}}
-
-    <section class="rounded-[36px]
-                    overflow-hidden
-                    border border-orange-400/10
-                    bg-[#0a0f1c]">
-
-      {{-- HEADER --}}
-      <div class="relative px-6 md:px-8 py-8 border-b border-white/5 overflow-hidden">
-
-        <div class="absolute inset-0">
-
-          <div class="absolute left-0 top-0 w-72 h-72 bg-orange-400/10 blur-3xl rounded-full"></div>
-
-        </div>
-
-        <div class="relative z-10 flex items-center justify-between">
-
-          <div>
-
-            <div class="inline-flex items-center gap-2
-                        px-3 py-1 rounded-full
-                        bg-orange-400/10 border border-orange-400/20
-                        text-orange-300 text-xs font-bold mb-4">
-
-              🚀 BEST DEALS
-
-            </div>
-
-            <h3 class="text-3xl font-black text-white">
-              {{ $category->name }}
-            </h3>
-
-          </div>
-
-          <a href="{{ route('categories.show', $category->slug) }}"
-             class="hidden md:flex items-center gap-2
-                    text-orange-300 hover:text-white transition font-bold">
-
-            View More →
-          </a>
-
-        </div>
-
-      </div>
 
       {{-- PRODUCTS --}}
       <div class="grid md:grid-cols-2 xl:grid-cols-4">
