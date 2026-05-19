@@ -24,6 +24,12 @@
       @if (session('status'))
         <div class="mb-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 text-cyan-200">{{ session('status') }}</div>
       @endif
+      @if (session('success'))
+        <div class="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-emerald-200">{{ session('success') }}</div>
+      @endif
+      @if (session('error'))
+        <div class="mb-6 rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-rose-200">{{ session('error') }}</div>
+      @endif
       @if (session('warning'))
         <div class="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-200">{{ session('warning') }}</div>
       @endif

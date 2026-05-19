@@ -2,10 +2,13 @@
 
 namespace App\Providers;
 
+use App\Listeners\SendDifferentDeviceLoginNotification;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Illuminate\Auth\Events\Login;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Facades\Schema;
 use App\Models\Category;
@@ -51,6 +54,14 @@ class AppServiceProvider extends ServiceProvider
                     'logoUrl' => asset('storage/app/public/logo/logo.png'),
                 ]);
         });
+
+        Event::listen(Login::class, SendDifferentDeviceLoginNotification::class);
+
+        if ($this->app->runningInConsole()) {
+            View::share('categories', collect());
+
+            return;
+        }
 
         // Hanya share categories jika table sudah ada
         if (Schema::hasTable('categories')) {

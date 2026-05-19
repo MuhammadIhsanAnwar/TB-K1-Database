@@ -269,8 +269,6 @@ Route::post('/email/verification-notification/guest', 'App\\Http\\Controllers\\V
     ->middleware('throttle:6,1')
     ->name('verification.resend.guest');
 
-Route::post('/email/verification-notification/guest', [VerificationController::class, 'resendGuest']);
-
 // ─────────────────────────────────────────────────────────────────────────────
 // Static pages
 // ─────────────────────────────────────────────────────────────────────────────

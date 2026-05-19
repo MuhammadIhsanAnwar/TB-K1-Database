@@ -37,6 +37,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'deactivated_at'              => 'datetime',
         'account_deletion_token_sent_at' => 'datetime',
         'suspended_at'                => 'datetime',
+        'last_login_at'               => 'datetime',
     ];
 
     // ─── Scopes ──────────────────────────────────────────────────────────────
