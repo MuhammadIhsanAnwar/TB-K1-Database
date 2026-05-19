@@ -250,4 +250,14 @@ class OrderController extends Controller {
         $order->update(['payment_proof' => $path, 'status' => Order::STATUS_PAYMENT_UPLOADED, 'paid_at' => now()]);
         return back()->with('success', 'Bukti pembayaran berhasil diupload.');
     }
+
+    public function viewProof($filename) {
+    $path = storage_path('app/public/payment_proofs/' . $filename);
+    
+    if (!file_exists($path)) {
+        abort(404);
+    }
+    
+    return response()->file($path);
+}
 }

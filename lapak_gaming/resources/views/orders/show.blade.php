@@ -234,7 +234,7 @@
                            rel="noopener noreferrer">
 
                             <img
-                                src="{{ asset('storage/' . $order->payment_proof) }} }}"
+                                src="{{ asset('storage/' . $order->payment_proof) }}"
                                 alt="Bukti Pembayaran"
                                 class="w-full object-cover transition duration-300 hover:scale-[1.01] max-h-[500px]"
                             />

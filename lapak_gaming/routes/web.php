@@ -285,3 +285,5 @@ Route::get('/tentang-kami', [PageController::class, 'about'])->name('about');
     Route::post('/chat/conversations/{conversation}/typing', [ChatController::class, 'updateTyping']);
 Route::patch('/chat/message/{message}', [ChatController::class, 'editMessage'])->name('chat.update');
 Route::delete('/chat/message/{message}', [ChatController::class, 'deleteMessage'])->name('chat.destroy');
+
+Route::get('/view-proof/{filename}', [App\Http\Controllers\OrderController::class, 'viewProof'])->name('orders.viewProof');
