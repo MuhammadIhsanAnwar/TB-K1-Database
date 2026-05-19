@@ -290,89 +290,104 @@ class AdminController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
 
-        public function downloadOrdersReportPdf()
+    public function downloadOrdersReportPdf()
     {
-        $orders = Order::with(['buyer', 'seller'])
-            ->latest()
-            ->get();
+        if (! Schema::hasTable('orders')) {
+            return back()->withErrors([
+                'pdf' => 'Tabel pesanan belum tersedia, jadi laporan PDF belum bisa dibuat.',
+            ]);
+        }
 
-        $pages = [];
-        $lines = [];
+        try {
+            $orders = Order::query()
+                ->with(['buyer:id,name', 'seller:id,name', 'financial:order_id,grand_total'])
+                ->orderByDesc('created_at')
+                ->get();
 
-        $lines[] = [
-            'text' => 'LAPORAN PESANAN LAPAK GAMING',
-            'size' => 16,
-        ];
-
-        $lines[] = [
-            'text' => 'Tanggal Export: ' . now()->format('d M Y H:i'),
-            'size' => 10,
-        ];
-
-        $lines[] = [
-            'text' => ' ',
-            'size' => 10,
-        ];
-
-        foreach ($orders as $index => $order) {
-            $buyer = $order->buyer?->name ?? 'Unknown';
-            $seller = $order->seller?->name ?? 'Unknown';
-            $status = strtoupper($order->status ?? '-');
-            $total = number_format($this->reportOrderTotal($order), 0, ',', '.');
+            $pages = [];
+            $lines = [];
 
             $lines[] = [
-                'text' => ($index + 1) . '. Order #' . $order->id,
-                'size' => 12,
+                'text' => 'LAPORAN PESANAN LAPAK GAMING',
+                'size' => 16,
             ];
 
             $lines[] = [
-                'text' => 'Buyer  : ' . $buyer,
+                'text' => 'Tanggal Export: ' . now()->format('d M Y H:i'),
                 'size' => 10,
             ];
 
             $lines[] = [
-                'text' => 'Seller : ' . $seller,
+                'text' => ' ',
                 'size' => 10,
             ];
 
-            $lines[] = [
-                'text' => 'Status : ' . $status,
-                'size' => 10,
-            ];
+            foreach ($orders as $index => $order) {
+                $buyer = $order->buyer?->name ?? 'Unknown';
+                $seller = $order->seller?->name ?? 'Unknown';
+                $status = strtoupper($order->status ?? '-');
+                $total = number_format($this->reportOrderTotal($order), 0, ',', '.');
 
-            $lines[] = [
-                'text' => 'Total  : Rp ' . $total,
-                'size' => 10,
-            ];
+                $lines[] = [
+                    'text' => ($index + 1) . '. Order #' . $order->id,
+                    'size' => 12,
+                ];
 
-            $lines[] = [
-                'text' => '----------------------------------------',
-                'size' => 10,
-            ];
+                $lines[] = [
+                    'text' => 'Buyer  : ' . $buyer,
+                    'size' => 10,
+                ];
 
-            // Maksimal isi 35 line per halaman
-            if (count($lines) >= 35) {
-                $pages[] = $lines;
-                $lines = [];
+                $lines[] = [
+                    'text' => 'Seller : ' . $seller,
+                    'size' => 10,
+                ];
+
+                $lines[] = [
+                    'text' => 'Status : ' . $status,
+                    'size' => 10,
+                ];
+
+                $lines[] = [
+                    'text' => 'Total  : Rp ' . $total,
+                    'size' => 10,
+                ];
+
+                $lines[] = [
+                    'text' => '----------------------------------------',
+                    'size' => 10,
+                ];
+
+                // Maksimal isi 35 line per halaman
+                if (count($lines) >= 35) {
+                    $pages[] = $lines;
+                    $lines = [];
+                }
             }
+
+            if (!empty($lines)) {
+                $pages[] = $lines;
+            }
+
+            if (empty($pages)) {
+                $pages[] = [[
+                    'text' => 'Tidak ada data pesanan untuk ditampilkan.',
+                    'size' => 12,
+                ]];
+            }
+
+            $pdfContent = $this->buildSimplePdf($pages);
+
+            return response($pdfContent)
+                ->header('Content-Type', 'application/pdf')
+                ->header('Content-Disposition', 'attachment; filename="laporan-pesanan.pdf"');
+        } catch (\Throwable $exception) {
+            report($exception);
+
+            return back()->withErrors([
+                'pdf' => 'Gagal membuat laporan PDF. Silakan coba lagi setelah database dan relasi pesanan siap.',
+            ]);
         }
-
-        if (!empty($lines)) {
-            $pages[] = $lines;
-        }
-
-        if (empty($pages)) {
-            $pages[] = [[
-                'text' => 'Tidak ada data pesanan untuk ditampilkan.',
-                'size' => 12,
-            ]];
-        }
-
-        $pdfContent = $this->buildSimplePdf($pages);
-
-        return response($pdfContent)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="laporan-pesanan.pdf"');
     }
 
     public function showOrder(Order $order): View
@@ -395,7 +410,7 @@ class AdminController extends Controller
     private function reportOrderTotal($order): float
     {
         if (Schema::hasTable('order_financials')) {
-            return (float) $order->grand_total;
+            return (float) ($order->financial?->grand_total ?? $order->getAttributes()['grand_total'] ?? 0);
         }
 
         return (float) ($order->getAttributes()['grand_total'] ?? 0);

@@ -793,7 +793,7 @@ spline-viewer iframe {
 
           <div class="flex-none w-[72%] sm:w-[40%] md:w-[28%] xl:w-[20%] snap-start reveal-card reveal-up reveal-delay-{{ ($loop->index % 6) + 1 }}">
 
-            <div class="group relative h-full rounded-[30px]
+            <a href="{{ route('products.show', $product->slug) }}" class="group relative block h-full rounded-[30px]
                         overflow-hidden
                         border border-white/5
                         bg-white/[0.03]
@@ -890,8 +890,7 @@ spline-viewer iframe {
 
                   </div>
 
-                  <a href="{{ route('products.show', $product->slug) }}"
-                     class="w-12 h-12 rounded-2xl
+                  <span class="w-12 h-12 rounded-2xl
                             bg-white/[0.05]
                             border border-white/10
                             flex items-center justify-center
@@ -902,13 +901,13 @@ spline-viewer iframe {
 
                     →
 
-                  </a>
+                  </span>
 
                 </div>
 
               </div>
 
-            </div>
+            </a>
 
           </div>
 
@@ -1510,7 +1509,7 @@ spline-viewer iframe {
                     xl:w-[24%]
                     snap-start">
 
-          <div class="group relative rounded-[28px]
+          <a href="{{ route('products.show', $product->slug) }}" class="group relative block rounded-[28px]
                       overflow-hidden
                       border border-white/10
                       bg-gradient-to-b from-[#0f172a] to-[#020617]
@@ -1629,8 +1628,7 @@ spline-viewer iframe {
 
                 </div>
 
-                <a href="{{ route('products.show', $product->slug) }}"
-                   class="w-12 h-12 rounded-2xl
+                <span class="w-12 h-12 rounded-2xl
                           bg-gradient-to-r
                           from-cyan-400 to-blue-500
                           text-black font-black
@@ -1639,13 +1637,13 @@ spline-viewer iframe {
 
                   →
 
-                </a>
+                </span>
 
               </div>
 
             </div>
 
-          </div>
+          </a>
 
         </div>
 
