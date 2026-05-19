@@ -9,24 +9,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Support\Str;
 
-class OrderController extends Controller
-{
-    public function index()
-    {
+class OrderController extends Controller {
+    public function index() {
         $orders = Order::where('buyer_id', Auth::id())
             ->with('items.product')
             ->latest()->paginate(10);
         return view('orders.index', compact('orders'));
     }
 
-    public function show($order_code)
-    {
+    public function show($order_code) {
         $order = Order::where('order_code', $order_code)
-            ->orWhere('invoice_number', $order_code)
-            ->firstOrFail();
+                      ->orWhere('invoice_number', $order_code)
+                      ->firstOrFail();
 
         $user = Auth::user();
-
+        
         // PAKAI == BUKAN === BIAR STRING & INTEGER NGGAK BENTROK
         $isBuyer = $order->buyer_id == $user->id;
         $isSeller = $order->items()->where('seller_id', $user->id)->exists();
@@ -39,8 +36,7 @@ class OrderController extends Controller
         return view('orders.show', compact('order'));
     }
 
-    public function checkout(Request $request)
-    {
+    public function checkout(Request $request) {
         $cartItems = Cart::where('user_id', Auth::id())
             ->where('is_selected', true)
             ->with('product')->get();
@@ -64,10 +60,9 @@ class OrderController extends Controller
         return view('orders.checkout', compact('cartItems', 'subtotal', 'fee', 'total'));
     }
 
-    public function pay(Request $request, $order_code)
-    {
+    public function pay(Request $request, $order_code) {
         $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
-
+        
         // Pakai != (bukan !==)
         abort_if($order->buyer_id != Auth::id(), 403);
         abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
@@ -81,7 +76,7 @@ class OrderController extends Controller
 
         $request->validate([
             'payment_method' => 'required|in:balance,transfer,qris,dana,ovo,gopay',
-            'payment_proof' => 'nullable|image|max:2048',
+            'payment_proof'  => 'nullable|image|max:2048',
         ], $messages);
 
         DB::transaction(function () use ($request, $order) {
@@ -103,9 +98,9 @@ class OrderController extends Controller
                 }
                 $order->update([
                     'payment_method' => $request->payment_method,
-                    'payment_proof' => $proof,
-                    'status' => Order::STATUS_PAYMENT_UPLOADED,
-                    'paid_at' => now(),
+                    'payment_proof'  => $proof,
+                    'status'         => Order::STATUS_PAYMENT_UPLOADED,
+                    'paid_at'        => now(),
                 ]);
             }
         });
@@ -114,8 +109,7 @@ class OrderController extends Controller
             ->with('success', 'Pembayaran berhasil!');
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         $messages = [
             'payment_method.required' => 'Metode pembayaran wajib dipilih.',
             'payment_method.in' => 'Metode pembayaran tidak valid.',
@@ -138,7 +132,7 @@ class OrderController extends Controller
         DB::transaction(function () use ($request, $cartItems) {
             $subtotal = $cartItems->sum(fn($c) => $c->product->price * $c->quantity);
             $fee = round($subtotal * 0.02);
-            $grand_total = $subtotal + $fee;
+            $grand_total = $subtotal + $fee; 
 
             $notesArray = [];
             foreach ($cartItems as $item) {
@@ -149,12 +143,12 @@ class OrderController extends Controller
             $combinedNotes = implode("\n", $notesArray);
 
             $order = Order::create([
-                'buyer_id' => Auth::id(),
+                'buyer_id'       => Auth::id(),
                 'invoice_number' => 'INV-' . strtoupper(Str::random(10)),
-                'status' => Order::STATUS_PENDING_PAYMENT,
+                'status'         => Order::STATUS_PENDING_PAYMENT,
                 'payment_method' => $request->payment_method,
-                'total_price' => $grand_total,
-                'notes' => $combinedNotes ?: null,
+                'total_price'    => $grand_total,
+                'notes'          => $combinedNotes ?: null,
             ]);
 
             if (method_exists($order, 'financial')) {
@@ -164,22 +158,22 @@ class OrderController extends Controller
                     'escrow_amount' => $subtotal,
                     'grand_total' => $grand_total,
                 ]);
-            }
+            }   
 
             foreach ($cartItems as $item) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'seller_id' => $item->product->seller_id,
+              OrderItem::create([
+                'order_id' => $order->id,
+                'product_id' => $item->product_id,
+                'seller_id' => $item->product->seller_id,
 
-                    'name_snapshot' => $item->product->name,
-                    'price_snapshot' => $item->product->price,
+                'name_snapshot' => $item->product->name,
+                'price_snapshot' => $item->product->price,
 
-                    'product_name' => $item->product->name,
-                    'price' => $item->product->price,
-                    'quantity' => $item->quantity,
-                    'subtotal' => $item->product->price * $item->quantity,
-                ]);
+                'product_name' => $item->product->name,
+                'price' => $item->product->price,
+                'quantity' => $item->quantity,
+                'subtotal' => $item->product->price * $item->quantity,
+            ]);
                 $item->product->decrement('stock', $item->quantity);
             }
 
@@ -193,10 +187,9 @@ class OrderController extends Controller
             ->with('success', 'Order berhasil dibuat!');
     }
 
-    public function complete($order_code)
-    {
+    public function complete($order_code) {
         $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
-
+        
         // Pakai != (bukan !==)
         abort_if($order->buyer_id != Auth::id(), 403);
         abort_if(!in_array($order->status, [Order::STATUS_PAYMENT_UPLOADED, Order::STATUS_PROCESSING], true), 422);
@@ -205,7 +198,7 @@ class OrderController extends Controller
             $order->update(['status' => Order::STATUS_COMPLETED, 'completed_at' => now()]);
 
             foreach ($order->items as $item) {
-                $sellerAmount = $item->subtotal * 0.95;
+                $sellerAmount = $item->subtotal * 0.95; 
                 $item->seller->addBalance($sellerAmount, "Penjualan Order #{$order->order_code}", $order->id);
                 $item->update(['delivery_status' => 'received']);
 
@@ -227,10 +220,9 @@ class OrderController extends Controller
             ->with('success', 'Order diselesaikan! Saldo seller telah diperbarui.');
     }
 
-    public function cancel($order_code)
-    {
+    public function cancel($order_code) {
         $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
-
+        
         // Pakai != (bukan !==)
         abort_if($order->buyer_id != Auth::id(), 403);
         abort_if(!in_array($order->status, [Order::STATUS_PENDING_PAYMENT, Order::STATUS_PAYMENT_UPLOADED], true), 422);
@@ -248,23 +240,13 @@ class OrderController extends Controller
         return redirect()->route('orders.index')->with('success', 'Order dibatalkan.');
     }
 
-    public function uploadProof(Request $request, $order_code)
-    {
+    public function uploadProof(Request $request, $order_code) {
         $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
+        
+        // Pakai != (bukan !==)
         abort_if($order->buyer_id != Auth::id(), 403);
-
-        // DEBUG: Cek apakah file terdeteksi
-        if (!$request->hasFile('payment_proof')) {
-            dd("File tidak terdeteksi oleh sistem. Cek form name di HTML!");
-        }
-
         $request->validate(['payment_proof' => 'required|image|max:2048']);
-
         $path = $request->file('payment_proof')->store('payment_proofs', 'public');
-
-        // DEBUG: Cek apakah path berhasil dibuat
-        dd("Path yang berhasil dibuat: " . $path);
-
         $order->update(['payment_proof' => $path, 'status' => Order::STATUS_PAYMENT_UPLOADED, 'paid_at' => now()]);
         return back()->with('success', 'Bukti pembayaran berhasil diupload.');
     }
