@@ -51,13 +51,14 @@
 @section('content')
 @php
   $challengeMethod = $challengeMethod ?? 'google';
+  if (! in_array($challengeMethod, ['email', 'google'], true)) {
+    $challengeMethod = 'google';
+  }
   $challengeTitle = match ($challengeMethod) {
-    'sms' => 'SMS',
     'email' => 'Email',
     default => 'Google Authenticator',
   };
   $challengeHelp = match ($challengeMethod) {
-    'sms' => 'Masukkan kode yang dikirim ke nomor telepon akun Anda.',
     'email' => 'Masukkan kode yang dikirim ke email akun Anda.',
     default => 'Masukkan kode dari Google Authenticator untuk melanjutkan login ke akun ' . $user->email . '.',
   };
@@ -112,7 +113,7 @@
       </form>
 
       <div class="mt-5 text-center text-xs text-slate-500">
-        {{ $challengeMethod === 'google' ? 'Buka aplikasi Google Authenticator, ambil kode terbaru, lalu masukkan di atas.' : 'Cek pesan verifikasi terbaru di metode yang dipilih, lalu masukkan kodenya di atas.' }}
+        {{ $challengeMethod === 'google' ? 'Buka aplikasi Google Authenticator, ambil kode terbaru, lalu masukkan di atas.' : 'Cek kode terbaru di email akun Anda, lalu masukkan di atas.' }}
       </div>
     </div>
   </div>

@@ -37,10 +37,6 @@ class TwoFactorChallengeService
             return 'google';
         }
 
-        if (in_array('sms', $methods, true) && ! empty($user->phone)) {
-            return 'sms';
-        }
-
         if (in_array('email', $methods, true)) {
             return 'email';
         }
@@ -51,7 +47,6 @@ class TwoFactorChallengeService
     public function methodLabel(string $method): string
     {
         return match ($method) {
-            'sms' => 'SMS',
             'email' => 'Email',
             default => 'Google Authenticator',
         };

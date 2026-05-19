@@ -465,7 +465,7 @@
                         </h1>
 
                         <p class="mt-3 text-sm leading-relaxed text-slate-400">
-                            Aktifkan perlindungan tambahan untuk login akun Anda. Anda dapat memilih Email, SMS, atau Google Authenticator.
+                            Aktifkan perlindungan tambahan untuk login akun Anda. Anda dapat memilih Email atau Google Authenticator.
                         </p>
 
                     </div>
@@ -498,14 +498,6 @@
                                         <span class="font-semibold text-white">Email</span>
                                     </div>
                                     <p class="mt-3 text-slate-400">Kode akan dikirim ke alamat email akun Anda.</p>
-                                </label>
-
-                                <label class="rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-sm text-slate-200">
-                                    <div class="flex items-center gap-3">
-                                        <input type="checkbox" name="two_factor_methods[]" value="sms" @checked(in_array('sms', old('two_factor_methods', $twoFactorMethods ?? []), true))>
-                                        <span class="font-semibold text-white">SMS</span>
-                                    </div>
-                                    <p class="mt-3 text-slate-400">Kode akan dikirim ke nomor telepon di profil Anda.</p>
                                 </label>
 
                                 <label class="rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-sm text-slate-200">

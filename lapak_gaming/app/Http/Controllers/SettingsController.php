@@ -298,7 +298,7 @@ class SettingsController extends Controller
         $data = $request->validate([
             'two_factor_enabled' => ['nullable', 'boolean'],
             'two_factor_methods' => ['nullable', 'array'],
-            'two_factor_methods.*' => ['in:email,sms,google'],
+            'two_factor_methods.*' => ['in:email,google'],
         ], $messages);
 
         $enabled = $request->boolean('two_factor_enabled');
@@ -310,12 +310,6 @@ class SettingsController extends Controller
             ]);
         }
 
-        if ($enabled && in_array('sms', $methods, true) && empty($user->phone)) {
-            return back()->withErrors([
-                'two_factor_methods' => 'Nomor telepon wajib diisi untuk metode SMS.',
-            ]);
-        }
-
         $googleSecret = $user->two_factor_google_secret;
 
         if ($enabled && in_array('google', $methods, true) && empty($googleSecret)) {
@@ -323,7 +317,7 @@ class SettingsController extends Controller
         }
 
         if ($enabled && in_array('google', $methods, true)) {
-            session()->put('two_factor_setup_pending', [
+            $request->session()->put('two_factor_setup_pending', [
                 'two_factor_enabled' => $enabled,
                 'two_factor_methods' => $methods,
                 'google_secret' => $googleSecret,
@@ -332,7 +326,7 @@ class SettingsController extends Controller
             return back()->with('warning', 'Scan QR Google Authenticator lalu masukkan kode OTP untuk menyimpan pengaturan.');
         }
 
-        session()->forget('two_factor_setup_pending');
+        $request->session()->forget('two_factor_setup_pending');
 
         $user->forceFill([
             'two_factor_enabled' => $enabled,
@@ -421,12 +415,12 @@ class SettingsController extends Controller
         $user = Auth::user();
 
         if (! $user) {
-            $pendingUserId = session('reactivate_user_id');
+            $pendingUserId = $request->session()->get('reactivate_user_id');
             $user = $pendingUserId ? User::find($pendingUserId) : null;
         }
 
         if (! $user || ! $user->deactivated_at) {
-            session()->forget('reactivate_user_id');
+            $request->session()->forget('reactivate_user_id');
 
             return redirect()->route('login');
         }
@@ -507,12 +501,12 @@ class SettingsController extends Controller
         $user = Auth::user();
 
         if (! $user) {
-            $pendingUserId = session('reactivate_user_id');
+            $pendingUserId = $request->session()->get('reactivate_user_id');
             $user = $pendingUserId ? User::find($pendingUserId) : null;
         }
 
         if (! $user || ! $user->deactivated_at) {
-            session()->forget('reactivate_user_id');
+            $request->session()->forget('reactivate_user_id');
 
             return redirect()->route('login')->withErrors([
                 'email' => 'Sesi reaktivasi tidak valid. Silakan login kembali.',
@@ -521,7 +515,7 @@ class SettingsController extends Controller
 
         if ($user->deactivated_at->copy()->addMonths(6)->isPast()) {
             $user->delete();
-            session()->forget('reactivate_user_id');
+            $request->session()->forget('reactivate_user_id');
 
             return redirect()->route('login')->withErrors([
                 'email' => 'Akun Anda telah dihapus permanen karena melewati batas waktu aktivasi.',
@@ -532,7 +526,7 @@ class SettingsController extends Controller
             'deactivated_at' => null,
         ])->save();
 
-        session()->forget('reactivate_user_id');
+        $request->session()->forget('reactivate_user_id');
         Auth::login($user);
         $request->session()->regenerate();
 
