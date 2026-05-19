@@ -92,8 +92,12 @@
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
 
   -webkit-mask-composite:xor;
+  mask-composite:exclude;
   pointer-events:none;
 }
 
@@ -452,7 +456,7 @@ a{
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
                       @if($user->status === 'active')
-                        <button onclick="openSuspendModal({{ $user->id }}, '{{ addslashes($user->name) }}')"
+                        <button data-user-id="{{ $user->id }}" data-user-name="{{ e($user->name) }}" onclick="openSuspendModal(this.dataset.userId, this.dataset.userName)"
                                 class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                           Suspend
                         </button>
@@ -610,12 +614,12 @@ a{
                     <td class="px-6 py-4 text-right whitespace-nowrap">
                       @if($seller->status === 'active')
                         <div class="inline-flex gap-2">
-                          <button onclick="openSuspendShopModal({{ $seller->id }}, '{{ addslashes($seller->shop_name ?? $seller->name) }}')"
+                                <button data-user-id="{{ $seller->id }}" data-shop-name="{{ e($seller->shop_name ?? $seller->name) }}" onclick="openSuspendShopModal(this.dataset.userId, this.dataset.shopName)"
                                   class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                             Suspend Toko
                           </button>
 
-                          <button onclick="openSuspendModal({{ $seller->id }}, '{{ addslashes($seller->name) }}')"
+                                <button data-user-id="{{ $seller->id }}" data-user-name="{{ e($seller->name) }}" onclick="openSuspendModal(this.dataset.userId, this.dataset.userName)"
                                   class="rounded-xl bg-amber-500/10 border border-amber-500/20 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-400 hover:text-white transition-all">
                             Suspend Akun
                           </button>
@@ -685,7 +689,8 @@ a{
                     <img src="{{ $applicant->shop_photo_url ?? asset('storage/' . $applicant->shop_photo) }}"
                          alt="Foto toko {{ $applicant->shop_name }}"
                          class="w-full max-w-xs h-40 object-cover rounded-2xl border border-white/5 bg-black/40 shadow-inner hover:scale-[1.01] transition-transform"
-                         onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($applicant->shop_name ?? 'Toko') }}&size=300&background=1e293b&color=94a3b8'" />
+                         data-fallback-src="{{ 'https://ui-avatars.com/api/?name=' . urlencode($applicant->shop_name ?? 'Toko') . '&size=300&background=1e293b&color=94a3b8' }}"
+                         onerror="this.src=this.dataset.fallbackSrc;" />
                   @else
                     <div class="w-full max-w-xs h-40 rounded-2xl border border-dashed border-white/5 bg-black/20 flex items-center justify-center text-slate-600 text-xs font-bold">
                       NO ATTACHED IMAGE FILE
@@ -696,7 +701,7 @@ a{
                 <div class="space-y-4">
                   <div>
                     <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-0.5">Pengajuan Nama Brand Lapak</p>
-                    <p class="text-white font-bold text-lg tracking-tight text-amber-400">{{ $applicant->shop_name ?? '—' }}</p>
+                    <p class="font-bold text-lg tracking-tight text-amber-400">{{ $applicant->shop_name ?? '—' }}</p>
                   </div>
                   <div>
                     <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-1">Rencana Deskripsi & Komoditas Jualan</p>
@@ -756,7 +761,7 @@ a{
                   </button>
                 </form>
 
-                <button onclick="openRejectModal({{ $applicant->id }}, '{{ addslashes($applicant->name) }}')"
+                <button data-user-id="{{ $applicant->id }}" data-user-name="{{ e($applicant->name) }}" onclick="openRejectModal(this.dataset.userId, this.dataset.userName)"
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-5 py-2.5 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                   <svg class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>

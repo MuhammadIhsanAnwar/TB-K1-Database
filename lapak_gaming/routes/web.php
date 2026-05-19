@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
@@ -96,9 +98,9 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
         ->whereIn('section', ['profile', 'account', 'password', 'security', 'seller'])
         ->name('settings.section');
     Route::get('/settings/buyer', function () {
-        $user = auth()->user();
+        $user = Auth::user();
 
-        if ($user?->isAdmin()) {
+        if ($user instanceof User && $user->isAdmin()) {
             return redirect()->route('admin.dashboard')->with('warning', 'Akun administrator tidak memiliki akses ke menu buyer/seller.');
         }
 

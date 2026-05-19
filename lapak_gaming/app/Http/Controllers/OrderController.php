@@ -5,6 +5,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\User;
 use App\Services\Pdf\PdfDocumentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
@@ -91,6 +92,10 @@ class OrderController extends Controller {
         abort_if($order->buyer_id != Auth::id(), 403);
         abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
 
+        /** @var User $user */
+        $user = Auth::user();
+        abort_if(! $user, 403);
+
         $messages = [
             'payment_method.required' => 'Metode pembayaran wajib dipilih.',
             'payment_method.in' => 'Metode pembayaran tidak valid.',
@@ -105,7 +110,10 @@ class OrderController extends Controller {
 
         DB::transaction(function () use ($request, $order) {
             if ($request->payment_method === 'balance') {
+                /** @var User $user */
                 $user = Auth::user();
+                abort_if(! $user, 403);
+
                 if ($user->balance < $order->total_price) {
                     throw new \Exception('Saldo tidak mencukupi!');
                 }

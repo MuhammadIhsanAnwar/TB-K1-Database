@@ -92,7 +92,7 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function section(string $section): View
+    public function section(string $section): View|RedirectResponse
     {
         $allowedSections = ['profile', 'account', 'password', 'security', 'seller'];
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -91,7 +92,7 @@ class VerificationController extends Controller
         }
 
         // 4. Otomatis login-kan user setelah berhasil aktivasi (Opsional, silakan hapus baris ini jika ingin user login manual)
-        auth()->login($user);
+        Auth::login($user);
 
         // 5. Alihkan ke halaman dashboard dengan pesan sukses
         return redirect()->route('dashboard')->with('verified', true);
