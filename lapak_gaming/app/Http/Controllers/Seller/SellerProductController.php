@@ -39,7 +39,10 @@ class SellerProductController extends Controller
     private function compressImageOnDisk(string $relativePath): void
     {
         try {
-            $full = storage_path('app/public/' . ltrim($relativePath, '/'));
+            $full = Storage::disk('public_app_public')->path($relativePath);
+            if (!file_exists($full)) {
+                $full = Storage::disk('public')->path($relativePath);
+            }
             if (!file_exists($full)) return;
 
             $ext = strtolower(pathinfo($full, PATHINFO_EXTENSION));
@@ -164,11 +167,11 @@ class SellerProductController extends Controller
 
         $imagePaths = [];
 
-        // 1. Proses multiple image secara aman ke public disk (storage/app/public)
+        // 1. Proses multiple image secara aman ke public_app_public disk
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $imageFile) {
                 $filename = Str::uuid()->toString() . '.' . $imageFile->getClientOriginalExtension();
-                $stored = $imageFile->storeAs('foto_produk', $filename, 'public');
+                $stored = $imageFile->storeAs('foto_produk', $filename, 'public_app_public');
                 $imagePaths[] = $stored;
                 // attempt to compress image to save bandwidth (best-effort)
                 $this->compressImageOnDisk($stored);
@@ -179,7 +182,7 @@ class SellerProductController extends Controller
         if (empty($imagePaths) && $request->hasFile('image')) {
             $legacyImage = $request->file('image');
             $filename = Str::uuid()->toString() . '.' . $legacyImage->getClientOriginalExtension();
-            $stored = $legacyImage->storeAs('foto_produk', $filename, 'public');
+            $stored = $legacyImage->storeAs('foto_produk', $filename, 'public_app_public');
             $imagePaths[] = $stored;
             $this->compressImageOnDisk($stored);
         }
@@ -266,14 +269,14 @@ class SellerProductController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $imageFile) {
                 $filename = Str::uuid()->toString() . '.' . $imageFile->getClientOriginalExtension();
-                $stored = $imageFile->storeAs('foto_produk', $filename, 'public');
+                $stored = $imageFile->storeAs('foto_produk', $filename, 'public_app_public');
                 $imagePaths[] = $stored;
                 $this->compressImageOnDisk($stored);
             }
         } elseif ($request->hasFile('image')) {
             $legacyImage = $request->file('image');
             $filename = Str::uuid()->toString() . '.' . $legacyImage->getClientOriginalExtension();
-            $stored = $legacyImage->storeAs('foto_produk', $filename, 'public');
+            $stored = $legacyImage->storeAs('foto_produk', $filename, 'public_app_public');
             $imagePaths[] = $stored;
             $this->compressImageOnDisk($stored);
         }

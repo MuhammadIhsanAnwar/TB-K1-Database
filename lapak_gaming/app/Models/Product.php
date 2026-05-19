@@ -133,8 +133,16 @@ class Product extends Model {
             return asset($imagePath);
         }
 
+        if (Storage::disk('public_app_public')->exists($imagePath)) {
+            return asset('storage/app/public/' . $imagePath);
+        }
+
         if (Storage::disk('public')->exists($imagePath)) {
             return asset('storage/' . $imagePath);
+        }
+
+        if (file_exists(public_path('storage/app/public/' . $imagePath))) {
+            return asset('storage/app/public/' . $imagePath);
         }
 
         if (file_exists(public_path($imagePath))) {

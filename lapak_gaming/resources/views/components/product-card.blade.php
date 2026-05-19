@@ -6,9 +6,7 @@
 --}}
 
 @php
-    $displayImage = !empty($product->image)
-        ? asset('storage/' . $product->image)
-        : 'https://placehold.co/600x600/0f172a/38bdf8?text=Lapak+Gaming';
+    $displayImage = $product->image_url;
 @endphp
 
 <a href="{{ route('products.show', $product->slug) }}" class="product-card group relative flex flex-col">

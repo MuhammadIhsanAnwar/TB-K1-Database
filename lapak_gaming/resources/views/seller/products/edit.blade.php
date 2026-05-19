@@ -253,11 +253,6 @@ document.querySelectorAll('.remove-image-btn').forEach(btn => {
                 <button type="button" id="rotateRightBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs font-semibold px-3 py-2 transition-colors">
                     🔄 Putar Kanan
                 </button>
-                <span class="w-px h-5 bg-white/10 mx-1"></span>
-                <button type="button" id="ratioFreeBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs px-2.5 py-1.5 transition-colors">Bebas</button>
-                <button type="button" id="ratio1Btn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs px-2.5 py-1.5 transition-colors">1:1</button>
-                <button type="button" id="ratio169Btn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs px-2.5 py-1.5 transition-colors">16:9</button>
-                <button type="button" id="ratio43Btn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs px-2.5 py-1.5 transition-colors">4:3</button>
             </div>
             <div class="flex items-center justify-end gap-2 border-t border-white/5 pt-3">
                 <button id="cancelCropperBtn" type="button" class="rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 px-5 py-2.5 text-xs font-bold transition-colors">
@@ -345,10 +340,6 @@ const saveCropperBtn = document.getElementById('saveCropperBtn');
 // Ratio and Control buttons
 document.getElementById('rotateLeftBtn')?.addEventListener('click', () => cropper?.rotate(-90));
 document.getElementById('rotateRightBtn')?.addEventListener('click', () => cropper?.rotate(90));
-document.getElementById('ratioFreeBtn')?.addEventListener('click', () => cropper?.setAspectRatio(NaN));
-document.getElementById('ratio1Btn')?.addEventListener('click', () => cropper?.setAspectRatio(1));
-document.getElementById('ratio169Btn')?.addEventListener('click', () => cropper?.setAspectRatio(16/9));
-document.getElementById('ratio43Btn')?.addEventListener('click', () => cropper?.setAspectRatio(4/3));
 
 function renderActivePreviews() {
     if (!productImagePreview) return;
@@ -399,6 +390,7 @@ window.openCropper = function(idx) {
         }
 
         cropper = new Cropper(cropperImage, {
+            aspectRatio: 1,
             viewMode: 1,
             dragMode: 'move',
             autoCropArea: 0.9,

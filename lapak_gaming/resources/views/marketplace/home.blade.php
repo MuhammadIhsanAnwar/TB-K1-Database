@@ -815,7 +815,7 @@ spline-viewer iframe {
                             {{-- IMAGE --}}
               <div class="relative h-44 overflow-hidden">
 
-                  <img src="{{ Storage::url($product->image) }}"
+                  <img src="{{ $product->image_url }}"
                       alt="{{ $product->name }}"
                       class="w-full h-full object-cover
                               group-hover:scale-110
@@ -1226,7 +1226,7 @@ spline-viewer iframe {
                     {{-- IMAGE --}}
                     <div class="absolute inset-0">
                         <img
-                            src="{{ Storage::url($product->image) }}"
+                            src="{{ $product->image_url }}"
                             alt="{{ $product->name }}"
                             class="w-full h-full object-cover group-hover:scale-105 transition duration-700"
                         >
@@ -1333,7 +1333,7 @@ spline-viewer iframe {
                             <div class="relative w-36 h-36 rounded-2xl overflow-hidden shrink-0">
 
                                 <img
-                                    src="{{ Storage::url($product->image) }}"
+                                    src="{{ $product->image_url }}"
                                     alt="{{ $product->name }}"
                                     class="w-full h-full object-cover group-hover:scale-110 transition duration-700"
                                 >
@@ -1521,7 +1521,7 @@ spline-viewer iframe {
             <div class="relative h-56 overflow-hidden">
 
               <img
-                src="{{ Storage::url($product->image) }}"
+                src="{{ $product->image_url }}"
                 alt="{{ $product->name }}"
                 class="w-full h-full object-cover
                        group-hover:scale-110

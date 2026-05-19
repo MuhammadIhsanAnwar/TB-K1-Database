@@ -87,9 +87,7 @@ use Illuminate\Support\Str;
 
                                 {{-- Gambar Produk (Logic Anti-Broken Khusus Keranjang) --}}
                                 <div class="shrink-0 relative">
-                                    <img src="{{ Str::startsWith($item->product->file_path, 'http') 
-                                        ? $item->product->file_path 
-                                        : Storage::url($item->product->file_path) }}"
+                                    <img src="{{ $item->product->image_url }}"
                                          class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover border border-slate-700 shadow-inner"
                                          onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name={{ urlencode($item->product->name) }}&background=1e293b&color=f59e0b&bold=true&size=128';">
                                 </div>
