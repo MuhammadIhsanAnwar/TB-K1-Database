@@ -7,6 +7,7 @@ use App\Models\Banner;
 use App\Models\MarketplaceNotification;
 use App\Models\Order;
 use App\Models\User;
+use App\Services\Pdf\PdfDocumentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -357,79 +358,7 @@ class AdminController extends Controller
                 ->orderByDesc('created_at')
                 ->get();
 
-            $pages = [];
-            $lines = [];
-
-            $lines[] = [
-                'text' => 'LAPORAN PESANAN LAPAK GAMING',
-                'size' => 16,
-            ];
-
-            $lines[] = [
-                'text' => 'Tanggal Export: ' . now()->format('d M Y H:i'),
-                'size' => 10,
-            ];
-
-            $lines[] = [
-                'text' => ' ',
-                'size' => 10,
-            ];
-
-            foreach ($orders as $index => $order) {
-                $buyer = $order->buyer?->name ?? 'Unknown';
-                $seller = $order->seller?->name ?? 'Unknown';
-                $status = strtoupper($order->status ?? '-');
-                $total = number_format($this->reportOrderTotal($order), 0, ',', '.');
-
-                $lines[] = [
-                    'text' => ($index + 1) . '. Order #' . $order->id,
-                    'size' => 12,
-                ];
-
-                $lines[] = [
-                    'text' => 'Buyer  : ' . $buyer,
-                    'size' => 10,
-                ];
-
-                $lines[] = [
-                    'text' => 'Seller : ' . $seller,
-                    'size' => 10,
-                ];
-
-                $lines[] = [
-                    'text' => 'Status : ' . $status,
-                    'size' => 10,
-                ];
-
-                $lines[] = [
-                    'text' => 'Total  : Rp ' . $total,
-                    'size' => 10,
-                ];
-
-                $lines[] = [
-                    'text' => '----------------------------------------',
-                    'size' => 10,
-                ];
-
-                // Maksimal isi 35 line per halaman
-                if (count($lines) >= 35) {
-                    $pages[] = $lines;
-                    $lines = [];
-                }
-            }
-
-            if (!empty($lines)) {
-                $pages[] = $lines;
-            }
-
-            if (empty($pages)) {
-                $pages[] = [[
-                    'text' => 'Tidak ada data pesanan untuk ditampilkan.',
-                    'size' => 12,
-                ]];
-            }
-
-            $pdfContent = $this->buildSimplePdf($pages);
+            $pdfContent = app(PdfDocumentService::class)->buildOrdersReport($orders);
 
             return response()->streamDownload(function () use ($pdfContent): void {
                 echo $pdfContent;
@@ -449,109 +378,5 @@ class AdminController extends Controller
     {
         $order->load(['buyer', 'seller', 'items.product']);
         return view('admin.orders.show', compact('order'));
-    }
-
-    private function pdfColumn(?string $value, int $length): string
-    {
-        $value = preg_replace('/\s+/', ' ', (string) $value);
-        $value = $this->safeSubstr($value, $length);
-
-        return str_pad($value, $length);
-    }
-
-    /**
-     * @param mixed $order
-     */
-    private function reportOrderTotal($order): float
-    {
-        if (Schema::hasTable('order_financials')) {
-            return (float) ($order->financial?->grand_total ?? $order->getAttributes()['grand_total'] ?? 0);
-        }
-
-        return (float) ($order->getAttributes()['grand_total'] ?? 0);
-    }
-
-    private function buildSimplePdf(array $pages): string
-    {
-        $objects = [];
-        $objects[1] = '<< /Type /Catalog /Pages 2 0 R >>';
-        $objects[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>';
-        $pageIds = [];
-        $nextId = 4;
-
-        foreach ($pages as $pageLines) {
-            $stream = '';
-            $y = 800;
-
-            foreach ($pageLines as $line) {
-                $text = $this->pdfEscape((string) ($line['text'] ?? ''));
-                $size = (int) ($line['size'] ?? 10);
-                $stream .= "BT /F1 {$size} Tf 40 {$y} Td ({$text}) Tj ET\n";
-                $y -= $size >= 14 ? 24 : 15;
-            }
-
-            $contentId = $nextId++;
-            $objects[$contentId] = '<< /Length ' . strlen($stream) . " >>\nstream\n" . $stream . "endstream";
-
-            $pageId = $nextId++;
-            $objects[$pageId] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents {$contentId} 0 R >>";
-            $pageIds[] = $pageId;
-        }
-
-        $kids = collect($pageIds)->map(fn ($id) => "{$id} 0 R")->implode(' ');
-        $objects[2] = "<< /Type /Pages /Kids [{$kids}] /Count " . count($pageIds) . ' >>';
-        ksort($objects);
-
-        $pdf = "%PDF-1.4\n";
-        $offsets = [0 => 0];
-
-        foreach ($objects as $id => $body) {
-            $offsets[$id] = strlen($pdf);
-            $pdf .= "{$id} 0 obj\n{$body}\nendobj\n";
-        }
-
-        $xrefOffset = strlen($pdf);
-        $maxId = max(array_keys($objects));
-        $pdf .= "xref\n0 " . ($maxId + 1) . "\n";
-        $pdf .= "0000000000 65535 f \n";
-
-        for ($i = 1; $i <= $maxId; $i++) {
-            $pdf .= sprintf("%010d 00000 n \n", $offsets[$i] ?? 0);
-        }
-
-        $pdf .= "trailer\n<< /Size " . ($maxId + 1) . " /Root 1 0 R >>\n";
-        $pdf .= "startxref\n{$xrefOffset}\n%%EOF";
-
-        return $pdf;
-    }
-
-    private function pdfEscape(string $value): string
-    {
-        $value = $this->normalizePdfText($value);
-        $value = str_replace(["\\", "(", ")", "\r", "\n"], ["\\\\", "\\(", "\\)", ' ', ' '], $value);
-
-        return $this->safeSubstr($value, 130);
-    }
-
-    private function safeSubstr(string $value, int $length): string
-    {
-        if (function_exists('mb_substr')) {
-            return mb_substr($value, 0, $length);
-        }
-
-        return substr($value, 0, $length);
-    }
-
-    private function normalizePdfText(string $value): string
-    {
-        // Keep simple PDF text stream stable by converting UTF-8 to a Latin-1 compatible range.
-        if (function_exists('iconv')) {
-            $converted = @iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $value);
-            if ($converted !== false) {
-                $value = $converted;
-            }
-        }
-
-        return preg_replace('/[^\x20-\x7E\xA0-\xFF]/', '', $value) ?? '';
     }
 }
