@@ -46,22 +46,57 @@ class SellerProductController extends Controller
             // Only handle common raster formats
             if (!in_array($ext, ['jpg','jpeg','png','webp'])) return;
 
-            // Load image
             $data = file_get_contents($full);
             if (!$data) return;
 
             $img = @imagecreatefromstring($data);
             if (!$img) return;
 
-            // Prefer WEBP output if available
-            if (function_exists('imagewebp')) {
-                // write temporary then replace
+            // Get original dimensions and resize if it exceeds max dimension
+            $width = imagesx($img);
+            $height = imagesy($img);
+            $maxDim = 1200;
+
+            if ($width > $maxDim || $height > $maxDim) {
+                if ($width > $height) {
+                    $newWidth = $maxDim;
+                    $newHeight = (int)($height * ($maxDim / $width));
+                } else {
+                    $newHeight = $maxDim;
+                    $newWidth = (int)($width * ($maxDim / $height));
+                }
+
+                $resizedImg = imagecreatetruecolor($newWidth, $newHeight);
+
+                // Preserve transparency for PNG and WebP
+                if ($ext === 'png' || $ext === 'webp') {
+                    imagealphablending($resizedImg, false);
+                    imagesavealpha($resizedImg, true);
+                    $transparent = imagecolorallocatealpha($resizedImg, 0, 0, 0, 127);
+                    imagefill($resizedImg, 0, 0, $transparent);
+                }
+
+                imagecopyresampled($resizedImg, $img, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+                imagedestroy($img);
+                $img = $resizedImg;
+            }
+
+            // Save back in original format or webp
+            if ($ext === 'webp' && function_exists('imagewebp')) {
                 imagewebp($img, $full, 80);
-            } elseif (in_array($ext, ['jpg','jpeg']) && function_exists('imagejpeg')) {
-                imagejpeg($img, $full, 82);
-            } elseif ($ext === 'png' && function_exists('imagepng')) {
-                // PNG quality: 0 (best) - 9 (worst) => convert to 6 for reasonable size
-                imagepng($img, $full, 6);
+            } elseif (in_array($ext, ['jpg', 'jpeg']) && function_exists('imagejpeg')) {
+                imagejpeg($img, $full, 80);
+            } elseif ($ext === 'png') {
+                if (function_exists('imagewebp') && filesize($full) > 500000) {
+                    // Convert large PNG to webp to save bandwidth while keeping the extension
+                    imagewebp($img, $full, 80);
+                } elseif (function_exists('imagepng')) {
+                    imagepng($img, $full, 6);
+                }
+            } else {
+                if (function_exists('imagewebp')) {
+                    imagewebp($img, $full, 80);
+                }
             }
 
             imagedestroy($img);
