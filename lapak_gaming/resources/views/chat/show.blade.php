@@ -3,6 +3,7 @@
 @section('title', 'Chat — ' . ($conversation->seller?->name ?? $conversation->partner(auth()->id())?->name ?? 'Percakapan'))
 
 @push('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
 <style>
 /* WhatsApp/Line Style Chat */
 .chat-layout {
@@ -710,6 +711,43 @@
     <span class="text-xs text-gray-300 flex-1 truncate" id="fileName"></span>
     <button onclick="cancelImage()" class="text-red-400 text-xs">Batal</button>
 </div>
+            <!-- Chat Image Cropping Modal -->
+            <div id="chatCropperModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+                <div class="bg-[#111] border border-white/10 rounded-2xl max-w-xl w-full flex flex-col max-h-[85vh] shadow-2xl">
+                    <div class="flex items-center justify-between border-b border-white/5 px-4 py-3">
+                        <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                            <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                            Pangkas & Sesuaikan Gambar
+                        </h3>
+                        <button id="closeChatCropperBtn" type="button" class="text-slate-400 hover:text-white transition-colors">✕</button>
+                    </div>
+                    <div class="p-4 flex-1 overflow-hidden flex items-center justify-center min-h-[250px] max-h-[45vh] bg-black/60">
+                        <img id="chatCropperImage" class="max-w-full max-h-full block">
+                    </div>
+                    <div class="border-t border-white/5 px-4 py-3 flex flex-col gap-3.5">
+                        <div class="flex flex-wrap items-center justify-center gap-2.5">
+                            <button type="button" id="chatRotateLeftBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-[10px] font-semibold px-2.5 py-1.5 transition-colors">
+                                🔄 Putar Kiri
+                            </button>
+                            <button type="button" id="chatRotateRightBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-[10px] font-semibold px-2.5 py-1.5 transition-colors">
+                                🔄 Putar Kanan
+                            </button>
+                            <span class="w-px h-4 bg-white/10 mx-1"></span>
+                            <button type="button" id="chatRatioFreeBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-[10px] px-2 py-1 transition-colors">Bebas</button>
+                            <button type="button" id="chatRatio1Btn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-[10px] px-2 py-1 transition-colors">1:1</button>
+                            <button type="button" id="chatRatio169Btn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-[10px] px-2 py-1 transition-colors">16:9</button>
+                        </div>
+                        <div class="flex items-center justify-end gap-2 border-t border-white/5 pt-2.5">
+                            <button id="cancelChatCropperBtn" type="button" class="rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 px-4 py-2 text-xs font-bold transition-colors">
+                                BATAL
+                            </button>
+                            <button id="saveChatCropperBtn" type="button" class="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 px-4 py-2 text-xs font-bold transition-all">
+                                SELESAI & GUNAKAN
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
             <p class="text-xs text-gray-500 mt-2 text-center">Pesan terenkripsi end-to-end</p>
         </div>
 
@@ -722,6 +760,7 @@
 </script>
 
 @push('scripts')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 <script>
 const chatConfig = JSON.parse(document.getElementById('chat-config').textContent);
 
@@ -881,46 +920,162 @@ document.getElementById('sideSearch')?.addEventListener('input', function () {
 
 
 // ======================================================
-// PREVIEW IMAGE
+// PREVIEW IMAGE & INTERACTIVE CROPPING
 // ======================================================
 
+let chatCropper = null;
+let originalChatFile = null;
+
 function previewImage(input) {
-
-    const container = document.getElementById('imagePreviewContainer');
-    const preview   = document.getElementById('imagePreview');
-    const fileName  = document.getElementById('fileName');
-
-    if(input.files && input.files[0]) {
+    if (input.files && input.files[0]) {
+        const file = input.files[0];
+        originalChatFile = file;
 
         const reader = new FileReader();
-
         reader.onload = function(e) {
+            const modal = document.getElementById('chatCropperModal');
+            const cropperImg = document.getElementById('chatCropperImage');
 
-            preview.src = e.target.result;
-            fileName.textContent = input.files[0].name;
+            cropperImg.src = e.target.result;
+            modal.classList.remove('hidden');
 
-            container.classList.remove('hidden');
+            if (chatCropper) {
+                chatCropper.destroy();
+            }
 
+            chatCropper = new Cropper(cropperImg, {
+                viewMode: 1,
+                dragMode: 'move',
+                autoCropArea: 0.9,
+                restore: false,
+                modal: true,
+                guides: true,
+                highlight: false,
+                cropBoxMovable: true,
+                cropBoxResizable: true,
+                toggleDragModeOnDblclick: false
+            });
         };
-
-        reader.readAsDataURL(input.files[0]);
-
+        reader.readAsDataURL(file);
     }
-
-    updateSendButtonState();
-
 }
 
+// Ratio & Control events for Chat Cropper
+document.getElementById('chatRotateLeftBtn')?.addEventListener('click', () => chatCropper?.rotate(-90));
+document.getElementById('chatRotateRightBtn')?.addEventListener('click', () => chatCropper?.rotate(90));
+document.getElementById('chatRatioFreeBtn')?.addEventListener('click', () => chatCropper?.setAspectRatio(NaN));
+document.getElementById('chatRatio1Btn')?.addEventListener('click', () => chatCropper?.setAspectRatio(1));
+document.getElementById('chatRatio169Btn')?.addEventListener('click', () => chatCropper?.setAspectRatio(16/9));
+
+function closeChatCropper() {
+    const modal = document.getElementById('chatCropperModal');
+    if (modal) {
+        modal.classList.add('hidden');
+    }
+    if (chatCropper) {
+        chatCropper.destroy();
+        chatCropper = null;
+    }
+}
+
+document.getElementById('closeChatCropperBtn')?.addEventListener('click', () => {
+    closeChatCropper();
+    cancelImage();
+});
+document.getElementById('cancelChatCropperBtn')?.addEventListener('click', () => {
+    closeChatCropper();
+    cancelImage();
+});
+
+document.getElementById('saveChatCropperBtn')?.addEventListener('click', () => {
+    if (!chatCropper || !originalChatFile) return;
+
+    const canvas = chatCropper.getCroppedCanvas();
+    const mimeType = originalChatFile.type;
+
+    canvas.toBlob((blob) => {
+        if (!blob) {
+            closeChatCropper();
+            return;
+        }
+
+        const croppedFile = new File([blob], originalChatFile.name, {
+            type: mimeType,
+            lastModified: Date.now()
+        });
+
+        // HTML5 canvas compression (maxWidth 1200, quality 0.8)
+        const maxWidth = 1200;
+        const maxHeight = 1200;
+        const quality = 0.8;
+
+        const imgReader = new FileReader();
+        imgReader.readAsDataURL(croppedFile);
+        imgReader.onload = (event) => {
+            const img = new Image();
+            img.src = event.target.result;
+            img.onload = () => {
+                let width = img.width;
+                let height = img.height;
+
+                if (width > maxWidth || height > maxHeight) {
+                    if (width > height) {
+                        height = Math.round((height * maxWidth) / width);
+                        width = maxWidth;
+                    } else {
+                        width = Math.round((width * maxHeight) / height);
+                        height = maxHeight;
+                    }
+                }
+
+                const compressCanvas = document.createElement('canvas');
+                compressCanvas.width = width;
+                compressCanvas.height = height;
+                const ctx = compressCanvas.getContext('2d');
+
+                if (mimeType === 'image/jpeg') {
+                    ctx.fillStyle = '#FFFFFF';
+                    ctx.fillRect(0, 0, width, height);
+                }
+
+                ctx.drawImage(img, 0, 0, width, height);
+
+                compressCanvas.toBlob((compressedBlob) => {
+                    const finalFile = new File([compressedBlob], originalChatFile.name, {
+                        type: mimeType,
+                        lastModified: Date.now()
+                    });
+
+                    // Sync with file input using DataTransfer
+                    const dt = new DataTransfer();
+                    dt.items.add(finalFile);
+                    imgInput.files = dt.files;
+
+                    // Show preview container in Chat view
+                    const container = document.getElementById('imagePreviewContainer');
+                    const preview   = document.getElementById('imagePreview');
+                    const fileName  = document.getElementById('fileName');
+
+                    preview.src = URL.createObjectURL(finalFile);
+                    const savedPercent = Math.round((1 - finalFile.size / originalChatFile.size) * 100);
+                    fileName.textContent = `${finalFile.name} (${savedPercent > 0 ? `Hemat ${savedPercent}%` : 'Optimized'}, ${(finalFile.size / 1024).toFixed(0)} KB)`;
+                    container.classList.remove('hidden');
+
+                    closeChatCropper();
+                    updateSendButtonState();
+                }, mimeType, quality);
+            };
+        };
+    }, mimeType, 0.9);
+});
 
 function cancelImage() {
-
     imgInput.value = '';
-
-    document.getElementById('imagePreviewContainer')
-        .classList.add('hidden');
-
+    const container = document.getElementById('imagePreviewContainer');
+    if (container) {
+        container.classList.add('hidden');
+    }
     updateSendButtonState();
-
 }
 
 

@@ -3,6 +3,7 @@
 @section('title', 'Tambah Produk')
 
 @push('styles')
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
 <style>
     /* ── True Glassmorphism Design ────────────────────────────── */
     .dashboard-transparent {
@@ -158,6 +159,47 @@
     </div>
 </div>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
+
+<!-- Cropping Modal -->
+<div id="cropperModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+    <div class="bg-[#0b1320] border border-white/10 rounded-2xl max-w-2xl w-full flex flex-col max-h-[90vh]">
+        <div class="flex items-center justify-between border-b border-white/5 px-5 py-4">
+            <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                Pangkas Foto Produk
+            </h3>
+            <button id="closeCropperBtn" type="button" class="text-slate-400 hover:text-white transition-colors">✕</button>
+        </div>
+        <div class="p-5 flex-1 overflow-hidden flex items-center justify-center min-h-[300px] max-h-[50vh] bg-black/40">
+            <img id="cropperImage" class="max-w-full max-h-full block">
+        </div>
+        <div class="border-t border-white/5 px-5 py-4 flex flex-col gap-4">
+            <div class="flex flex-wrap items-center justify-center gap-3">
+                <button type="button" id="rotateLeftBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs font-semibold px-3 py-2 transition-colors">
+                    🔄 Putar Kiri
+                </button>
+                <button type="button" id="rotateRightBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs font-semibold px-3 py-2 transition-colors">
+                    🔄 Putar Kanan
+                </button>
+                <span class="w-px h-5 bg-white/10 mx-1"></span>
+                <button type="button" id="ratioFreeBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs px-2.5 py-1.5 transition-colors">Bebas</button>
+                <button type="button" id="ratio1Btn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs px-2.5 py-1.5 transition-colors">1:1</button>
+                <button type="button" id="ratio169Btn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs px-2.5 py-1.5 transition-colors">16:9</button>
+                <button type="button" id="ratio43Btn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs px-2.5 py-1.5 transition-colors">4:3</button>
+            </div>
+            <div class="flex items-center justify-end gap-2 border-t border-white/5 pt-3">
+                <button id="cancelCropperBtn" type="button" class="rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 px-5 py-2.5 text-xs font-bold transition-colors">
+                    BATAL
+                </button>
+                <button id="saveCropperBtn" type="button" class="rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 px-5 py-2.5 text-xs font-bold transition-all">
+                    SELESAI & SIMPAN
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script>
     function compressImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) {
         return new Promise((resolve) => {
@@ -216,6 +258,132 @@
     const productImagesInput = document.getElementById('product-images');
     const productImagePreview = document.getElementById('product-image-preview');
     let isCompressing = false;
+    let activeFiles = [];
+    let originalFiles = [];
+
+    // Cropper State
+    let cropper = null;
+    let currentCropIndex = null;
+    const cropperModal = document.getElementById('cropperModal');
+    const cropperImage = document.getElementById('cropperImage');
+    const closeCropperBtn = document.getElementById('closeCropperBtn');
+    const cancelCropperBtn = document.getElementById('cancelCropperBtn');
+    const saveCropperBtn = document.getElementById('saveCropperBtn');
+
+    // Ratio and Control buttons
+    document.getElementById('rotateLeftBtn')?.addEventListener('click', () => cropper?.rotate(-90));
+    document.getElementById('rotateRightBtn')?.addEventListener('click', () => cropper?.rotate(90));
+    document.getElementById('ratioFreeBtn')?.addEventListener('click', () => cropper?.setAspectRatio(NaN));
+    document.getElementById('ratio1Btn')?.addEventListener('click', () => cropper?.setAspectRatio(1));
+    document.getElementById('ratio169Btn')?.addEventListener('click', () => cropper?.setAspectRatio(16/9));
+    document.getElementById('ratio43Btn')?.addEventListener('click', () => cropper?.setAspectRatio(4/3));
+
+    function renderActivePreviews() {
+        if (!activeFiles.length) {
+            productImagePreview.innerHTML = '<div class="col-span-full rounded-xl border border-dashed border-slate-800/80 p-5 text-center text-xs text-slate-500">Belum ada foto yang dipilih.</div>';
+            return;
+        }
+
+        productImagePreview.innerHTML = activeFiles.map((file, idx) => {
+            const objectUrl = URL.createObjectURL(file);
+            const originalFile = originalFiles[idx];
+            const originalSizeKb = originalFile ? (originalFile.size / 1024).toFixed(0) : 0;
+            const compressedSizeKb = (file.size / 1024).toFixed(0);
+            const savedPercent = originalFile ? Math.round(((originalFile.size - file.size) / originalFile.size) * 100) : 0;
+
+            return `
+                <div class="overflow-hidden rounded-xl border border-white/5 bg-black/40 backdrop-blur-md p-1.5 group relative">
+                    <img src="${objectUrl}" alt="Pratinjau foto produk" class="h-32 w-full object-cover rounded-lg">
+                    <div class="px-1 py-1.5 text-[10px] text-slate-400 truncate font-mono">${file.name}</div>
+                    <div class="absolute top-2 left-2 bg-emerald-500/90 text-white font-extrabold text-[9px] px-1.5 py-0.5 rounded shadow backdrop-blur-sm">
+                        ${savedPercent > 0 ? `Hemat ${savedPercent}%` : 'Optimized'} (${compressedSizeKb} KB)
+                    </div>
+                    <!-- Crop Button -->
+                    <button type="button" onclick="openCropper(${idx})" class="absolute bottom-2 right-2 bg-amber-500 hover:bg-amber-400 text-slate-950 p-1.5 rounded-lg shadow-lg hover:scale-105 transition-all flex items-center justify-center animate-bounce-subtle" title="Pangkas Foto">
+                        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M8 2v14M2 8h14M18 22V8a2 2 0 00-2-2H2" />
+                        </svg>
+                    </button>
+                </div>
+            `;
+        }).join('');
+    }
+
+    window.openCropper = function(idx) {
+        const file = activeFiles[idx];
+        if (!file) return;
+
+        currentCropIndex = idx;
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            cropperImage.src = e.target.result;
+            cropperModal.classList.remove('hidden');
+            
+            // Destroy any existing cropper first
+            if (cropper) {
+                cropper.destroy();
+            }
+
+            // Init Cropper.js
+            cropper = new Cropper(cropperImage, {
+                viewMode: 1,
+                dragMode: 'move',
+                autoCropArea: 0.9,
+                restore: false,
+                modal: true,
+                guides: true,
+                highlight: false,
+                cropBoxMovable: true,
+                cropBoxResizable: true,
+                toggleDragModeOnDblclick: false
+            });
+        };
+        reader.readAsDataURL(file);
+    };
+
+    function closeCropper() {
+        cropperModal.classList.add('hidden');
+        if (cropper) {
+            cropper.destroy();
+            cropper = null;
+        }
+        currentCropIndex = null;
+    }
+
+    closeCropperBtn?.addEventListener('click', closeCropper);
+    cancelCropperBtn?.addEventListener('click', closeCropper);
+
+    saveCropperBtn?.addEventListener('click', () => {
+        if (!cropper || currentCropIndex === null) return;
+
+        const canvas = cropper.getCroppedCanvas();
+        const mimeType = activeFiles[currentCropIndex].type;
+
+        canvas.toBlob(async (blob) => {
+            if (!blob) {
+                closeCropper();
+                return;
+            }
+
+            const croppedFile = new File([blob], activeFiles[currentCropIndex].name, {
+                type: mimeType,
+                lastModified: Date.now()
+            });
+
+            // Re-run compression helper to ensure optimized width/height limits
+            const compressedCroppedFile = await compressImage(croppedFile);
+
+            activeFiles[currentCropIndex] = compressedCroppedFile;
+
+            // Sync with file input using DataTransfer
+            const dt = new DataTransfer();
+            activeFiles.forEach(file => dt.items.add(file));
+            productImagesInput.files = dt.files;
+
+            closeCropper();
+            renderActivePreviews();
+        }, mimeType, 0.85);
+    });
 
     if (productImagesInput && productImagePreview) {
         productImagesInput.addEventListener('change', async () => {
@@ -224,6 +392,8 @@
             const files = Array.from(productImagesInput.files || []);
 
             if (!files.length) {
+                activeFiles = [];
+                originalFiles = [];
                 productImagePreview.innerHTML = '<div class="col-span-full rounded-xl border border-dashed border-slate-800/80 p-5 text-center text-xs text-slate-500">Belum ada foto yang dipilih.</div>';
                 return;
             }
@@ -242,6 +412,8 @@
             isCompressing = true;
             try {
                 const compressedFiles = [];
+                originalFiles = [...files]; // retain original sizes for reference
+
                 for (let i = 0; i < files.length; i++) {
                     const file = files[i];
                     if (file.type.startsWith('image/')) {
@@ -252,42 +424,19 @@
                     }
                 }
 
+                activeFiles = compressedFiles;
+
                 // Update input files programmatically using DataTransfer
                 const dt = new DataTransfer();
-                compressedFiles.forEach(file => dt.items.add(file));
+                activeFiles.forEach(file => dt.items.add(file));
                 productImagesInput.files = dt.files;
 
-                // Render optimized preview
-                productImagePreview.innerHTML = compressedFiles.map((file, idx) => {
-                    const objectUrl = URL.createObjectURL(file);
-                    const originalFile = files[idx];
-                    const originalSizeKb = originalFile ? (originalFile.size / 1024).toFixed(0) : 0;
-                    const compressedSizeKb = (file.size / 1024).toFixed(0);
-                    const savedPercent = originalFile ? Math.round(((originalFile.size - file.size) / originalFile.size) * 100) : 0;
-
-                    return `
-                        <div class="overflow-hidden rounded-xl border border-white/5 bg-black/40 backdrop-blur-md p-1.5 group relative">
-                            <img src="${objectUrl}" alt="Pratinjau foto produk" class="h-32 w-full object-cover rounded-lg">
-                            <div class="px-1 py-1.5 text-[10px] text-slate-400 truncate font-mono">${file.name}</div>
-                            <div class="absolute top-2 left-2 bg-emerald-500/90 text-white font-extrabold text-[9px] px-1.5 py-0.5 rounded shadow backdrop-blur-sm">
-                                ${savedPercent > 0 ? `Hemat ${savedPercent}%` : 'Optimized'} (${compressedSizeKb} KB)
-                            </div>
-                        </div>
-                    `;
-                }).join('');
+                renderActivePreviews();
 
             } catch (err) {
                 console.error("Gagal mengompresi gambar:", err);
-                // Fallback to original preview
-                productImagePreview.innerHTML = files.map((file) => {
-                    const objectUrl = URL.createObjectURL(file);
-                    return `
-                        <div class="overflow-hidden rounded-xl border border-white/5 bg-black/40 backdrop-blur-md p-1.5 group">
-                            <img src="${objectUrl}" alt="Pratinjau foto produk" class="h-32 w-full object-cover rounded-lg">
-                            <div class="px-1 py-1.5 text-[10px] text-slate-400 truncate font-mono">${file.name}</div>
-                        </div>
-                    `;
-                }).join('');
+                activeFiles = [...files];
+                renderActivePreviews();
             } finally {
                 isCompressing = false;
             }
