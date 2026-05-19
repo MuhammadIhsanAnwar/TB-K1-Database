@@ -202,7 +202,7 @@ public function poll(Conversation $conversation)
         $attachmentType = null;
         if ($request->hasFile('attachment')) {
             $file = $request->file('attachment');
-            $attachmentPath = $file->store('chat_attachments', 'public');
+            $attachmentPath = $file->store('chat_attachments', 'public_app_public');
             $attachmentType = explode('/', $file->getMimeType())[0]; // image, video, application
         }
 

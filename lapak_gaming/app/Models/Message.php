@@ -82,7 +82,17 @@ class Message extends Model
     }
     public function getImageUrlAttribute()
     {
-        return $this->attachment_path ? asset('storage/' . $this->attachment_path) : null;
+        if (!$this->attachment_path) {
+            return null;
+        }
+
+        // Cek apakah file ada di disk 'public_app_public'
+        if (\Illuminate\Support\Facades\Storage::disk('public_app_public')->exists($this->attachment_path)) {
+            return asset('storage/app/public/' . $this->attachment_path);
+        }
+
+        // Fallback ke storage standar
+        return asset('storage/' . $this->attachment_path);
     }
     // ── Helpers ────────────────────────────────────────────────────────────
 
@@ -112,7 +122,7 @@ class Message extends Model
             'message'          => $isHidden ? ($this->isDeletedForEveryone() ? 'Pesan ini telah dihapus' : null) : $this->message,
             'is_deleted'       => $this->isDeletedForEveryone(),
             'attachment_path'  => $isHidden ? null : $this->attachment_path,
-            'attachment_url'   => ($isHidden || !$this->attachment_path) ? null : asset('storage/' . $this->attachment_path),
+            'attachment_url'   => ($isHidden || !$this->attachment_path) ? null : $this->image_url,
             'attachment_type'  => $this->attachment_type,
             'is_read'          => (bool) $this->is_read,
             'time'             => $this->created_at->format('H:i'),
