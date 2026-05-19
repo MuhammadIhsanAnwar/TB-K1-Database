@@ -112,10 +112,11 @@ class OrderController extends Controller {
                 $user = Auth::user();
                 abort_if(! $user, 403);
 
-                if ($user->balance < $order->total_price) {
+                $amount = (float) ($order->grand_total ?? $order->total_price ?? 0);
+                if ($user->balance < $amount) {
                     throw new \Exception('Saldo tidak mencukupi!');
                 }
-                $user->deductBalance($order->total_price, "Pembayaran Order #{$order->order_code}", $order->id);
+                $user->deductBalance($amount, "Pembayaran Order #{$order->order_code}", $order->id);
                 $order->update([
                     'status' => Order::STATUS_PAYMENT_UPLOADED,
                     'payment_method' => 'balance',
@@ -177,8 +178,11 @@ class OrderController extends Controller {
                 'invoice_number' => 'INV-' . strtoupper(Str::random(10)),
                 'status'         => Order::STATUS_PENDING_PAYMENT,
                 'payment_method' => $request->payment_method,
-                'total_price'    => $grand_total,
             ];
+
+            if (\Illuminate\Support\Facades\Schema::hasColumn('orders', 'total_price')) {
+                $orderData['total_price'] = $grand_total;
+            }
 
             if (Schema::hasColumn('orders', 'notes')) {
                 $orderData['notes'] = $combinedNotes ?: null;
@@ -270,7 +274,8 @@ class OrderController extends Controller {
                 $item->product->increment('stock', $item->quantity);
             }
             if ($order->status === Order::STATUS_PAYMENT_UPLOADED && $order->payment_method === 'balance') {
-                $order->buyer->addBalance($order->total_price, "Refund Order #{$order->order_code}", $order->id);
+                $refundAmount = (float) ($order->grand_total ?? $order->total_price ?? 0);
+                $order->buyer->addBalance($refundAmount, "Refund Order #{$order->order_code}", $order->id);
             }
             $order->update(['status' => Order::STATUS_CANCELLED]);
         });

@@ -178,7 +178,7 @@ class PdfDocumentService
 
     private function resolveGrandTotal(Order $order): float
     {
-        return (float) ($order->financial?->grand_total ?? $order->total_price ?? 0);
+        return (float) ($order->grand_total ?? $order->financial?->grand_total ?? $order->total_price ?? 0);
     }
 
     private function safeText(?string $value): string
