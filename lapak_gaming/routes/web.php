@@ -113,6 +113,8 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
     Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
     Route::get('/notifications/poll', [NotificationController::class, 'poll'])->name('notifications.poll');
+    Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::delete('/notifications/delete-all', [NotificationController::class, 'destroyAll'])->name('notifications.destroy-all');
 
     // Seller Registration (pengajuan seller)
     Route::get('/seller/register', [SellerRegistrationController::class, 'create'])->name('seller.register.form');

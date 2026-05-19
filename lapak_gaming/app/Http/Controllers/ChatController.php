@@ -216,6 +216,15 @@ public function poll(Conversation $conversation)
             'attachment_type' => $attachmentType,
         ]);
 
+        // Kirim Notifikasi Sistem ke Lawan Bicara
+        \App\Models\MarketplaceNotification::create([
+            'user_id' => $receiverId,
+            'title' => 'Pesan Baru dari ' . $user->name,
+            'body' => $messageText ?: ($attachmentType === 'image' ? '[Mengirim Foto]' : '[Mengirim Lampiran]'),
+            'link' => route('chat.show', $conversation->id),
+            'type' => 'chat-message',
+        ]);
+
         // Broadcast Realtime ke lawan bicara
         broadcast(new MessageSent($message))->toOthers();
 
@@ -291,6 +300,14 @@ public function poll(Conversation $conversation)
             'sender_id'       => $buyerId,
             'receiver_id'     => $sellerId,
             'message'         => 'Halo, saya tertarik dengan produk: ' . $product->name,
+        ]);
+
+        \App\Models\MarketplaceNotification::create([
+            'user_id' => $sellerId,
+            'title' => 'Pesan Baru dari ' . Auth::user()->name,
+            'body' => 'Halo, saya tertarik dengan produk: ' . $product->name,
+            'link' => route('chat.show', $conversation->id),
+            'type' => 'chat-message',
         ]);
     }
 

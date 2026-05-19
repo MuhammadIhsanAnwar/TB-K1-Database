@@ -17,12 +17,22 @@
                 <h1 class="text-3xl font-bold text-white">Notifikasi</h1>
                 <p class="mt-2 text-sm text-gray-500">Pilih kategori untuk melihat pesan yang paling relevan.</p>
             </div>
-            <form action="{{ route('notifications.read-all') }}" method="POST">
-                @csrf
-                <button type="submit" class="text-sm font-semibold text-brand-300 hover:text-brand-200">
-                    Tandai semua dibaca
-                </button>
-            </form>
+            <div class="flex items-center gap-4">
+                <form action="{{ route('notifications.read-all') }}" method="POST" class="inline">
+                    @csrf
+                    <button type="submit" class="text-sm font-semibold text-brand-300 hover:text-brand-200 transition-colors">
+                        Tandai semua dibaca
+                    </button>
+                </form>
+                <span class="text-gray-700">|</span>
+                <form action="{{ route('notifications.destroy-all') }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus semua notifikasi?')">
+                    @csrf
+                    @method('DELETE')
+                    <button type="submit" class="text-sm font-semibold text-red-400 hover:text-red-300 transition-colors">
+                        Hapus Semua
+                    </button>
+                </form>
+            </div>
         </div>
 
         <div class="mb-6 overflow-x-auto">
@@ -53,18 +63,25 @@
                             <p class="text-gray-400 text-sm">{{ $notification->body }}</p>
                             <p class="text-gray-500 text-xs mt-2">{{ $notification->created_at->diffForHumans() }}</p>
                         </div>
-                        <div class="ml-4 flex flex-col gap-2">
+                        <div class="ml-4 flex flex-col items-end gap-2 shrink-0">
                             @if($notification->link)
-                                <a href="{{ $notification->link }}" class="text-sm font-semibold text-brand-300 hover:text-brand-200">Buka</a>
+                                <a href="{{ $notification->link }}" class="text-sm font-semibold text-brand-300 hover:text-brand-200 transition-colors">Buka</a>
                             @endif
                             @if(!$notification->is_read)
-                                <form action="{{ route('notifications.read', $notification) }}" method="POST">
+                                <form action="{{ route('notifications.read', $notification) }}" method="POST" class="inline">
                                     @csrf
-                                    <button class="text-gray-400 hover:text-gray-300 transition-colors text-sm font-semibold">
+                                    <button class="text-gray-400 hover:text-gray-300 transition-colors text-sm font-semibold whitespace-nowrap">
                                         Tandai dibaca
                                     </button>
                                 </form>
                             @endif
+                            <form action="{{ route('notifications.destroy', $notification) }}" method="POST" class="inline" onsubmit="return confirm('Hapus notifikasi ini?')">
+                                @csrf
+                                @method('DELETE')
+                                <button class="text-red-400 hover:text-red-300 transition-colors text-sm font-semibold whitespace-nowrap">
+                                    Hapus
+                                </button>
+                            </form>
                         </div>
                     </div>
                     @if($notification->link)

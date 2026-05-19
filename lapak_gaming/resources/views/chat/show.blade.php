@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Chat — ' . ($conversation->seller?->name ?? $conversation->partner(auth()->id())?->name ?? 'Percakapan'))
+@section('title', 'Chat — ' . ($conversation->partner(auth()->id())?->name ?? 'Percakapan'))
 
 @push('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
@@ -550,7 +550,7 @@
         <div class="overflow-y-auto flex-1" id="sideList">
             @foreach($sidebarConversations as $conv)
             @php
-                $p2     = $conv->seller ?? $conv->partner($user->id);
+                $p2     = $conv->partner($user->id);
                 $unread = $conv->unreadFor($user->id);
                 $active = $conv->id === $conversation->id;
             @endphp

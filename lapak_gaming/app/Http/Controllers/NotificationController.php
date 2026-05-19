@@ -87,6 +87,38 @@ class NotificationController extends Controller
         return response()->json(['success' => true]);
     }
 
+    public function destroy(Request $request, MarketplaceNotification $notification): JsonResponse|RedirectResponse
+    {
+        if ($notification->user_id !== $request->user()->id) {
+            if ($request->expectsJson()) {
+                return response()->json(['success' => false, 'message' => 'Not found'], 404);
+            }
+
+            return back()->with('error', 'Not found');
+        }
+
+        $notification->delete();
+
+        if (! $request->expectsJson()) {
+            return back()->with('success', 'Notifikasi berhasil dihapus.');
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    public function destroyAll(Request $request): JsonResponse|RedirectResponse
+    {
+        MarketplaceNotification::query()
+            ->where('user_id', $request->user()->id)
+            ->delete();
+
+        if (! $request->expectsJson()) {
+            return back()->with('success', 'Semua notifikasi berhasil dihapus.');
+        }
+
+        return response()->json(['success' => true]);
+    }
+
     private function applyCategoryFilter($query, string $filter)
     {
         if ($filter === 'all') {
