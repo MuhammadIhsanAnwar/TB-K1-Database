@@ -53,6 +53,15 @@
     -ms-overflow-style: none;
 }
 
+  .premium-topup-track {
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  .premium-topup-track::-webkit-scrollbar {
+    display: none;
+  }
+
   .banner-slide {
     scroll-snap-align: start;
   }
@@ -1496,8 +1505,8 @@ spline-viewer iframe {
     <div class="relative">
 
       {{-- TRACK --}}
-      <div id="premium-topup-track"
-           class="flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4">
+       <div id="premium-topup-track"
+         class="premium-topup-track flex gap-5 overflow-x-auto snap-x snap-mandatory scroll-smooth pb-4">
 
         @foreach($topupProducts as $product)
 
@@ -1709,6 +1718,46 @@ spline-viewer iframe {
     </div>
   </div>
 </section>
+
+{{-- ═══════════════════════════════════════════════════════════ --}}
+{{-- FEATURED BANNERS                                            --}}
+{{-- ═══════════════════════════════════════════════════════════ --}}
+@if(isset($featuredBanners) && $featuredBanners->count())
+<section class="py-16 reveal-card reveal-up">
+  <div class="max-w-7xl mx-auto px-4">
+    <div class="flex items-end justify-between mb-8">
+      <div>
+        <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-amber-400/20 bg-amber-400/10 text-amber-300 text-[11px] font-black tracking-[0.2em] uppercase mb-4">
+          <span class="w-2 h-2 rounded-full bg-amber-300 animate-pulse"></span>
+          Featured Banner
+        </div>
+        <h2 class="text-3xl md:text-4xl font-black text-white">Sorotan Promo</h2>
+        <p class="text-slate-400 mt-2 text-sm">Banner pilihan admin yang muncul di tengah alur halaman saat kamu scroll ke bawah.</p>
+      </div>
+    </div>
+
+    <div class="relative rounded-[28px] border border-white/10 bg-slate-950/50 p-3 sm:p-4 shadow-[0_24px_80px_rgba(0,0,0,0.35)]">
+      <div id="featured-banner-track" class="banner-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory">
+        @foreach($featuredBanners as $banner)
+          <a href="{{ $banner->link_url ?: '#' }}" class="banner-slide group relative flex-none w-[86%] sm:w-[58%] lg:w-[42%] overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900 snap-start">
+            <div class="relative aspect-[16/9] overflow-hidden">
+              <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-transparent"></div>
+              <div class="absolute inset-0 flex items-end p-5 sm:p-6">
+                <div class="max-w-xl">
+                  <span class="inline-flex items-center rounded-full border border-emerald-400/30 bg-emerald-400/10 px-3 py-1 text-[10px] font-semibold uppercase tracking-[0.22em] text-emerald-200">Featured</span>
+                  <h3 class="mt-3 text-2xl sm:text-3xl font-black text-white">{{ $banner->title }}</h3>
+                  <p class="mt-2 text-sm sm:text-base text-slate-300">{{ $banner->subtitle }}</p>
+                </div>
+              </div>
+            </div>
+          </a>
+        @endforeach
+      </div>
+    </div>
+  </div>
+</section>
+@endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- FAQ — GLASSMORPHISM VERSION                               --}}

@@ -58,7 +58,7 @@ Route::post('/artisan-terminal/quick', [ArtisanTerminalController::class, 'runQu
 // Authenticated routes
 // ─────────────────────────────────────────────────────────────────────────────
 
-Route::middleware('auth')->group(function (): void {
+Route::middleware(['auth', 'account.active'])->group(function (): void {
 
     // Cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
