@@ -239,17 +239,22 @@ class User extends Authenticatable implements MustVerifyEmail
             'locked_balance'    => 0,
         ]);
 
+        $balanceBefore = (float) $balanceState->balance;
+
         $balanceState->forceFill([
-            'balance'           => (float) $balanceState->balance + $amount,
+            'balance'           => $balanceBefore + $amount,
             'available_balance' => (float) $balanceState->available_balance + $amount,
         ])->save();
 
-        $this->transactions()->create([
-            'type'          => 'credit',
-            'amount'        => $amount,
-            'description'   => $desc,
-            'order_id'      => $orderId,
-            'balance_after' => $balanceState->balance,
+        $wallet->transactions()->create([
+            'type'            => 'credit',
+            'direction'       => 'credit',
+            'amount'          => $amount,
+            'balance_before'  => $balanceBefore,
+            'balance_after'   => $balanceState->balance,
+            'reference_type'  => $orderId ? Order::class : null,
+            'reference_id'    => $orderId,
+            'description'     => $desc,
         ]);
     }
 
@@ -266,17 +271,22 @@ class User extends Authenticatable implements MustVerifyEmail
             'locked_balance'    => 0,
         ]);
 
+        $balanceBefore = (float) $balanceState->balance;
+
         $balanceState->forceFill([
-            'balance'           => (float) $balanceState->balance - $amount,
+            'balance'           => $balanceBefore - $amount,
             'available_balance' => (float) $balanceState->available_balance - $amount,
         ])->save();
 
-        $this->transactions()->create([
-            'type'          => 'debit',
-            'amount'        => $amount,
-            'description'   => $desc,
-            'order_id'      => $orderId,
-            'balance_after' => $balanceState->balance,
+        $wallet->transactions()->create([
+            'type'            => 'debit',
+            'direction'       => 'debit',
+            'amount'          => $amount,
+            'balance_before'  => $balanceBefore,
+            'balance_after'   => $balanceState->balance,
+            'reference_type'  => $orderId ? Order::class : null,
+            'reference_id'    => $orderId,
+            'description'     => $desc,
         ]);
 
         return true;
