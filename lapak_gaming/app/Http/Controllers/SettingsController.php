@@ -384,7 +384,7 @@ class SettingsController extends Controller
             'two_factor_confirmed_at' => now(),
         ])->save();
 
-        session()->forget('two_factor_setup_pending');
+        $request->session()->forget('two_factor_setup_pending');
 
         return back()->with('success', 'Google Authenticator berhasil dikonfirmasi dan disimpan.');
     }
@@ -409,7 +409,7 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function reactivateForm(): View|RedirectResponse
+    public function reactivateForm(Request $request): View|RedirectResponse
     {
         /** @var User|null $user */
         $user = Auth::user();
