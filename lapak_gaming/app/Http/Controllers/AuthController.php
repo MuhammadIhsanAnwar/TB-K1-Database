@@ -14,6 +14,7 @@ use Illuminate\Validation\Rules\Password;
 use Illuminate\View\View;
 use Laravel\Socialite\Two\InvalidStateException;
 use Laravel\Socialite\Facades\Socialite;
+use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 
 class AuthController extends Controller
 {
@@ -54,6 +55,28 @@ class AuthController extends Controller
 
             return redirect()->route('verification.pending', ['email' => $user->email])
                 ->with('status', 'Email verifikasi sudah dikirim ulang. Silakan cek kotak masuk Anda.');
+        }
+
+        if (! $user) {
+            return back()->withErrors([
+                'email' => 'Email atau password tidak valid.',
+            ])->onlyInput('email');
+        }
+
+        if (! Auth::validate($credentials)) {
+            return back()->withErrors([
+                'email' => 'Email atau password tidak valid.',
+            ])->onlyInput('email');
+        }
+
+        if ($this->requiresTwoFactorChallenge($user)) {
+            $request->session()->put('two_factor_login_pending', [
+                'user_id' => $user->id,
+                'remember' => $request->boolean('remember'),
+            ]);
+
+            return redirect()->route('two-factor.challenge')
+                ->with('status', 'Masukkan kode Google Authenticator untuk menyelesaikan login.');
         }
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
@@ -106,6 +129,85 @@ class AuthController extends Controller
         return redirect()->intended(match (true) {
             $user?->isSellerAccount() => route('seller.dashboard'),
             default                   => route('buyer.dashboard'),
+        });
+    }
+
+    public function twoFactorChallenge(): View|RedirectResponse
+    {
+        $pending = session('two_factor_login_pending');
+
+        if (! is_array($pending) || empty($pending['user_id'])) {
+            return redirect()->route('login');
+        }
+
+        $user = User::find($pending['user_id']);
+
+        if (! $user) {
+            session()->forget('two_factor_login_pending');
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Sesi verifikasi 2 langkah tidak valid. Silakan login kembali.',
+            ]);
+        }
+
+        return view('auth.two-factor-challenge', [
+            'user' => $user,
+        ]);
+    }
+
+    public function confirmTwoFactorChallenge(Request $request): RedirectResponse
+    {
+        $pending = session('two_factor_login_pending');
+
+        if (! is_array($pending) || empty($pending['user_id'])) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Sesi verifikasi 2 langkah tidak valid. Silakan login kembali.',
+            ]);
+        }
+
+        $data = $request->validate([
+            'verification_code' => ['required', 'digits:6'],
+        ], [
+            'verification_code.required' => 'Kode verifikasi wajib diisi.',
+            'verification_code.digits' => 'Kode verifikasi harus terdiri dari 6 digit.',
+        ]);
+
+        $user = User::find($pending['user_id']);
+
+        if (! $user || ! $this->requiresTwoFactorChallenge($user)) {
+            session()->forget('two_factor_login_pending');
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Akun tidak lagi memerlukan verifikasi 2 langkah. Silakan login kembali.',
+            ]);
+        }
+
+        $googleSecret = $user->two_factor_google_secret;
+        if (! $googleSecret) {
+            session()->forget('two_factor_login_pending');
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Secret Google Authenticator tidak ditemukan. Silakan login kembali.',
+            ]);
+        }
+
+        $google2fa = new Google2FAQRCode();
+        $isValid = (bool) $google2fa->verifyKey($googleSecret, $data['verification_code']);
+
+        if (! $isValid) {
+            return back()->withErrors([
+                'verification_code' => 'Kode Google Authenticator tidak valid.',
+            ])->withInput();
+        }
+
+        Auth::login($user, (bool) ($pending['remember'] ?? false));
+        session()->regenerate();
+        session()->forget('two_factor_login_pending');
+
+        return redirect()->intended(match (true) {
+            $user->role === 'admin' => route('admin.dashboard'),
+            $user->isSellerAccount() => route('seller.dashboard'),
+            default => route('buyer.dashboard'),
         });
     }
 
@@ -368,5 +470,15 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('home');
+    }
+
+    private function requiresTwoFactorChallenge(User $user): bool
+    {
+        if (! $user->two_factor_enabled || ! $user->two_factor_confirmed_at) {
+            return false;
+        }
+
+        return in_array('google', $user->two_factor_methods ?: [], true)
+            && ! empty($user->two_factor_google_secret);
     }
 }

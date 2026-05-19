@@ -263,6 +263,8 @@ Route::get('/setup/migrate/status', [MigrationController::class, 'status'])->nam
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthController::class, 'createLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'storeLogin']);
+    Route::get('/two-factor-challenge', [AuthController::class, 'twoFactorChallenge'])->name('two-factor.challenge');
+    Route::post('/two-factor-challenge', [AuthController::class, 'confirmTwoFactorChallenge'])->name('two-factor.verify');
     Route::get('/auth/google', [AuthController::class, 'google'])->name('google.auth');
     Route::get('/register', [AuthController::class, 'createRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'storeRegister']);
