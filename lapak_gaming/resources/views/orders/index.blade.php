@@ -3,7 +3,7 @@
 @section('title', 'Daftar Transaksi')
 
 @section('content')
-<div class="relative px-4 pt-28 pb-16">
+<div class="relative overflow-x-hidden px-4 pt-28 pb-16">
 
     {{-- BACKGROUND EFFECT --}}
     <div class="pointer-events-none absolute inset-0 -z-10">
@@ -108,7 +108,7 @@
 
                         {{-- RIGHT --}}
                         <div
-                            class="rounded-[24px] border border-orange-500/20 bg-orange-500/[0.04] px-6 py-5 text-left transition duration-300 group-hover:border-orange-400/30 group-hover:bg-orange-500/[0.06] lg:min-w-[240px] lg:text-right">
+                            class="rounded-[24px] border border-orange-500/20 bg-orange-500/[0.04] px-6 py-5 text-left transition duration-300 group-hover:border-orange-400/30 group-hover:bg-orange-500/[0.06] lg:w-[240px] lg:shrink-0 lg:text-right">
 
                             <div
                                 class="text-[11px] font-semibold uppercase tracking-[0.2em] text-orange-300">
@@ -130,12 +130,14 @@
                             Lihat Detail
                         </a>
 
-                        <a href="{{ route('orders.receipt.pdf', $order->order_code) }}"
-                           target="_blank"
-                           rel="noopener noreferrer"
-                           class="inline-flex items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-300 transition hover:bg-emerald-500/20">
-                            Unduh Kwitansi PDF
-                        </a>
+                        @if($order->buyer_id === auth()->id() && $order->status === \App\Models\Order::STATUS_COMPLETED)
+                            <a href="{{ route('orders.receipt.pdf', $order->order_code) }}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="inline-flex items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-300 transition hover:bg-emerald-500/20">
+                                Unduh Kwitansi PDF
+                            </a>
+                        @endif
                     </div>
 
                 </div>

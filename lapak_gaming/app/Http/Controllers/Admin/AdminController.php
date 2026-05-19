@@ -140,7 +140,6 @@ class AdminController extends Controller
             'seller_status' => 'approved',
             'seller_rejection_reason' => null,
             'status' => 'active',
-            'is_seller' => true,
         ])->save();
 
         MarketplaceNotification::create([

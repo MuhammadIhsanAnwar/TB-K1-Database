@@ -22,7 +22,7 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'name', 'email', 'password', 'role',
         'status', 'seller_level_id', 'suspended_at', 'suspend_reason',
-        'google_id', 'phone', 'avatar', 'is_seller',
+        'google_id', 'phone', 'avatar',
         'account_deletion_token', 'account_deletion_token_sent_at', 'deactivated_at',
         'two_factor_enabled', 'two_factor_methods', 'two_factor_google_secret', 'two_factor_confirmed_at',
         // Seller registration workflow
@@ -34,7 +34,6 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at'           => 'datetime',
         'password'                    => 'hashed',
-        'is_seller'                   => 'boolean',
         'two_factor_enabled'          => 'boolean',
         'two_factor_methods'          => 'array',
         'deactivated_at'              => 'datetime',
@@ -61,9 +60,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /** Users who are approved sellers (role = seller OR is_seller = true). */
     public function scopeApprovedSellers($query)
     {
-        return $query->where(function ($q) {
-            $q->where('role', 'seller')->orWhere('is_seller', true);
-        })->where('seller_status', 'approved');
+        return $query->where('role', 'seller')->where('seller_status', 'approved');
     }
 
     /** Users who have submitted a seller application pending admin review. */
@@ -145,10 +142,6 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if ($this->role === 'seller') {
             return true;
-        }
-
-        if (array_key_exists('is_seller', $this->attributes)) {
-            return (bool) ($this->attributes['is_seller'] ?? false);
         }
 
         return in_array(($this->attributes['user_type'] ?? null), ['seller', 'mixed'], true);

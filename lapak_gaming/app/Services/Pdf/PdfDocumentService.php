@@ -108,9 +108,9 @@ class PdfDocumentService
         $pdf->SetFillColor(15, 23, 42);
         $pdf->SetTextColor(255, 255, 255);
         $pdf->SetFont('Arial', 'B', 9);
-        $pdf->Cell(98, 8, 'Item', 1, 0, 'C', true);
-        $pdf->Cell(22, 8, 'Qty', 1, 0, 'C', true);
-        $pdf->Cell(56, 8, 'Harga', 1, 0, 'C', true);
+        $pdf->Cell(92, 8, 'Item', 1, 0, 'C', true);
+        $pdf->Cell(18, 8, 'Qty', 1, 0, 'C', true);
+        $pdf->Cell(42, 8, 'Harga', 1, 0, 'C', true);
         $pdf->Cell(0, 8, 'Subtotal', 1, 1, 'C', true);
 
         $pdf->SetFont('Arial', '', 9);
@@ -122,10 +122,12 @@ class PdfDocumentService
             $price = 'Rp ' . number_format((float) ($item->price_snapshot ?? $item->price ?? 0), 0, ',', '.');
             $subtotal = 'Rp ' . number_format((float) ($item->subtotal ?? ((float) ($item->price_snapshot ?? $item->price ?? 0) * (int) $item->quantity)), 0, ',', '.');
 
-            $pdf->Cell(98, 8, $this->limitText($itemName, 44), 1, 0, 'L');
-            $pdf->Cell(22, 8, $quantity, 1, 0, 'C');
-            $pdf->Cell(56, 8, $this->limitText($price, 24), 1, 0, 'R');
-            $pdf->Cell(0, 8, $this->limitText($subtotal, 28), 1, 1, 'R');
+            $this->renderReceiptRow($pdf, [
+                ['width' => 92, 'text' => $itemName, 'align' => 'L'],
+                ['width' => 18, 'text' => $quantity, 'align' => 'C'],
+                ['width' => 42, 'text' => $price, 'align' => 'R'],
+                ['width' => 0, 'text' => $subtotal, 'align' => 'R'],
+            ], 5);
         }
 
         if ($order->items->isEmpty()) {
@@ -176,9 +178,40 @@ class PdfDocumentService
         }
     }
 
-    private function resolveGrandTotal(Order $order): float
+    private function renderReceiptRow(\FPDF $pdf, array $columns, float $lineHeight = 5): void
     {
-        return (float) ($order->grand_total ?? $order->financial?->grand_total ?? $order->total_price ?? 0);
+        $maxLines = 1;
+
+        foreach ($columns as $column) {
+            $width = (float) ($column['width'] ?? 0);
+            $text = (string) ($column['text'] ?? '');
+
+            if ($width > 0) {
+                $maxLines = max($maxLines, $this->estimatePdfLines($pdf, $text, $width));
+            }
+        }
+
+        $rowHeight = max($lineHeight, $maxLines * $lineHeight);
+        $startX = $pdf->GetX();
+        $startY = $pdf->GetY();
+        $availableWidth = 182;
+
+        foreach ($columns as $column) {
+            $width = (float) ($column['width'] ?? 0);
+            $text = $this->safeText((string) ($column['text'] ?? ''));
+            $align = (string) ($column['align'] ?? 'L');
+            $columnX = $pdf->GetX();
+
+            if ($width <= 0) {
+                $width = max(0, $availableWidth - ($columnX - $startX));
+            }
+
+            $pdf->Rect($columnX, $startY, $width, $rowHeight);
+            $pdf->MultiCell($width, $lineHeight, $text, 0, $align);
+            $pdf->SetXY($columnX + $width, $startY);
+        }
+
+        $pdf->SetXY($startX, $startY + $rowHeight);
     }
 
     private function safeText(?string $value): string
@@ -187,12 +220,62 @@ class PdfDocumentService
 
         if (function_exists('iconv')) {
             $converted = @iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $value);
+
             if ($converted !== false) {
                 $value = $converted;
             }
         }
 
         return preg_replace('/[^\x20-\x7E\xA0-\xFF]/', '', $value) ?? '';
+    }
+
+    private function estimatePdfLines(\FPDF $pdf, string $text, float $width): int
+    {
+        $text = trim(preg_replace('/\s+/u', ' ', str_replace("\r", '', $text)) ?? '');
+
+        if ($text === '') {
+            return 1;
+        }
+
+        $maxWidth = max(1.0, $width - 2);
+        $lines = 1;
+
+        foreach (preg_split('/\n+/', $text) ?: [] as $paragraph) {
+            $paragraph = trim($paragraph);
+
+            if ($paragraph === '') {
+                $lines++;
+                continue;
+            }
+
+            $lineWidth = 0.0;
+            foreach (preg_split('/\s+/', $paragraph) ?: [] as $word) {
+                $wordWidth = $pdf->GetStringWidth($word . ' ');
+
+                if ($lineWidth > 0 && ($lineWidth + $wordWidth) > $maxWidth) {
+                    $lines++;
+                    $lineWidth = $wordWidth;
+                    continue;
+                }
+
+                if ($wordWidth > $maxWidth) {
+                    $lines += (int) ceil($wordWidth / $maxWidth);
+                    $lineWidth = 0.0;
+                    continue;
+                }
+
+                $lineWidth += $wordWidth;
+            }
+
+            $lines++;
+        }
+
+        return max(1, $lines - 1);
+    }
+
+    private function resolveGrandTotal(Order $order): float
+    {
+        return (float) ($order->grand_total ?? $order->financial?->grand_total ?? $order->total_price ?? 0);
     }
 
     private function limitText(string $value, int $length): string

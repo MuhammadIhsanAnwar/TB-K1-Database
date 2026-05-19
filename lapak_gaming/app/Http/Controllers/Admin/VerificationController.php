@@ -10,6 +10,7 @@ use App\Models\VerificationLog;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
 
@@ -141,7 +142,6 @@ class VerificationController extends Controller
         $user->forceFill([
             'seller_status'           => 'approved',
             'role'                    => 'seller',
-            'is_seller'               => true,
             'status'                  => 'active',
             'seller_rejection_reason' => null,
             'seller_reviewed_at'      => now(),
@@ -212,7 +212,7 @@ class VerificationController extends Controller
             'suspend_reason' => $data['notes'],
         ])->save();
 
-        \DB::table('sessions')->where('user_id', $user->id)->delete();
+        DB::table('sessions')->where('user_id', $user->id)->delete();
 
         VerificationLog::create([
             'user_id'  => $user->id,

@@ -200,14 +200,16 @@
 
                     </a>
 
-                    <a href="{{ route('orders.receipt.pdf', $order->order_code) }}"
-                       target="_blank"
-                       rel="noopener noreferrer"
-                       class="flex items-center justify-center rounded-[26px] border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-base font-bold text-emerald-300 transition duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:bg-emerald-500/20 hover:shadow-[0_0_25px_rgba(16,185,129,0.15)]">
+                    @if($order->buyer_id === auth()->id() && $order->status === \App\Models\Order::STATUS_COMPLETED)
+                        <a href="{{ route('orders.receipt.pdf', $order->order_code) }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="flex items-center justify-center rounded-[26px] border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-base font-bold text-emerald-300 transition duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:bg-emerald-500/20 hover:shadow-[0_0_25px_rgba(16,185,129,0.15)]">
 
-                        Unduh Kwitansi PDF
+                            Unduh Kwitansi PDF
 
-                    </a>
+                        </a>
+                    @endif
 
                     @if(in_array($order->status, [\App\Models\Order::STATUS_PENDING_PAYMENT, \App\Models\Order::STATUS_PAYMENT_UPLOADED], true))
 
@@ -238,12 +240,12 @@
 
                     <div class="mt-5 overflow-hidden rounded-[24px] border border-white/10">
 
-                        <a href="{{ Storage::disk('public')->url($order->payment_proof) }}"
+                        <a href="{{ asset('storage/' . $order->payment_proof) }}"
                            target="_blank"
                            rel="noopener noreferrer">
 
                             <img
-                                src="{{ Storage::disk('public')->url($order->payment_proof) }}"
+                                src="{{ asset('storage/' . $order->payment_proof) }}"
                                 alt="Bukti Pembayaran"
                                 class="w-full object-cover transition duration-300 hover:scale-[1.01] max-h-[500px]"
                             />

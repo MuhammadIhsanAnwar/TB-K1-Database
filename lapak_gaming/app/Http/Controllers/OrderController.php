@@ -47,10 +47,13 @@ class OrderController extends Controller {
 
         $user = Auth::user();
         $isBuyer = $order->buyer_id == $user->id;
-        $isSeller = $order->items()->whereHas('product', fn($query) => $query->where('seller_id', $user->id))->exists();
 
-        if (! $isBuyer && ! $isSeller && $user->role != 'admin') {
+        if (! $isBuyer) {
             abort(403, 'AKSES DITOLAK: ANDA TIDAK MEMILIKI AKSES KE PESANAN INI.');
+        }
+
+        if ($order->status !== Order::STATUS_COMPLETED) {
+            abort(403, 'Kwitansi hanya bisa diunduh setelah pesanan selesai.');
         }
 
         return app(PdfDocumentService::class)->downloadOrderReceipt(
