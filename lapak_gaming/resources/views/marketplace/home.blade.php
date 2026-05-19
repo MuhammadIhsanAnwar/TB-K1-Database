@@ -1740,7 +1740,7 @@ spline-viewer iframe {
       <div id="featured-banner-track" class="banner-track flex gap-4 overflow-x-auto scroll-smooth snap-x snap-mandatory">
         @foreach($featuredBanners as $banner)
           <a href="{{ $banner->link_url ?: '#' }}" class="banner-slide group relative flex-none w-[86%] sm:w-[58%] lg:w-[42%] overflow-hidden rounded-[24px] border border-slate-800 bg-slate-900 snap-start">
-            <div class="relative aspect-[16/9] overflow-hidden">
+            <div class="relative aspect-[3/1] overflow-hidden">
               <img src="{{ $banner->image_url }}" alt="{{ $banner->title }}" class="h-full w-full object-cover transition duration-500 group-hover:scale-105">
               <div class="absolute inset-0 bg-gradient-to-r from-slate-950/85 via-slate-950/45 to-transparent"></div>
               <div class="absolute inset-0 flex items-end p-5 sm:p-6">
