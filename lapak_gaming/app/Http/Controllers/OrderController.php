@@ -5,6 +5,7 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Services\Pdf\PdfDocumentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Support\Str;
@@ -34,6 +35,29 @@ class OrderController extends Controller {
 
         $order->load('items.product.seller');
         return view('orders.show', compact('order'));
+    }
+
+    public function downloadReceiptPdf($order_code)
+    {
+        $order = Order::where('order_code', $order_code)
+            ->orWhere('invoice_number', $order_code)
+            ->firstOrFail();
+
+        $user = Auth::user();
+        $isBuyer = $order->buyer_id == $user->id;
+        $isSeller = $order->items()->where('seller_id', $user->id)->exists();
+
+        if (! $isBuyer && ! $isSeller && $user->role != 'admin') {
+            abort(403, 'AKSES DITOLAK: ANDA TIDAK MEMILIKI AKSES KE PESANAN INI.');
+        }
+
+        $pdfContent = app(PdfDocumentService::class)->buildOrderReceipt($order);
+
+        return response()->streamDownload(function () use ($pdfContent): void {
+            echo $pdfContent;
+        }, ($order->invoice_number ?? 'kwitansi') . '.pdf', [
+            'Content-Type' => 'application/pdf',
+        ]);
     }
 
     public function checkout(Request $request) {

@@ -55,10 +55,11 @@
 
             @forelse($orders as $order)
 
-                <a href="{{ route('orders.show', $order->order_code) }}"
+                <div
                     class="reveal-up group block overflow-hidden rounded-[28px] border border-white/5 bg-[#0B1220]/90 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-500/30 hover:shadow-[0_0_35px_rgba(37,99,235,0.14)]">
 
-                    <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                    <a href="{{ route('orders.show', $order->order_code) }}" class="block">
+                        <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
 
                         {{-- LEFT --}}
                         <div>
@@ -120,8 +121,24 @@
 
                         </div>
 
+                        </div>
+                    </a>
+
+                    <div class="mt-5 flex flex-wrap gap-3 border-t border-white/5 pt-5">
+                        <a href="{{ route('orders.show', $order->order_code) }}"
+                           class="inline-flex items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 px-4 py-3 text-sm font-bold text-blue-300 transition hover:bg-blue-500/20">
+                            Lihat Detail
+                        </a>
+
+                        <a href="{{ route('orders.receipt.pdf', $order->order_code) }}"
+                           target="_blank"
+                           rel="noopener noreferrer"
+                           class="inline-flex items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-300 transition hover:bg-emerald-500/20">
+                            Unduh Kwitansi PDF
+                        </a>
                     </div>
-                </a>
+
+                </div>
 
             @empty
 

@@ -181,7 +181,7 @@ class PdfDocumentService
     private function limitText(string $value, int $length): string
     {
         if (function_exists('mb_strlen') && function_exists('mb_substr') && mb_strlen($value) > $length) {
-            return mb_substr($value, 0, $length - 1) . '…';
+            return mb_substr($value, 0, $length - 3) . '...';
         }
 
         if (strlen($value) > $length) {

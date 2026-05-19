@@ -200,6 +200,15 @@
 
                     </a>
 
+                    <a href="{{ route('orders.receipt.pdf', $order->order_code) }}"
+                       target="_blank"
+                       rel="noopener noreferrer"
+                       class="flex items-center justify-center rounded-[26px] border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-base font-bold text-emerald-300 transition duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:bg-emerald-500/20 hover:shadow-[0_0_25px_rgba(16,185,129,0.15)]">
+
+                        Unduh Kwitansi PDF
+
+                    </a>
+
                     @if(in_array($order->status, [\App\Models\Order::STATUS_PENDING_PAYMENT, \App\Models\Order::STATUS_PAYMENT_UPLOADED], true))
 
                         <form action="{{ route('orders.cancel', $order) }}" method="POST">

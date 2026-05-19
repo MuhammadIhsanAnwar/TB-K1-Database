@@ -74,6 +74,7 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
     Route::post('/cart/checkout', [OrderController::class, 'store'])->name('cart.store'); // <--- TAMBAHKAN INI
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order:order_code}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order:order_code}/receipt/pdf', [OrderController::class, 'downloadReceiptPdf'])->name('orders.receipt.pdf');
     Route::post('/orders/{order:order_code}/pay', [OrderController::class, 'pay'])->name('orders.pay');
     Route::post('/orders/{order:order_code}/complete', [OrderController::class, 'complete'])->name('orders.complete');
     Route::post('/orders/{order:order_code}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
