@@ -34,6 +34,26 @@
                     @error('bio') <p class="mt-2 text-sm text-rose-400">{{ $message }}</p> @enderror
                 </div>
 
+                <div>
+                    <label class="block text-sm font-medium text-slate-300">Foto Toko</label>
+                    <div class="mt-2 flex items-center gap-4">
+                        <div class="w-24 h-24 rounded-lg overflow-hidden bg-black/40 border border-white/5">
+                            @if(!empty($user->shop_photo))
+                                <img src="{{ asset($user->shop_photo) }}" alt="Foto Toko" class="w-full h-full object-cover">
+                            @elseif(!empty($profile?->avatar_path))
+                                <img src="{{ asset($profile->avatar_path) }}" alt="Foto Toko" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-sm text-slate-400">No Image</div>
+                            @endif
+                        </div>
+
+                        <div class="flex-1">
+                            <input type="file" name="store_photo" accept="image/*" class="mt-1 block w-full text-sm text-slate-300 file:rounded-lg file:border-0 file:bg-amber-500 file:px-3 file:py-2 file:text-white" />
+                            @error('store_photo') <p class="mt-2 text-sm text-rose-400">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                </div>
+
                 <button type="submit" class="rounded-2xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-amber-400">Simpan Perubahan Toko</button>
             </form>
 
