@@ -524,8 +524,8 @@
                             @if($googleSecret)
                                 <div class="mt-6 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-center">
                                     @if($googleQrCode)
-                                        <div class="rounded-3xl border border-white/10 bg-white p-4">
-                                            <img src="{{ $googleQrCode }}" alt="QR Code Google Authenticator" class="w-full h-auto">
+                                        <div class="rounded-3xl border border-white/10 bg-white p-4 flex items-center justify-center">
+                                            {!! $googleQrCode !!}
                                         </div>
                                     @endif
 
