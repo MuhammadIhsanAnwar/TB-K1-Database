@@ -125,7 +125,9 @@
                    class="rounded-xl border border-slate-700 bg-slate-800/60 px-5 py-3 text-sm font-bold text-white transition hover:border-slate-500 hover:bg-slate-700 active:scale-95">
                     Transaksi
                 </a>
-                <a href="{{ route('admin.orders.report.pdf') }}"
+                     <a href="{{ route('admin.orders.report.pdf') }}"
+                         download="laporan-pesanan.pdf"
+                         rel="noopener noreferrer"
                    class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-5 py-3 text-sm font-bold text-emerald-200 transition hover:border-emerald-400 hover:bg-emerald-500/20 active:scale-95">
                     Download PDF
                 </a>
