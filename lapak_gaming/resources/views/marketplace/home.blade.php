@@ -444,7 +444,7 @@ spline-viewer iframe {
         </div>
 
         {{-- Badge: Rating --}}
-        <div class="badge-float-c absolute z-30" style="bottom:12px;left:12px;">
+        <div class="badge-float-c absolute z-30" style="bottom:12px;right:12px;">
           <div class="flex items-center gap-2 rounded-2xl px-3.5 py-2 backdrop-blur-md"
                style="background:rgba(9,14,26,0.88);border:1px solid rgba(249,115,22,0.38);box-shadow:0 4px 24px rgba(0,0,0,0.55),0 0 12px rgba(249,115,22,0.14);">
             <span style="font-size:14px;">⭐</span>
