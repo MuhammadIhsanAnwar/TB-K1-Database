@@ -4,9 +4,26 @@ namespace App\Services\Pdf;
 
 use App\Models\Order;
 use Illuminate\Support\Collection;
+use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PdfDocumentService
 {
+    public function downloadOrdersReport(iterable $orders, string $filename = 'laporan-pesanan.pdf'): BinaryFileResponse
+    {
+        return $this->downloadGeneratedPdf(
+            $this->buildOrdersReport($orders),
+            $filename
+        );
+    }
+
+    public function downloadOrderReceipt(Order $order, string $filename): BinaryFileResponse
+    {
+        return $this->downloadGeneratedPdf(
+            $this->buildOrderReceipt($order),
+            $filename
+        );
+    }
+
     public function buildOrdersReport(iterable $orders): string
     {
         $this->loadLibrary();
@@ -214,5 +231,22 @@ class PdfDocumentService
         if (! class_exists('FPDF', false)) {
             require_once base_path('library_pdf/fpdf.php');
         }
+    }
+
+    private function downloadGeneratedPdf(string $pdfContent, string $filename): BinaryFileResponse
+    {
+        $tempPath = tempnam(sys_get_temp_dir(), 'lapak_pdf_');
+
+        if ($tempPath === false) {
+            abort(500, 'Tidak dapat menyiapkan file PDF sementara.');
+        }
+
+        file_put_contents($tempPath, $pdfContent);
+
+        return response()
+            ->download($tempPath, $filename, [
+                'Content-Type' => 'application/pdf',
+            ])
+            ->deleteFileAfterSend(true);
     }
 }

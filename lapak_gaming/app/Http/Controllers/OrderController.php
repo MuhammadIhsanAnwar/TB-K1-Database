@@ -52,13 +52,10 @@ class OrderController extends Controller {
             abort(403, 'AKSES DITOLAK: ANDA TIDAK MEMILIKI AKSES KE PESANAN INI.');
         }
 
-        $pdfContent = app(PdfDocumentService::class)->buildOrderReceipt($order);
-
-        return response()->streamDownload(function () use ($pdfContent): void {
-            echo $pdfContent;
-        }, ($order->invoice_number ?? 'kwitansi') . '.pdf', [
-            'Content-Type' => 'application/pdf',
-        ]);
+        return app(PdfDocumentService::class)->downloadOrderReceipt(
+            $order,
+            ($order->invoice_number ?? 'kwitansi') . '.pdf'
+        );
     }
 
     public function checkout(Request $request) {

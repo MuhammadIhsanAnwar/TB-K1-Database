@@ -358,13 +358,7 @@ class AdminController extends Controller
                 ->orderByDesc('created_at')
                 ->get();
 
-            $pdfContent = app(PdfDocumentService::class)->buildOrdersReport($orders);
-
-            return response()->streamDownload(function () use ($pdfContent): void {
-                echo $pdfContent;
-            }, 'laporan-pesanan.pdf', [
-                'Content-Type' => 'application/pdf',
-            ]);
+            return app(PdfDocumentService::class)->downloadOrdersReport($orders, 'laporan-pesanan.pdf');
         } catch (\Throwable $exception) {
             report($exception);
 
