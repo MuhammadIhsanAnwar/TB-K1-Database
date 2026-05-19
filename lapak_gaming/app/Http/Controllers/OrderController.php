@@ -28,7 +28,7 @@ class OrderController extends Controller {
         
         // PAKAI == BUKAN === BIAR STRING & INTEGER NGGAK BENTROK
         $isBuyer = $order->buyer_id == $user->id;
-        $isSeller = $order->items()->where('seller_id', $user->id)->exists();
+        $isSeller = $order->items()->whereHas('product', fn($query) => $query->where('seller_id', $user->id))->exists();
 
         if (!$isBuyer && !$isSeller && $user->role != 'admin') {
             abort(403, 'AKSES DITOLAK: ANDA TIDAK MEMILIKI AKSES KE PESANAN INI.');
@@ -46,7 +46,7 @@ class OrderController extends Controller {
 
         $user = Auth::user();
         $isBuyer = $order->buyer_id == $user->id;
-        $isSeller = $order->items()->where('seller_id', $user->id)->exists();
+        $isSeller = $order->items()->whereHas('product', fn($query) => $query->where('seller_id', $user->id))->exists();
 
         if (! $isBuyer && ! $isSeller && $user->role != 'admin') {
             abort(403, 'AKSES DITOLAK: ANDA TIDAK MEMILIKI AKSES KE PESANAN INI.');
@@ -193,7 +193,6 @@ class OrderController extends Controller {
               OrderItem::create([
                 'order_id' => $order->id,
                 'product_id' => $item->product_id,
-                'seller_id' => $item->product->seller_id,
 
                 'name_snapshot' => $item->product->name,
                 'price_snapshot' => $item->product->price,
@@ -223,12 +222,16 @@ class OrderController extends Controller {
         abort_if($order->buyer_id != Auth::id(), 403);
         abort_if(!in_array($order->status, [Order::STATUS_PAYMENT_UPLOADED, Order::STATUS_PROCESSING], true), 422);
 
+        $order->loadMissing('items.product.seller');
+
         DB::transaction(function () use ($order) {
             $order->update(['status' => Order::STATUS_COMPLETED, 'completed_at' => now()]);
 
             foreach ($order->items as $item) {
-                $sellerAmount = $item->subtotal * 0.95; 
-                $item->seller->addBalance($sellerAmount, "Penjualan Order #{$order->order_code}", $order->id);
+                $sellerAmount = $item->subtotal * 0.95;
+                if ($item->product?->seller) {
+                    $item->product->seller->addBalance($sellerAmount, "Penjualan Order #{$order->order_code}", $order->id);
+                }
                 $item->update(['delivery_status' => 'received']);
 
                 $statistics = $item->product->statistics()->firstOrCreate([], [

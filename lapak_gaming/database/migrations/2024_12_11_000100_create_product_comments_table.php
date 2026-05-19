@@ -16,8 +16,6 @@ return new class extends Migration
             $table->text('content');
             $table->unsignedTinyInteger('rating')->nullable()->between(1, 5);
             $table->boolean('is_verified_buyer')->default(false);
-            $table->unsignedInteger('likes_count')->default(0);
-            $table->unsignedInteger('replies_count')->default(0);
             $table->enum('status', ['approved', 'pending', 'rejected'])->default('approved');
             $table->softDeletes();
             $table->timestamps();
