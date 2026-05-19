@@ -337,7 +337,7 @@ class SettingsController extends Controller
             'two_factor_enabled' => $enabled,
             'two_factor_methods' => $enabled ? $methods : [],
             'two_factor_google_secret' => null,
-            'two_factor_confirmed_at' => null,
+            'two_factor_confirmed_at' => $enabled ? now() : null,
         ])->save();
 
         return back()->with('success', 'Pengaturan verifikasi 2 langkah berhasil diperbarui.');

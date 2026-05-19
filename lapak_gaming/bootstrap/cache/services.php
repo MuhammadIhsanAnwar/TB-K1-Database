@@ -35,6 +35,7 @@
     31 => 'Termwind\\Laravel\\TermwindServiceProvider',
     32 => 'PragmaRX\\Google2FALaravel\\ServiceProvider',
     33 => 'App\\Providers\\AppServiceProvider',
+    34 => 'App\\Providers\\FortifyServiceProvider',
   ),
   'eager' => 
   array (
@@ -56,6 +57,7 @@
     15 => 'Termwind\\Laravel\\TermwindServiceProvider',
     16 => 'PragmaRX\\Google2FALaravel\\ServiceProvider',
     17 => 'App\\Providers\\AppServiceProvider',
+    18 => 'App\\Providers\\FortifyServiceProvider',
   ),
   'deferred' => 
   array (

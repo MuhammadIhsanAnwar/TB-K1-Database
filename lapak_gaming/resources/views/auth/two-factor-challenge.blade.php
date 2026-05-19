@@ -49,13 +49,27 @@
 @endpush
 
 @section('content')
+@php
+  $challengeMethod = $challengeMethod ?? 'google';
+  $challengeTitle = match ($challengeMethod) {
+    'sms' => 'SMS',
+    'email' => 'Email',
+    default => 'Google Authenticator',
+  };
+  $challengeHelp = match ($challengeMethod) {
+    'sms' => 'Masukkan kode yang dikirim ke nomor telepon akun Anda.',
+    'email' => 'Masukkan kode yang dikirim ke email akun Anda.',
+    default => 'Masukkan kode dari Google Authenticator untuk melanjutkan login ke akun ' . $user->email . '.',
+  };
+@endphp
+
 <div class="relative min-h-screen flex items-center justify-center py-16 px-4 overflow-hidden">
   <div class="challenge-bg absolute inset-0 pointer-events-none"></div>
 
   <div class="w-full max-w-[420px] relative z-10">
     <div class="text-center mb-8">
       <h1 class="text-3xl font-black text-white mb-2">Verifikasi 2 Langkah</h1>
-      <p class="text-slate-400 text-sm">Masukkan kode dari Google Authenticator untuk melanjutkan login ke akun {{ $user->email }}.</p>
+      <p class="text-slate-400 text-sm">{{ $challengeHelp }}</p>
     </div>
 
     @if(session('status'))
@@ -75,7 +89,7 @@
         @csrf
 
         <div>
-          <label class="block text-xs font-semibold text-slate-400 mb-1.5 tracking-wide">KODE AUTHENTICATOR</label>
+          <label class="block text-xs font-semibold text-slate-400 mb-1.5 tracking-wide">KODE {{ strtoupper($challengeTitle) }}</label>
           <input type="text"
                  name="verification_code"
                  inputmode="numeric"
@@ -92,7 +106,7 @@
       </form>
 
       <div class="mt-5 text-center text-xs text-slate-500">
-        Buka aplikasi Google Authenticator, ambil kode terbaru, lalu masukkan di atas.
+        {{ $challengeMethod === 'google' ? 'Buka aplikasi Google Authenticator, ambil kode terbaru, lalu masukkan di atas.' : 'Cek pesan verifikasi terbaru di metode yang dipilih, lalu masukkan kodenya di atas.' }}
       </div>
     </div>
   </div>
