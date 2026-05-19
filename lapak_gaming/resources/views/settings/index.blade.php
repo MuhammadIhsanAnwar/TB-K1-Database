@@ -58,18 +58,18 @@
                     {{-- MENU --}}
                     <nav class="mt-8 space-y-3">
 
-                        <a href="{{ Route::has('settings.profile') ? route('settings.profile') : '#' }}"
+                        <a href="{{ Route::has('settings.profile') ? route('settings.profile') : url('/settings/profile') }}"
                             class="menu-item {{ $selectedTab === 'profile' ? 'menu-active-blue' : 'menu-normal' }}">
                             Edit Profil
                         </a>
 
-                        <a href="{{ Route::has('settings.account') ? route('settings.account') : '#' }}"
+                        <a href="{{ Route::has('settings.account') ? route('settings.account') : url('/settings/account') }}"
                             class="menu-item {{ $selectedTab === 'account' ? 'menu-active-blue' : 'menu-normal' }}">
                             Pengaturan Akun
                         </a>
 
                         @if(! $user->isGoogleAccount())
-                        <a href="{{ Route::has('settings.password') ? route('settings.password') : '#' }}"
+                        <a href="{{ Route::has('settings.password') ? route('settings.password') : url('/settings/password') }}"
                             class="menu-item {{ $selectedTab === 'password' ? 'menu-active-blue' : 'menu-normal' }}">
                             Ubah Password
                         </a>
@@ -79,12 +79,12 @@
                         </div>
                         @endif
 
-                        <a href="{{ Route::has('settings.security') ? route('settings.security') : '#' }}"
+                        <a href="{{ Route::has('settings.security') ? route('settings.security') : url('/settings/security') }}"
                             class="menu-item {{ $selectedTab === 'security' ? 'menu-active-blue' : 'menu-normal' }}">
                             Verifikasi 2 Langkah
                         </a>
 
-                        <a href="{{ Route::has('settings.seller') ? route('settings.seller') : '#' }}"
+                        <a href="{{ Route::has('settings.seller') ? route('settings.seller') : url('/settings/seller') }}"
                             class="menu-item {{ $selectedTab === 'seller' ? 'menu-active-orange' : 'menu-normal' }}">
                             Daftar Jadi Seller
                         </a>
