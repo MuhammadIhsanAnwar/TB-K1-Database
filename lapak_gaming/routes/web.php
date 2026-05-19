@@ -286,4 +286,8 @@ Route::get('/tentang-kami', [PageController::class, 'about'])->name('about');
 Route::patch('/chat/message/{message}', [ChatController::class, 'editMessage'])->name('chat.update');
 Route::delete('/chat/message/{message}', [ChatController::class, 'deleteMessage'])->name('chat.destroy');
 
-Route::get('/view-proof/{filename}', [App\Http\Controllers\OrderController::class, 'viewProof'])->name('orders.viewProof');
+Route::get('/payment-proof/{filename}', function ($filename) {
+    $path = storage_path('app/public/payment_proofs/' . $filename);
+    if (!file_exists($path)) abort(404);
+    return response()->file($path);
+})->middleware('auth')->name('payment.proof');

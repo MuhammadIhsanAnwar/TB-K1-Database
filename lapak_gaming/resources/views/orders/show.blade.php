@@ -229,16 +229,20 @@
 
                     <div class="mt-5 overflow-hidden rounded-[24px] border border-white/10">
 
-                        <a href="{{ Storage::disk('public')->url($order->payment_proof) }}"
+                        @php
+                            $proofFilename = basename($order->payment_proof);
+                        @endphp
+                        
+                        <a href="{{ route('payment.proof', $proofFilename) }}"
                            target="_blank"
                            rel="noopener noreferrer">
 
                             <img
-                                src="{{ Storage::disk('public')->url($order->payment_proof) }}"
+                                src="{{ route('payment.proof', $proofFilename) }}"
                                 alt="Bukti Pembayaran"
                                 class="w-full object-cover transition duration-300 hover:scale-[1.01] max-h-[500px]"
                             />
-
+                        
                         </a>
 
                     </div>
