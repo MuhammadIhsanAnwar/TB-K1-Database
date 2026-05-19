@@ -68,8 +68,8 @@ class MarketplaceController extends Controller
         }
 
         $averageRating = Schema::hasTable('reviews')
-            ? (float) Review::query()->where('is_public', true)->avg('rating')
-            : 0.0;
+            ? (float) (Review::query()->avg('rating') ?? 4.8)
+            : 4.8;
 
         $transactionCount = Schema::hasTable('orders')
             ? Order::query()->completed()->count()
