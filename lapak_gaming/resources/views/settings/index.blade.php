@@ -242,12 +242,6 @@
                                         Perempuan
                                     </option>
 
-                                    <option value="other"
-                                        class="bg-[#111827] text-white"
-                                        @selected(old('gender', $profile?->gender) === 'other')>
-                                        Lainnya
-                                    </option>
-
                                 </select>
 
                             </div>
