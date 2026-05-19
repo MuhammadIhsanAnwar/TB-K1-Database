@@ -59,6 +59,16 @@ class DashboardController extends Controller
     public function seller(Request $request): View
     {
         $user = $request->user();
+
+        if ($user->status === 'suspended' || $user->seller_status === 'suspended') {
+            return view('dashboard.seller-suspended', [
+                'user' => $user,
+                'suspensionType' => $user->seller_status === 'suspended' ? 'toko' : 'akun',
+                'suspensionReason' => $user->suspend_reason,
+                'suspendedAt' => $user->suspended_at,
+            ]);
+        }
+
         $products = Schema::hasTable('products')
             ? Product::query()->where('seller_id', $user->id)->latest()->take(6)->get()
             : collect();

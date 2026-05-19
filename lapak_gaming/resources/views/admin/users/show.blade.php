@@ -166,6 +166,63 @@
           </div>
         </div>
 
+        @if($user->seller_status === 'suspended')
+          <div class="mt-5 rounded-2xl border border-red-500/20 bg-red-500/05 p-4">
+            <p class="text-xs text-slate-500 uppercase tracking-wider mb-1">Status Toko</p>
+            <p class="text-sm font-semibold text-red-300">Toko sedang disuspend.</p>
+            <p class="mt-2 text-sm text-slate-300">{{ $user->suspend_reason ?? 'Tidak ada alasan yang dicatat oleh admin.' }}</p>
+          </div>
+        @endif
+
+        <div class="mt-6 grid gap-4 lg:grid-cols-2">
+          <div class="rounded-3xl border border-slate-800 bg-slate-950 p-5">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-2">Suspend Toko</h3>
+            <p class="text-xs text-slate-600 mb-4">Menonaktifkan akses seller dashboard dan aktivitas toko.</p>
+
+            @if($user->seller_status !== 'suspended')
+              <form method="POST" action="{{ route('admin.verification.suspend', $user) }}" class="space-y-3">
+                @csrf
+                <textarea name="notes" rows="3"
+                  class="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-600 outline-none resize-none focus:border-red-500/40 transition"
+                  placeholder="Tulis alasan suspend toko..." required minlength="10" maxlength="2000"></textarea>
+                <button type="submit"
+                  class="rounded-2xl bg-red-600 px-5 py-2.5 text-sm font-semibold text-white hover:bg-red-500 transition">
+                  Suspend Toko
+                </button>
+              </form>
+            @else
+              <form method="POST" action="{{ route('admin.verification.reinstate', $user) }}" class="space-y-3">
+                @csrf
+                <textarea name="notes" rows="3"
+                  class="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-600 outline-none resize-none focus:border-emerald-500/40 transition"
+                  placeholder="Opsional: catatan pemulihan toko..." maxlength="1000"></textarea>
+                <button type="submit"
+                  class="rounded-2xl bg-emerald-500 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-emerald-400 transition">
+                  Pulihkan Toko
+                </button>
+              </form>
+            @endif
+          </div>
+
+          <div class="rounded-3xl border border-slate-800 bg-slate-950 p-5">
+            <h3 class="text-sm font-semibold text-slate-400 uppercase tracking-widest mb-2">Suspend Akun</h3>
+            <p class="text-xs text-slate-600 mb-4">Mencegah user masuk ke akun dan dashboard seller.</p>
+
+            <form action="{{ route('admin.users.status', $user) }}" method="POST" class="space-y-3">
+              @csrf
+              @method('PUT')
+              <input type="hidden" name="status" value="suspended">
+              <textarea name="suspend_reason" rows="3"
+                class="w-full rounded-2xl border border-slate-700 bg-slate-900 px-4 py-3 text-white placeholder:text-slate-600 outline-none resize-none focus:border-red-500/40 transition"
+                placeholder="Tulis alasan suspend akun..." required minlength="10" maxlength="1000">{{ old('suspend_reason', $user->suspend_reason) }}</textarea>
+              <button type="submit"
+                class="rounded-2xl bg-amber-500 px-5 py-2.5 text-sm font-semibold text-slate-950 hover:bg-amber-400 transition">
+                Suspend Akun
+              </button>
+            </form>
+          </div>
+        </div>
+
         @if($user->seller_status === 'pending')
           <div class="flex flex-col sm:flex-row gap-3 mt-5 pt-5 border-t border-slate-800">
             <form method="POST" action="{{ route('admin.users.approve-seller', $user) }}">
