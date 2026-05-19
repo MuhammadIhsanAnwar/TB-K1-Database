@@ -69,6 +69,33 @@ class AuthController extends Controller
             ])->onlyInput('email');
         }
 
+        // ── Suspended account check (before 2FA/login finalization) ────────
+        if ($user && $user->status === 'suspended') {
+            $reason  = $user->suspend_reason;
+            $message = 'Akun Anda telah disuspend oleh admin.';
+
+            if ($reason) {
+                $message .= ' Alasan: ' . $reason;
+            }
+
+            return back()->withErrors(['email' => $message])->onlyInput('email');
+        }
+
+        // ── Deactivated account check (before 2FA/login finalization) ─────
+        if ($user && $user->deactivated_at) {
+            if ($user->deactivated_at->copy()->addMonths(6)->isPast()) {
+                $user->delete();
+
+                return back()->withErrors([
+                    'email' => 'Akun Anda telah dihapus permanen karena melewati batas waktu aktivasi.',
+                ])->onlyInput('email');
+            }
+
+            $request->session()->put('reactivate_user_id', $user->id);
+
+            return redirect()->route('account.reactivate.form');
+        }
+
         if ($this->requiresTwoFactorChallenge($user)) {
             $request->session()->put('two_factor_login_pending', [
                 'user_id' => $user->id,
@@ -88,39 +115,6 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
         $user = $request->user();
-
-        // ── Suspended account check ──────────────────────────────────────────
-        if ($user && $user->status === 'suspended') {
-            Auth::logout();
-            $request->session()->invalidate();
-
-            $reason  = $user->suspend_reason;
-            $message = 'Akun Anda telah disuspend oleh admin.';
-
-            if ($reason) {
-                $message .= ' Alasan: ' . $reason;
-            }
-
-            return back()->withErrors(['email' => $message])->onlyInput('email');
-        }
-
-        // ── Deactivated account check ────────────────────────────────────────
-        if ($user && $user->deactivated_at) {
-            if ($user->deactivated_at->copy()->addMonths(6)->isPast()) {
-                $user->delete();
-                Auth::logout();
-
-                return back()->withErrors([
-                    'email' => 'Akun Anda telah dihapus permanen karena melewati batas waktu aktivasi.',
-                ])->onlyInput('email');
-            }
-
-            Auth::logout();
-            $request->session()->regenerate();
-            $request->session()->put('reactivate_user_id', $user->id);
-
-            return redirect()->route('account.reactivate.form');
-        }
 
         if ($user?->role === 'admin') {
             return redirect()->route('admin.dashboard');
@@ -405,6 +399,16 @@ class AuthController extends Controller
             $request->session()->put('reactivate_user_id', $user->id);
 
             return redirect()->route('account.reactivate.form');
+        }
+
+        if ($this->requiresTwoFactorChallenge($user)) {
+            $request->session()->put('two_factor_login_pending', [
+                'user_id' => $user->id,
+                'remember' => true,
+            ]);
+
+            return redirect()->route('two-factor.challenge')
+                ->with('status', 'Masukkan kode Google Authenticator untuk menyelesaikan login.');
         }
 
         Auth::login($user, true);

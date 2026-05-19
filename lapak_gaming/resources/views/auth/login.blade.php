@@ -222,7 +222,7 @@
       {{-- Error banner --}}
       @if($errors->any())
       <div class="auth-error mb-5">
-        <svg class="w-4 h-4 text-red-400 shrink-0 mt-0.5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+        <svg class="w-4 h-4 text-red-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
         </svg>
         <p class="text-sm text-red-300 leading-relaxed">{{ $errors->first() }}</p>
