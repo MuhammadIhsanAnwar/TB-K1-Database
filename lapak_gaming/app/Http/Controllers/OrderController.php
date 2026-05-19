@@ -38,10 +38,11 @@ class OrderController extends Controller {
 
     public function checkout(Request $request) {
         $cartItems = Cart::where('user_id', Auth::id())
+            ->where('is_selected', true)
             ->with('product')->get();
 
         if ($cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Keranjang kosong!');
+            return redirect()->route('cart.index')->with('error', 'Keranjang kosong atau belum ada produk yang dipilih!');
         }
 
         // Validasi stok
@@ -116,9 +117,9 @@ class OrderController extends Controller {
 
         $request->validate(['payment_method' => 'required|in:balance,transfer,qris,dana,ovo,gopay'], $messages);
 
-        $cartItems = Cart::where('user_id', Auth::id())->with('product')->get();
+        $cartItems = Cart::where('user_id', Auth::id())->where('is_selected', true)->with('product')->get();
         if ($cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Keranjang kosong!');
+            return redirect()->route('cart.index')->with('error', 'Keranjang kosong atau belum ada produk yang dipilih!');
         }
 
         foreach ($cartItems as $item) {
@@ -133,12 +134,21 @@ class OrderController extends Controller {
             $fee = round($subtotal * 0.02);
             $grand_total = $subtotal + $fee; 
 
+            $notesArray = [];
+            foreach ($cartItems as $item) {
+                if (!empty($item->notes)) {
+                    $notesArray[] = $item->product->name . ': ' . $item->notes;
+                }
+            }
+            $combinedNotes = implode("\n", $notesArray);
+
             $order = Order::create([
                 'buyer_id'       => Auth::id(),
                 'invoice_number' => 'INV-' . strtoupper(Str::random(10)),
                 'status'         => Order::STATUS_PENDING_PAYMENT,
                 'payment_method' => $request->payment_method,
                 'total_price'    => $grand_total,
+                'notes'          => $combinedNotes ?: null,
             ]);
 
             if (method_exists($order, 'financial')) {
@@ -167,7 +177,7 @@ class OrderController extends Controller {
                 $item->product->decrement('stock', $item->quantity);
             }
 
-            Cart::where('user_id', Auth::id())->delete();
+            Cart::where('user_id', Auth::id())->where('is_selected', true)->delete();
 
             $identifier = $order->order_code ?? $order->invoice_number ?? $order->id;
             session(['last_order_code' => $identifier]);

@@ -9,10 +9,21 @@ use Illuminate\Support\Facades\DB;
 
 class CartController extends Controller {
     public function index() {
+        if (!\Illuminate\Support\Facades\Schema::hasColumn('carts', 'notes') || !\Illuminate\Support\Facades\Schema::hasColumn('carts', 'is_selected')) {
+            try {
+                \Illuminate\Support\Facades\Artisan::call('migrate', ['--force' => true]);
+            } catch (\Throwable $e) {
+                // Silently skip if migration fails
+            }
+        }
+
         $cartItems = Cart::where('user_id', Auth::id())
             ->with('product.seller')
             ->get();
-        $total = $cartItems->sum(fn($c) => $c->product->price * $c->quantity);
+        
+        $selectedItems = $cartItems->filter(fn($c) => $c->is_selected);
+        $total = $selectedItems->sum(fn($c) => $c->product->price * $c->quantity);
+        
         return view('cart.index', compact('cartItems', 'total'));
     }
 
@@ -59,9 +70,50 @@ class CartController extends Controller {
         ];
 
         $request->validate(['quantity' => 'required|integer|min:1|max:99'], $messages);
-        Cart::where('id', $id)->where('user_id', Auth::id())
-            ->update(['quantity' => $request->quantity]);
+        
+        $cart = Cart::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        
+        if ($request->quantity > $cart->product->stock) {
+            if ($request->wantsJson()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Stok tidak cukup! Maksimal stok: ' . $cart->product->stock,
+                ], 422);
+            }
+            return back()->with('error', 'Stok tidak cukup!');
+        }
+
+        $cart->quantity = $request->quantity;
+        $cart->save();
+
+        if ($request->wantsJson()) {
+            return response()->json([
+                'success' => true,
+                'quantity' => $cart->quantity,
+            ]);
+        }
         return back()->with('success', 'Keranjang diperbarui.');
+    }
+
+    public function toggleSelect(Request $request, $id) {
+        $cart = Cart::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $cart->is_selected = !$cart->is_selected;
+        $cart->save();
+
+        return response()->json([
+            'success' => true,
+            'is_selected' => $cart->is_selected,
+        ]);
+    }
+
+    public function updateNote(Request $request, $id) {
+        $cart = Cart::where('id', $id)->where('user_id', Auth::id())->firstOrFail();
+        $cart->notes = $request->notes;
+        $cart->save();
+
+        return response()->json([
+            'success' => true,
+        ]);
     }
 
     public function remove(int $id) {

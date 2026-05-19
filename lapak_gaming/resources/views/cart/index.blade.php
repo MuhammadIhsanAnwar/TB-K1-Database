@@ -85,7 +85,15 @@ use Illuminate\Support\Str;
                             <div
                                 class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-5 flex flex-col sm:flex-row gap-5 transition-all hover:border-amber-500/40 hover:bg-slate-900 shadow-md">
 
-                                {{-- Gambar Produk (Logic Anti-Broken Khusus Keranjang) --}}
+                                {{-- Checkbox Pilihan --}}
+                                <div class="flex items-center justify-center shrink-0 pr-1">
+                                    <input type="checkbox" 
+                                           class="w-5 h-5 rounded border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500/50 cursor-pointer"
+                                           {{ $item->is_selected ? 'checked' : '' }}
+                                           onchange="toggleSelectItem({{ $item->id }})">
+                                </div>
+
+                                {{-- Gambar Produk --}}
                                 <div class="shrink-0 relative">
                                     <img src="{{ $item->product->image_url }}"
                                          class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover border border-slate-700 shadow-inner"
@@ -105,24 +113,49 @@ use Illuminate\Support\Str;
                                         class="text-lg font-bold text-white leading-tight mb-1 truncate group-hover:text-amber-500 transition-colors">
                                         {{ $item->product->name }}</h3>
 
-                                    <div class="flex items-center gap-2 text-xs text-slate-400">
-                                        <svg class="w-3.5 h-3.5 text-slate-500" fill="none" viewBox="0 0 24 24"
-                                            stroke="currentColor">
-                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                                                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                                        </svg>
+                                    <div class="flex items-center gap-2 text-xs text-slate-400 mb-3">
                                         Seller: <span class="text-amber-500/80 font-bold">{{ $item->product->seller->name }}</span>
+                                    </div>
+
+                                    {{-- Catatan untuk Penjual --}}
+                                    <div class="mt-1">
+                                        <label class="text-[10px] uppercase tracking-wider font-bold text-slate-500 block mb-1">Catatan untuk Penjual</label>
+                                        <input type="text" 
+                                               id="note-input-{{ $item->id }}" 
+                                               placeholder="Tulis catatan (misal: kirim instan ya, username/ID game dll)..." 
+                                               value="{{ $item->notes }}" 
+                                               onchange="updateItemNote({{ $item->id }})" 
+                                               class="w-full text-xs rounded-xl bg-slate-950 border border-slate-800 text-slate-300 px-3.5 py-2.5 outline-none focus:border-amber-500/50 transition-colors">
                                     </div>
                                 </div>
 
                                 {{-- Harga & Aksi --}}
                                 <div
-                                    class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-4 sm:border-l border-slate-800 sm:pl-8">
+                                    class="flex flex-row sm:flex-col items-center sm:items-end justify-between sm:justify-center gap-4 sm:border-l border-slate-800 sm:pl-8 min-w-[150px]">
                                     <div class="text-xl font-black text-amber-500 italic">
                                         Rp {{ number_format($item->product->price, 0, ',', '.') }}
                                     </div>
 
-                                    <form action="{{ route('cart.remove', $item->id) }}" method="POST">
+                                    {{-- Quantity Selector --}}
+                                    <div class="flex items-center gap-2 mt-2">
+                                        <button type="button" 
+                                                onclick="decrementQty({{ $item->id }})" 
+                                                class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white flex items-center justify-center font-black text-lg select-none active:scale-95 transition-all">-</button>
+                                        
+                                        <input type="number" 
+                                               id="qty-input-{{ $item->id }}" 
+                                               value="{{ $item->quantity }}" 
+                                               min="1" 
+                                               max="{{ $item->product->stock }}"
+                                               onchange="onQtyInputChange({{ $item->id }}, {{ $item->product->stock }})"
+                                               class="w-12 h-8 text-center rounded-lg bg-slate-950 border border-slate-800 text-white font-black text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:border-amber-500/50 focus:outline-none">
+                                        
+                                        <button type="button" 
+                                                onclick="incrementQty({{ $item->id }}, {{ $item->product->stock }})" 
+                                                class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white flex items-center justify-center font-black text-lg select-none active:scale-95 transition-all">+</button>
+                                    </div>
+
+                                    <form action="{{ route('cart.remove', $item->id) }}" method="POST" class="mt-2">
                                         @csrf @method('DELETE')
                                         <button
                                             class="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold text-slate-600 hover:text-rose-500 hover:bg-rose-500/10 transition-all"
@@ -166,8 +199,8 @@ use Illuminate\Support\Str;
 
                             <div class="space-y-4 border-b border-slate-800 pb-6 text-sm">
                                 <div class="flex justify-between items-center">
-                                    <span class="text-slate-500 font-bold uppercase tracking-tighter">Total Item</span>
-                                    <span class="text-white font-black">{{ $cartItemCount }} Pcs</span>
+                                    <span class="text-slate-500 font-bold uppercase tracking-tighter">Total Item Terpilih</span>
+                                    <span class="text-white font-black">{{ $cartItems->filter(fn($c) => $c->is_selected)->sum('quantity') }} Pcs</span>
                                 </div>
                                 <div class="flex justify-between items-center">
                                     <span class="text-slate-500 font-bold uppercase tracking-tighter">Subtotal</span>
@@ -187,10 +220,17 @@ use Illuminate\Support\Str;
                                 </span>
                             </div>
 
-                            <a href="{{ route('cart.checkout') }}"
-                               class="w-full py-4 bg-amber-500 text-slate-950 font-black text-lg rounded-2xl hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/20 active:scale-95 flex items-center justify-center gap-2 uppercase">
-                                LANJUT PEMBAYARAN
-                            </a>
+                            @if($cartItems->filter(fn($c) => $c->is_selected)->isNotEmpty())
+                                <a href="{{ route('cart.checkout') }}"
+                                   class="w-full py-4 bg-amber-500 text-slate-950 font-black text-lg rounded-2xl hover:bg-amber-400 transition-all shadow-lg shadow-amber-500/20 active:scale-95 flex items-center justify-center gap-2 uppercase">
+                                    LANJUT PEMBAYARAN
+                                </a>
+                            @else
+                                <button type="button" disabled
+                                        class="w-full py-4 bg-slate-800/80 text-slate-500 font-black text-lg rounded-2xl cursor-not-allowed flex items-center justify-center gap-2 uppercase">
+                                    Pilih Produk Terlebih Dahulu
+                                </button>
+                            @endif
 
                             <div class="mt-8 pt-6 border-t border-slate-800">
                                 <div
@@ -214,4 +254,94 @@ use Illuminate\Support\Str;
             @endif
         </div>
     </div>
+
+    <script>
+        function toggleSelectItem(id) {
+            fetch(`/cart/${id}/toggle-select`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.reload();
+                }
+            });
+        }
+
+        function updateItemNote(id) {
+            const note = document.getElementById(`note-input-${id}`).value;
+            fetch(`/cart/${id}/update-note`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ notes: note })
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const input = document.getElementById(`note-input-${id}`);
+                    input.classList.add('border-emerald-500');
+                    setTimeout(() => {
+                        input.classList.remove('border-emerald-500');
+                    }, 1000);
+                }
+            });
+        }
+
+        function updateQty(id, newQty) {
+            fetch(`/cart/${id}`, {
+                method: 'PATCH',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json',
+                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                },
+                body: JSON.stringify({ quantity: newQty })
+            })
+            .then(async res => {
+                if (res.ok) {
+                    window.location.reload();
+                } else {
+                    const data = await res.json();
+                    alert(data.message || 'Gagal mengubah jumlah produk');
+                    window.location.reload();
+                }
+            });
+        }
+
+        function incrementQty(id, stock) {
+            const input = document.getElementById(`qty-input-${id}`);
+            let current = parseInt(input.value) || 1;
+            if (current < stock) {
+                updateQty(id, current + 1);
+            } else {
+                alert('Mencapai batas stok maksimal penjual!');
+            }
+        }
+
+        function decrementQty(id) {
+            const input = document.getElementById(`qty-input-${id}`);
+            let current = parseInt(input.value) || 1;
+            if (current > 1) {
+                updateQty(id, current - 1);
+            }
+        }
+
+        function onQtyInputChange(id, stock) {
+            const input = document.getElementById(`qty-input-${id}`);
+            let val = parseInt(input.value) || 1;
+            if (val < 1) val = 1;
+            if (val > stock) {
+                alert('Stok tidak cukup!');
+                val = stock;
+            }
+            updateQty(id, val);
+        }
+    </script>
 @endsection
