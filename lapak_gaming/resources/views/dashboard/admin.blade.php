@@ -335,6 +335,28 @@
             </select>
         </div>
 
+        <div class="min-w-[180px]">
+            <label for="start_date" class="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Tanggal Awal</label>
+            <input
+                id="start_date"
+                type="date"
+                name="start_date"
+                value="{{ $chartStartDate ?? request('start_date') }}"
+                class="w-full rounded-2xl border border-white/10 bg-[#050816] px-4 py-3 text-sm text-white outline-none transition focus:border-blue-400"
+            >
+        </div>
+
+        <div class="min-w-[180px]">
+            <label for="end_date" class="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Tanggal Akhir</label>
+            <input
+                id="end_date"
+                type="date"
+                name="end_date"
+                value="{{ $chartEndDate ?? request('end_date') }}"
+                class="w-full rounded-2xl border border-white/10 bg-[#050816] px-4 py-3 text-sm text-white outline-none transition focus:border-blue-400"
+            >
+        </div>
+
         <button type="submit" class="rounded-2xl bg-blue-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-400">Terapkan</button>
     </form>
 
