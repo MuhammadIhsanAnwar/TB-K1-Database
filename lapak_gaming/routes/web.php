@@ -145,6 +145,7 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
     // Seller Store Management
     Route::get('/seller/store', [SellerStoreController::class, 'edit'])->name('seller.store.edit');
     Route::put('/seller/store', [SellerStoreController::class, 'update'])->name('seller.store.update');
+    Route::post('/seller/store/deactivate', [SellerStoreController::class, 'deactivate'])->name('seller.store.deactivate');
     Route::delete('/seller/store', [SellerStoreController::class, 'destroy'])->name('seller.store.destroy');
 
     // Seller Product Management

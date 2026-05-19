@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Seller;
 
 use App\Http\Controllers\Controller;
 use App\Models\User;
+use App\Models\OrderItem;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -84,6 +85,16 @@ class SellerStoreController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
+        // Prevent permanent deletion if the seller has any historical transactions
+        $hasTransactions = OrderItem::whereHas('product', fn($q) => $q->where('seller_id', $user->id))->exists();
+
+        if ($hasTransactions) {
+            return back()->withErrors([
+                'store' => 'Toko tidak dapat dihapus karena sudah ada transaksi. Jika ingin berhenti berjualan, gunakan tombol "Nonaktifkan Toko" untuk menonaktifkan akses jualan tanpa menghapus riwayat transaksi.',
+            ]);
+        }
+
+        // Safe to remove seller status and archive products
         $user->forceFill([
             'is_seller' => false,
             'user_type' => 'buyer',
@@ -92,5 +103,23 @@ class SellerStoreController extends Controller
         $user->products()->update(['status' => 'archived']);
 
         return redirect()->route('dashboard')->with('success', 'Toko dan status seller Anda telah dihapus.');
+    }
+
+    public function deactivate(Request $request)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        // Mark user as non-seller but keep transaction history and shop data intact
+        $user->forceFill([
+            'is_seller' => false,
+            'user_type' => 'buyer',
+            'seller_status' => Schema::hasColumn('users', 'seller_status') ? 'none' : ($user->seller_status ?? 'none'),
+        ])->save();
+
+        // Archive active products so they are not visible in marketplace
+        $user->products()->update(['status' => 'archived']);
+
+        return redirect()->route('dashboard')->with('success', 'Toko berhasil dinonaktifkan. Anda dapat mengaktifkannya kembali setelah pengaturan ulang.');
     }
 }
