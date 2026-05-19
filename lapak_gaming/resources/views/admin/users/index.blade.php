@@ -567,10 +567,17 @@ a{
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
                       @if($seller->status === 'active')
-                        <button onclick="openSuspendModal({{ $seller->id }}, '{{ addslashes($seller->name) }}')"
-                                class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
-                          Suspend Toko
-                        </button>
+                        <div class="inline-flex gap-2">
+                          <button onclick="openSuspendShopModal({{ $seller->id }}, '{{ addslashes($seller->shop_name ?? $seller->name) }}')"
+                                  class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
+                            Suspend Toko
+                          </button>
+
+                          <button onclick="openSuspendModal({{ $seller->id }}, '{{ addslashes($seller->name) }}')"
+                                  class="rounded-xl bg-amber-500/10 border border-amber-500/20 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-400 hover:text-white transition-all">
+                            Suspend Akun
+                          </button>
+                        </div>
                       @else
                         <form method="POST" action="{{ route('admin.users.status', $seller) }}" class="inline-block">
                           @csrf @method('PUT')
@@ -655,6 +662,43 @@ a{
                   </div>
                 </div>
               </div>
+
+                {{-- ─────────────────────────────────────────────────────────────────────── --}}
+                {{-- MODAL INTERAKTIF HUD: SUSPEND TOKO (KHUSUS ADMIN VERIFICATION)          --}}
+                {{-- ─────────────────────────────────────────────────────────────────────── --}}
+                <div class="modal-overlay animate-fade-in" id="suspend-shop-modal" role="dialog" aria-modal="true" aria-labelledby="suspend-shop-modal-title">
+                  <div class="w-full max-w-md rounded-3xl p-6 sm:p-7 modal-box-glass border-rose-500/30">
+                    <div class="flex items-center gap-2 border-b border-white/5 pb-3 mb-4">
+                      <span class="text-xl">🏪</span>
+                      <h3 id="suspend-shop-modal-title" class="text-lg font-bold text-white tracking-tight">Suspend Toko Mitra</h3>
+                    </div>
+
+                    <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                      Menonaktifkan aktivitas toko dan menolak akses seller dashboard untuk <strong id="suspend-shop-name" class="text-white font-bold"></strong>. Tuliskan catatan yang jelas untuk tim dan pengguna.
+                    </p>
+
+                    <form id="suspend-shop-form" method="POST" action="">
+                      @csrf
+                      <div class="mb-5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                          Catatan Suspend Toko <span class="text-slate-500 font-normal lowercase">(muncul pada panel admin dan notifikasi)</span>
+                        </label>
+                        <textarea name="notes" rows="4" maxlength="1000" required
+                          class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none resize-none"
+                          placeholder="Contoh: Pelanggaran kebijakan: jual item ilegal, penyalahgunaan sistem top-up."></textarea>
+                      </div>
+
+                      <div class="flex gap-2.5">
+                        <button type="submit" class="flex-1 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 px-5 py-3 text-xs font-bold text-white transition-all shadow-md shadow-rose-600/10">
+                          EKSEKUSI SUSPEND TOKO
+                        </button>
+                        <button type="button" onclick="closeSuspendShopModal()" class="flex-1 rounded-xl border border-white/5 bg-white/5 px-5 py-3 text-xs font-bold text-slate-300 hover:bg-white/10 transition-colors">
+                          BATALKAN
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
 
               {{-- Footer Action Bar --}}
               <div class="border-t border-white/5 px-6 py-4 flex flex-col sm:flex-row justify-end items-center gap-2.5">
@@ -795,8 +839,20 @@ a{
     document.body.style.overflow = '';
   }
 
+  // ── Suspend Shop Modal Handler ───────────────────────────────────────
+  function openSuspendShopModal(userId, shopName) {
+    document.getElementById('suspend-shop-name').textContent = shopName;
+    document.getElementById('suspend-shop-form').action = '/admin/verification/' + userId + '/suspend';
+    document.getElementById('suspend-shop-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSuspendShopModal() {
+    document.getElementById('suspend-shop-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
   // ── Overlay Backdrop click close trigger ──────────────────────────────
-  ['suspend-modal', 'reject-modal'].forEach(function(id) {
+  ['suspend-modal', 'suspend-shop-modal', 'reject-modal'].forEach(function(id) {
     document.getElementById(id)?.addEventListener('click', function(e) {
       if (e.target === this) {
         this.classList.remove('open');
