@@ -97,43 +97,28 @@ class OrderController extends Controller {
         $messages = [
             'payment_method.required' => 'Metode pembayaran wajib dipilih.',
             'payment_method.in' => 'Metode pembayaran tidak valid.',
-            'payment_proof.image' => 'File bukti pembayaran harus berupa gambar.',
-            'payment_proof.max' => 'Ukuran bukti pembayaran maksimal 2MB.',
         ];
 
         $request->validate([
-            'payment_method' => 'required|in:balance,transfer,qris,dana,ovo,gopay',
-            'payment_proof'  => 'nullable|image|max:2048',
+            'payment_method' => 'required|in:balance',
         ], $messages);
 
         DB::transaction(function () use ($request, $order) {
-            if ($request->payment_method === 'balance') {
-                /** @var User $user */
-                $user = Auth::user();
-                abort_if(! $user, 403);
+            /** @var User $user */
+            $user = Auth::user();
+            abort_if(! $user, 403);
 
-                $amount = (float) ($order->grand_total ?? $order->total_price ?? 0);
-                if ($user->balance < $amount) {
-                    throw new \Exception('Saldo tidak mencukupi!');
-                }
-                $user->deductBalance($amount, "Pembayaran Order #{$order->order_code}", $order->id);
-                $order->update([
-                    'status' => Order::STATUS_PAYMENT_UPLOADED,
-                    'payment_method' => 'balance',
-                    'paid_at' => now(),
-                ]);
-            } else {
-                $proof = null;
-                if ($request->hasFile('payment_proof')) {
-                    $proof = $request->file('payment_proof')->store('payment_proofs', 'public');
-                }
-                $order->update([
-                    'payment_method' => $request->payment_method,
-                    'payment_proof'  => $proof,
-                    'status'         => Order::STATUS_PAYMENT_UPLOADED,
-                    'paid_at'        => now(),
-                ]);
+            $amount = (float) ($order->grand_total ?? $order->total_price ?? 0);
+            if ($user->balance < $amount) {
+                throw new \Exception('Saldo tidak mencukupi!');
             }
+
+            $user->deductBalance($amount, "Pembayaran Order #{$order->order_code}", $order->id);
+            $order->update([
+                'status' => Order::STATUS_PAYMENT_UPLOADED,
+                'payment_method' => 'balance',
+                'paid_at' => now(),
+            ]);
         });
 
         return redirect()->route('orders.show', $order->order_code ?? $order->invoice_number)
@@ -146,7 +131,7 @@ class OrderController extends Controller {
             'payment_method.in' => 'Metode pembayaran tidak valid.',
         ];
 
-        $request->validate(['payment_method' => 'required|in:balance,transfer,qris,dana,ovo,gopay'], $messages);
+        $request->validate(['payment_method' => 'required|in:balance'], $messages);
 
         $cartItems = Cart::where('user_id', Auth::id())->where('is_selected', true)->with('product')->get();
         if ($cartItems->isEmpty()) {
