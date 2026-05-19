@@ -95,7 +95,15 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
     Route::get('/settings/{section}', [SettingsController::class, 'section'])
         ->whereIn('section', ['profile', 'account', 'password', 'security', 'seller'])
         ->name('settings.section');
-    Route::get('/settings/buyer', fn() => redirect()->route('settings.seller'))->name('settings.buyer');
+    Route::get('/settings/buyer', function () {
+        $user = auth()->user();
+
+        if ($user?->isAdmin()) {
+            return redirect()->route('admin.dashboard')->with('warning', 'Akun administrator tidak memiliki akses ke menu buyer/seller.');
+        }
+
+        return redirect()->route('settings.seller');
+    })->name('settings.buyer');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/password/code', [SettingsController::class, 'sendPasswordChangeCode'])->name('settings.password.sendCode');
     Route::put('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password.update');
@@ -105,12 +113,9 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
     Route::get('/settings/account/delete', [SettingsController::class, 'confirmDeletionForm'])->name('settings.account.delete');
     Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
     Route::post('/settings/deactivate', [SettingsController::class, 'deactivate'])->name('settings.deactivate');
-    // Safety fallback: if a deployment missed the dedicated settings.security route
-    // try invoking the controller method directly so users reach the security tab
-    // instead of being redirected to profile.
-    Route::get('/settings/security', function () {
-        return app()->call([App\Http\Controllers\SettingsController::class, 'security']);
-    })->name('settings.security.fallback');
+    // Safety fallback: if a deployment missed the named route, point the same URI
+    // to the controller action so the security tab still renders.
+    Route::get('/settings/security', [SettingsController::class, 'security'])->name('settings.security.fallback');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');

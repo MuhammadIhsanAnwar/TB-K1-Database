@@ -96,6 +96,13 @@ class SettingsController extends Controller
 
         abort_unless(in_array($section, $allowedSections, true), 404);
 
+        /** @var User $user */
+        $user = Auth::user();
+
+        if ($user->isAdmin() && $section === 'seller') {
+            return redirect()->route('admin.dashboard')->with('warning', 'Akun administrator tidak memiliki akses ke menu daftar jadi seller.');
+        }
+
         return match ($section) {
             'profile' => $this->profile(),
             'account' => $this->account(),
@@ -105,10 +112,15 @@ class SettingsController extends Controller
         };
     }
 
-    public function seller(): View
+    public function seller(): View|RedirectResponse
     {
         /** @var User $user */
         $user = Auth::user();
+
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard')->with('warning', 'Akun administrator tidak memiliki akses ke menu daftar jadi seller.');
+        }
+
         $profile = $user->profile;
 
         return view('settings.index', [

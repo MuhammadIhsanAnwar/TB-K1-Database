@@ -84,10 +84,12 @@
                             Verifikasi 2 Langkah
                         </a>
 
-                        <a href="{{ Route::has('settings.seller') ? route('settings.seller') : url('/settings/seller') }}"
-                            class="menu-item {{ $selectedTab === 'seller' ? 'menu-active-orange' : 'menu-normal' }}">
-                            Daftar Jadi Seller
-                        </a>
+                        @unless($user->isAdmin())
+                            <a href="{{ Route::has('settings.seller') ? route('settings.seller') : url('/settings/seller') }}"
+                                class="menu-item {{ $selectedTab === 'seller' ? 'menu-active-orange' : 'menu-normal' }}">
+                                Daftar Jadi Seller
+                            </a>
+                        @endunless
 
                     </nav>
 
@@ -124,6 +126,12 @@
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
+                    </div>
+                @endif
+
+                @if($user->isAdmin())
+                    <div class="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-100">
+                        Menu buyer dan seller tidak tersedia untuk akun administrator.
                     </div>
                 @endif
 
