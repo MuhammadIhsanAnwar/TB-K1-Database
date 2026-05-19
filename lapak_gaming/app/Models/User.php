@@ -22,23 +22,27 @@ class User extends Authenticatable implements MustVerifyEmail
         'status', 'seller_level_id', 'suspended_at', 'suspend_reason',
         'google_id', 'phone', 'avatar', 'is_seller',
         'account_deletion_token', 'account_deletion_token_sent_at', 'deactivated_at',
+        'two_factor_enabled', 'two_factor_methods', 'two_factor_google_secret', 'two_factor_confirmed_at',
         // Seller registration workflow
         'seller_status', 'seller_rejection_reason',
         // Shop profile
         'shop_name', 'shop_photo', 'shop_description',
     ];
 
-    protected $hidden = ['password', 'remember_token'];
-
     protected $casts = [
         'email_verified_at'           => 'datetime',
         'password'                    => 'hashed',
         'is_seller'                   => 'boolean',
+        'two_factor_enabled'          => 'boolean',
+        'two_factor_methods'          => 'array',
         'deactivated_at'              => 'datetime',
         'account_deletion_token_sent_at' => 'datetime',
         'suspended_at'                => 'datetime',
         'last_login_at'               => 'datetime',
+        'two_factor_confirmed_at'     => 'datetime',
     ];
+
+    protected $hidden = ['password', 'remember_token', 'two_factor_google_secret'];
 
     // ─── Scopes ──────────────────────────────────────────────────────────────
 

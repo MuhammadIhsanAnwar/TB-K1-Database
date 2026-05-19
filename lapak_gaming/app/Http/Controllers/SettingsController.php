@@ -9,6 +9,7 @@ use App\Models\User;
 use App\Notifications\AccountDeactivationVerification;
 use App\Notifications\AccountDeletionVerification;
 use App\Notifications\PasswordChangeVerification;
+use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -57,6 +58,35 @@ class SettingsController extends Controller
             'user' => $user,
             'profile' => $profile,
             'selectedTab' => 'password',
+        ]);
+    }
+
+    public function security(): View
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $profile = $user->profile;
+        $methods = $user->two_factor_methods ?: [];
+        $googleSecret = $user->two_factor_google_secret;
+        $googleQrCode = null;
+
+        if ($googleSecret && in_array('google', $methods, true)) {
+            $google2fa = new Google2FAQRCode();
+            $googleQrCode = $google2fa->getQRCodeInline(
+                config('app.name', 'Lapak Gaming'),
+                $user->email,
+                $googleSecret,
+                220
+            );
+        }
+
+        return view('settings.index', [
+            'user' => $user,
+            'profile' => $profile,
+            'selectedTab' => 'security',
+            'twoFactorMethods' => $methods,
+            'googleSecret' => $googleSecret,
+            'googleQrCode' => $googleQrCode,
         ]);
     }
 
@@ -222,6 +252,58 @@ class SettingsController extends Controller
         Cache::forget($this->passwordChangeCodeKey($user));
 
         return back()->with('success', 'Password berhasil diperbarui.');
+    }
+
+    public function updateSecurity(Request $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $messages = [
+            'two_factor_methods.required' => 'Pilih minimal satu metode verifikasi 2 langkah.',
+            'two_factor_methods.array' => 'Metode verifikasi 2 langkah tidak valid.',
+            'two_factor_methods.*.in' => 'Metode verifikasi 2 langkah tidak valid.',
+        ];
+
+        $data = $request->validate([
+            'two_factor_enabled' => ['nullable', 'boolean'],
+            'two_factor_methods' => ['nullable', 'array'],
+            'two_factor_methods.*' => ['in:email,sms,google'],
+        ], $messages);
+
+        $enabled = $request->boolean('two_factor_enabled');
+        $methods = array_values(array_unique(array_map('strval', $data['two_factor_methods'] ?? [])));
+
+        if ($enabled && empty($methods)) {
+            return back()->withErrors([
+                'two_factor_methods' => 'Pilih minimal satu metode verifikasi 2 langkah.',
+            ]);
+        }
+
+        if ($enabled && in_array('sms', $methods, true) && empty($user->phone)) {
+            return back()->withErrors([
+                'two_factor_methods' => 'Nomor telepon wajib diisi untuk metode SMS.',
+            ]);
+        }
+
+        $googleSecret = $user->two_factor_google_secret;
+
+        if ($enabled && in_array('google', $methods, true) && empty($googleSecret)) {
+            $googleSecret = (new Google2FAQRCode())->generateSecretKey();
+        }
+
+        if (! $enabled || ! in_array('google', $methods, true)) {
+            $googleSecret = null;
+        }
+
+        $user->forceFill([
+            'two_factor_enabled' => $enabled,
+            'two_factor_methods' => $enabled ? $methods : [],
+            'two_factor_google_secret' => $googleSecret,
+            'two_factor_confirmed_at' => $enabled ? now() : null,
+        ])->save();
+
+        return back()->with('success', 'Pengaturan verifikasi 2 langkah berhasil diperbarui.');
     }
 
     private function passwordChangeCodeKey(User $user): string

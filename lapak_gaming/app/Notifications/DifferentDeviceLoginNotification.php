@@ -27,12 +27,13 @@ class DifferentDeviceLoginNotification extends Notification
     public function toMail($notifiable): MailMessage
     {
         $appName = config('app.name', 'Lapak Gaming');
+        $loggedInAtWib = $this->loggedInAt->copy()->setTimezone('Asia/Jakarta');
 
         return (new MailMessage)
             ->subject('Login baru terdeteksi di perangkat lain')
             ->greeting('Halo ' . ($notifiable->name ?? $notifiable->email) . ',')
             ->line('Kami mendeteksi login ke akun Anda dari perangkat atau browser yang berbeda.')
-            ->line('Waktu login: ' . $this->loggedInAt->format('d M Y H:i:s'))
+            ->line('Waktu login: ' . $loggedInAtWib->format('d M Y H:i:s') . ' WIB')
             ->line('Perangkat sebelumnya: ' . ($this->previousDevice ?: 'Tidak diketahui'))
             ->line('Perangkat saat ini: ' . ($this->currentDevice ?: 'Tidak diketahui'))
             ->line('IP saat ini: ' . ($this->ipAddress ?: 'Tidak diketahui'))
