@@ -23,29 +23,65 @@ class AdminController extends Controller
     {
         $tab = $request->query('tab', 'users');
 
-        $regularUsers = User::query()
+        // Search and sorting params
+        $q = trim((string) $request->query('q', ''));
+        $sort = $request->query('sort', 'created_at');
+        $direction = strtolower($request->query('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $allowedSorts = ['created_at', 'name', 'email'];
+        if (! in_array($sort, $allowedSorts, true)) {
+            $sort = 'created_at';
+        }
+
+        $baseAppends = array_filter(['q' => $q, 'sort' => $sort, 'direction' => $direction]);
+
+        $regularUsersQuery = User::query()
             ->where('role', 'buyer')
-            ->orderByDesc('created_at')
+            ->when($q, fn($qb) => $qb->where(function ($w) use ($q) {
+                $w->where('name', 'like', "%{$q}%")
+                  ->orWhere('email', 'like', "%{$q}%");
+            }));
+
+        $regularUsers = (clone $regularUsersQuery)
+            ->orderBy($sort, $direction)
             ->paginate(15, ['*'], 'users_page')
-            ->appends(['tab' => 'users']);
+            ->appends(array_merge($baseAppends, ['tab' => 'users']));
 
-        $sellers = User::query()
+        $sellersQuery = User::query()
             ->where('role', 'seller')
-            ->orderByDesc('created_at')
+            ->when($q, fn($qb) => $qb->where(function ($w) use ($q) {
+                $w->where('name', 'like', "%{$q}%")
+                  ->orWhere('email', 'like', "%{$q}%");
+            }));
+
+        $sellers = (clone $sellersQuery)
+            ->orderBy($sort, $direction)
             ->paginate(15, ['*'], 'sellers_page')
-            ->appends(['tab' => 'sellers']);
+            ->appends(array_merge($baseAppends, ['tab' => 'sellers']));
 
-        $applications = User::query()
+        $applicationsQuery = User::query()
             ->where('seller_status', 'pending')
-            ->orderByDesc('created_at')
-            ->paginate(15, ['*'], 'apps_page')
-            ->appends(['tab' => 'applications']);
+            ->when($q, fn($qb) => $qb->where(function ($w) use ($q) {
+                $w->where('name', 'like', "%{$q}%")
+                  ->orWhere('email', 'like', "%{$q}%");
+            }));
 
-        $pendingVerifications = User::query()
+        $applications = (clone $applicationsQuery)
+            ->orderBy($sort, $direction)
+            ->paginate(15, ['*'], 'apps_page')
+            ->appends(array_merge($baseAppends, ['tab' => 'applications']));
+
+        $pendingVerificationsQuery = User::query()
             ->whereNull('email_verified_at')
-            ->orderByDesc('created_at')
+            ->when($q, fn($qb) => $qb->where(function ($w) use ($q) {
+                $w->where('name', 'like', "%{$q}%")
+                  ->orWhere('email', 'like', "%{$q}%");
+            }));
+
+        $pendingVerifications = (clone $pendingVerificationsQuery)
+            ->orderBy($sort, $direction)
             ->paginate(15, ['*'], 'pending_page')
-            ->appends(['tab' => 'pending_verification']);
+            ->appends(array_merge($baseAppends, ['tab' => 'pending_verification']));
 
         $counts = [
             'users' => User::where('role', 'buyer')->count(),
@@ -54,7 +90,7 @@ class AdminController extends Controller
             'pending_verification' => User::whereNull('email_verified_at')->count(),
         ];
 
-        return view('admin.users.index', compact('tab', 'regularUsers', 'sellers', 'applications', 'pendingVerifications', 'counts'));
+        return view('admin.users.index', compact('tab', 'regularUsers', 'sellers', 'applications', 'pendingVerifications', 'counts', 'q', 'sort', 'direction'));
     }
 
     // ─── 2. USER ACTIONS ─────────────────────────────────────────────────────
@@ -286,8 +322,25 @@ class AdminController extends Controller
 
     public function orders(Request $request): View
     {
-        $orders = Order::query()->with(['buyer', 'seller'])->latest()->paginate(20);
-        return view('admin.orders.index', compact('orders'));
+        $q = trim((string) $request->query('q', ''));
+        $sort = $request->query('sort', 'created_at');
+        $direction = strtolower($request->query('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $allowedSorts = ['created_at', 'order_code', 'grand_total'];
+        if (! in_array($sort, $allowedSorts, true)) {
+            $sort = 'created_at';
+        }
+
+        $ordersQuery = Order::query()->with(['buyer', 'seller'])
+            ->when($q, function ($qBuilder) use ($q) {
+                $qBuilder->where('order_code', 'like', "%{$q}%")
+                    ->orWhereHas('buyer', fn($b) => $b->where('name', 'like', "%{$q}%"))
+                    ->orWhereHas('seller', fn($s) => $s->where('name', 'like', "%{$q}%"));
+            });
+
+        $orders = $ordersQuery->orderBy($sort, $direction)->paginate(20)->appends(array_filter(['q' => $q, 'sort' => $sort, 'direction' => $direction]));
+
+        return view('admin.orders.index', compact('orders', 'q', 'sort', 'direction'));
     }
 
     public function downloadOrdersReportPdf()

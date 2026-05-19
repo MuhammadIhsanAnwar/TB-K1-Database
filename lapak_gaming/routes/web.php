@@ -105,9 +105,10 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
     Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
     Route::post('/settings/deactivate', [SettingsController::class, 'deactivate'])->name('settings.deactivate');
     // Safety fallback: if a deployment missed the dedicated settings.security route
-    // provide a graceful redirect to the profile tab to avoid 404 in production.
+    // try invoking the controller method directly so users reach the security tab
+    // instead of being redirected to profile.
     Route::get('/settings/security', function () {
-        return redirect()->route('settings.profile');
+        return app()->call([App\Http\Controllers\SettingsController::class, 'security']);
     })->name('settings.security.fallback');
 
     // Profile

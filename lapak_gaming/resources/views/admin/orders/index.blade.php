@@ -83,7 +83,15 @@
             {{-- 🛠️ PERBAIKAN: Diubah jadi flex-col di mobile agar tidak tabrakan/terpotong --}}
             <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-400 text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <span>Menampilkan log perputaran invoice order marketplace.</span>
-                <span class="text-xs font-mono bg-black/20 text-slate-500 px-2 py-0.5 rounded border border-white/5 w-max">Total: {{ $orders->total() }} Records</span>
+                <div class="flex items-center gap-3">
+                    <form method="GET" action="{{ route('admin.orders.index') }}" class="flex items-center gap-2">
+                        <input name="q" value="{{ $q ?? '' }}" placeholder="Cari invoice, buyer, seller..."
+                          class="rounded-xl border border-white/5 bg-black/10 px-3 py-2 text-sm text-white outline-none" />
+                        <button type="submit" class="rounded-xl bg-amber-500 px-3 py-2 text-sm font-semibold text-slate-950">Cari</button>
+                        <a href="{{ route('admin.orders.index') }}" class="rounded-xl border border-white/5 px-3 py-2 text-sm text-slate-300">Reset</a>
+                    </form>
+                    <span class="text-xs font-mono bg-black/20 text-slate-500 px-2 py-0.5 rounded border border-white/5 w-max">Total: {{ $orders->total() }} Records</span>
+                </div>
             </div>
 
             @if($orders->isEmpty())
@@ -96,14 +104,27 @@
                 <div class="overflow-x-auto scroller-clean">
                     <table class="min-w-full divide-y divide-white/5 text-sm text-left text-slate-300">
                         <thead class="bg-black/30 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5">
-                            <tr>
-                                <th class="px-6 py-4">Nomor Invoice</th>
-                                <th class="px-6 py-4">Pihak Buyer</th>
-                                <th class="px-6 py-4">Pihak Seller</th>
-                                <th class="px-6 py-4">Grand Total</th>
-                                <th class="px-6 py-4">Status Alur</th>
-                                <th class="px-6 py-4 text-right">Otoritas</th>
-                            </tr>
+                                                        <tr>
+                                                                <th class="px-6 py-4">
+                                                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'order_code', 'direction' => ($sort === 'order_code' && $direction === 'desc') ? 'asc' : 'desc']) }}">Nomor Invoice
+                                                                        @if(($sort ?? '') === 'order_code')<span class="text-xs">{{ $direction === 'asc' ? '↑' : '↓' }}</span>@endif
+                                                                    </a>
+                                                                </th>
+                                                                <th class="px-6 py-4">
+                                                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'direction' => ($sort === 'created_at' && $direction === 'desc') ? 'asc' : 'desc']) }}">Tanggal
+                                                                        @if(($sort ?? '') === 'created_at')<span class="text-xs">{{ $direction === 'asc' ? '↑' : '↓' }}</span>@endif
+                                                                    </a>
+                                                                </th>
+                                                                <th class="px-6 py-4">Pihak Buyer</th>
+                                                                <th class="px-6 py-4">Pihak Seller</th>
+                                                                <th class="px-6 py-4">
+                                                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'grand_total', 'direction' => ($sort === 'grand_total' && $direction === 'desc') ? 'asc' : 'desc']) }}">Grand Total
+                                                                        @if(($sort ?? '') === 'grand_total')<span class="text-xs">{{ $direction === 'asc' ? '↑' : '↓' }}</span>@endif
+                                                                    </a>
+                                                                </th>
+                                                                <th class="px-6 py-4">Status Alur</th>
+                                                                <th class="px-6 py-4 text-right">Otoritas</th>
+                                                        </tr>
                         </thead>
                         <tbody class="divide-y divide-white/5">
                             @foreach($orders as $order)
