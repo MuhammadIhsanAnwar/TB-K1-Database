@@ -58,18 +58,18 @@
                     {{-- MENU --}}
                     <nav class="mt-8 space-y-3">
 
-                        <a href="{{ route('settings.profile') }}"
+                        <a href="{{ Route::has('settings.profile') ? route('settings.profile') : '#' }}"
                             class="menu-item {{ $selectedTab === 'profile' ? 'menu-active-blue' : 'menu-normal' }}">
                             Edit Profil
                         </a>
 
-                        <a href="{{ route('settings.account') }}"
+                        <a href="{{ Route::has('settings.account') ? route('settings.account') : '#' }}"
                             class="menu-item {{ $selectedTab === 'account' ? 'menu-active-blue' : 'menu-normal' }}">
                             Pengaturan Akun
                         </a>
 
                         @if(! $user->isGoogleAccount())
-                        <a href="{{ route('settings.password') }}"
+                        <a href="{{ Route::has('settings.password') ? route('settings.password') : '#' }}"
                             class="menu-item {{ $selectedTab === 'password' ? 'menu-active-blue' : 'menu-normal' }}">
                             Ubah Password
                         </a>
@@ -79,12 +79,12 @@
                         </div>
                         @endif
 
-                        <a href="{{ route('settings.security') }}"
+                        <a href="{{ Route::has('settings.security') ? route('settings.security') : '#' }}"
                             class="menu-item {{ $selectedTab === 'security' ? 'menu-active-blue' : 'menu-normal' }}">
                             Verifikasi 2 Langkah
                         </a>
 
-                        <a href="{{ route('settings.seller') }}"
+                        <a href="{{ Route::has('settings.seller') ? route('settings.seller') : '#' }}"
                             class="menu-item {{ $selectedTab === 'seller' ? 'menu-active-orange' : 'menu-normal' }}">
                             Daftar Jadi Seller
                         </a>
