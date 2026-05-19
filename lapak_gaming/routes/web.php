@@ -91,6 +91,9 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/settings/password', [SettingsController::class, 'password'])->name('settings.password');
     Route::get('/settings/security', [SettingsController::class, 'security'])->name('settings.security');
     Route::get('/settings/seller', [SettingsController::class, 'seller'])->name('settings.seller');
+    Route::get('/settings/{section}', [SettingsController::class, 'section'])
+        ->whereIn('section', ['profile', 'account', 'password', 'security', 'seller'])
+        ->name('settings.section');
     Route::get('/settings/buyer', fn() => redirect()->route('settings.seller'))->name('settings.buyer');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/password/code', [SettingsController::class, 'sendPasswordChangeCode'])->name('settings.password.sendCode');

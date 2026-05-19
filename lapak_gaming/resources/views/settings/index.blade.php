@@ -79,7 +79,7 @@
                         </div>
                         @endif
 
-                        <a href="{{ Route::has('settings.security') ? route('settings.security') : url('/settings/security') }}"
+                        <a href="{{ Route::has('settings.section') ? route('settings.section', ['section' => 'security']) : url('/settings/security') }}"
                             class="menu-item {{ $selectedTab === 'security' ? 'menu-active-blue' : 'menu-normal' }}">
                             Verifikasi 2 Langkah
                         </a>

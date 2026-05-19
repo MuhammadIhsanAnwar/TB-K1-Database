@@ -90,6 +90,21 @@ class SettingsController extends Controller
         ]);
     }
 
+    public function section(string $section): View
+    {
+        $allowedSections = ['profile', 'account', 'password', 'security', 'seller'];
+
+        abort_unless(in_array($section, $allowedSections, true), 404);
+
+        return match ($section) {
+            'profile' => $this->profile(),
+            'account' => $this->account(),
+            'password' => $this->password(),
+            'security' => $this->security(),
+            'seller' => $this->seller(),
+        };
+    }
+
     public function seller(): View
     {
         /** @var User $user */

@@ -378,9 +378,11 @@ class AdminController extends Controller
 
             $pdfContent = $this->buildSimplePdf($pages);
 
-            return response($pdfContent)
-                ->header('Content-Type', 'application/pdf')
-                ->header('Content-Disposition', 'attachment; filename="laporan-pesanan.pdf"');
+            return response()->streamDownload(function () use ($pdfContent): void {
+                echo $pdfContent;
+            }, 'laporan-pesanan.pdf', [
+                'Content-Type' => 'application/pdf',
+            ]);
         } catch (\Throwable $exception) {
             report($exception);
 
