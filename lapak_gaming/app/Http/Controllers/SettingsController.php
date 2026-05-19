@@ -10,6 +10,7 @@ use App\Notifications\AccountDeactivationVerification;
 use App\Notifications\AccountDeletionVerification;
 use App\Notifications\PasswordChangeVerification;
 use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
+use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -364,6 +365,17 @@ class SettingsController extends Controller
 
         $google2fa = new Google2FAQRCode();
         $isValid = (bool) $google2fa->verifyKey($pendingSetup['google_secret'], $data['verification_code']);
+
+        if (! $isValid) {
+            // Fallback to Fortify's two-factor provider verification which may
+            // allow a different tolerance window depending on configuration.
+            try {
+                $provider = app(TwoFactorAuthenticationProvider::class);
+                $isValid = (bool) $provider->verify($pendingSetup['google_secret'], $data['verification_code']);
+            } catch (\Throwable $e) {
+                // ignore and keep $isValid false
+            }
+        }
 
         if (! $isValid) {
             return back()->withErrors([

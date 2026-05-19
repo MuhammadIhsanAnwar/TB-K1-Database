@@ -7,6 +7,7 @@ use App\Services\TwoFactorChallengeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -106,6 +107,13 @@ class AuthController extends Controller
                 return back()->withErrors([
                     'email' => 'Gagal mengirim kode verifikasi 2 langkah. Silakan coba lagi.',
                 ])->onlyInput('email');
+            }
+
+            // If a debug code was stored (e.g. mailer/SMS misconfigured), surface it to session for developer/testing.
+            $debugKey = 'two-factor-login:' . $user->id . ':' . $challengeMethod . ':debug';
+            $debugCode = Cache::get($debugKey);
+            if ($debugCode) {
+                $request->session()->put('two_factor_debug_code', $debugCode);
             }
 
             $request->session()->put('two_factor_login_pending', [

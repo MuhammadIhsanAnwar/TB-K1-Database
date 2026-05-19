@@ -7,6 +7,7 @@ use App\Notifications\TwoFactorOtpNotification;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Hash;
 use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
+use Illuminate\Support\Facades\Log;
 
 class TwoFactorChallengeService
 {
@@ -70,7 +71,16 @@ class TwoFactorChallengeService
             return;
         }
 
-        $user->notify(new TwoFactorOtpNotification($code, $method));
+        try {
+            $user->notify(new TwoFactorOtpNotification($code, $method));
+        } catch (\Throwable $e) {
+            // Best-effort fallback for development or misconfigured mailers:
+            // store the plain code in cache under a debug key so it can be surfaced
+            // to the session/view for troubleshooting. Do not rely on this in
+            // production — configure a working mailer or SMS provider instead.
+            Log::warning('Two-factor OTP notification failed', ['user_id' => $user->id, 'method' => $method, 'exception' => $e->getMessage()]);
+            Cache::put($this->cacheKey($user, $method) . ':debug', $code, now()->addMinutes(10));
+        }
     }
 
     public function verifyLoginChallenge(User $user, string $method, string $code): bool

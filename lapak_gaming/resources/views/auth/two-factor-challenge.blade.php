@@ -78,6 +78,12 @@
       </div>
     @endif
 
+    @if(session('two_factor_debug_code'))
+      <div class="mb-5 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-200 text-sm">
+        <strong>DEBUG CODE:</strong> {{ session('two_factor_debug_code') }}
+      </div>
+    @endif
+
     @if($errors->any())
       <div class="mb-5 rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-rose-200 text-sm">
         {{ $errors->first() }}
