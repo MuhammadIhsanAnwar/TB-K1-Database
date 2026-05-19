@@ -143,7 +143,7 @@
                         <div class="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
                             @foreach($produk->image_paths as $index => $imagePath)
                                 <div class="relative rounded-xl overflow-hidden group border border-white/5 bg-black/40 backdrop-blur-sm p-1" data-image-index="{{ $index }}">
-                                    <img src="{{ asset('storage/' . $imagePath) }}" 
+                                    <img src="{{ Storage::disk('public_app_public')->url($imagePath) }}" 
                                          class="w-full h-24 object-cover rounded-lg" 
                                          alt="Produk {{ $index + 1 }}" />
                                     <button type="button" 

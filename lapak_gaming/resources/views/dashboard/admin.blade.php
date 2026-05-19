@@ -391,13 +391,16 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script type="text/x-template">
-window.chartLabels = {!! json_encode($chartLabels) !!};
-window.chartTransactions = {!! json_encode($chartTransactions) !!};
-window.chartRevenue = {!! json_encode($chartRevenue) !!};
-</script>
+<div id="chart-data"
+     data-labels="{{ base64_encode(json_encode($chartLabels)) }}"
+     data-transactions="{{ base64_encode(json_encode($chartTransactions)) }}"
+     data-revenue="{{ base64_encode(json_encode($chartRevenue)) }}"
+     hidden></div>
 <script>
-    const labels = window.chartLabels;
+    const chartDataElement = document.getElementById('chart-data');
+    const labels = JSON.parse(atob(chartDataElement.dataset.labels || 'W10='));
+    const transactions = JSON.parse(atob(chartDataElement.dataset.transactions || 'W10='));
+    const revenue = JSON.parse(atob(chartDataElement.dataset.revenue || 'W10='));
 
     // Shared chart defaults for dark theme
     const gridColor  = 'rgba(255,255,255,0.05)';
@@ -433,7 +436,7 @@ window.chartRevenue = {!! json_encode($chartRevenue) !!};
             labels: labels,
             datasets: [{
                 label: 'Jumlah Order',
-                data: window.chartTransactions,
+                data: transactions,
                 borderColor: '#f59e0b',
                 backgroundColor: 'rgba(245,158,11,0.08)',
                 pointBackgroundColor: '#f59e0b',
@@ -459,7 +462,7 @@ window.chartRevenue = {!! json_encode($chartRevenue) !!};
             labels: labels,
             datasets: [{
                 label: 'Total Rupiah',
-                data: window.chartRevenue,
+                data: revenue,
                 backgroundColor: 'rgba(16,185,129,0.7)',
                 hoverBackgroundColor: '#10b981',
                 borderRadius: 6,
