@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\UserProfile;
 use App\Models\UserPolicyConsent;
+use App\Models\WalletTransaction;
 use Illuminate\Auth\Notifications\VerifyEmail;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -107,9 +109,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(UserProfile::class);
     }
 
-    public function transactions()
+    public function transactions(): HasManyThrough
     {
-        return $this->hasMany('App\Models\Transaction');
+        return $this->hasManyThrough(WalletTransaction::class, Wallet::class);
     }
 
     public function policyConsents(): HasMany

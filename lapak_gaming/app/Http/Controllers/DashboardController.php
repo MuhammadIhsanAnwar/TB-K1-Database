@@ -110,13 +110,33 @@ class DashboardController extends Controller
         $chartRevenue = collect();
         $chartRangeLabel = 'Belum ada transaksi';
         $chartPeriod = $request->query('chart_period', 'month');
+        $startDateInput = $request->query('start_date');
+        $endDateInput = $request->query('end_date');
+        $customRangeStart = null;
+        $customRangeEnd = null;
+
+        if ($startDateInput && $endDateInput) {
+            try {
+                $customRangeStart = Carbon::parse($startDateInput)->startOfDay();
+                $customRangeEnd = Carbon::parse($endDateInput)->endOfDay();
+
+                if ($customRangeStart->greaterThan($customRangeEnd)) {
+                    [$customRangeStart, $customRangeEnd] = [$customRangeEnd->copy()->startOfDay(), $customRangeStart->copy()->endOfDay()];
+                }
+
+                $chartPeriod = 'range';
+            } catch (\Throwable $exception) {
+                $customRangeStart = null;
+                $customRangeEnd = null;
+            }
+        }
 
         if (Schema::hasTable('orders')) {
             $firstOrderDate = Order::query()->min('created_at');
-            $startDate = $firstOrderDate ? Carbon::parse($firstOrderDate) : now();
-            $endDate = now();
+            $startDate = $customRangeStart ?? ($firstOrderDate ? Carbon::parse($firstOrderDate) : now());
+            $endDate = $customRangeEnd ?? now();
 
-            if ($chartPeriod === 'day') {
+            if ($chartPeriod === 'range' || $chartPeriod === 'day') {
                 $cursor = $startDate->copy()->startOfDay();
                 $lastDay = $endDate->copy()->startOfDay();
                 $chartRangeLabel = $cursor->format('d M Y') . ' - ' . $lastDay->format('d M Y');
@@ -213,6 +233,8 @@ class DashboardController extends Controller
             'chartRevenue' => $chartRevenue,
             'chartRangeLabel' => $chartRangeLabel,
             'chartPeriod' => $chartPeriod,
+            'chartStartDate' => $customRangeStart?->format('Y-m-d') ?? $startDateInput,
+            'chartEndDate' => $customRangeEnd?->format('Y-m-d') ?? $endDateInput,
         ]);
     }
 }
