@@ -521,7 +521,40 @@
                         <section class="card-box">
                             <h2 class="text-xl font-bold text-white">Google Authenticator</h2>
 
-                            @if($googleSecret)
+                            @if($pendingTwoFactorSetup ?? false)
+                                <div class="mt-6 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-center">
+                                    @if($googleQrCode)
+                                        <div class="rounded-3xl border border-white/10 bg-white p-4 flex items-center justify-center">
+                                            {!! $googleQrCode !!}
+                                        </div>
+                                    @endif
+
+                                    <div>
+                                        <p class="text-sm text-slate-400">Scan QR code di bawah dengan Google Authenticator, lalu masukkan kode 6 digit untuk mengaktifkan dan menyimpan pengaturan.</p>
+                                        <div class="mt-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 font-mono text-sm text-cyan-100 break-all">
+                                            {{ $googleSecret }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <form action="{{ route('settings.security.confirm') }}" method="POST" class="mt-6 space-y-4">
+                                    @csrf
+
+                                    <input type="text"
+                                        name="verification_code"
+                                        inputmode="numeric"
+                                        maxlength="6"
+                                        placeholder="Masukkan kode Authenticator"
+                                        class="input-style">
+
+                                    <button type="submit" class="submit-green">
+                                        Konfirmasi & Simpan Google Authenticator
+                                    </button>
+                                </form>
+
+                                <p class="mt-4 text-xs text-slate-500">Pengaturan belum disimpan permanen sampai kode Authenticator valid.</p>
+
+                            @elseif($googleSecret)
                                 <div class="mt-6 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-center">
                                     @if($googleQrCode)
                                         <div class="rounded-3xl border border-white/10 bg-white p-4 flex items-center justify-center">

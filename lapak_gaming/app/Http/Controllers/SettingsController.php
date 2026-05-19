@@ -66,11 +66,12 @@ class SettingsController extends Controller
         /** @var User $user */
         $user = Auth::user();
         $profile = $user->profile;
-        $methods = $user->two_factor_methods ?: [];
-        $googleSecret = $user->two_factor_google_secret;
+        $pendingSetup = session('two_factor_setup_pending');
+        $methods = $pendingSetup['two_factor_methods'] ?? ($user->two_factor_methods ?: []);
+        $googleSecret = $pendingSetup['google_secret'] ?? $user->two_factor_google_secret;
         $googleQrCode = null;
 
-        if ($googleSecret && in_array('google', $methods, true)) {
+        if ($googleSecret && (in_array('google', $methods, true) || ! empty($pendingSetup))) {
             $google2fa = new Google2FAQRCode();
             $googleQrCode = $google2fa->getQRCodeInline(
                 config('app.name', 'Lapak Gaming'),
@@ -87,6 +88,7 @@ class SettingsController extends Controller
             'twoFactorMethods' => $methods,
             'googleSecret' => $googleSecret,
             'googleQrCode' => $googleQrCode,
+            'pendingTwoFactorSetup' => $pendingSetup,
         ]);
     }
 
@@ -319,18 +321,66 @@ class SettingsController extends Controller
             $googleSecret = (new Google2FAQRCode())->generateSecretKey();
         }
 
-        if (! $enabled || ! in_array('google', $methods, true)) {
-            $googleSecret = null;
+        if ($enabled && in_array('google', $methods, true)) {
+            session()->put('two_factor_setup_pending', [
+                'two_factor_enabled' => $enabled,
+                'two_factor_methods' => $methods,
+                'google_secret' => $googleSecret,
+            ]);
+
+            return back()->with('warning', 'Scan QR Google Authenticator lalu masukkan kode OTP untuk menyimpan pengaturan.');
         }
+
+        session()->forget('two_factor_setup_pending');
 
         $user->forceFill([
             'two_factor_enabled' => $enabled,
             'two_factor_methods' => $enabled ? $methods : [],
-            'two_factor_google_secret' => $googleSecret,
-            'two_factor_confirmed_at' => $enabled ? now() : null,
+            'two_factor_google_secret' => null,
+            'two_factor_confirmed_at' => null,
         ])->save();
 
         return back()->with('success', 'Pengaturan verifikasi 2 langkah berhasil diperbarui.');
+    }
+
+    public function confirmSecurity(Request $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $pendingSetup = session('two_factor_setup_pending');
+
+        if (! is_array($pendingSetup) || empty($pendingSetup['google_secret']) || empty($pendingSetup['two_factor_methods'])) {
+            return back()->withErrors([
+                'verification_code' => 'Tidak ada pengaturan verifikasi 2 langkah yang perlu dikonfirmasi.',
+            ]);
+        }
+
+        $data = $request->validate([
+            'verification_code' => ['required', 'digits:6'],
+        ], [
+            'verification_code.required' => 'Kode verifikasi wajib diisi.',
+            'verification_code.digits' => 'Kode verifikasi harus terdiri dari 6 digit.',
+        ]);
+
+        $google2fa = new Google2FAQRCode();
+        $isValid = (bool) $google2fa->verifyKey($pendingSetup['google_secret'], $data['verification_code']);
+
+        if (! $isValid) {
+            return back()->withErrors([
+                'verification_code' => 'Kode Google Authenticator tidak valid. Silakan coba lagi.',
+            ]);
+        }
+
+        $user->forceFill([
+            'two_factor_enabled' => (bool) ($pendingSetup['two_factor_enabled'] ?? true),
+            'two_factor_methods' => array_values(array_unique(array_map('strval', $pendingSetup['two_factor_methods']))),
+            'two_factor_google_secret' => $pendingSetup['google_secret'],
+            'two_factor_confirmed_at' => now(),
+        ])->save();
+
+        session()->forget('two_factor_setup_pending');
+
+        return back()->with('success', 'Google Authenticator berhasil dikonfirmasi dan disimpan.');
     }
 
     private function passwordChangeCodeKey(User $user): string

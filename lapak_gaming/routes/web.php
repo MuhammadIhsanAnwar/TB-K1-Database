@@ -108,6 +108,7 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
     Route::post('/settings/password/code', [SettingsController::class, 'sendPasswordChangeCode'])->name('settings.password.sendCode');
     Route::put('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password.update');
     Route::put('/settings/security', [SettingsController::class, 'updateSecurity'])->name('settings.security.update');
+    Route::post('/settings/security/confirm', [SettingsController::class, 'confirmSecurity'])->name('settings.security.confirm');
     Route::post('/settings/account/delete-code', [SettingsController::class, 'sendDeletionCode'])->name('settings.account.sendDeletionCode');
     Route::post('/settings/account/deactivation-code', [SettingsController::class, 'sendDeactivationCode'])->name('settings.account.sendDeactivationCode');
     Route::get('/settings/account/delete', [SettingsController::class, 'confirmDeletionForm'])->name('settings.account.delete');
