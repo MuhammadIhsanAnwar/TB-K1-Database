@@ -10,6 +10,7 @@ use App\Services\Pdf\PdfDocumentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 
 class OrderController extends Controller {
     public function index() {
@@ -171,14 +172,19 @@ class OrderController extends Controller {
             }
             $combinedNotes = implode("\n", $notesArray);
 
-            $order = Order::create([
+            $orderData = [
                 'buyer_id'       => Auth::id(),
                 'invoice_number' => 'INV-' . strtoupper(Str::random(10)),
                 'status'         => Order::STATUS_PENDING_PAYMENT,
                 'payment_method' => $request->payment_method,
                 'total_price'    => $grand_total,
-                'notes'          => $combinedNotes ?: null,
-            ]);
+            ];
+
+            if (Schema::hasColumn('orders', 'notes')) {
+                $orderData['notes'] = $combinedNotes ?: null;
+            }
+
+            $order = Order::create($orderData);
 
             if (method_exists($order, 'financial')) {
                 $order->financial()->create([
