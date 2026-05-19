@@ -86,9 +86,9 @@ use Illuminate\Support\Str;
                                 class="group rounded-2xl border border-slate-800 bg-slate-900/60 p-5 flex flex-col sm:flex-row gap-5 transition-all hover:border-amber-500/40 hover:bg-slate-900 shadow-md">
 
                                 {{-- Checkbox Pilihan --}}
-                                <div class="flex items-center justify-center shrink-0 pr-1">
+                                <div class="flex items-center justify-center shrink-0 pr-1 relative z-30">
                                     <input type="checkbox" 
-                                           class="w-5 h-5 rounded border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500/50 cursor-pointer"
+                                           class="w-5 h-5 rounded border-slate-700 bg-slate-950 text-amber-500 focus:ring-amber-500/50 cursor-pointer relative z-50 pointer-events-auto"
                                            {{ $item->is_selected ? 'checked' : '' }}
                                            onchange="toggleSelectItem({{ $item->id }})">
                                 </div>
@@ -257,33 +257,56 @@ use Illuminate\Support\Str;
 
     <script>
         function toggleSelectItem(id) {
+            console.log("Toggling select for item:", id);
             fetch(`/cart/${id}/toggle-select`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 }
             })
-            .then(res => res.json())
+            .then(res => {
+                console.log("Toggle Select response status:", res.status);
+                if (!res.ok) {
+                    throw new Error("HTTP error " + res.status);
+                }
+                return res.json();
+            })
             .then(data => {
+                console.log("Toggle Select response data:", data);
                 if (data.success) {
                     window.location.reload();
+                } else {
+                    alert("Gagal memilih produk: " + (data.message || "Error tidak diketahui"));
                 }
+            })
+            .catch(error => {
+                console.error("Toggle Select error:", error);
+                alert("Terjadi kesalahan koneksi saat memilih produk: " + error.message);
             });
         }
 
         function updateItemNote(id) {
             const note = document.getElementById(`note-input-${id}`).value;
+            console.log("Updating note for item:", id, "Note:", note);
             fetch(`/cart/${id}/update-note`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Accept': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({ notes: note })
             })
-            .then(res => res.json())
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error("HTTP error " + res.status);
+                }
+                return res.json();
+            })
             .then(data => {
+                console.log("Update Note response data:", data);
                 if (data.success) {
                     const input = document.getElementById(`note-input-${id}`);
                     input.classList.add('border-emerald-500');
@@ -291,10 +314,14 @@ use Illuminate\Support\Str;
                         input.classList.remove('border-emerald-500');
                     }, 1000);
                 }
+            })
+            .catch(error => {
+                console.error("Update Note error:", error);
             });
         }
 
         function updateQty(id, newQty) {
+            console.log("Updating qty for item:", id, "New Qty:", newQty);
             fetch(`/cart/${id}`, {
                 method: 'PATCH',
                 headers: {
@@ -312,6 +339,10 @@ use Illuminate\Support\Str;
                     alert(data.message || 'Gagal mengubah jumlah produk');
                     window.location.reload();
                 }
+            })
+            .catch(error => {
+                console.error("Update Qty error:", error);
+                alert("Terjadi kesalahan koneksi: " + error.message);
             });
         }
 
