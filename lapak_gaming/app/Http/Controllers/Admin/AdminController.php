@@ -315,8 +315,8 @@ class AdminController extends Controller
         ];
 
         foreach ($orders as $index => $order) {
-            $buyer = $order->buyer->name ?? 'Unknown';
-            $seller = $order->seller->name ?? 'Unknown';
+            $buyer = $order->buyer?->name ?? 'Unknown';
+            $seller = $order->seller?->name ?? 'Unknown';
             $status = strtoupper($order->status ?? '-');
             $total = number_format($this->reportOrderTotal($order), 0, ',', '.');
 
@@ -361,6 +361,13 @@ class AdminController extends Controller
             $pages[] = $lines;
         }
 
+        if (empty($pages)) {
+            $pages[] = [[
+                'text' => 'Tidak ada data pesanan untuk ditampilkan.',
+                'size' => 12,
+            ]];
+        }
+
         $pdfContent = $this->buildSimplePdf($pages);
 
         return response($pdfContent)
@@ -382,7 +389,10 @@ class AdminController extends Controller
         return str_pad($value, $length);
     }
 
-    private function reportOrderTotal(Order $order): float
+    /**
+     * @param mixed $order
+     */
+    private function reportOrderTotal($order): float
     {
         if (Schema::hasTable('order_financials')) {
             return (float) $order->grand_total;
