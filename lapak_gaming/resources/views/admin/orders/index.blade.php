@@ -111,7 +111,7 @@
                                                                     </a>
                                                                 </th>
                                                                 <th class="px-6 py-4">
-                                                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'direction' => ($sort === 'created_at' && $direction === 'desc') ? 'asc' : 'desc']) }}">Tanggal
+                                                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'direction' => ($sort === 'created_at' && $direction === 'desc') ? 'asc' : 'desc']) }}">Tanggal Transaksi
                                                                         @if(($sort ?? '') === 'created_at')<span class="text-xs">{{ $direction === 'asc' ? '↑' : '↓' }}</span>@endif
                                                                     </a>
                                                                 </th>
@@ -141,7 +141,12 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-2 max-w-[180px]">
                                             <span class="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
-                                            <span class="font-bold text-white tracking-tight break-words">{{ $order->buyer?->name ?? 'Deleted User' }}</span>
+                                            <div class="min-w-0">
+                                                <span class="font-bold text-white tracking-tight break-words">{{ $order->buyer?->name ?? 'Deleted User' }}</span>
+                                                <p class="mt-1 text-[11px] text-slate-500">
+                                                    {{ $order->created_at?->translatedFormat('d F Y H:i') }}
+                                                </p>
+                                            </div>
                                         </div>
                                     </td>
                                     

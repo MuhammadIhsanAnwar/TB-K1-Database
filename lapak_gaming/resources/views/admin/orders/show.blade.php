@@ -105,6 +105,14 @@
             </div>
         </div>
 
+        {{-- ── CARD 2A: TRANSACTION TIME ─────────────────────────── --}}
+        <div class="rounded-3xl p-5 panel-card-glass flex flex-col gap-2">
+            <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500">Tanggal Transaksi</p>
+            <div class="text-base sm:text-lg font-bold text-white tracking-tight">
+                {{ $order->created_at?->translatedFormat('d F Y H:i') }}
+            </div>
+        </div>
+
         {{-- ── CARD 2: MANIFEST ITEM PESANAN ─────────────────────── --}}
         <div class="rounded-3xl panel-card-glass overflow-hidden">
             <div class="px-6 py-4 border-b border-white/5 bg-white/5 text-[11px] font-bold uppercase tracking-wider text-slate-400">
