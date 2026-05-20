@@ -147,6 +147,8 @@ class CheckoutController extends Controller
                 'status' => 'pending',
             ]);
 
+            $product->decrement('stock', $quantity);
+
             $wallet = Wallet::firstOrCreate(['user_id' => $request->user()->id]);
             $balanceState = $wallet->balanceState()->firstOrCreate([], [
                 'balance' => 0,

@@ -11,6 +11,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Validation\ValidationException;
 
 class OrderController extends Controller {
     public function index() {
@@ -141,14 +142,22 @@ class OrderController extends Controller {
             return redirect()->route('cart.index')->with('error', 'Keranjang kosong atau belum ada produk yang dipilih!');
         }
 
-        foreach ($cartItems as $item) {
-            if ($item->product->stock < $item->quantity) {
-                return redirect()->route('cart.index')
-                    ->with('error', "Stok {$item->product->name} tidak mencukupi!");
-            }
-        }
-
         DB::transaction(function () use ($request, $cartItems) {
+            $cartItems->loadMissing('product');
+
+            foreach ($cartItems as $item) {
+                $lockedProduct = Product::query()
+                    ->whereKey($item->product_id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
+
+                if ($lockedProduct->stock < $item->quantity) {
+                    throw ValidationException::withMessages([
+                        'quantity' => "Stok {$lockedProduct->name} tidak mencukupi!",
+                    ]);
+                }
+            }
+
             $subtotal = $cartItems->sum(fn($c) => $c->product->price * $c->quantity);
             $fee = round($subtotal * 0.02);
             $grand_total = $subtotal + $fee; 
@@ -188,19 +197,14 @@ class OrderController extends Controller {
             }   
 
             foreach ($cartItems as $item) {
-              OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item->product_id,
-
-                'name_snapshot' => $item->product->name,
-                'price_snapshot' => $item->product->price,
-
-                'product_name' => $item->product->name,
-                'price' => $item->product->price,
-                'quantity' => $item->quantity,
-                'subtotal' => $item->product->price * $item->quantity,
-            ]);
-                $item->product->decrement('stock', $item->quantity);
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item->product_id,
+                    'name_snapshot' => $item->product->name,
+                    'price_snapshot' => $item->product->price,
+                    'quantity' => $item->quantity,
+                    'status' => 'pending',
+                ]);
             }
 
             Cart::where('user_id', Auth::id())->where('is_selected', true)->delete();

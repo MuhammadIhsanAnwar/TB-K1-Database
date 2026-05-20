@@ -10,172 +10,51 @@ class CategorySeeder extends Seeder
 {
     public function run(): void
     {
-        // 10 Game & Brand Populer sesuai Itemku.com
-        $categoriesData = [
-            [
-                'name' => 'Mobile Legends',
-                'slug' => 'mobile-legends',
-                'image' => 'app/public/ikon-kategori/topup-game.webp',
-                'icon' => '⚔️',
-                'children' => [
-                    ['name' => 'Mobile Legends - Diamond', 'slug' => 'mobile-legends-diamond', 'icon' => '💎'],
-                    ['name' => 'Mobile Legends - Akun', 'slug' => 'mobile-legends-akun', 'icon' => '👤'],
-                    ['name' => 'Mobile Legends - Joki', 'slug' => 'mobile-legends-joki', 'icon' => '🏆'],
-                    ['name' => 'Mobile Legends - Gift Skin', 'slug' => 'mobile-legends-gift-skin', 'icon' => '🎁'],
-                ]
-            ],
-            [
-                'name' => 'Roblox',
-                'slug' => 'roblox',
-                'image' => 'app/public/ikon-kategori/roblox-games.svg',
-                'icon' => '🧱',
-                'children' => [
-                    ['name' => 'Roblox - Robux', 'slug' => 'roblox-robux', 'icon' => '💎'],
-                    ['name' => 'Roblox - Items & Pets', 'slug' => 'roblox-items-pets', 'icon' => '🐶'],
-                    ['name' => 'Roblox - Akun', 'slug' => 'roblox-akun', 'icon' => '👤'],
-                ]
-            ],
-            [
-                'name' => 'Growtopia',
-                'slug' => 'growtopia',
-                'image' => 'app/public/ikon-kategori/koin-game.webp',
-                'icon' => '🌱',
-                'children' => [
-                    ['name' => 'Growtopia - DL / WL / Gems', 'slug' => 'growtopia-dl-wl-gems', 'icon' => '🪙'],
-                    ['name' => 'Growtopia - Items', 'slug' => 'growtopia-items', 'icon' => '🧩'],
-                    ['name' => 'Growtopia - Akun', 'slug' => 'growtopia-akun', 'icon' => '👤'],
-                ]
-            ],
-            [
-                'name' => 'Free Fire',
-                'slug' => 'free-fire',
-                'image' => 'app/public/ikon-kategori/topup-game.webp',
-                'icon' => '🔥',
-                'children' => [
-                    ['name' => 'Free Fire - Diamond', 'slug' => 'free-fire-diamond', 'icon' => '💎'],
-                    ['name' => 'Free Fire - Akun', 'slug' => 'free-fire-akun', 'icon' => '👤'],
-                    ['name' => 'Free Fire - Joki', 'slug' => 'free-fire-joki', 'icon' => '🏆'],
-                ]
-            ],
-            [
-                'name' => 'PUBG Mobile',
-                'slug' => 'pubg-mobile',
-                'image' => 'app/public/ikon-kategori/topup-login.svg',
-                'icon' => '🪂',
-                'children' => [
-                    ['name' => 'PUBG Mobile - UC', 'slug' => 'pubg-mobile-uc', 'icon' => '💵'],
-                    ['name' => 'PUBG Mobile - Akun', 'slug' => 'pubg-mobile-akun', 'icon' => '👤'],
-                ]
-            ],
-            [
-                'name' => 'Genshin Impact',
-                'slug' => 'genshin-impact',
-                'image' => 'app/public/ikon-kategori/topup-game.webp',
-                'icon' => '✨',
-                'children' => [
-                    ['name' => 'Genshin Impact - Top Up', 'slug' => 'genshin-impact-top-up', 'icon' => '💫'],
-                    ['name' => 'Genshin Impact - Akun', 'slug' => 'genshin-impact-akun', 'icon' => '👤'],
-                ]
-            ],
-            [
-                'name' => 'Valorant',
-                'slug' => 'valorant',
-                'image' => 'app/public/ikon-kategori/topup-game.webp',
-                'icon' => '🎯',
-                'children' => [
-                    ['name' => 'Valorant - Points', 'slug' => 'valorant-points', 'icon' => '💳'],
-                    ['name' => 'Valorant - Akun', 'slug' => 'valorant-akun', 'icon' => '👤'],
-                    ['name' => 'Valorant - Joki', 'slug' => 'valorant-joki', 'icon' => '🏆'],
-                ]
-            ],
-            [
-                'name' => 'Steam Wallet',
-                'slug' => 'steam-wallet',
-                'image' => 'app/public/ikon-kategori/voucher.webp',
-                'icon' => '🎮',
-                'children' => [
-                    ['name' => 'Steam - Voucher IDR', 'slug' => 'steam-voucher-idr', 'icon' => '🎟️'],
-                    ['name' => 'Steam - Voucher USD', 'slug' => 'steam-voucher-usd', 'icon' => '💵'],
-                ]
-            ],
-            [
-                'name' => 'Netflix',
-                'slug' => 'netflix',
-                'image' => 'app/public/ikon-kategori/streaming.webp',
-                'icon' => '📺',
-                'children' => [
-                    ['name' => 'Netflix - Akun Premium', 'slug' => 'netflix-akun-premium', 'icon' => '🔑'],
-                ]
-            ],
-            [
-                'name' => 'Spotify',
-                'slug' => 'spotify',
-                'image' => 'app/public/ikon-kategori/streaming.webp',
-                'icon' => '🎵',
-                'children' => [
-                    ['name' => 'Spotify - Premium Plan', 'slug' => 'spotify-premium-plan', 'icon' => '🔑'],
-                ]
-            ]
+        $categories = [
+            ['name' => 'Top Up Game', 'slug' => 'top-up-game', 'image' => 'app/public/ikon-kategori/topup-game.webp', 'icon' => '⚡'],
+            ['name' => 'Game Key', 'slug' => 'game-key', 'image' => 'app/public/ikon-kategori/game-key.webp', 'icon' => '🗝️'],
+            ['name' => 'Roblox Games', 'slug' => 'roblox-games', 'image' => 'app/public/ikon-kategori/roblox-games.svg', 'icon' => '🎮'],
+            ['name' => 'Akun', 'slug' => 'akun', 'image' => 'app/public/ikon-kategori/akun.svg', 'icon' => '👤'],
+            ['name' => 'Voucher', 'slug' => 'voucher', 'image' => 'app/public/ikon-kategori/voucher.webp', 'icon' => '🎫'],
+            ['name' => 'Koin Game', 'slug' => 'koin-game', 'image' => 'app/public/ikon-kategori/koin-game.webp', 'icon' => '🪙'],
+            ['name' => 'Item', 'slug' => 'item', 'image' => 'app/public/ikon-kategori/item.webp', 'icon' => '🧩'],
+            ['name' => 'Joki', 'slug' => 'joki', 'image' => 'app/public/ikon-kategori/joki.svg', 'icon' => '🏆'],
+            ['name' => 'Top Up Login', 'slug' => 'top-up-login', 'image' => 'app/public/ikon-kategori/topup-login.svg', 'icon' => '🔐'],
+            ['name' => 'Streaming', 'slug' => 'streaming', 'image' => 'app/public/ikon-kategori/streaming.webp', 'icon' => '📺'],
+            ['name' => 'Live Show', 'slug' => 'live-show', 'image' => 'app/public/ikon-kategori/live-show.webp', 'icon' => '🎤'],
+            ['name' => 'Pulsa & Utilitas', 'slug' => 'pulsa-utilitas', 'image' => 'app/public/ikon-kategori/pulsa-utilitas.webp', 'icon' => '📱'],
+            ['name' => 'Aplikasi & Software', 'slug' => 'aplikasi-software', 'image' => 'app/public/ikon-kategori/aplikasi-software.svg', 'icon' => '💻'],
         ];
 
         $hasIconColumn = Schema::hasColumn('categories', 'icon');
         $hasImageColumn = Schema::hasColumn('categories', 'image');
         $keepIds = [];
-        $sortOrder = 0;
 
-        foreach ($categoriesData as $parentEntry) {
+        foreach ($categories as $i => $entry) {
             $payload = [
-                'name' => $parentEntry['name'],
-                'sort_order' => $sortOrder++,
+                'name' => $entry['name'],
+                'sort_order' => $i,
                 'is_active' => true,
                 'parent_id' => null,
             ];
 
             if ($hasIconColumn) {
-                $payload['icon'] = $parentEntry['icon'];
+                $payload['icon'] = $entry['icon'];
             }
 
             if ($hasImageColumn) {
-                $payload['image'] = $parentEntry['image'];
+                $payload['image'] = $entry['image'];
             }
 
-            $parentCategory = Category::updateOrCreate(
-                ['slug' => $parentEntry['slug']],
+            $category = Category::updateOrCreate(
+                ['slug' => $entry['slug']],
                 $payload
             );
 
-            $keepIds[] = $parentCategory->id;
-
-            // Seed children categories (subcategories)
-            if (isset($parentEntry['children'])) {
-                foreach ($parentEntry['children'] as $childEntry) {
-                    $childPayload = [
-                        'name' => $childEntry['name'],
-                        'sort_order' => $sortOrder++,
-                        'is_active' => true,
-                        'parent_id' => $parentCategory->id,
-                    ];
-
-                    if ($hasIconColumn) {
-                        $childPayload['icon'] = $childEntry['icon'];
-                    }
-
-                    if ($hasImageColumn) {
-                        $childPayload['image'] = null; // Subcategories don't necessarily have parent-level cover photos
-                    }
-
-                    $childCategory = Category::updateOrCreate(
-                        ['slug' => $childEntry['slug']],
-                        $childPayload
-                    );
-
-                    $keepIds[] = $childCategory->id;
-                }
-            }
+            $keepIds[] = $category->id;
         }
 
-        // Cleanup obsolete categories
-        $fallbackCategoryId = Category::query()->where('slug', 'mobile-legends')->value('id');
+        $fallbackCategoryId = Category::query()->where('slug', 'top-up-game')->value('id');
         $obsoleteCategoryIds = Category::query()->whereNotIn('id', $keepIds)->pluck('id');
 
         if ($fallbackCategoryId && $obsoleteCategoryIds->isNotEmpty() && Schema::hasTable('products')) {

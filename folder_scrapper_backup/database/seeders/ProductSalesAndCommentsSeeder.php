@@ -53,7 +53,6 @@ class ProductSalesAndCommentsSeeder extends Seeder
                 $orderItem = OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $product->id,
-                    'seller_id' => $product->seller_id,
                     'name_snapshot' => $product->name,
                     'price_snapshot' => $product->price,
                     'quantity' => $quantity,
