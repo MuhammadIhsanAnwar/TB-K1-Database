@@ -197,11 +197,29 @@ class ItemkuCategoriesSeeder extends Seeder
         ];
 
         foreach ($categories as $category) {{
-            // Gunakan updateOrInsert agar aman dijalankan berulang kali
-            DB::table('categories')->updateOrInsert(
-                ['slug' => $category['slug']],
-                $category
-            );
+            $existing = DB::table('categories')->where('slug', $category['slug'])->first();
+            
+            if ($existing) {{
+                // Update only necessary fields, keeping existing icon and image intact if new ones are null
+                $updateData = [
+                    'name'        => $category['name'],
+                    'description' => $category['description'],
+                    'sort_order'  => $category['sort_order'],
+                    'is_active'   => $category['is_active'],
+                    'updated_at'  => $category['updated_at'],
+                ];
+                
+                if ($category['icon'] !== null) {{
+                    $updateData['icon'] = $category['icon'];
+                }}
+                if ($category['image'] !== null) {{
+                    $updateData['image'] = $category['image'];
+                }}
+
+                DB::table('categories')->where('id', $existing->id)->update($updateData);
+            }} else {{
+                DB::table('categories')->insert($category);
+            }}
         }}
 
         $this->command->info('✅ Kategori Itemku berhasil di-seed: ' . count($categories) . ' kategori');
@@ -323,9 +341,6 @@ use Illuminate\\Support\\Facades\\DB;
  *
  * Cara pakai (jalankan SETELAH ItemkuCategoriesSeeder):
  *   php artisan db:seed --class=ItemkuProductsSeeder
- *
- * Atau lewat DatabaseSeeder:
- *   $this->call([ItemkuCategoriesSeeder::class, ItemkuProductsSeeder::class]);
  */
 class ItemkuProductsSeeder extends Seeder
 {{
@@ -365,15 +380,27 @@ class ItemkuProductsSeeder extends Seeder
                 ->first();
 
             if ($exists) {{
-                // Update: hanya harga, stok, deskripsi
-                DB::table('products')->where('id', $exists->id)->update([
-                    'price'       => $productData['price'],
-                    'sale_price'  => $productData['sale_price'],
-                    'stock'       => $productData['stock'],
-                    'description' => $productData['description'],
-                    'updated_at'  => now(),
-                ]);
-                $updatedCount++;
+                // Update: hanya update jika data baru ada dan bukan nilai default/kosong
+                $updateData = [];
+                if ((float)$productData['price'] > 0) {{
+                    $updateData['price'] = $productData['price'];
+                }}
+                if ($productData['sale_price'] !== null) {{
+                    $updateData['sale_price'] = $productData['sale_price'];
+                }}
+                // Hanya update stok jika nilainya masuk akal & bukan default 999
+                if ((int)$productData['stock'] > 0 && (int)$productData['stock'] !== 999) {{
+                    $updateData['stock'] = $productData['stock'];
+                }}
+                if (!empty(trim((string)$productData['description']))) {{
+                    $updateData['description'] = $productData['description'];
+                }}
+
+                if (!empty($updateData)) {{
+                    $updateData['updated_at'] = now();
+                    DB::table('products')->where('id', $exists->id)->update($updateData);
+                    $updatedCount++;
+                }}
             }} else {{
                 DB::table('products')->insert($productData);
                 $insertedCount++;
@@ -403,11 +430,25 @@ class ItemkuProductsSeeder extends Seeder
                 ['product_id' => $product->id]
             );
 
-            DB::table('product_statistics')->updateOrInsert(
-                ['product_id' => $product->id],
-                $statData
-            );
-            $statsCount++;
+            $existingStat = DB::table('product_statistics')->where('product_id', $product->id)->first();
+
+            if ($existingStat) {{
+                $updateStat = [];
+                if ((int)$statData['sold_count'] > 0) $updateStat['sold_count'] = $statData['sold_count'];
+                if ((float)$statData['rating_average'] > 0) $updateStat['rating_average'] = $statData['rating_average'];
+                if ((int)$statData['review_count'] > 0) $updateStat['review_count'] = $statData['review_count'];
+                if ((int)$statData['views_count'] > 0) $updateStat['views_count'] = $statData['views_count'];
+                if ((int)$statData['downloads_count'] > 0) $updateStat['downloads_count'] = $statData['downloads_count'];
+                
+                if (!empty($updateStat)) {{
+                    $updateStat['updated_at'] = now();
+                    DB::table('product_statistics')->where('id', $existingStat->id)->update($updateStat);
+                    $statsCount++;
+                }}
+            }} else {{
+                DB::table('product_statistics')->insert($statData);
+                $statsCount++;
+            }}
         }}
 
         $this->command->info("✅ Product Statistics: {{$statsCount}} records");

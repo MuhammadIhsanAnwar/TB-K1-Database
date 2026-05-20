@@ -186,121 +186,61 @@ class ItemkuScraper:
     # =====================================================
 
     async def scrape_category(self, category_slug: str):
-
-        url = f"{BASE_URL}/c/{category_slug}"
+        url_slug = category_slug
+        if category_slug == "free-fire":
+            url_slug = "garena-free-fire"
+        url = f"{BASE_URL}/g/{url_slug}"
 
         logger.info(f"🔍 Scrape kategori:")
         logger.info(f"   URL: {url}")
 
         page = await self.context.new_page()
 
-        captured_api = await self._setup_api_interceptor(page)
-
         products = []
-
         try:
-
-            # =============================================
-            # OPEN PAGE
-            # =============================================
-
-            await page.goto(
-                url,
-                wait_until="domcontentloaded",
-                timeout=60000
-            )
-
-            await page.wait_for_timeout(5000)
-
-            # =============================================
-            # ACCEPT COOKIE
-            # =============================================
-
-            try:
-
-                selectors = [
-                    "button:has-text('Accept')",
-                    "button:has-text('Allow')",
-                    "button:has-text('Setuju')",
-                    "button:has-text('Terima')",
-                ]
-
-                for sel in selectors:
-                    try:
-                        await page.click(sel, timeout=3000)
-                        logger.info("🍪 Cookie popup diterima")
-                        await page.wait_for_timeout(2000)
-                        break
-                    except:
-                        pass
-
-            except:
-                logger.debug("Tidak ada cookie popup")
-
-            # =============================================
-            # SCROLL
-            # =============================================
-
-            logger.info("📜 Scroll halaman...")
-
-            for _ in range(20):
-
-                await page.mouse.wheel(0, 3000)
-                await page.wait_for_timeout(2000)
-
-            # =============================================
-            # DEBUG
-            # =============================================
-
+            import urllib.request
+            req = urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36'})
+            with urllib.request.urlopen(req, timeout=30) as response:
+                html = response.read().decode('utf-8')
+                
+            from bs4 import BeautifulSoup
+            soup = BeautifulSoup(html, "html.parser")
+            
             logger.info("💾 Simpan debug...")
-
-            html = await page.content()
-
-            with open(
-                f"{DEBUG_DIR}/debug.html",
-                "w",
-                encoding="utf-8"
-            ) as f:
+            with open(f"{DEBUG_DIR}/debug.html", "w", encoding="utf-8") as f:
                 f.write(html)
-
-            await page.screenshot(
-                path=f"{DEBUG_DIR}/debug.png",
-                full_page=True
-            )
-
-            logger.info("📸 Screenshot tersimpan")
-
-            # =============================================
-            # PARSE API
-            # =============================================
-
-            if captured_api:
-
-                logger.info(f"📡 API tertangkap: {len(captured_api)}")
-
-                products = self._parse_api(captured_api)
-
-                if products:
-                    logger.info(f"✅ Produk dari API: {len(products)}")
-                    return products[:MAX_PRODUCTS]
-
-            # =============================================
-            # PARSE HTML
-            # =============================================
-
-            logger.info("⚠️ Fallback ke HTML parsing")
-
-            products = self._parse_html(html)
-
-            logger.info(f"✅ Produk dari HTML: {len(products)}")
-
+                
+            next_data = soup.find("script", {"id": "__NEXT_DATA__"})
+            if next_data:
+                logger.info("📦 __NEXT_DATA__ ditemukan")
+                try:
+                    data = json.loads(next_data.string)
+                    with open(f"{DEBUG_DIR}/next_data.json", "w", encoding="utf-8") as f:
+                        json.dump(data, f, indent=2)
+                    
+                    page_products = data.get('props', {}).get('pageProps', {}).get('products', [])
+                    if page_products:
+                        logger.info(f"✅ Produk dari __NEXT_DATA__: {len(page_products)}")
+                        for p in page_products:
+                            products.append({
+                                "name": p.get("name", ""),
+                                "price": p.get("price", 0),
+                                "sale_price": p.get("price", 0),
+                                "description": p.get("item_info_name", ""),
+                                "stock": p.get("total_products", 999),
+                                "sold_count": 0,
+                                "rating_average": 0.0,
+                                "review_count": 0,
+                                "source_url": f"{BASE_URL}/p/{p.get('seo_string', '')}" if p.get('seo_string') else "",
+                                "image_url": p.get("icon_image_url", ""),
+                                "external_id": str(p.get("id", "")),
+                            })
+                        return products[:MAX_PRODUCTS]
+                except Exception as e:
+                    logger.error(f"❌ Gagal parse NEXT_DATA: {e}")
+                    
         except Exception as e:
-
             logger.error(f"❌ Error scrape: {e}")
-
-        finally:
-
-            await page.close()
 
         return products[:MAX_PRODUCTS]
 
@@ -428,8 +368,6 @@ class ItemkuScraper:
 
                 data = json.loads(next_data.string)
 
-                data_str = json.dumps(data)
-
                 with open(
                     f"{DEBUG_DIR}/next_data.json",
                     "w",
@@ -438,6 +376,26 @@ class ItemkuScraper:
                     json.dump(data, f, indent=2)
 
                 logger.info("💾 next_data.json disimpan")
+                
+                # Extract products from __NEXT_DATA__
+                page_products = data.get('props', {}).get('pageProps', {}).get('products', [])
+                if page_products:
+                    logger.info(f"✅ Produk dari __NEXT_DATA__: {len(page_products)}")
+                    for p in page_products:
+                        products.append({
+                            "name": p.get("name", ""),
+                            "price": p.get("price", 0),
+                            "sale_price": None,
+                            "description": p.get("item_info_name", ""),
+                            "stock": p.get("total_products", 999),
+                            "sold_count": 0,
+                            "rating_average": 0.0,
+                            "review_count": 0,
+                            "source_url": f"{BASE_URL}/p/{p.get('seo_string', '')}" if p.get('seo_string') else "",
+                            "image_url": p.get("icon_image_url", ""),
+                            "external_id": str(p.get("id", "")),
+                        })
+                    return products
 
             except Exception as e:
                 logger.error(f"❌ Gagal parse NEXT_DATA: {e}")
