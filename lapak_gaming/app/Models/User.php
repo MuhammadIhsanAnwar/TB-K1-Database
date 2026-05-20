@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use App\Models\UserProfile;
 use App\Models\UserPolicyConsent;
+use App\Models\WalletTransaction;
 use Illuminate\Auth\Notifications\VerifyEmail;
 
 class User extends Authenticatable implements MustVerifyEmail
@@ -20,24 +22,28 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $fillable = [
         'name', 'email', 'password', 'role',
         'status', 'seller_level_id', 'suspended_at', 'suspend_reason',
-        'google_id', 'phone', 'avatar', 'is_seller',
+        'google_id', 'phone', 'avatar',
         'account_deletion_token', 'account_deletion_token_sent_at', 'deactivated_at',
+        'two_factor_enabled', 'two_factor_methods', 'two_factor_google_secret', 'two_factor_confirmed_at',
         // Seller registration workflow
         'seller_status', 'seller_rejection_reason',
         // Shop profile
         'shop_name', 'shop_photo', 'shop_description',
     ];
 
-    protected $hidden = ['password', 'remember_token'];
-
     protected $casts = [
         'email_verified_at'           => 'datetime',
         'password'                    => 'hashed',
-        'is_seller'                   => 'boolean',
+        'two_factor_enabled'          => 'boolean',
+        'two_factor_methods'          => 'array',
         'deactivated_at'              => 'datetime',
         'account_deletion_token_sent_at' => 'datetime',
         'suspended_at'                => 'datetime',
+        'last_login_at'               => 'datetime',
+        'two_factor_confirmed_at'     => 'datetime',
     ];
+
+    protected $hidden = ['password', 'remember_token', 'two_factor_google_secret'];
 
     // ─── Scopes ──────────────────────────────────────────────────────────────
 
@@ -54,9 +60,7 @@ class User extends Authenticatable implements MustVerifyEmail
     /** Users who are approved sellers (role = seller OR is_seller = true). */
     public function scopeApprovedSellers($query)
     {
-        return $query->where(function ($q) {
-            $q->where('role', 'seller')->orWhere('is_seller', true);
-        })->where('seller_status', 'approved');
+        return $query->where('role', 'seller')->where('seller_status', 'approved');
     }
 
     /** Users who have submitted a seller application pending admin review. */
@@ -102,9 +106,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasOne(UserProfile::class);
     }
 
-    public function transactions()
+    public function transactions(): HasManyThrough
     {
-        return $this->hasMany('App\Models\Transaction');
+        return $this->hasManyThrough(WalletTransaction::class, Wallet::class);
     }
 
     public function policyConsents(): HasMany
@@ -138,10 +142,6 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         if ($this->role === 'seller') {
             return true;
-        }
-
-        if (array_key_exists('is_seller', $this->attributes)) {
-            return (bool) ($this->attributes['is_seller'] ?? false);
         }
 
         return in_array(($this->attributes['user_type'] ?? null), ['seller', 'mixed'], true);
@@ -232,17 +232,22 @@ class User extends Authenticatable implements MustVerifyEmail
             'locked_balance'    => 0,
         ]);
 
+        $balanceBefore = (float) $balanceState->balance;
+
         $balanceState->forceFill([
-            'balance'           => (float) $balanceState->balance + $amount,
+            'balance'           => $balanceBefore + $amount,
             'available_balance' => (float) $balanceState->available_balance + $amount,
         ])->save();
 
-        $this->transactions()->create([
-            'type'          => 'credit',
-            'amount'        => $amount,
-            'description'   => $desc,
-            'order_id'      => $orderId,
-            'balance_after' => $balanceState->balance,
+        $wallet->transactions()->create([
+            'type'            => 'credit',
+            'direction'       => 'credit',
+            'amount'          => $amount,
+            'balance_before'  => $balanceBefore,
+            'balance_after'   => $balanceState->balance,
+            'reference_type'  => $orderId ? Order::class : null,
+            'reference_id'    => $orderId,
+            'description'     => $desc,
         ]);
     }
 
@@ -259,17 +264,22 @@ class User extends Authenticatable implements MustVerifyEmail
             'locked_balance'    => 0,
         ]);
 
+        $balanceBefore = (float) $balanceState->balance;
+
         $balanceState->forceFill([
-            'balance'           => (float) $balanceState->balance - $amount,
+            'balance'           => $balanceBefore - $amount,
             'available_balance' => (float) $balanceState->available_balance - $amount,
         ])->save();
 
-        $this->transactions()->create([
-            'type'          => 'debit',
-            'amount'        => $amount,
-            'description'   => $desc,
-            'order_id'      => $orderId,
-            'balance_after' => $balanceState->balance,
+        $wallet->transactions()->create([
+            'type'            => 'debit',
+            'direction'       => 'debit',
+            'amount'          => $amount,
+            'balance_before'  => $balanceBefore,
+            'balance_after'   => $balanceState->balance,
+            'reference_type'  => $orderId ? Order::class : null,
+            'reference_id'    => $orderId,
+            'description'     => $desc,
         ]);
 
         return true;

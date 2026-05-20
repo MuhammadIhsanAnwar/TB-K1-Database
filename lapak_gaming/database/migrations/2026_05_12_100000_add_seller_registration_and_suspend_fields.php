@@ -11,9 +11,10 @@ return new class extends Migration
         Schema::table('users', function (Blueprint $table) {
             // Seller registration workflow: none → pending → approved / rejected
             if (! Schema::hasColumn('users', 'seller_status')) {
+                $column = Schema::hasColumn('users', 'role') ? 'role' : null;
                 $table->enum('seller_status', ['none', 'pending', 'approved', 'rejected'])
                     ->default('none')
-                    ->after('is_seller');
+                    ->after($column ?? 'password');
             }
 
             if (! Schema::hasColumn('users', 'seller_rejection_reason')) {

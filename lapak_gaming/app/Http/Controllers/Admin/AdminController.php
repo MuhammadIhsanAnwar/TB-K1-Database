@@ -7,6 +7,7 @@ use App\Models\Banner;
 use App\Models\MarketplaceNotification;
 use App\Models\Order;
 use App\Models\User;
+use App\Services\Pdf\PdfDocumentService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -23,29 +24,65 @@ class AdminController extends Controller
     {
         $tab = $request->query('tab', 'users');
 
-        $regularUsers = User::query()
+        // Search and sorting params
+        $q = trim((string) $request->query('q', ''));
+        $sort = $request->query('sort', 'created_at');
+        $direction = strtolower($request->query('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $allowedSorts = ['created_at', 'name', 'email'];
+        if (! in_array($sort, $allowedSorts, true)) {
+            $sort = 'created_at';
+        }
+
+        $baseAppends = array_filter(['q' => $q, 'sort' => $sort, 'direction' => $direction]);
+
+        $regularUsersQuery = User::query()
             ->where('role', 'buyer')
-            ->orderByDesc('created_at')
+            ->when($q, fn($qb) => $qb->where(function ($w) use ($q) {
+                $w->where('name', 'like', "%{$q}%")
+                  ->orWhere('email', 'like', "%{$q}%");
+            }));
+
+        $regularUsers = (clone $regularUsersQuery)
+            ->orderBy($sort, $direction)
             ->paginate(15, ['*'], 'users_page')
-            ->appends(['tab' => 'users']);
+            ->appends(array_merge($baseAppends, ['tab' => 'users']));
 
-        $sellers = User::query()
+        $sellersQuery = User::query()
             ->where('role', 'seller')
-            ->orderByDesc('created_at')
+            ->when($q, fn($qb) => $qb->where(function ($w) use ($q) {
+                $w->where('name', 'like', "%{$q}%")
+                  ->orWhere('email', 'like', "%{$q}%");
+            }));
+
+        $sellers = (clone $sellersQuery)
+            ->orderBy($sort, $direction)
             ->paginate(15, ['*'], 'sellers_page')
-            ->appends(['tab' => 'sellers']);
+            ->appends(array_merge($baseAppends, ['tab' => 'sellers']));
 
-        $applications = User::query()
+        $applicationsQuery = User::query()
             ->where('seller_status', 'pending')
-            ->orderByDesc('created_at')
-            ->paginate(15, ['*'], 'apps_page')
-            ->appends(['tab' => 'applications']);
+            ->when($q, fn($qb) => $qb->where(function ($w) use ($q) {
+                $w->where('name', 'like', "%{$q}%")
+                  ->orWhere('email', 'like', "%{$q}%");
+            }));
 
-        $pendingVerifications = User::query()
+        $applications = (clone $applicationsQuery)
+            ->orderBy($sort, $direction)
+            ->paginate(15, ['*'], 'apps_page')
+            ->appends(array_merge($baseAppends, ['tab' => 'applications']));
+
+        $pendingVerificationsQuery = User::query()
             ->whereNull('email_verified_at')
-            ->orderByDesc('created_at')
+            ->when($q, fn($qb) => $qb->where(function ($w) use ($q) {
+                $w->where('name', 'like', "%{$q}%")
+                  ->orWhere('email', 'like', "%{$q}%");
+            }));
+
+        $pendingVerifications = (clone $pendingVerificationsQuery)
+            ->orderBy($sort, $direction)
             ->paginate(15, ['*'], 'pending_page')
-            ->appends(['tab' => 'pending_verification']);
+            ->appends(array_merge($baseAppends, ['tab' => 'pending_verification']));
 
         $counts = [
             'users' => User::where('role', 'buyer')->count(),
@@ -54,7 +91,7 @@ class AdminController extends Controller
             'pending_verification' => User::whereNull('email_verified_at')->count(),
         ];
 
-        return view('admin.users.index', compact('tab', 'regularUsers', 'sellers', 'applications', 'pendingVerifications', 'counts'));
+        return view('admin.users.index', compact('tab', 'regularUsers', 'sellers', 'applications', 'pendingVerifications', 'counts', 'q', 'sort', 'direction'));
     }
 
     // ─── 2. USER ACTIONS ─────────────────────────────────────────────────────
@@ -103,7 +140,6 @@ class AdminController extends Controller
             'seller_status' => 'approved',
             'seller_rejection_reason' => null,
             'status' => 'active',
-            'is_seller' => true,
         ])->save();
 
         MarketplaceNotification::create([
@@ -286,192 +322,54 @@ class AdminController extends Controller
 
     public function orders(Request $request): View
     {
-        $orders = Order::query()->with(['buyer', 'seller'])->latest()->paginate(20);
-        return view('admin.orders.index', compact('orders'));
+        $q = trim((string) $request->query('q', ''));
+        $sort = $request->query('sort', 'created_at');
+        $direction = strtolower($request->query('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
+
+        $allowedSorts = ['created_at', 'order_code', 'grand_total'];
+        if (! in_array($sort, $allowedSorts, true)) {
+            $sort = 'created_at';
+        }
+
+        $ordersQuery = Order::query()->with(['buyer', 'seller'])
+            ->when($q, function ($qBuilder) use ($q) {
+                $qBuilder->where('order_code', 'like', "%{$q}%")
+                    ->orWhereHas('buyer', fn($b) => $b->where('name', 'like', "%{$q}%"))
+                    ->orWhereHas('seller', fn($s) => $s->where('name', 'like', "%{$q}%"));
+            });
+
+        $orders = $ordersQuery->orderBy($sort, $direction)->paginate(20)->appends(array_filter(['q' => $q, 'sort' => $sort, 'direction' => $direction]));
+
+        return view('admin.orders.index', compact('orders', 'q', 'sort', 'direction'));
     }
 
-        public function downloadOrdersReportPdf()
+    public function downloadOrdersReportPdf()
     {
-        $orders = Order::with(['buyer', 'seller'])
-            ->latest()
-            ->get();
-
-        $pages = [];
-        $lines = [];
-
-        $lines[] = [
-            'text' => 'LAPORAN PESANAN LAPAK GAMING',
-            'size' => 16,
-        ];
-
-        $lines[] = [
-            'text' => 'Tanggal Export: ' . now()->format('d M Y H:i'),
-            'size' => 10,
-        ];
-
-        $lines[] = [
-            'text' => ' ',
-            'size' => 10,
-        ];
-
-        foreach ($orders as $index => $order) {
-            $buyer = $order->buyer->name ?? 'Unknown';
-            $seller = $order->seller->name ?? 'Unknown';
-            $status = strtoupper($order->status ?? '-');
-            $total = number_format($this->reportOrderTotal($order), 0, ',', '.');
-
-            $lines[] = [
-                'text' => ($index + 1) . '. Order #' . $order->id,
-                'size' => 12,
-            ];
-
-            $lines[] = [
-                'text' => 'Buyer  : ' . $buyer,
-                'size' => 10,
-            ];
-
-            $lines[] = [
-                'text' => 'Seller : ' . $seller,
-                'size' => 10,
-            ];
-
-            $lines[] = [
-                'text' => 'Status : ' . $status,
-                'size' => 10,
-            ];
-
-            $lines[] = [
-                'text' => 'Total  : Rp ' . $total,
-                'size' => 10,
-            ];
-
-            $lines[] = [
-                'text' => '----------------------------------------',
-                'size' => 10,
-            ];
-
-            // Maksimal isi 35 line per halaman
-            if (count($lines) >= 35) {
-                $pages[] = $lines;
-                $lines = [];
-            }
+        if (! Schema::hasTable('orders')) {
+            return back()->withErrors([
+                'pdf' => 'Tabel pesanan belum tersedia, jadi laporan PDF belum bisa dibuat.',
+            ]);
         }
 
-        if (!empty($lines)) {
-            $pages[] = $lines;
+        try {
+            $orders = Order::query()
+                ->with(['buyer:id,name', 'seller:id,name', 'financial:order_id,grand_total'])
+                ->orderByDesc('created_at')
+                ->get();
+
+            return app(PdfDocumentService::class)->downloadOrdersReport($orders, 'laporan-pesanan.pdf');
+        } catch (\Throwable $exception) {
+            report($exception);
+
+            return back()->withErrors([
+                'pdf' => 'Gagal membuat laporan PDF. Silakan coba lagi setelah database dan relasi pesanan siap.',
+            ]);
         }
-
-        $pdfContent = $this->buildSimplePdf($pages);
-
-        return response($pdfContent)
-            ->header('Content-Type', 'application/pdf')
-            ->header('Content-Disposition', 'attachment; filename="laporan-pesanan.pdf"');
     }
 
     public function showOrder(Order $order): View
     {
         $order->load(['buyer', 'seller', 'items.product']);
         return view('admin.orders.show', compact('order'));
-    }
-
-    private function pdfColumn(?string $value, int $length): string
-    {
-        $value = preg_replace('/\s+/', ' ', (string) $value);
-        $value = $this->safeSubstr($value, $length);
-
-        return str_pad($value, $length);
-    }
-
-    private function reportOrderTotal(Order $order): float
-    {
-        if (Schema::hasTable('order_financials')) {
-            return (float) $order->grand_total;
-        }
-
-        return (float) ($order->getAttributes()['grand_total'] ?? 0);
-    }
-
-    private function buildSimplePdf(array $pages): string
-    {
-        $objects = [];
-        $objects[1] = '<< /Type /Catalog /Pages 2 0 R >>';
-        $objects[3] = '<< /Type /Font /Subtype /Type1 /BaseFont /Helvetica >>';
-        $pageIds = [];
-        $nextId = 4;
-
-        foreach ($pages as $pageLines) {
-            $stream = '';
-            $y = 800;
-
-            foreach ($pageLines as $line) {
-                $text = $this->pdfEscape((string) ($line['text'] ?? ''));
-                $size = (int) ($line['size'] ?? 10);
-                $stream .= "BT /F1 {$size} Tf 40 {$y} Td ({$text}) Tj ET\n";
-                $y -= $size >= 14 ? 24 : 15;
-            }
-
-            $contentId = $nextId++;
-            $objects[$contentId] = '<< /Length ' . strlen($stream) . " >>\nstream\n" . $stream . "endstream";
-
-            $pageId = $nextId++;
-            $objects[$pageId] = "<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /Font << /F1 3 0 R >> >> /Contents {$contentId} 0 R >>";
-            $pageIds[] = $pageId;
-        }
-
-        $kids = collect($pageIds)->map(fn ($id) => "{$id} 0 R")->implode(' ');
-        $objects[2] = "<< /Type /Pages /Kids [{$kids}] /Count " . count($pageIds) . ' >>';
-        ksort($objects);
-
-        $pdf = "%PDF-1.4\n";
-        $offsets = [0 => 0];
-
-        foreach ($objects as $id => $body) {
-            $offsets[$id] = strlen($pdf);
-            $pdf .= "{$id} 0 obj\n{$body}\nendobj\n";
-        }
-
-        $xrefOffset = strlen($pdf);
-        $maxId = max(array_keys($objects));
-        $pdf .= "xref\n0 " . ($maxId + 1) . "\n";
-        $pdf .= "0000000000 65535 f \n";
-
-        for ($i = 1; $i <= $maxId; $i++) {
-            $pdf .= sprintf("%010d 00000 n \n", $offsets[$i] ?? 0);
-        }
-
-        $pdf .= "trailer\n<< /Size " . ($maxId + 1) . " /Root 1 0 R >>\n";
-        $pdf .= "startxref\n{$xrefOffset}\n%%EOF";
-
-        return $pdf;
-    }
-
-    private function pdfEscape(string $value): string
-    {
-        $value = $this->normalizePdfText($value);
-        $value = str_replace(["\\", "(", ")", "\r", "\n"], ["\\\\", "\\(", "\\)", ' ', ' '], $value);
-
-        return $this->safeSubstr($value, 130);
-    }
-
-    private function safeSubstr(string $value, int $length): string
-    {
-        if (function_exists('mb_substr')) {
-            return mb_substr($value, 0, $length);
-        }
-
-        return substr($value, 0, $length);
-    }
-
-    private function normalizePdfText(string $value): string
-    {
-        // Keep simple PDF text stream stable by converting UTF-8 to a Latin-1 compatible range.
-        if (function_exists('iconv')) {
-            $converted = @iconv('UTF-8', 'ISO-8859-1//TRANSLIT//IGNORE', $value);
-            if ($converted !== false) {
-                $value = $converted;
-            }
-        }
-
-        return preg_replace('/[^\x20-\x7E\xA0-\xFF]/', '', $value) ?? '';
     }
 }

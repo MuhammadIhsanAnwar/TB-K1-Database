@@ -11,6 +11,7 @@ return new class extends Migration
         // Create buyers table
         Schema::create('buyers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->unique()->constrained('users')->cascadeOnDelete();
             $table->string('name');
             $table->string('username')->unique();
             $table->string('email')->unique();
@@ -30,6 +31,7 @@ return new class extends Migration
         // Create sellers table
         Schema::create('sellers', function (Blueprint $table) {
             $table->id();
+            $table->foreignId('user_id')->nullable()->unique()->constrained('users')->cascadeOnDelete();
             $table->string('name');
             $table->string('username')->unique();
             $table->string('email')->unique();
@@ -47,23 +49,11 @@ return new class extends Migration
             $table->index('username');
         });
 
-        // Add user_type to users table to maintain backward compatibility
-        if (Schema::hasTable('users') && !Schema::hasColumn('users', 'user_type')) {
-            Schema::table('users', function (Blueprint $table) {
-                $table->enum('user_type', ['buyer', 'seller', 'mixed'])->default('mixed')->after('role');
-            });
-        }
     }
 
     public function down(): void
     {
         Schema::dropIfExists('buyers');
         Schema::dropIfExists('sellers');
-
-        if (Schema::hasTable('users') && Schema::hasColumn('users', 'user_type')) {
-            Schema::table('users', function (Blueprint $table) {
-                $table->dropColumn('user_type');
-            });
-        }
     }
 };

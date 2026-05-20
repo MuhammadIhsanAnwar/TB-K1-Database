@@ -40,7 +40,6 @@ class WalletController extends Controller
 
         WalletTransaction::create([
             'wallet_id' => $wallet->id,
-            'user_id' => $request->user()->id,
             'type' => 'deposit',
             'direction' => 'credit',
             'amount' => $data['amount'],
@@ -77,7 +76,6 @@ class WalletController extends Controller
 
         WalletTransaction::create([
             'wallet_id' => $wallet->id,
-            'user_id' => $request->user()->id,
             'type' => 'withdraw',
             'direction' => 'debit',
             'amount' => $data['amount'],

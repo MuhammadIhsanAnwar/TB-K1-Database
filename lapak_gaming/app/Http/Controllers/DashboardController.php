@@ -59,13 +59,28 @@ class DashboardController extends Controller
     public function seller(Request $request): View
     {
         $user = $request->user();
+
+        if ($user->status === 'suspended' || $user->seller_status === 'suspended') {
+            return view('dashboard.seller-suspended', [
+                'user' => $user,
+                'suspensionType' => $user->seller_status === 'suspended' ? 'toko' : 'akun',
+                'suspensionReason' => $user->suspend_reason,
+                'suspendedAt' => $user->suspended_at,
+            ]);
+        }
+
         $products = Schema::hasTable('products')
             ? Product::query()->where('seller_id', $user->id)->latest()->take(6)->get()
             : collect();
 
         // PERBAIKAN: Ambil dari OrderItem dan load relasi order + product agar sesuai ekspektasi Blade
         $orders = Schema::hasTable('orders')
-            ? \App\Models\OrderItem::query()->where('seller_id', $user->id)->with(['order', 'product'])->latest()->take(6)->get()
+            ? \App\Models\OrderItem::query()
+                ->whereHas('product', fn($query) => $query->where('seller_id', $user->id))
+                ->with(['order', 'product'])
+                ->latest()
+                ->take(6)
+                ->get()
             : collect();
 
         $wallet = Schema::hasTable('wallets')
@@ -94,32 +109,112 @@ class DashboardController extends Controller
         $chartTransactions = collect();
         $chartRevenue = collect();
         $chartRangeLabel = 'Belum ada transaksi';
+        $chartPeriod = $request->query('chart_period', 'month');
+        $startDateInput = $request->query('start_date');
+        $endDateInput = $request->query('end_date');
+        $customRangeStart = null;
+        $customRangeEnd = null;
+
+        if ($startDateInput && $endDateInput) {
+            try {
+                $customRangeStart = Carbon::parse($startDateInput)->startOfDay();
+                $customRangeEnd = Carbon::parse($endDateInput)->endOfDay();
+
+                if ($customRangeStart->greaterThan($customRangeEnd)) {
+                    [$customRangeStart, $customRangeEnd] = [$customRangeEnd->copy()->startOfDay(), $customRangeStart->copy()->endOfDay()];
+                }
+
+                $chartPeriod = 'range';
+            } catch (\Throwable $exception) {
+                $customRangeStart = null;
+                $customRangeEnd = null;
+            }
+        }
 
         if (Schema::hasTable('orders')) {
             $firstOrderDate = Order::query()->min('created_at');
-            $startMonth = $firstOrderDate ? Carbon::parse($firstOrderDate)->startOfMonth() : now()->startOfMonth();
-            $endMonth = now()->startOfMonth();
-            $chartRangeLabel = $startMonth->format('M Y') . ' - ' . $endMonth->format('M Y');
+            $startDate = $customRangeStart ?? ($firstOrderDate ? Carbon::parse($firstOrderDate) : now());
+            $endDate = $customRangeEnd ?? now();
 
-            for ($cursor = $startMonth->copy(); $cursor <= $endMonth; $cursor->addMonth()) {
-                $monthStart = $cursor->copy()->startOfMonth();
-                $monthEnd = $cursor->copy()->endOfMonth();
-                $chartLabels->push($monthStart->format('M Y'));
-                $chartTransactions->push(Order::whereBetween('created_at', [$monthStart, $monthEnd])->count());
+            if ($chartPeriod === 'range' || $chartPeriod === 'day') {
+                $cursor = $startDate->copy()->startOfDay();
+                $lastDay = $endDate->copy()->startOfDay();
+                $chartRangeLabel = $cursor->format('d M Y') . ' - ' . $lastDay->format('d M Y');
 
-                if (Schema::hasTable('order_financials')) {
-                    $chartRevenue->push(
-                        (float) Order::query()
-                            ->leftJoin('order_financials', 'orders.id', '=', 'order_financials.order_id')
-                            ->whereBetween('orders.created_at', [$monthStart, $monthEnd])
-                            ->sum(DB::raw('COALESCE(order_financials.grand_total, orders.grand_total, 0)'))
-                    );
-                } else {
-                    $chartRevenue->push(
-                        (float) Order::query()
-                            ->whereBetween('created_at', [$monthStart, $monthEnd])
-                            ->sum('grand_total')
-                    );
+                for (; $cursor <= $lastDay; $cursor->addDay()) {
+                    $dayStart = $cursor->copy()->startOfDay();
+                    $dayEnd = $cursor->copy()->endOfDay();
+                    $chartLabels->push($dayStart->format('d M'));
+                    $chartTransactions->push(Order::whereBetween('created_at', [$dayStart, $dayEnd])->count());
+
+                    if (Schema::hasTable('order_financials')) {
+                        $chartRevenue->push(
+                            (float) Order::query()
+                                ->leftJoin('order_financials', 'orders.id', '=', 'order_financials.order_id')
+                                ->whereBetween('orders.created_at', [$dayStart, $dayEnd])
+                                ->sum(DB::raw('COALESCE(order_financials.grand_total, orders.grand_total, 0)'))
+                        );
+                    } else {
+                        $chartRevenue->push(
+                            (float) Order::query()
+                                ->whereBetween('created_at', [$dayStart, $dayEnd])
+                                ->sum('grand_total')
+                        );
+                    }
+                }
+
+            } elseif ($chartPeriod === 'year') {
+                $startYear = (int) $startDate->year;
+                $endYear = (int) $endDate->year;
+                $chartRangeLabel = $startYear . ' - ' . $endYear;
+
+                for ($year = $startYear; $year <= $endYear; $year++) {
+                    $yearStart = Carbon::create($year, 1, 1)->startOfYear();
+                    $yearEnd = Carbon::create($year, 12, 31)->endOfYear();
+                    $chartLabels->push((string) $year);
+                    $chartTransactions->push(Order::whereBetween('created_at', [$yearStart, $yearEnd])->count());
+
+                    if (Schema::hasTable('order_financials')) {
+                        $chartRevenue->push(
+                            (float) Order::query()
+                                ->leftJoin('order_financials', 'orders.id', '=', 'order_financials.order_id')
+                                ->whereBetween('orders.created_at', [$yearStart, $yearEnd])
+                                ->sum(DB::raw('COALESCE(order_financials.grand_total, orders.grand_total, 0)'))
+                        );
+                    } else {
+                        $chartRevenue->push(
+                            (float) Order::query()
+                                ->whereBetween('created_at', [$yearStart, $yearEnd])
+                                ->sum('grand_total')
+                        );
+                    }
+                }
+
+            } else {
+                $startMonth = $startDate->copy()->startOfMonth();
+                $endMonth = $endDate->copy()->startOfMonth();
+                $chartRangeLabel = $startMonth->format('M Y') . ' - ' . $endMonth->format('M Y');
+
+                for ($cursor = $startMonth->copy(); $cursor <= $endMonth; $cursor->addMonth()) {
+                    $monthStart = $cursor->copy()->startOfMonth();
+                    $monthEnd = $cursor->copy()->endOfMonth();
+                    $chartLabels->push($monthStart->format('M Y'));
+                    $chartTransactions->push(Order::whereBetween('created_at', [$monthStart, $monthEnd])->count());
+
+                    if (Schema::hasTable('order_financials')) {
+                        $chartRevenue->push(
+                            (float) Order::query()
+                                ->leftJoin('order_financials', 'orders.id', '=', 'order_financials.order_id')
+                                ->whereBetween('orders.created_at', [$monthStart, $monthEnd])
+                                ->sum(DB::raw('COALESCE(order_financials.grand_total, orders.grand_total, 0)'))
+                        );
+                    } else {
+                        $chartRevenue->push(
+                            (float) Order::query()
+                                ->whereBetween('created_at', [$monthStart, $monthEnd])
+                                ->sum('grand_total')
+                        );
+                    }
                 }
             }
         }
@@ -137,6 +232,9 @@ class DashboardController extends Controller
             'chartTransactions' => $chartTransactions,
             'chartRevenue' => $chartRevenue,
             'chartRangeLabel' => $chartRangeLabel,
+            'chartPeriod' => $chartPeriod,
+            'chartStartDate' => $customRangeStart?->format('Y-m-d') ?? $startDateInput,
+            'chartEndDate' => $customRangeEnd?->format('Y-m-d') ?? $endDateInput,
         ]);
     }
 }

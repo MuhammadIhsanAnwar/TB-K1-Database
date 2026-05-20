@@ -18,6 +18,7 @@
 
     <form action="{{ route('cart.store') }}" method="POST">
         @csrf
+        <input type="hidden" name="payment_method" value="balance">
         <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
             <h2 class="font-bold text-white mb-4">Item yang Dibeli</h2>
             @foreach($cartItems as $item)
@@ -34,15 +35,10 @@
 
         <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
             <h2 class="font-bold text-white mb-4">Metode Pembayaran</h2>
-            <div class="grid grid-cols-3 gap-3">
-                @foreach(['balance' => 'Saldo ('.'Rp '.number_format(auth()->user()->balance,0,',','.').')', 'transfer' => 'Transfer Bank', 'qris' => 'QRIS', 'gopay' => 'GoPay', 'ovo' => 'OVO', 'dana' => 'DANA'] as $val => $label)
-                    <label class="cursor-pointer">
-                        <input type="radio" name="payment_method" value="{{ $val }}" class="sr-only peer" {{ $val === 'balance' ? 'checked' : '' }}>
-                        <div class="border border-gray-700 peer-checked:border-violet-500 peer-checked:bg-violet-900/30 rounded-xl p-3 text-center text-sm text-gray-400 peer-checked:text-white transition">
-                            {{ $label }}
-                        </div>
-                    </label>
-                @endforeach
+            <div class="rounded-xl border border-violet-500/20 bg-violet-900/20 px-4 py-4 text-sm text-violet-100">
+                <div class="font-semibold text-white">Saldo Wallet</div>
+                <div class="mt-1 text-violet-100/80">Pembayaran akan diproses langsung dari saldo wallet kamu.</div>
+                <div class="mt-2 text-xs text-violet-200/80">Saldo tersedia: Rp {{ number_format(auth()->user()->balance, 0, ',', '.') }}</div>
             </div>
         </div>
 

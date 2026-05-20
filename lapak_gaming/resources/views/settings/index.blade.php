@@ -58,18 +58,18 @@
                     {{-- MENU --}}
                     <nav class="mt-8 space-y-3">
 
-                        <a href="{{ route('settings.profile') }}"
+                        <a href="{{ Route::has('settings.profile') ? route('settings.profile') : url('/settings/profile') }}"
                             class="menu-item {{ $selectedTab === 'profile' ? 'menu-active-blue' : 'menu-normal' }}">
                             Edit Profil
                         </a>
 
-                        <a href="{{ route('settings.account') }}"
+                        <a href="{{ Route::has('settings.account') ? route('settings.account') : url('/settings/account') }}"
                             class="menu-item {{ $selectedTab === 'account' ? 'menu-active-blue' : 'menu-normal' }}">
                             Pengaturan Akun
                         </a>
 
                         @if(! $user->isGoogleAccount())
-                        <a href="{{ route('settings.password') }}"
+                        <a href="{{ Route::has('settings.password') ? route('settings.password') : url('/settings/password') }}"
                             class="menu-item {{ $selectedTab === 'password' ? 'menu-active-blue' : 'menu-normal' }}">
                             Ubah Password
                         </a>
@@ -79,10 +79,17 @@
                         </div>
                         @endif
 
-                        <a href="{{ route('settings.seller') }}"
-                            class="menu-item {{ $selectedTab === 'seller' ? 'menu-active-orange' : 'menu-normal' }}">
-                            Daftar Jadi Seller
+                        <a href="{{ Route::has('settings.section') ? route('settings.section', ['section' => 'security']) : url('/settings/security') }}"
+                            class="menu-item {{ $selectedTab === 'security' ? 'menu-active-blue' : 'menu-normal' }}">
+                            Verifikasi 2 Langkah
                         </a>
+
+                        @unless($user->isAdmin())
+                            <a href="{{ Route::has('settings.seller') ? route('settings.seller') : url('/settings/seller') }}"
+                                class="menu-item {{ $selectedTab === 'seller' ? 'menu-active-orange' : 'menu-normal' }}">
+                                Daftar Jadi Seller
+                            </a>
+                        @endunless
 
                     </nav>
 
@@ -119,6 +126,12 @@
                                 <li>{{ $error }}</li>
                             @endforeach
                         </ul>
+                    </div>
+                @endif
+
+                @if($user->isAdmin())
+                    <div class="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-100">
+                        Menu buyer dan seller tidak tersedia untuk akun administrator.
                     </div>
                 @endif
 
@@ -227,12 +240,6 @@
                                         class="bg-[#111827] text-white"
                                         @selected(old('gender', $profile?->gender) === 'female')>
                                         Perempuan
-                                    </option>
-
-                                    <option value="other"
-                                        class="bg-[#111827] text-white"
-                                        @selected(old('gender', $profile?->gender) === 'other')>
-                                        Lainnya
                                     </option>
 
                                 </select>
@@ -442,6 +449,142 @@
                         </section>
 
                     </div>
+
+                {{-- SECURITY / 2FA --}}
+                @elseif ($selectedTab === 'security')
+
+                    <div class="mb-10">
+
+                        <div class="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-cyan-300">
+                            <span class="h-2 w-2 rounded-full bg-cyan-400"></span>
+                            TWO STEP VERIFICATION
+                        </div>
+
+                        <h1 class="mt-5 text-4xl font-black text-white">
+                            Verifikasi 2 Langkah
+                        </h1>
+
+                        <p class="mt-3 text-sm leading-relaxed text-slate-400">
+                            Aktifkan perlindungan tambahan untuk login akun Anda. Anda dapat memilih Email atau Google Authenticator.
+                        </p>
+
+                    </div>
+
+                    <form action="{{ route('settings.security.update') }}" method="POST" class="space-y-6">
+                        @csrf
+                        @method('PUT')
+
+                        <section class="card-box">
+                            <div class="flex items-start justify-between gap-4 flex-wrap">
+                                <div>
+                                    <h2 class="text-xl font-bold text-white">Status Verifikasi 2 Langkah</h2>
+                                    <p class="mt-3 text-sm text-slate-400">Gunakan satu atau lebih metode berikut sesuai kebutuhan Anda.</p>
+                                </div>
+
+                                <label class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200">
+                                    <input type="checkbox" name="two_factor_enabled" value="1" @checked(old('two_factor_enabled', $user->two_factor_enabled))>
+                                    Aktifkan verifikasi 2 langkah
+                                </label>
+                            </div>
+                        </section>
+
+                        <section class="card-box">
+                            <h2 class="text-xl font-bold text-white">Pilih Metode</h2>
+
+                            <div class="mt-6 grid gap-4 lg:grid-cols-3">
+                                <label class="rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-sm text-slate-200">
+                                    <div class="flex items-center gap-3">
+                                        <input type="checkbox" name="two_factor_methods[]" value="email" @checked(in_array('email', old('two_factor_methods', $twoFactorMethods ?? []), true))>
+                                        <span class="font-semibold text-white">Email</span>
+                                    </div>
+                                    <p class="mt-3 text-slate-400">Kode akan dikirim ke alamat email akun Anda.</p>
+                                </label>
+
+                                <label class="rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-sm text-slate-200">
+                                    <div class="flex items-center gap-3">
+                                        <input type="checkbox" name="two_factor_methods[]" value="google" @checked(in_array('google', old('two_factor_methods', $twoFactorMethods ?? []), true))>
+                                        <span class="font-semibold text-white">Google Authenticator</span>
+                                    </div>
+                                    <p class="mt-3 text-slate-400">Gunakan kode dari aplikasi authenticator.</p>
+                                </label>
+                            </div>
+                        </section>
+
+                        <section class="card-box">
+                            <h2 class="text-xl font-bold text-white">Google Authenticator</h2>
+
+                            @if($pendingTwoFactorSetup ?? false)
+                                <div class="mt-6 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-center">
+                                    @if($googleQrCode)
+                                        <div class="rounded-3xl border border-white/10 bg-white p-4 flex items-center justify-center">
+                                            {!! $googleQrCode !!}
+                                        </div>
+                                    @endif
+
+                                    <div>
+                                        <p class="text-sm text-slate-400">Scan QR code di bawah dengan Google Authenticator, lalu masukkan kode 6 digit untuk mengaktifkan dan menyimpan pengaturan.</p>
+                                        <div class="mt-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 font-mono text-sm text-cyan-100 break-all">
+                                            {{ $googleSecret }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <form action="{{ route('settings.security.confirm') }}" method="POST" class="mt-6 space-y-4">
+                                    @csrf
+
+                                    <input type="text"
+                                        name="verification_code"
+                                        inputmode="numeric"
+                                        maxlength="6"
+                                        placeholder="Masukkan kode Authenticator"
+                                        class="input-style">
+
+                                    <button type="submit" class="submit-green">
+                                        Konfirmasi & Simpan Google Authenticator
+                                    </button>
+                                </form>
+
+                                <p class="mt-4 text-xs text-slate-500">Pengaturan belum disimpan permanen sampai kode Authenticator valid.</p>
+
+                            @elseif($googleSecret)
+                                <div class="mt-6 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-center">
+                                    @if($googleQrCode)
+                                        <div class="rounded-3xl border border-white/10 bg-white p-4 flex items-center justify-center">
+                                            {!! $googleQrCode !!}
+                                        </div>
+                                    @endif
+
+                                    <div>
+                                        <p class="text-sm text-slate-400">Pindai QR code dengan Google Authenticator atau masukkan secret key berikut jika diperlukan.</p>
+                                        <div class="mt-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 font-mono text-sm text-cyan-100 break-all">
+                                            {{ $googleSecret }}
+                                        </div>
+                                        <p class="mt-4 text-xs text-slate-500">Setelah perubahan disimpan, secret akan tetap tersimpan untuk metode Google Authenticator.</p>
+                                    </div>
+                                </div>
+                            @else
+                                <p class="mt-4 text-sm text-slate-400">Secret Google Authenticator akan dibuat otomatis saat Anda mengaktifkan metode ini.</p>
+                            @endif
+                        </section>
+
+                        <section class="card-box">
+                            <h2 class="text-xl font-bold text-white">Informasi Pendukung</h2>
+                            <div class="mt-4 grid gap-4 lg:grid-cols-2 text-sm text-slate-300">
+                                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                                    <div class="text-slate-500">Email Terdaftar</div>
+                                    <div class="mt-1 text-white">{{ $user->email }}</div>
+                                </div>
+                                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                                    <div class="text-slate-500">Nomor Telepon</div>
+                                    <div class="mt-1 text-white">{{ $user->phone ?? 'Belum diisi' }}</div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <button type="submit" class="submit-blue">
+                            Simpan Pengaturan Verifikasi 2 Langkah
+                        </button>
+                    </form>
 
                 {{-- SELLER --}}
                 @elseif($user->seller_status === 'pending')

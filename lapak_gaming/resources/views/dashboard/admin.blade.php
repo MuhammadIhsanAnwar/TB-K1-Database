@@ -118,14 +118,16 @@
             </div>
             <div class="flex shrink-0 gap-3">
                 <a href="{{ route('admin.users.index') }}"
-                   class="rounded-2xl bg-amber-500 transition duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(245,158,11,0.35)] px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition hover:-translate-y-0.5 hover:bg-amber-400 active:translate-y-0">
+                   class="rounded-2xl bg-amber-500 px-5 py-3 text-sm font-bold text-slate-950 shadow-lg shadow-amber-500/20 transition duration-300 hover:-translate-y-1 hover:bg-amber-400 hover:shadow-[0_0_30px_rgba(245,158,11,0.35)] active:translate-y-0">
                     Kelola Akun
                 </a>
                 <a href="{{ route('admin.orders.index') }}"
                    class="rounded-xl border border-slate-700 bg-slate-800/60 px-5 py-3 text-sm font-bold text-white transition hover:border-slate-500 hover:bg-slate-700 active:scale-95">
                     Transaksi
                 </a>
-                <a href="{{ route('admin.orders.report.pdf') }}"
+                     <a href="{{ route('admin.orders.report.pdf') }}"
+                         download="laporan-pesanan.pdf"
+                         rel="noopener noreferrer"
                    class="rounded-xl border border-emerald-500/30 bg-emerald-500/10 px-5 py-3 text-sm font-bold text-emerald-200 transition hover:border-emerald-400 hover:bg-emerald-500/20 active:scale-95">
                     Download PDF
                 </a>
@@ -323,6 +325,41 @@
     {{-- ═══════════════════════════════════════════════
          CHARTS
     ═══════════════════════════════════════════════ --}}
+    <form method="GET" class="anim-fade-up anim-delay-2 mb-5 flex flex-wrap items-end gap-3 rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-4">
+        <div class="min-w-[180px] flex-1">
+            <label for="chart_period" class="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Tampilkan Data</label>
+            <select id="chart_period" name="chart_period" class="w-full rounded-2xl border border-white/10 bg-[#050816] px-4 py-3 text-sm text-white outline-none transition focus:border-blue-400">
+                <option value="month" @selected(($chartPeriod ?? 'month') === 'month')>Bulanan</option>
+                <option value="day" @selected(($chartPeriod ?? 'month') === 'day')>Harian</option>
+                <option value="year" @selected(($chartPeriod ?? 'month') === 'year')>Tahunan</option>
+            </select>
+        </div>
+
+        <div class="min-w-[180px]">
+            <label for="start_date" class="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Tanggal Awal</label>
+            <input
+                id="start_date"
+                type="date"
+                name="start_date"
+                value="{{ $chartStartDate ?? request('start_date') }}"
+                class="w-full rounded-2xl border border-white/10 bg-[#050816] px-4 py-3 text-sm text-white outline-none transition focus:border-blue-400"
+            >
+        </div>
+
+        <div class="min-w-[180px]">
+            <label for="end_date" class="mb-2 block text-xs font-semibold uppercase tracking-[0.18em] text-slate-500">Tanggal Akhir</label>
+            <input
+                id="end_date"
+                type="date"
+                name="end_date"
+                value="{{ $chartEndDate ?? request('end_date') }}"
+                class="w-full rounded-2xl border border-white/10 bg-[#050816] px-4 py-3 text-sm text-white outline-none transition focus:border-blue-400"
+            >
+        </div>
+
+        <button type="submit" class="rounded-2xl bg-blue-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-400">Terapkan</button>
+    </form>
+
     <div class="anim-fade-up anim-delay-3 grid gap-6 lg:grid-cols-2">
 
         {{-- Grafik Transaksi --}}
@@ -354,13 +391,16 @@
 </div>
 
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-<script type="text/x-template">
-window.chartLabels = {!! json_encode($chartLabels) !!};
-window.chartTransactions = {!! json_encode($chartTransactions) !!};
-window.chartRevenue = {!! json_encode($chartRevenue) !!};
-</script>
+<div id="chart-data"
+     data-labels="{{ base64_encode(json_encode($chartLabels)) }}"
+     data-transactions="{{ base64_encode(json_encode($chartTransactions)) }}"
+     data-revenue="{{ base64_encode(json_encode($chartRevenue)) }}"
+     hidden></div>
 <script>
-    const labels = window.chartLabels;
+    const chartDataElement = document.getElementById('chart-data');
+    const labels = JSON.parse(atob(chartDataElement.dataset.labels || 'W10='));
+    const transactions = JSON.parse(atob(chartDataElement.dataset.transactions || 'W10='));
+    const revenue = JSON.parse(atob(chartDataElement.dataset.revenue || 'W10='));
 
     // Shared chart defaults for dark theme
     const gridColor  = 'rgba(255,255,255,0.05)';
@@ -396,7 +436,7 @@ window.chartRevenue = {!! json_encode($chartRevenue) !!};
             labels: labels,
             datasets: [{
                 label: 'Jumlah Order',
-                data: window.chartTransactions,
+                data: transactions,
                 borderColor: '#f59e0b',
                 backgroundColor: 'rgba(245,158,11,0.08)',
                 pointBackgroundColor: '#f59e0b',
@@ -422,7 +462,7 @@ window.chartRevenue = {!! json_encode($chartRevenue) !!};
             labels: labels,
             datasets: [{
                 label: 'Total Rupiah',
-                data: window.chartRevenue,
+                data: revenue,
                 backgroundColor: 'rgba(16,185,129,0.7)',
                 hoverBackgroundColor: '#10b981',
                 borderRadius: 6,

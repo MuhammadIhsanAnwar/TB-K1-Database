@@ -5,9 +5,12 @@ use App\Models\Cart;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Product;
+use App\Models\User;
+use App\Services\Pdf\PdfDocumentService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\{Auth, DB};
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 
 class OrderController extends Controller {
     public function index() {
@@ -26,7 +29,7 @@ class OrderController extends Controller {
         
         // PAKAI == BUKAN === BIAR STRING & INTEGER NGGAK BENTROK
         $isBuyer = $order->buyer_id == $user->id;
-        $isSeller = $order->items()->where('seller_id', $user->id)->exists();
+        $isSeller = $order->items()->whereHas('product', fn($query) => $query->where('seller_id', $user->id))->exists();
 
         if (!$isBuyer && !$isSeller && $user->role != 'admin') {
             abort(403, 'AKSES DITOLAK: ANDA TIDAK MEMILIKI AKSES KE PESANAN INI.');
@@ -34,6 +37,29 @@ class OrderController extends Controller {
 
         $order->load('items.product.seller');
         return view('orders.show', compact('order'));
+    }
+
+    public function downloadReceiptPdf($order_code)
+    {
+        $order = Order::where('order_code', $order_code)
+            ->orWhere('invoice_number', $order_code)
+            ->firstOrFail();
+
+        $user = Auth::user();
+        $isBuyer = $order->buyer_id == $user->id;
+
+        if (! $isBuyer) {
+            abort(403, 'AKSES DITOLAK: ANDA TIDAK MEMILIKI AKSES KE PESANAN INI.');
+        }
+
+        if ($order->status !== Order::STATUS_COMPLETED) {
+            abort(403, 'Kwitansi hanya bisa diunduh setelah pesanan selesai.');
+        }
+
+        return app(PdfDocumentService::class)->downloadOrderReceipt(
+            $order,
+            ($order->invoice_number ?? 'kwitansi') . '.pdf'
+        );
     }
 
     public function checkout(Request $request) {
@@ -67,42 +93,35 @@ class OrderController extends Controller {
         abort_if($order->buyer_id != Auth::id(), 403);
         abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
 
+        /** @var User $user */
+        $user = Auth::user();
+        abort_if(! $user, 403);
+
         $messages = [
             'payment_method.required' => 'Metode pembayaran wajib dipilih.',
             'payment_method.in' => 'Metode pembayaran tidak valid.',
-            'payment_proof.image' => 'File bukti pembayaran harus berupa gambar.',
-            'payment_proof.max' => 'Ukuran bukti pembayaran maksimal 2MB.',
         ];
 
         $request->validate([
-            'payment_method' => 'required|in:balance,transfer,qris,dana,ovo,gopay',
-            'payment_proof'  => 'nullable|image|max:2048',
+            'payment_method' => 'required|in:balance',
         ], $messages);
 
         DB::transaction(function () use ($request, $order) {
-            if ($request->payment_method === 'balance') {
-                $user = Auth::user();
-                if ($user->balance < $order->total_price) {
-                    throw new \Exception('Saldo tidak mencukupi!');
-                }
-                $user->deductBalance($order->total_price, "Pembayaran Order #{$order->order_code}", $order->id);
-                $order->update([
-                    'status' => Order::STATUS_PAYMENT_UPLOADED,
-                    'payment_method' => 'balance',
-                    'paid_at' => now(),
-                ]);
-            } else {
-                $proof = null;
-                if ($request->hasFile('payment_proof')) {
-                    $proof = $request->file('payment_proof')->store('payment_proofs', 'public');
-                }
-                $order->update([
-                    'payment_method' => $request->payment_method,
-                    'payment_proof'  => $proof,
-                    'status'         => Order::STATUS_PAYMENT_UPLOADED,
-                    'paid_at'        => now(),
-                ]);
+            /** @var User $user */
+            $user = Auth::user();
+            abort_if(! $user, 403);
+
+            $amount = (float) ($order->grand_total ?? $order->total_price ?? 0);
+            if ($user->balance < $amount) {
+                throw new \Exception('Saldo tidak mencukupi!');
             }
+
+            $user->deductBalance($amount, "Pembayaran Order #{$order->order_code}", $order->id);
+            $order->update([
+                'status' => Order::STATUS_PAYMENT_UPLOADED,
+                'payment_method' => 'balance',
+                'paid_at' => now(),
+            ]);
         });
 
         return redirect()->route('orders.show', $order->order_code ?? $order->invoice_number)
@@ -115,7 +134,7 @@ class OrderController extends Controller {
             'payment_method.in' => 'Metode pembayaran tidak valid.',
         ];
 
-        $request->validate(['payment_method' => 'required|in:balance,transfer,qris,dana,ovo,gopay'], $messages);
+        $request->validate(['payment_method' => 'required|in:balance'], $messages);
 
         $cartItems = Cart::where('user_id', Auth::id())->where('is_selected', true)->with('product')->get();
         if ($cartItems->isEmpty()) {
@@ -142,14 +161,22 @@ class OrderController extends Controller {
             }
             $combinedNotes = implode("\n", $notesArray);
 
-            $order = Order::create([
+            $orderData = [
                 'buyer_id'       => Auth::id(),
                 'invoice_number' => 'INV-' . strtoupper(Str::random(10)),
                 'status'         => Order::STATUS_PENDING_PAYMENT,
                 'payment_method' => $request->payment_method,
-                'total_price'    => $grand_total,
-                'notes'          => $combinedNotes ?: null,
-            ]);
+            ];
+
+            if (\Illuminate\Support\Facades\Schema::hasColumn('orders', 'total_price')) {
+                $orderData['total_price'] = $grand_total;
+            }
+
+            if (Schema::hasColumn('orders', 'notes')) {
+                $orderData['notes'] = $combinedNotes ?: null;
+            }
+
+            $order = Order::create($orderData);
 
             if (method_exists($order, 'financial')) {
                 $order->financial()->create([
@@ -164,7 +191,6 @@ class OrderController extends Controller {
               OrderItem::create([
                 'order_id' => $order->id,
                 'product_id' => $item->product_id,
-                'seller_id' => $item->product->seller_id,
 
                 'name_snapshot' => $item->product->name,
                 'price_snapshot' => $item->product->price,
@@ -194,12 +220,16 @@ class OrderController extends Controller {
         abort_if($order->buyer_id != Auth::id(), 403);
         abort_if(!in_array($order->status, [Order::STATUS_PAYMENT_UPLOADED, Order::STATUS_PROCESSING], true), 422);
 
+        $order->loadMissing('items.product.seller');
+
         DB::transaction(function () use ($order) {
             $order->update(['status' => Order::STATUS_COMPLETED, 'completed_at' => now()]);
 
             foreach ($order->items as $item) {
-                $sellerAmount = $item->subtotal * 0.95; 
-                $item->seller->addBalance($sellerAmount, "Penjualan Order #{$order->order_code}", $order->id);
+                $sellerAmount = $item->subtotal * 0.95;
+                if ($item->product?->seller) {
+                    $item->product->seller->addBalance($sellerAmount, "Penjualan Order #{$order->order_code}", $order->id);
+                }
                 $item->update(['delivery_status' => 'received']);
 
                 $statistics = $item->product->statistics()->firstOrCreate([], [
@@ -232,7 +262,8 @@ class OrderController extends Controller {
                 $item->product->increment('stock', $item->quantity);
             }
             if ($order->status === Order::STATUS_PAYMENT_UPLOADED && $order->payment_method === 'balance') {
-                $order->buyer->addBalance($order->total_price, "Refund Order #{$order->order_code}", $order->id);
+                $refundAmount = (float) ($order->grand_total ?? $order->total_price ?? 0);
+                $order->buyer->addBalance($refundAmount, "Refund Order #{$order->order_code}", $order->id);
             }
             $order->update(['status' => Order::STATUS_CANCELLED]);
         });

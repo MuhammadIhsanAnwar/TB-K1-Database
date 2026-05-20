@@ -1,9 +1,23 @@
 <?php return array (
+  'laravel/fortify' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Fortify\\FortifyServiceProvider',
+    ),
+  ),
   'laravel/pail' => 
   array (
     'providers' => 
     array (
       0 => 'Laravel\\Pail\\PailServiceProvider',
+    ),
+  ),
+  'laravel/passkeys' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'Laravel\\Passkeys\\PasskeysServiceProvider',
     ),
   ),
   'laravel/sail' => 
@@ -50,6 +64,17 @@
     'providers' => 
     array (
       0 => 'Termwind\\Laravel\\TermwindServiceProvider',
+    ),
+  ),
+  'pragmarx/google2fa-laravel' => 
+  array (
+    'aliases' => 
+    array (
+      'Google2FA' => 'PragmaRX\\Google2FALaravel\\Facade',
+    ),
+    'providers' => 
+    array (
+      0 => 'PragmaRX\\Google2FALaravel\\ServiceProvider',
     ),
   ),
 );

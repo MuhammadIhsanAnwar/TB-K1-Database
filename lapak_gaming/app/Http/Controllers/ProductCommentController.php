@@ -17,7 +17,7 @@ class ProductCommentController extends Controller
             ->mainComments()
             ->approved()
             ->with(['user', 'replies.user', 'likes'])
-            ->withCount('replies')
+            ->withCount(['likes', 'replies'])
             ->orderByDesc('likes_count')
             ->orderByDesc('created_at')
             ->paginate(10);
@@ -54,10 +54,7 @@ class ProductCommentController extends Controller
             'status' => 'approved',
         ]);
 
-        // Increment parent comment replies count
-        if ($request->input('parent_comment_id')) {
-            ProductComment::find($request->input('parent_comment_id'))->increment('replies_count');
-        }
+        // Parent comment replies are counted on demand from the replies relationship.
 
         return response()->json([
             'message' => 'Comment created successfully',
@@ -87,10 +84,6 @@ class ProductCommentController extends Controller
     {
         $this->authorize('delete', $comment);
 
-        if ($comment->parent_comment_id) {
-            ProductComment::find($comment->parent_comment_id)->decrement('replies_count');
-        }
-
         $comment->delete();
 
         return response()->json([
@@ -105,7 +98,7 @@ class ProductCommentController extends Controller
 
         return response()->json([
             'liked' => $liked,
-            'likes_count' => $comment->likes_count,
+            'likes_count' => $comment->likes()->count(),
         ]);
     }
 

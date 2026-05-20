@@ -28,6 +28,12 @@ return [
         'redirect' => env('GOOGLE_REDIRECT_URI', env('APP_URL') . '/auth/google'),
     ],
 
+    'twilio' => [
+        'sid' => env('TWILIO_SID'),
+        'token' => env('TWILIO_TOKEN'),
+        'from' => env('TWILIO_FROM'),
+    ],
+
     'ses' => [
         'key' => env('AWS_ACCESS_KEY_ID'),
         'secret' => env('AWS_SECRET_ACCESS_KEY'),

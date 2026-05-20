@@ -67,8 +67,9 @@
                    class="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide">
                     Dashboard
                 </a>
-                <a href="{{ route('admin.orders.report.pdf') }}"
-                   class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 px-4 py-2.5 text-xs font-bold text-slate-950 transition-all shadow-md tracking-wide shadow-emerald-500/10">
+                    <a href="{{ route('admin.orders.report.pdf') }}"
+                             download="laporan-pesanan.pdf" rel="noopener noreferrer"
+                         class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 px-4 py-2.5 text-xs font-bold text-slate-950 transition-all shadow-md tracking-wide shadow-emerald-500/10">
                     <svg class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                     </svg>
@@ -82,7 +83,15 @@
             {{-- 🛠️ PERBAIKAN: Diubah jadi flex-col di mobile agar tidak tabrakan/terpotong --}}
             <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-400 text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <span>Menampilkan log perputaran invoice order marketplace.</span>
-                <span class="text-xs font-mono bg-black/20 text-slate-500 px-2 py-0.5 rounded border border-white/5 w-max">Total: {{ $orders->total() }} Records</span>
+                <div class="flex items-center gap-3">
+                    <form method="GET" action="{{ route('admin.orders.index') }}" class="flex items-center gap-2">
+                        <input name="q" value="{{ $q ?? '' }}" placeholder="Cari invoice, buyer, seller..."
+                          class="rounded-xl border border-white/5 bg-black/10 px-3 py-2 text-sm text-white outline-none" />
+                        <button type="submit" class="rounded-xl bg-amber-500 px-3 py-2 text-sm font-semibold text-slate-950">Cari</button>
+                        <a href="{{ route('admin.orders.index') }}" class="rounded-xl border border-white/5 px-3 py-2 text-sm text-slate-300">Reset</a>
+                    </form>
+                    <span class="text-xs font-mono bg-black/20 text-slate-500 px-2 py-0.5 rounded border border-white/5 w-max">Total: {{ $orders->total() }} Records</span>
+                </div>
             </div>
 
             @if($orders->isEmpty())
@@ -95,14 +104,27 @@
                 <div class="overflow-x-auto scroller-clean">
                     <table class="min-w-full divide-y divide-white/5 text-sm text-left text-slate-300">
                         <thead class="bg-black/30 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5">
-                            <tr>
-                                <th class="px-6 py-4">Nomor Invoice</th>
-                                <th class="px-6 py-4">Pihak Buyer</th>
-                                <th class="px-6 py-4">Pihak Seller</th>
-                                <th class="px-6 py-4">Grand Total</th>
-                                <th class="px-6 py-4">Status Alur</th>
-                                <th class="px-6 py-4 text-right">Otoritas</th>
-                            </tr>
+                                                        <tr>
+                                                                <th class="px-6 py-4">
+                                                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'order_code', 'direction' => ($sort === 'order_code' && $direction === 'desc') ? 'asc' : 'desc']) }}">Nomor Invoice
+                                                                        @if(($sort ?? '') === 'order_code')<span class="text-xs">{{ $direction === 'asc' ? '↑' : '↓' }}</span>@endif
+                                                                    </a>
+                                                                </th>
+                                                                <th class="px-6 py-4">
+                                                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'direction' => ($sort === 'created_at' && $direction === 'desc') ? 'asc' : 'desc']) }}">Tanggal Transaksi
+                                                                        @if(($sort ?? '') === 'created_at')<span class="text-xs">{{ $direction === 'asc' ? '↑' : '↓' }}</span>@endif
+                                                                    </a>
+                                                                </th>
+                                                                <th class="px-6 py-4">Pihak Buyer</th>
+                                                                <th class="px-6 py-4">Pihak Seller</th>
+                                                                <th class="px-6 py-4">
+                                                                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'grand_total', 'direction' => ($sort === 'grand_total' && $direction === 'desc') ? 'asc' : 'desc']) }}">Grand Total
+                                                                        @if(($sort ?? '') === 'grand_total')<span class="text-xs">{{ $direction === 'asc' ? '↑' : '↓' }}</span>@endif
+                                                                    </a>
+                                                                </th>
+                                                                <th class="px-6 py-4">Status Alur</th>
+                                                                <th class="px-6 py-4 text-right">Otoritas</th>
+                                                        </tr>
                         </thead>
                         <tbody class="divide-y divide-white/5">
                             @foreach($orders as $order)
@@ -119,7 +141,12 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-2 max-w-[180px]">
                                             <span class="w-1.5 h-1.5 rounded-full bg-blue-400 shrink-0"></span>
-                                            <span class="font-bold text-white tracking-tight break-words">{{ $order->buyer?->name ?? 'Deleted User' }}</span>
+                                            <div class="min-w-0">
+                                                <span class="font-bold text-white tracking-tight break-words">{{ $order->buyer?->name ?? 'Deleted User' }}</span>
+                                                <p class="mt-1 text-[11px] text-slate-500">
+                                                    {{ $order->created_at?->translatedFormat('d F Y H:i') }}
+                                                </p>
+                                            </div>
                                         </div>
                                     </td>
                                     

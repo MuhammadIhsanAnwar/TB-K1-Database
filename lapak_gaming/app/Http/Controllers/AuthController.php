@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Services\TwoFactorChallengeService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Storage;
@@ -56,21 +58,20 @@ class AuthController extends Controller
                 ->with('status', 'Email verifikasi sudah dikirim ulang. Silakan cek kotak masuk Anda.');
         }
 
-        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+        if (! $user) {
             return back()->withErrors([
                 'email' => 'Email atau password tidak valid.',
             ])->onlyInput('email');
         }
 
-        $request->session()->regenerate();
+        if (! Auth::validate($credentials)) {
+            return back()->withErrors([
+                'email' => 'Email atau password tidak valid.',
+            ])->onlyInput('email');
+        }
 
-        $user = $request->user();
-
-        // ── Suspended account check ──────────────────────────────────────────
+        // ── Suspended account check (before 2FA/login finalization) ────────
         if ($user && $user->status === 'suspended') {
-            Auth::logout();
-            $request->session()->invalidate();
-
             $reason  = $user->suspend_reason;
             $message = 'Akun Anda telah disuspend oleh admin.';
 
@@ -81,23 +82,59 @@ class AuthController extends Controller
             return back()->withErrors(['email' => $message])->onlyInput('email');
         }
 
-        // ── Deactivated account check ────────────────────────────────────────
+        // ── Deactivated account check (before 2FA/login finalization) ─────
         if ($user && $user->deactivated_at) {
             if ($user->deactivated_at->copy()->addMonths(6)->isPast()) {
                 $user->delete();
-                Auth::logout();
 
                 return back()->withErrors([
                     'email' => 'Akun Anda telah dihapus permanen karena melewati batas waktu aktivasi.',
                 ])->onlyInput('email');
             }
 
-            Auth::logout();
-            $request->session()->regenerate();
             $request->session()->put('reactivate_user_id', $user->id);
 
             return redirect()->route('account.reactivate.form');
         }
+
+        if ($this->requiresTwoFactorChallenge($user)) {
+            $twoFactor = app(TwoFactorChallengeService::class);
+            $challengeMethod = $twoFactor->resolveLoginMethod($user);
+
+            try {
+                $twoFactor->sendLoginChallenge($user, $challengeMethod);
+            } catch (\Throwable $exception) {
+                return back()->withErrors([
+                    'email' => 'Gagal mengirim kode verifikasi 2 langkah. Silakan coba lagi.',
+                ])->onlyInput('email');
+            }
+
+            // If a debug code was stored (e.g. mailer/SMS misconfigured), surface it to session for developer/testing.
+            $debugKey = 'two-factor-login:' . $user->id . ':' . $challengeMethod . ':debug';
+            $debugCode = Cache::get($debugKey);
+            if ($debugCode) {
+                $request->session()->put('two_factor_debug_code', $debugCode);
+            }
+
+            $request->session()->put('two_factor_login_pending', [
+                'user_id' => $user->id,
+                'remember' => $request->boolean('remember'),
+                'method' => $challengeMethod,
+            ]);
+
+            return redirect()->route('two-factor.challenge')
+                ->with('status', 'Masukkan kode verifikasi yang dikirim melalui ' . $twoFactor->methodLabel($challengeMethod) . ' untuk menyelesaikan login.');
+        }
+
+        if (! Auth::attempt($credentials, $request->boolean('remember'))) {
+            return back()->withErrors([
+                'email' => 'Email atau password tidak valid.',
+            ])->onlyInput('email');
+        }
+
+        $request->session()->regenerate();
+
+        $user = $request->user();
 
         if ($user?->role === 'admin') {
             return redirect()->route('admin.dashboard');
@@ -106,6 +143,80 @@ class AuthController extends Controller
         return redirect()->intended(match (true) {
             $user?->isSellerAccount() => route('seller.dashboard'),
             default                   => route('buyer.dashboard'),
+        });
+    }
+
+    public function twoFactorChallenge(): View|RedirectResponse
+    {
+        $pending = session('two_factor_login_pending');
+
+        if (! is_array($pending) || empty($pending['user_id'])) {
+            return redirect()->route('login');
+        }
+
+        $user = User::find($pending['user_id']);
+
+        if (! $user) {
+            session()->forget('two_factor_login_pending');
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Sesi verifikasi 2 langkah tidak valid. Silakan login kembali.',
+            ]);
+        }
+
+        return view('auth.two-factor-challenge', [
+            'user' => $user,
+            'challengeMethod' => (string) ($pending['method'] ?? 'google'),
+        ]);
+    }
+
+    public function confirmTwoFactorChallenge(Request $request): RedirectResponse
+    {
+        $pending = session('two_factor_login_pending');
+
+        if (! is_array($pending) || empty($pending['user_id'])) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Sesi verifikasi 2 langkah tidak valid. Silakan login kembali.',
+            ]);
+        }
+
+        $data = $request->validate([
+            'verification_code' => ['required', 'digits:6'],
+        ], [
+            'verification_code.required' => 'Kode verifikasi wajib diisi.',
+            'verification_code.digits' => 'Kode verifikasi harus terdiri dari 6 digit.',
+        ]);
+
+        $user = User::find($pending['user_id']);
+        $challengeMethod = (string) ($pending['method'] ?? 'google');
+
+        if (! $user || ! $this->requiresTwoFactorChallenge($user)) {
+            session()->forget('two_factor_login_pending');
+
+            return redirect()->route('login')->withErrors([
+                'email' => 'Akun tidak lagi memerlukan verifikasi 2 langkah. Silakan login kembali.',
+            ]);
+        }
+
+        $twoFactor = app(TwoFactorChallengeService::class);
+        $isValid = $twoFactor->verifyLoginChallenge($user, $challengeMethod, $data['verification_code']);
+
+        if (! $isValid) {
+            return back()->withErrors([
+                'verification_code' => 'Kode verifikasi tidak valid.',
+            ])->withInput();
+        }
+
+        $twoFactor->clearLoginChallenge($user, $challengeMethod);
+
+        Auth::login($user, (bool) ($pending['remember'] ?? false));
+        session()->regenerate();
+        session()->forget('two_factor_login_pending');
+
+        return redirect()->intended(match (true) {
+            $user->role === 'admin' => route('admin.dashboard'),
+            $user->isSellerAccount() => route('seller.dashboard'),
+            default => route('buyer.dashboard'),
         });
     }
 
@@ -305,6 +416,28 @@ class AuthController extends Controller
             return redirect()->route('account.reactivate.form');
         }
 
+        if ($this->requiresTwoFactorChallenge($user)) {
+            $twoFactor = app(TwoFactorChallengeService::class);
+            $challengeMethod = $twoFactor->resolveLoginMethod($user);
+
+            try {
+                $twoFactor->sendLoginChallenge($user, $challengeMethod);
+            } catch (\Throwable $exception) {
+                return redirect()->route('login')->withErrors([
+                    'email' => 'Gagal mengirim kode verifikasi 2 langkah. Silakan coba lagi.',
+                ]);
+            }
+
+            $request->session()->put('two_factor_login_pending', [
+                'user_id' => $user->id,
+                'remember' => true,
+                'method' => $challengeMethod,
+            ]);
+
+            return redirect()->route('two-factor.challenge')
+                ->with('status', 'Masukkan kode verifikasi yang dikirim melalui ' . $twoFactor->methodLabel($challengeMethod) . ' untuk menyelesaikan login.');
+        }
+
         Auth::login($user, true);
         $request->session()->regenerate();
 
@@ -368,5 +501,10 @@ class AuthController extends Controller
         $request->session()->regenerateToken();
 
         return redirect()->route('home');
+    }
+
+    private function requiresTwoFactorChallenge(User $user): bool
+    {
+        return app(TwoFactorChallengeService::class)->requiresChallenge($user);
     }
 }

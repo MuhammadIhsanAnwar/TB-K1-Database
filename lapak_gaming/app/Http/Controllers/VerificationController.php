@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -19,23 +20,29 @@ class VerificationController extends Controller
 
     public function resendGuest(Request $request)
 {
-    $email = session('guest_email');
+    // Prioritize email provided by the POST form, fallback to session
+    $email = $request->input('email') ?? session('guest_email');
 
-    if (!$email) {
+    if (empty($email)) {
         return back()->with('error', 'Email tidak ditemukan.');
     }
 
     // cari user berdasarkan email
     $user = \App\Models\User::where('email', $email)->first();
 
-    if (!$user) {
+    if (! $user) {
         return back()->with('error', 'User tidak ditemukan.');
     }
 
-    // kirim ulang email verifikasi
-    $user->sendEmailVerificationNotification();
+    try {
+        // kirim ulang email verifikasi
+        $user->sendEmailVerificationNotification();
+        session(['guest_email' => $email]);
 
-    return back()->with('success', 'Email verifikasi berhasil dikirim ulang.');
+        return back()->with('success', 'Email verifikasi berhasil dikirim ulang.');
+    } catch (\Throwable $exception) {
+        return back()->with('error', 'Gagal mengirim email verifikasi. Silakan coba lagi nanti.');
+    }
 }
 
     public function send(Request $request): RedirectResponse
@@ -85,7 +92,7 @@ class VerificationController extends Controller
         }
 
         // 4. Otomatis login-kan user setelah berhasil aktivasi (Opsional, silakan hapus baris ini jika ingin user login manual)
-        auth()->login($user);
+        Auth::login($user);
 
         // 5. Alihkan ke halaman dashboard dengan pesan sukses
         return redirect()->route('dashboard')->with('verified', true);

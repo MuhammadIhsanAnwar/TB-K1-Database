@@ -19,15 +19,11 @@ class ProductComment extends Model
         'content',
         'rating',
         'is_verified_buyer',
-        'likes_count',
-        'replies_count',
         'status',
     ];
 
     protected $casts = [
         'is_verified_buyer' => 'boolean',
-        'likes_count' => 'integer',
-        'replies_count' => 'integer',
     ];
 
     // Relations
@@ -109,16 +105,41 @@ class ProductComment extends Model
 
         if ($this->isLikedByUser($userId)) {
             $this->likes()->where('user_id', $userId)->delete();
-            $this->decrement('likes_count');
             return false;
-        } else {
-            $this->likes()->create([
-                'product_comment_id' => $this->id,
-                'user_id' => $userId,
-            ]);
-            $this->increment('likes_count');
-            return true;
         }
+
+        $this->likes()->create([
+            'product_comment_id' => $this->id,
+            'user_id' => $userId,
+        ]);
+
+        return true;
+    }
+
+    public function getLikesCountAttribute(): int
+    {
+        if (array_key_exists('likes_count', $this->attributes)) {
+            return (int) $this->attributes['likes_count'];
+        }
+
+        if ($this->relationLoaded('likes')) {
+            return $this->likes->count();
+        }
+
+        return $this->likes()->count();
+    }
+
+    public function getRepliesCountAttribute(): int
+    {
+        if (array_key_exists('replies_count', $this->attributes)) {
+            return (int) $this->attributes['replies_count'];
+        }
+
+        if ($this->relationLoaded('replies')) {
+            return $this->replies->count();
+        }
+
+        return $this->replies()->count();
     }
 
     public function isSellerReply(): bool

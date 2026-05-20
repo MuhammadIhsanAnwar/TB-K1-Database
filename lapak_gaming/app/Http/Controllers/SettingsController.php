@@ -9,6 +9,8 @@ use App\Models\User;
 use App\Notifications\AccountDeactivationVerification;
 use App\Notifications\AccountDeletionVerification;
 use App\Notifications\PasswordChangeVerification;
+use PragmaRX\Google2FAQRCode\Google2FA as Google2FAQRCode;
+use Laravel\Fortify\Contracts\TwoFactorAuthenticationProvider;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -60,10 +62,68 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function seller(): View
+    public function security(): View
     {
         /** @var User $user */
         $user = Auth::user();
+        $profile = $user->profile;
+        $pendingSetup = session('two_factor_setup_pending');
+        $methods = $pendingSetup['two_factor_methods'] ?? ($user->two_factor_methods ?: []);
+        $googleSecret = $pendingSetup['google_secret'] ?? $user->two_factor_google_secret;
+        $googleQrCode = null;
+
+        if ($googleSecret && (in_array('google', $methods, true) || ! empty($pendingSetup))) {
+            $google2fa = new Google2FAQRCode();
+            $googleQrCode = $google2fa->getQRCodeInline(
+                config('app.name', 'Lapak Gaming'),
+                $user->email,
+                $googleSecret,
+                220
+            );
+        }
+
+        return view('settings.index', [
+            'user' => $user,
+            'profile' => $profile,
+            'selectedTab' => 'security',
+            'twoFactorMethods' => $methods,
+            'googleSecret' => $googleSecret,
+            'googleQrCode' => $googleQrCode,
+            'pendingTwoFactorSetup' => $pendingSetup,
+        ]);
+    }
+
+    public function section(string $section): View|RedirectResponse
+    {
+        $allowedSections = ['profile', 'account', 'password', 'security', 'seller'];
+
+        abort_unless(in_array($section, $allowedSections, true), 404);
+
+        /** @var User $user */
+        $user = Auth::user();
+
+        if ($user->isAdmin() && $section === 'seller') {
+            return redirect()->route('admin.dashboard')->with('warning', 'Akun administrator tidak memiliki akses ke menu daftar jadi seller.');
+        }
+
+        return match ($section) {
+            'profile' => $this->profile(),
+            'account' => $this->account(),
+            'password' => $this->password(),
+            'security' => $this->security(),
+            'seller' => $this->seller(),
+        };
+    }
+
+    public function seller(): View|RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if ($user->isAdmin()) {
+            return redirect()->route('admin.dashboard')->with('warning', 'Akun administrator tidak memiliki akses ke menu daftar jadi seller.');
+        }
+
         $profile = $user->profile;
 
         return view('settings.index', [
@@ -95,7 +155,7 @@ class SettingsController extends Controller
         $data = $request->validate([
             'name' => ['required', 'string', 'max:255'],
             'phone' => ['nullable', 'string', 'max:30'],
-            'gender' => ['nullable', 'in:male,female,other'],
+            'gender' => ['nullable', 'in:male,female'],
             'birth_date' => ['nullable', 'date', 'before:today'],
             'profile_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ], $messages);
@@ -224,6 +284,111 @@ class SettingsController extends Controller
         return back()->with('success', 'Password berhasil diperbarui.');
     }
 
+    public function updateSecurity(Request $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $messages = [
+            'two_factor_methods.required' => 'Pilih minimal satu metode verifikasi 2 langkah.',
+            'two_factor_methods.array' => 'Metode verifikasi 2 langkah tidak valid.',
+            'two_factor_methods.*.in' => 'Metode verifikasi 2 langkah tidak valid.',
+        ];
+
+        $data = $request->validate([
+            'two_factor_enabled' => ['nullable', 'boolean'],
+            'two_factor_methods' => ['nullable', 'array'],
+            'two_factor_methods.*' => ['in:email,google'],
+        ], $messages);
+
+        $enabled = $request->boolean('two_factor_enabled');
+        $methods = array_values(array_unique(array_map('strval', $data['two_factor_methods'] ?? [])));
+
+        if ($enabled && empty($methods)) {
+            return back()->withErrors([
+                'two_factor_methods' => 'Pilih minimal satu metode verifikasi 2 langkah.',
+            ]);
+        }
+
+        $googleSecret = $user->two_factor_google_secret;
+
+        if ($enabled && in_array('google', $methods, true) && empty($googleSecret)) {
+            $googleSecret = (new Google2FAQRCode())->generateSecretKey();
+        }
+
+        if ($enabled && in_array('google', $methods, true)) {
+            $request->session()->put('two_factor_setup_pending', [
+                'two_factor_enabled' => $enabled,
+                'two_factor_methods' => $methods,
+                'google_secret' => $googleSecret,
+            ]);
+
+            return back()->with('warning', 'Scan QR Google Authenticator lalu masukkan kode OTP untuk menyimpan pengaturan.');
+        }
+
+        $request->session()->forget('two_factor_setup_pending');
+
+        $user->forceFill([
+            'two_factor_enabled' => $enabled,
+            'two_factor_methods' => $enabled ? $methods : [],
+            'two_factor_google_secret' => null,
+            'two_factor_confirmed_at' => $enabled ? now() : null,
+        ])->save();
+
+        return back()->with('success', 'Pengaturan verifikasi 2 langkah berhasil diperbarui.');
+    }
+
+    public function confirmSecurity(Request $request): RedirectResponse
+    {
+        /** @var User $user */
+        $user = Auth::user();
+        $pendingSetup = session('two_factor_setup_pending');
+
+        if (! is_array($pendingSetup) || empty($pendingSetup['google_secret']) || empty($pendingSetup['two_factor_methods'])) {
+            return back()->withErrors([
+                'verification_code' => 'Tidak ada pengaturan verifikasi 2 langkah yang perlu dikonfirmasi.',
+            ]);
+        }
+
+        $data = $request->validate([
+            'verification_code' => ['required', 'digits:6'],
+        ], [
+            'verification_code.required' => 'Kode verifikasi wajib diisi.',
+            'verification_code.digits' => 'Kode verifikasi harus terdiri dari 6 digit.',
+        ]);
+
+        $google2fa = new Google2FAQRCode();
+        $isValid = (bool) $google2fa->verifyKey($pendingSetup['google_secret'], $data['verification_code']);
+
+        if (! $isValid) {
+            // Fallback to Fortify's two-factor provider verification which may
+            // allow a different tolerance window depending on configuration.
+            try {
+                $provider = app(TwoFactorAuthenticationProvider::class);
+                $isValid = (bool) $provider->verify($pendingSetup['google_secret'], $data['verification_code']);
+            } catch (\Throwable $e) {
+                // ignore and keep $isValid false
+            }
+        }
+
+        if (! $isValid) {
+            return back()->withErrors([
+                'verification_code' => 'Kode Google Authenticator tidak valid. Silakan coba lagi.',
+            ]);
+        }
+
+        $user->forceFill([
+            'two_factor_enabled' => (bool) ($pendingSetup['two_factor_enabled'] ?? true),
+            'two_factor_methods' => array_values(array_unique(array_map('strval', $pendingSetup['two_factor_methods']))),
+            'two_factor_google_secret' => $pendingSetup['google_secret'],
+            'two_factor_confirmed_at' => now(),
+        ])->save();
+
+        $request->session()->forget('two_factor_setup_pending');
+
+        return back()->with('success', 'Google Authenticator berhasil dikonfirmasi dan disimpan.');
+    }
+
     private function passwordChangeCodeKey(User $user): string
     {
         return 'password-change-code:' . $user->id;
@@ -244,18 +409,18 @@ class SettingsController extends Controller
         ]);
     }
 
-    public function reactivateForm(): View|RedirectResponse
+    public function reactivateForm(Request $request): View|RedirectResponse
     {
         /** @var User|null $user */
         $user = Auth::user();
 
         if (! $user) {
-            $pendingUserId = session('reactivate_user_id');
+            $pendingUserId = $request->session()->get('reactivate_user_id');
             $user = $pendingUserId ? User::find($pendingUserId) : null;
         }
 
         if (! $user || ! $user->deactivated_at) {
-            session()->forget('reactivate_user_id');
+            $request->session()->forget('reactivate_user_id');
 
             return redirect()->route('login');
         }
@@ -336,12 +501,12 @@ class SettingsController extends Controller
         $user = Auth::user();
 
         if (! $user) {
-            $pendingUserId = session('reactivate_user_id');
+            $pendingUserId = $request->session()->get('reactivate_user_id');
             $user = $pendingUserId ? User::find($pendingUserId) : null;
         }
 
         if (! $user || ! $user->deactivated_at) {
-            session()->forget('reactivate_user_id');
+            $request->session()->forget('reactivate_user_id');
 
             return redirect()->route('login')->withErrors([
                 'email' => 'Sesi reaktivasi tidak valid. Silakan login kembali.',
@@ -350,7 +515,7 @@ class SettingsController extends Controller
 
         if ($user->deactivated_at->copy()->addMonths(6)->isPast()) {
             $user->delete();
-            session()->forget('reactivate_user_id');
+            $request->session()->forget('reactivate_user_id');
 
             return redirect()->route('login')->withErrors([
                 'email' => 'Akun Anda telah dihapus permanen karena melewati batas waktu aktivasi.',
@@ -361,7 +526,7 @@ class SettingsController extends Controller
             'deactivated_at' => null,
         ])->save();
 
-        session()->forget('reactivate_user_id');
+        $request->session()->forget('reactivate_user_id');
         Auth::login($user);
         $request->session()->regenerate();
 

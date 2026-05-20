@@ -34,17 +34,47 @@
                     @error('bio') <p class="mt-2 text-sm text-rose-400">{{ $message }}</p> @enderror
                 </div>
 
+                <div>
+                    <label class="block text-sm font-medium text-slate-300">Foto Toko</label>
+                    <div class="mt-2 flex items-center gap-4">
+                        <div class="w-24 h-24 rounded-lg overflow-hidden bg-black/40 border border-white/5">
+                            @if(!empty($user->shop_photo))
+                                <img src="{{ asset($user->shop_photo) }}" alt="Foto Toko" class="w-full h-full object-cover">
+                            @elseif(!empty($profile?->avatar_path))
+                                <img src="{{ asset($profile->avatar_path) }}" alt="Foto Toko" class="w-full h-full object-cover">
+                            @else
+                                <div class="w-full h-full flex items-center justify-center text-sm text-slate-400">No Image</div>
+                            @endif
+                        </div>
+
+                        <div class="flex-1">
+                            <input type="file" name="store_photo" accept="image/*" class="mt-1 block w-full text-sm text-slate-300 file:rounded-lg file:border-0 file:bg-amber-500 file:px-3 file:py-2 file:text-white" />
+                            @error('store_photo') <p class="mt-2 text-sm text-rose-400">{{ $message }}</p> @enderror
+                        </div>
+                    </div>
+                </div>
+
                 <button type="submit" class="rounded-2xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-amber-400">Simpan Perubahan Toko</button>
             </form>
 
-            <div class="mt-8 rounded-3xl border border-slate-700 bg-slate-950/70 p-6">
-                <h2 class="text-xl font-bold text-white">Hapus Toko</h2>
-                <p class="mt-2 text-slate-400">Menghapus toko akan mengembalikan Anda menjadi buyer biasa dan mengarsipkan semua produk.</p>
-                <form action="{{ route('seller.store.destroy') }}" method="POST" class="mt-4">
+                <div class="mt-8 rounded-3xl border border-slate-700 bg-slate-950/70 p-6 space-y-4">
+                <h2 class="text-xl font-bold text-white">Nonaktifkan / Hapus Toko</h2>
+                <p class="mt-2 text-slate-400">Anda dapat menonaktifkan toko agar tidak menerima pesanan lagi, atau menghapus toko secara permanen jika belum ada transaksi.</p>
+
+                <form action="{{ route('seller.store.deactivate') }}" method="POST" class="mt-2 inline-block">
+                    @csrf
+                    <button type="submit" class="rounded-2xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-amber-400">Nonaktifkan Toko</button>
+                </form>
+
+                <form action="{{ route('seller.store.destroy') }}" method="POST" class="mt-2">
                     @csrf
                     @method('DELETE')
                     <button type="submit" class="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-500">Hapus Toko Permanen</button>
                 </form>
+
+                @if($errors->has('store'))
+                    <p class="mt-2 text-sm text-rose-400">{{ $errors->first('store') }}</p>
+                @endif
             </div>
         </div>
     </div>

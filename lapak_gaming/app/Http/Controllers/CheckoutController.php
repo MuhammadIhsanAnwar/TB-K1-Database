@@ -75,20 +75,18 @@ class CheckoutController extends Controller
             'quantity.integer' => 'Jumlah harus berupa angka bulat.',
             'quantity.min' => 'Jumlah produk minimal 1.',
             'quantity.max' => 'Jumlah produk maksimal 99.',
-            'payment_method.string' => 'Metode pembayaran harus berupa teks.',
-            'payment_method.max' => 'Metode pembayaran maksimal 50 karakter.',
+            'payment_method.required' => 'Metode pembayaran wajib dipilih.',
             'payment_method.in' => 'Metode pembayaran tidak valid.',
         ];
 
         $data = $request->validate([
             'product_id' => ['required', 'exists:products,id'],
             'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
-            'payment_method' => ['nullable', 'string', 'max:50', 'in:wallet,balance,transfer,qris,dana,ovo,gopay'],
+            'payment_method' => ['required', 'in:wallet'],
         ], $messages);
 
         $quantity = (int) ($data['quantity'] ?? 1);
-        $paymentMethod = $data['payment_method'] ?? 'wallet';
-        $paymentMethod = $paymentMethod === 'balance' ? 'wallet' : $paymentMethod;
+        $paymentMethod = 'wallet';
 
         $order = DB::transaction(function () use ($request, $quantity, $paymentMethod): Order {
             $product = Product::query()
@@ -143,7 +141,6 @@ class CheckoutController extends Controller
             OrderItem::create([
                 'order_id' => $order->id,
                 'product_id' => $product->id,
-                'seller_id' => $product->seller_id,
                 'name_snapshot' => $product->name,
                 'price_snapshot' => $product->price,
                 'quantity' => $quantity,

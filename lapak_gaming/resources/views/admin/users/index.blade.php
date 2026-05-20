@@ -92,8 +92,12 @@
   -webkit-mask:
     linear-gradient(#fff 0 0) content-box,
     linear-gradient(#fff 0 0);
+  mask:
+    linear-gradient(#fff 0 0) content-box,
+    linear-gradient(#fff 0 0);
 
   -webkit-mask-composite:xor;
+  mask-composite:exclude;
   pointer-events:none;
 }
 
@@ -314,6 +318,18 @@ a{
         KEMBALI KE DASBOR
       </a>
     </div>
+    {{-- SEARCH & SORT FORM --}}
+    <div class="mt-4 mb-2 flex items-center justify-end gap-3">
+      <form method="GET" action="{{ route('admin.users.index') }}" class="flex items-center gap-2">
+        <input type="hidden" name="tab" value="{{ $tab }}" />
+        <input type="hidden" name="sort" value="{{ $sort ?? 'created_at' }}" />
+        <input type="hidden" name="direction" value="{{ $direction ?? 'desc' }}" />
+        <input name="q" value="{{ $q ?? '' }}" placeholder="Cari nama atau email..."
+          class="rounded-xl border border-white/5 bg-black/10 px-4 py-2 text-sm text-white outline-none" />
+        <button type="submit" class="rounded-xl bg-amber-500 px-4 py-2 text-sm font-semibold text-slate-950">Cari</button>
+        <a href="{{ route('admin.users.index') }}" class="rounded-xl border border-white/5 px-3 py-2 text-sm text-slate-300">Reset</a>
+      </form>
+    </div>
 
     {{-- ── ALERTS & NOTIFICATIONS ────────────────────────────── --}}
     @if(session('success'))
@@ -388,9 +404,27 @@ a{
             <table class="min-w-full divide-y divide-white/5 text-sm text-left text-slate-300">
               <thead class="bg-black/30 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5">
                 <tr>
-                  <th class="px-6 py-4">Nama / Pengguna</th>
-                  <th class="px-6 py-4">Alamat Email</th>
-                  <th class="px-6 py-4">Tanggal Gabung</th>
+                  <th class="px-6 py-4">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'direction' => ($sort === 'name' && $direction === 'desc') ? 'asc' : 'desc', 'tab' => 'users']) }}">Nama / Pengguna
+                      @if(($sort ?? '') === 'name')
+                        <span class="text-xs">{{ $direction === 'asc' ? '↑' : '↓' }}</span>
+                      @endif
+                    </a>
+                  </th>
+                  <th class="px-6 py-4">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'email', 'direction' => ($sort === 'email' && $direction === 'desc') ? 'asc' : 'desc', 'tab' => 'users']) }}">Alamat Email
+                      @if(($sort ?? '') === 'email')
+                        <span class="text-xs">{{ $direction === 'asc' ? '↑' : '↓' }}</span>
+                      @endif
+                    </a>
+                  </th>
+                  <th class="px-6 py-4">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'created_at', 'direction' => ($sort === 'created_at' && $direction === 'desc') ? 'asc' : 'desc', 'tab' => 'users']) }}">Tanggal Gabung
+                      @if(($sort ?? '') === 'created_at')
+                        <span class="text-xs">{{ $direction === 'asc' ? '↑' : '↓' }}</span>
+                      @endif
+                    </a>
+                  </th>
                   <th class="px-6 py-4">Status Akun</th>
                   <th class="px-6 py-4 text-right">Aksi Otoritas</th>
                 </tr>
@@ -422,7 +456,7 @@ a{
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
                       @if($user->status === 'active')
-                        <button onclick="openSuspendModal({{ $user->id }}, '{{ addslashes($user->name) }}')"
+                        <button data-user-id="{{ $user->id }}" data-user-name="{{ e($user->name) }}" onclick="openSuspendModal(this.dataset.userId, this.dataset.userName)"
                                 class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                           Suspend
                         </button>
@@ -526,9 +560,21 @@ a{
             <table class="min-w-full divide-y divide-white/5 text-sm text-left text-slate-300">
               <thead class="bg-black/30 text-[11px] font-bold uppercase tracking-wider text-slate-500 border-b border-white/5">
                 <tr>
-                  <th class="px-6 py-4">Pemilik Lapak</th>
+                  <th class="px-6 py-4">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'name', 'direction' => ($sort === 'name' && $direction === 'desc') ? 'asc' : 'desc', 'tab' => 'sellers']) }}">Pemilik Lapak
+                      @if(($sort ?? '') === 'name')
+                        <span class="text-xs">{{ $direction === 'asc' ? '↑' : '↓' }}</span>
+                      @endif
+                    </a>
+                  </th>
                   <th class="px-6 py-4">Brand / Nama Toko</th>
-                  <th class="px-6 py-4">Email Kontak</th>
+                  <th class="px-6 py-4">
+                    <a href="{{ request()->fullUrlWithQuery(['sort' => 'email', 'direction' => ($sort === 'email' && $direction === 'desc') ? 'asc' : 'desc', 'tab' => 'sellers']) }}">Email Kontak
+                      @if(($sort ?? '') === 'email')
+                        <span class="text-xs">{{ $direction === 'asc' ? '↑' : '↓' }}</span>
+                      @endif
+                    </a>
+                  </th>
                   <th class="px-6 py-4">Status Toko</th>
                   <th class="px-6 py-4 text-right">Tindakan Ketat</th>
                 </tr>
@@ -567,10 +613,17 @@ a{
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
                       @if($seller->status === 'active')
-                        <button onclick="openSuspendModal({{ $seller->id }}, '{{ addslashes($seller->name) }}')"
-                                class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
-                          Suspend Toko
-                        </button>
+                        <div class="inline-flex gap-2">
+                                <button data-user-id="{{ $seller->id }}" data-shop-name="{{ e($seller->shop_name ?? $seller->name) }}" onclick="openSuspendShopModal(this.dataset.userId, this.dataset.shopName)"
+                                  class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
+                            Suspend Toko
+                          </button>
+
+                                <button data-user-id="{{ $seller->id }}" data-user-name="{{ e($seller->name) }}" onclick="openSuspendModal(this.dataset.userId, this.dataset.userName)"
+                                  class="rounded-xl bg-amber-500/10 border border-amber-500/20 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-400 hover:text-white transition-all">
+                            Suspend Akun
+                          </button>
+                        </div>
                       @else
                         <form method="POST" action="{{ route('admin.users.status', $seller) }}" class="inline-block">
                           @csrf @method('PUT')
@@ -636,7 +689,8 @@ a{
                     <img src="{{ $applicant->shop_photo_url ?? asset('storage/' . $applicant->shop_photo) }}"
                          alt="Foto toko {{ $applicant->shop_name }}"
                          class="w-full max-w-xs h-40 object-cover rounded-2xl border border-white/5 bg-black/40 shadow-inner hover:scale-[1.01] transition-transform"
-                         onerror="this.src='https://ui-avatars.com/api/?name={{ urlencode($applicant->shop_name ?? 'Toko') }}&size=300&background=1e293b&color=94a3b8'" />
+                         data-fallback-src="{{ 'https://ui-avatars.com/api/?name=' . urlencode($applicant->shop_name ?? 'Toko') . '&size=300&background=1e293b&color=94a3b8' }}"
+                         onerror="this.src=this.dataset.fallbackSrc;" />
                   @else
                     <div class="w-full max-w-xs h-40 rounded-2xl border border-dashed border-white/5 bg-black/20 flex items-center justify-center text-slate-600 text-xs font-bold">
                       NO ATTACHED IMAGE FILE
@@ -647,7 +701,7 @@ a{
                 <div class="space-y-4">
                   <div>
                     <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-0.5">Pengajuan Nama Brand Lapak</p>
-                    <p class="text-white font-bold text-lg tracking-tight text-amber-400">{{ $applicant->shop_name ?? '—' }}</p>
+                    <p class="font-bold text-lg tracking-tight text-amber-400">{{ $applicant->shop_name ?? '—' }}</p>
                   </div>
                   <div>
                     <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-1">Rencana Deskripsi & Komoditas Jualan</p>
@@ -655,6 +709,43 @@ a{
                   </div>
                 </div>
               </div>
+
+                {{-- ─────────────────────────────────────────────────────────────────────── --}}
+                {{-- MODAL INTERAKTIF HUD: SUSPEND TOKO (KHUSUS ADMIN VERIFICATION)          --}}
+                {{-- ─────────────────────────────────────────────────────────────────────── --}}
+                <div class="modal-overlay animate-fade-in" id="suspend-shop-modal" role="dialog" aria-modal="true" aria-labelledby="suspend-shop-modal-title">
+                  <div class="w-full max-w-md rounded-3xl p-6 sm:p-7 modal-box-glass border-rose-500/30">
+                    <div class="flex items-center gap-2 border-b border-white/5 pb-3 mb-4">
+                      <span class="text-xl">🏪</span>
+                      <h3 id="suspend-shop-modal-title" class="text-lg font-bold text-white tracking-tight">Suspend Toko Mitra</h3>
+                    </div>
+
+                    <p class="text-xs text-slate-400 leading-relaxed mb-4">
+                      Menonaktifkan aktivitas toko dan menolak akses seller dashboard untuk <strong id="suspend-shop-name" class="text-white font-bold"></strong>. Tuliskan catatan yang jelas untuk tim dan pengguna.
+                    </p>
+
+                    <form id="suspend-shop-form" method="POST" action="">
+                      @csrf
+                      <div class="mb-5">
+                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+                          Catatan Suspend Toko <span class="text-slate-500 font-normal lowercase">(muncul pada panel admin dan notifikasi)</span>
+                        </label>
+                        <textarea name="notes" rows="4" maxlength="1000" required
+                          class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none resize-none"
+                          placeholder="Contoh: Pelanggaran kebijakan: jual item ilegal, penyalahgunaan sistem top-up."></textarea>
+                      </div>
+
+                      <div class="flex gap-2.5">
+                        <button type="submit" class="flex-1 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 px-5 py-3 text-xs font-bold text-white transition-all shadow-md shadow-rose-600/10">
+                          EKSEKUSI SUSPEND TOKO
+                        </button>
+                        <button type="button" onclick="closeSuspendShopModal()" class="flex-1 rounded-xl border border-white/5 bg-white/5 px-5 py-3 text-xs font-bold text-slate-300 hover:bg-white/10 transition-colors">
+                          BATALKAN
+                        </button>
+                      </div>
+                    </form>
+                  </div>
+                </div>
 
               {{-- Footer Action Bar --}}
               <div class="border-t border-white/5 px-6 py-4 flex flex-col sm:flex-row justify-end items-center gap-2.5">
@@ -670,7 +761,7 @@ a{
                   </button>
                 </form>
 
-                <button onclick="openRejectModal({{ $applicant->id }}, '{{ addslashes($applicant->name) }}')"
+                <button data-user-id="{{ $applicant->id }}" data-user-name="{{ e($applicant->name) }}" onclick="openRejectModal(this.dataset.userId, this.dataset.userName)"
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-5 py-2.5 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                   <svg class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
@@ -795,8 +886,20 @@ a{
     document.body.style.overflow = '';
   }
 
+  // ── Suspend Shop Modal Handler ───────────────────────────────────────
+  function openSuspendShopModal(userId, shopName) {
+    document.getElementById('suspend-shop-name').textContent = shopName;
+    document.getElementById('suspend-shop-form').action = '/admin/verification/' + userId + '/suspend';
+    document.getElementById('suspend-shop-modal').classList.add('open');
+    document.body.style.overflow = 'hidden';
+  }
+  function closeSuspendShopModal() {
+    document.getElementById('suspend-shop-modal').classList.remove('open');
+    document.body.style.overflow = '';
+  }
+
   // ── Overlay Backdrop click close trigger ──────────────────────────────
-  ['suspend-modal', 'reject-modal'].forEach(function(id) {
+  ['suspend-modal', 'suspend-shop-modal', 'reject-modal'].forEach(function(id) {
     document.getElementById(id)?.addEventListener('click', function(e) {
       if (e.target === this) {
         this.classList.remove('open');

@@ -24,7 +24,7 @@ class SellerProductController extends Controller
         $products = Product::where('seller_id', $seller->id)->get();
 
         // Ambil data order terkait seller ini (via OrderItem)
-        $orders = OrderItem::where('seller_id', $seller->id)
+        $orders = OrderItem::whereHas('product', fn($query) => $query->where('seller_id', $seller->id))
             ->with(['order', 'product'])
             ->latest()
             ->get();

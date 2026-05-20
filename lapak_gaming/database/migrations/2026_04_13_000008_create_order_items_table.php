@@ -12,7 +12,6 @@ return new class extends Migration
             $table->id();
             $table->foreignId('order_id')->constrained()->cascadeOnDelete();
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
-            $table->foreignId('seller_id')->constrained('users')->cascadeOnDelete();
             $table->string('name_snapshot');
             $table->decimal('price_snapshot', 14, 2);
             $table->unsignedInteger('quantity')->default(1);

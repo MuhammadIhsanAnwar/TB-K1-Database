@@ -3,17 +3,6 @@
 @section('title', 'Checkout Produk')
 
 @section('content')
-@php
-    $paymentOptions = [
-        'wallet' => 'Wallet',
-        'transfer' => 'Transfer Bank',
-        'qris' => 'QRIS',
-        'gopay' => 'GoPay',
-        'ovo' => 'OVO',
-        'dana' => 'DANA',
-    ];
-@endphp
-
 <div class="max-w-6xl mx-auto px-4 py-10" id="checkout-page"
      data-base-price="{{ (float) $product->price }}"
      data-fee-percent="{{ $feePercent }}">
@@ -29,6 +18,7 @@
     <form method="POST" action="{{ route('checkout.store') }}" class="grid gap-6 lg:grid-cols-[1fr_360px]">
         @csrf
         <input type="hidden" name="product_id" value="{{ $product->id }}">
+        <input type="hidden" name="payment_method" value="wallet">
 
         <div class="space-y-6">
             <div class="card p-5 sm:p-6">
@@ -69,20 +59,10 @@
 
             <div class="card p-5 sm:p-6">
                 <h2 class="font-display text-lg font-bold text-white">Metode Pembayaran</h2>
-                @if($availableBalance < $grandTotal)
-                    <div class="mt-4 rounded-xl border border-amber-500/30 bg-amber-900/20 px-4 py-3 text-sm text-amber-200">
-                        Saldo wallet tersedia Rp {{ number_format($availableBalance, 0, ',', '.') }}. Jika saldo kurang, pesanan tetap dibuat dan menunggu pembayaran.
-                    </div>
-                @endif
-                <div class="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
-                    @foreach($paymentOptions as $value => $label)
-                        <label class="cursor-pointer">
-                            <input type="radio" name="payment_method" value="{{ $value }}" class="sr-only peer" {{ $value === 'wallet' ? 'checked' : '' }}>
-                            <span class="block rounded-xl border border-slate-700 bg-slate-900/70 px-4 py-3 text-center text-sm font-semibold text-slate-400 transition peer-checked:border-brand-400 peer-checked:bg-brand-900/30 peer-checked:text-white">
-                                {{ $label }}
-                            </span>
-                        </label>
-                    @endforeach
+                <div class="mt-4 rounded-xl border border-brand-400/20 bg-brand-900/20 px-4 py-4 text-sm text-slate-200">
+                    <div class="font-semibold text-white">Wallet</div>
+                    <div class="mt-1 text-slate-400">Checkout ini hanya menggunakan saldo wallet.</div>
+                    <div class="mt-2 text-xs text-slate-500">Saldo tersedia Rp {{ number_format($availableBalance, 0, ',', '.') }}</div>
                 </div>
             </div>
         </div>

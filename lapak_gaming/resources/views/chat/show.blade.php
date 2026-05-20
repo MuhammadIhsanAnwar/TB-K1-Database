@@ -443,36 +443,36 @@
     display: flex;
     align-items: center;
     justify-content: center;
-        transition: background-color 0.15s, transform 0.15s;
-        flex-shrink: 0;
+    transition: background-color 0.15s, transform 0.15s;
+    flex-shrink: 0;
     box-shadow: 0 4px 14px rgba(37,99,235,.35);
-    }
+}
 
-    .send-button:hover {
-        transform: transform: scale(1.05);
-    }
+.send-button:hover {
+    transform: scale(1.05);
+}
 
-    .send-button:active {
+.send-button:active {
     transform: scale(.96);
 }
 
-    #cancelEditBtn {
-        min-width: 32px;
-        min-height: 32px;
-        color: #9ca3af;
-        background: transparent;
-        border: 1px solid transparent;
-        border-radius: 50%;
-        display: inline-flex;
-        align-items: center;
-        justify-content: center;
-        cursor: pointer;
-    }
+#cancelEditBtn {
+    min-width: 32px;
+    min-height: 32px;
+    color: #9ca3af;
+    background: transparent;
+    border: 1px solid transparent;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
 
-    #cancelEditBtn:hover {
-        background: rgba(255,255,255,0.08);
-        border-color: rgba(255,255,255,0.16);
-        color: #ffffff;
+#cancelEditBtn:hover {
+    background: rgba(255,255,255,0.08);
+    border-color: rgba(255,255,255,0.16);
+    color: #ffffff;
 }
 
 /* Responsive */
@@ -507,17 +507,14 @@
         padding: 12px;
     }
 }
-
-
 </style>
 @endpush
 
 @section('content')
 @php
     $user    = auth()->user();
-    $partner = $role === 'seller'
-    ? $conversation->buyer
-    : $conversation->seller;
+    // Identitas Partner untuk Header Utama
+    $partner = $role === 'seller' ? $conversation->buyer : $conversation->seller;
     $product = $conversation->product;
     $order   = $conversation->order;
     $chatConfig = [
@@ -543,14 +540,14 @@
                 Kembali ke Inbox
             </a>
             <h3>Pesan</h3>
-            <input type="text" id="sideSearch" placeholder="Cari percakapan..."
-                   class="search-input">
+            <input type="text" id="sideSearch" placeholder="Cari percakapan..." class="search-input">
         </div>
 
         <div class="overflow-y-auto flex-1" id="sideList">
             @foreach($sidebarConversations as $conv)
             @php
-                $p2     = $conv->partner($user->id);
+                // 🔥 PERBAIKAN 1: Paksa panggil nama lawan bicara berdasarkan Role (bukan ID) agar tidak muncul nama sendiri 2x
+                $p2     = $role === 'seller' ? $conv->buyer : $conv->seller;
                 $unread = $conv->unreadFor($user->id);
                 $active = $conv->id === $conversation->id;
             @endphp
@@ -617,10 +614,18 @@
                 <h3>{{ $product->name }}</h3>
                 <p class="product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
             </div>
-            <a href="{{ route('checkout.product', $product) }}"
-               class="ml-auto px-4 py-2 rounded-lg bg-green-600 text-white text-sm font-medium hover:bg-green-700 transition-colors">
-                Pesan Sekarang
-            </a>
+            
+            {{-- 🔥 PERBAIKAN 2: Tombol Pesan Sekarang hanya muncul jika rolenya adalah Buyer --}}
+            @if($role === 'buyer')
+                <a href="{{ route('checkout.product', $product) }}"
+                   class="ml-auto px-4 py-2 rounded-lg bg-emerald-600 text-white text-sm font-bold hover:bg-emerald-500 transition-colors shadow-lg shadow-emerald-500/20">
+                    Pesan Sekarang
+                </a>
+            @else
+                <span class="ml-auto px-4 py-2 rounded-lg bg-slate-800 text-slate-400 text-xs font-bold border border-slate-700 uppercase tracking-widest">
+                    Produk Jualan Anda
+                </span>
+            @endif
         </div>
         @endif
 
@@ -642,7 +647,7 @@
                 <img src="{{ $msg->sender?->avatar_url }}" class="message-avatar" alt="">
                 @endif
                <div class="message-bubble {{ $isMine ? 'mine' : 'theirs' }}">
-    <div class="bubble-content group relative"> {{-- Tambah class group --}}
+    <div class="bubble-content group relative">
         
         {{-- Tombol Opsi (Hanya muncul jika pesan milik sendiri) --}}
         @if($isMine)
@@ -664,10 +669,9 @@
         <p class="message-text" id="text-{{ $msg->id }}">{{ $msg->message }}</p>
     </div>
     
-    {{-- Meta data (waktu/status) tetap sama --}}
+    {{-- Meta data (waktu/status) --}}
     <div class="message-time {{ $isMine ? 'mine' : 'theirs' }}">
         <span>{{ $msg->created_at->format('H:i') }}</span>
-        {{-- ... status icon ... --}}
     </div>
 </div>
                 @if($isMine)
@@ -702,7 +706,7 @@
     
     <button id="cancelEditBtn" type="button" class="text-gray-400 hover:text-white transition-colors hidden" onclick="cancelEdit()" title="Batal edit">✕</button>
     <button id="sendBtn" type="button" class="send-button">
-        {{-- icon send --}}
+        {{-- icon send di-inject dari JS --}}
     </button>
 </div>
 {{-- Area Preview Sebelum Kirim --}}
@@ -711,7 +715,6 @@
     <span class="text-xs text-gray-300 flex-1 truncate" id="fileName"></span>
     <button onclick="cancelImage()" class="text-red-400 text-xs">Batal</button>
 </div>
-            <!-- Chat Image Cropping Modal -->
             <div id="chatCropperModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
                 <div class="bg-[#111] border border-white/10 rounded-2xl max-w-xl w-full flex flex-col max-h-[85vh] shadow-2xl">
                     <div class="flex items-center justify-between border-b border-white/5 px-4 py-3">
@@ -1370,8 +1373,8 @@ async function sendMessage() {
         created_at: new Date().toISOString(),
         avatar: chatConfig.avatarUrl,
         attachment_url: file
-            ? URL.createObjectURL(file)
-            : null,
+        ? URL.createObjectURL(file)
+        : null,
         is_read: false
     });
 

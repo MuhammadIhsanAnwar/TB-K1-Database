@@ -3,7 +3,7 @@
 @section('title', 'Daftar Transaksi')
 
 @section('content')
-<div class="relative px-4 pt-28 pb-16">
+<div class="relative overflow-x-hidden px-4 pt-28 pb-16">
 
     {{-- BACKGROUND EFFECT --}}
     <div class="pointer-events-none absolute inset-0 -z-10">
@@ -55,10 +55,11 @@
 
             @forelse($orders as $order)
 
-                <a href="{{ route('orders.show', $order->order_code) }}"
+                <div
                     class="reveal-up group block overflow-hidden rounded-[28px] border border-white/5 bg-[#0B1220]/90 p-6 backdrop-blur-xl transition-all duration-300 hover:-translate-y-1.5 hover:border-blue-500/30 hover:shadow-[0_0_35px_rgba(37,99,235,0.14)]">
 
-                    <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+                    <a href="{{ route('orders.show', $order->order_code) }}" class="block">
+                        <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
 
                         {{-- LEFT --}}
                         <div>
@@ -107,7 +108,7 @@
 
                         {{-- RIGHT --}}
                         <div
-                            class="rounded-[24px] border border-orange-500/20 bg-orange-500/[0.04] px-6 py-5 text-left transition duration-300 group-hover:border-orange-400/30 group-hover:bg-orange-500/[0.06] lg:min-w-[240px] lg:text-right">
+                            class="rounded-[24px] border border-orange-500/20 bg-orange-500/[0.04] px-6 py-5 text-left transition duration-300 group-hover:border-orange-400/30 group-hover:bg-orange-500/[0.06] lg:w-[240px] lg:shrink-0 lg:text-right">
 
                             <div
                                 class="text-[11px] font-semibold uppercase tracking-[0.2em] text-orange-300">
@@ -120,8 +121,26 @@
 
                         </div>
 
+                        </div>
+                    </a>
+
+                    <div class="mt-5 flex flex-wrap gap-3 border-t border-white/5 pt-5">
+                        <a href="{{ route('orders.show', $order->order_code) }}"
+                           class="inline-flex items-center justify-center rounded-2xl border border-blue-500/20 bg-blue-500/10 px-4 py-3 text-sm font-bold text-blue-300 transition hover:bg-blue-500/20">
+                            Lihat Detail
+                        </a>
+
+                        @if($order->buyer_id === auth()->id() && $order->status === \App\Models\Order::STATUS_COMPLETED)
+                            <a href="{{ route('orders.receipt.pdf', $order->order_code) }}"
+                               target="_blank"
+                               rel="noopener noreferrer"
+                               class="inline-flex items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-300 transition hover:bg-emerald-500/20">
+                                Unduh Kwitansi PDF
+                            </a>
+                        @endif
                     </div>
-                </a>
+
+                </div>
 
             @empty
 

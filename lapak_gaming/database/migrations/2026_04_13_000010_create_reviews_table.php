@@ -13,7 +13,6 @@ return new class extends Migration
             $table->foreignId('product_id')->constrained()->cascadeOnDelete();
             $table->foreignId('order_id')->nullable()->constrained()->nullOnDelete();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('seller_id')->constrained('users')->cascadeOnDelete();
             $table->unsignedTinyInteger('rating');
             $table->text('comment')->nullable();
             $table->boolean('is_public')->default(true);

@@ -1,6 +1,8 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
+use App\Models\User;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\DashboardController;
@@ -58,7 +60,7 @@ Route::post('/artisan-terminal/quick', [ArtisanTerminalController::class, 'runQu
 // Authenticated routes
 // ─────────────────────────────────────────────────────────────────────────────
 
-Route::middleware('auth')->group(function (): void {
+Route::middleware(['auth', 'account.active'])->group(function (): void {
 
     // Cart
     Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
@@ -74,6 +76,7 @@ Route::middleware('auth')->group(function (): void {
     Route::post('/cart/checkout', [OrderController::class, 'store'])->name('cart.store'); // <--- TAMBAHKAN INI
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order:order_code}', [OrderController::class, 'show'])->name('orders.show');
+    Route::get('/orders/{order:order_code}/receipt/pdf', [OrderController::class, 'downloadReceiptPdf'])->name('orders.receipt.pdf');
     Route::post('/orders/{order:order_code}/pay', [OrderController::class, 'pay'])->name('orders.pay');
     Route::post('/orders/{order:order_code}/complete', [OrderController::class, 'complete'])->name('orders.complete');
     Route::post('/orders/{order:order_code}/cancel', [OrderController::class, 'cancel'])->name('orders.cancel');
@@ -89,16 +92,33 @@ Route::middleware('auth')->group(function (): void {
     Route::get('/settings/profile', [SettingsController::class, 'profile'])->name('settings.profile');
     Route::get('/settings/account', [SettingsController::class, 'account'])->name('settings.account');
     Route::get('/settings/password', [SettingsController::class, 'password'])->name('settings.password');
+    Route::get('/settings/security', [SettingsController::class, 'security'])->name('settings.security');
     Route::get('/settings/seller', [SettingsController::class, 'seller'])->name('settings.seller');
-    Route::get('/settings/buyer', fn() => redirect()->route('settings.seller'))->name('settings.buyer');
+    Route::get('/settings/{section}', [SettingsController::class, 'section'])
+        ->whereIn('section', ['profile', 'account', 'password', 'security', 'seller'])
+        ->name('settings.section');
+    Route::get('/settings/buyer', function () {
+        $user = Auth::user();
+
+        if ($user instanceof User && $user->isAdmin()) {
+            return redirect()->route('admin.dashboard')->with('warning', 'Akun administrator tidak memiliki akses ke menu buyer/seller.');
+        }
+
+        return redirect()->route('settings.seller');
+    })->name('settings.buyer');
     Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
     Route::post('/settings/password/code', [SettingsController::class, 'sendPasswordChangeCode'])->name('settings.password.sendCode');
     Route::put('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password.update');
+    Route::put('/settings/security', [SettingsController::class, 'updateSecurity'])->name('settings.security.update');
+    Route::post('/settings/security/confirm', [SettingsController::class, 'confirmSecurity'])->name('settings.security.confirm');
     Route::post('/settings/account/delete-code', [SettingsController::class, 'sendDeletionCode'])->name('settings.account.sendDeletionCode');
     Route::post('/settings/account/deactivation-code', [SettingsController::class, 'sendDeactivationCode'])->name('settings.account.sendDeactivationCode');
     Route::get('/settings/account/delete', [SettingsController::class, 'confirmDeletionForm'])->name('settings.account.delete');
     Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
     Route::post('/settings/deactivate', [SettingsController::class, 'deactivate'])->name('settings.deactivate');
+    // Safety fallback: if a deployment missed the named route, point the same URI
+    // to the controller action so the security tab still renders.
+    Route::get('/settings/security', [SettingsController::class, 'security'])->name('settings.security.fallback');
 
     // Profile
     Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
@@ -125,6 +145,7 @@ Route::middleware('auth')->group(function (): void {
     // Seller Store Management
     Route::get('/seller/store', [SellerStoreController::class, 'edit'])->name('seller.store.edit');
     Route::put('/seller/store', [SellerStoreController::class, 'update'])->name('seller.store.update');
+    Route::post('/seller/store/deactivate', [SellerStoreController::class, 'deactivate'])->name('seller.store.deactivate');
     Route::delete('/seller/store', [SellerStoreController::class, 'destroy'])->name('seller.store.destroy');
 
     // Seller Product Management
@@ -245,6 +266,8 @@ Route::get('/setup/migrate/status', [MigrationController::class, 'status'])->nam
 Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthController::class, 'createLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'storeLogin']);
+    Route::get('/two-factor-challenge', [AuthController::class, 'twoFactorChallenge'])->name('two-factor.challenge');
+    Route::post('/two-factor-challenge', [AuthController::class, 'confirmTwoFactorChallenge'])->name('two-factor.verify');
     Route::get('/auth/google', [AuthController::class, 'google'])->name('google.auth');
     Route::get('/register', [AuthController::class, 'createRegister'])->name('register');
     Route::post('/register', [AuthController::class, 'storeRegister']);
@@ -268,8 +291,6 @@ Route::get('/email/verify-pending', 'App\\Http\\Controllers\\VerificationControl
 Route::post('/email/verification-notification/guest', 'App\\Http\\Controllers\\VerificationController@resendGuest')
     ->middleware('throttle:6,1')
     ->name('verification.resend.guest');
-
-Route::post('/email/verification-notification/guest', [VerificationController::class, 'resendGuest']);
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Static pages
