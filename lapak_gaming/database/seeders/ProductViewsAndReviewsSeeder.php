@@ -80,7 +80,6 @@ class ProductViewsAndReviewsSeeder extends Seeder
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $product->id,
-                    'seller_id' => $product->seller_id,
                     'name_snapshot' => $product->name,
                     'price_snapshot' => $product->price,
                     'quantity' => 1,
@@ -107,7 +106,6 @@ class ProductViewsAndReviewsSeeder extends Seeder
                         'product_id' => $product->id,
                         'order_id' => $order->id,
                         'user_id' => $buyer->id,
-                        'seller_id' => $product->seller_id,
                         'rating' => $rating,
                         'comment' => $this->generateReviewComment($rating),
                         'is_public' => true,
