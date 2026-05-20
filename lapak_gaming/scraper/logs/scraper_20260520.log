@@ -10168,3 +10168,117 @@ Call log:
 2026-05-20 11:50:12,925 [INFO] run:    php artisan db:seed --class=ItemkuCategoriesSeeder
 2026-05-20 11:50:12,925 [INFO] run:    php artisan db:seed --class=ItemkuProductsSeeder
 2026-05-20 11:50:12,925 [INFO] run: ============================================================
+2026-05-20 11:50:52,761 [INFO] run: ============================================================
+2026-05-20 11:50:52,761 [INFO] run: 🚀 ITEMKU SCRAPER → LARAVEL SEEDER
+2026-05-20 11:50:52,761 [INFO] run: ============================================================
+2026-05-20 11:50:52,761 [INFO] run: 👤 Seller User ID  : 1
+2026-05-20 11:50:52,762 [INFO] run: 🎯 Kategori target : mobile-legends, free-fire, pubg-mobile, genshin-impact, valorant, steam-wallet, honkai-star-rail, point-blank
+2026-05-20 11:50:52,762 [INFO] run: 📂 Output folder   : C:\TB SBD\TB-K1-Database\lapak_gaming\database\seeders
+2026-05-20 11:50:52,762 [INFO] run: 
+📡 Memulai scraping...
+2026-05-20 11:50:53,789 [INFO] itemku: 🌐 Browser berhasil dijalankan
+2026-05-20 11:50:53,790 [INFO] itemku: 
+============================================================
+2026-05-20 11:50:53,790 [INFO] itemku: 📂 KATEGORI: mobile-legends
+2026-05-20 11:50:53,790 [INFO] itemku: ============================================================
+2026-05-20 11:50:53,790 [INFO] itemku: 🔍 Scrape kategori:
+2026-05-20 11:50:53,790 [INFO] itemku:    URL: https://www.itemku.com/g/mobile-legends
+2026-05-20 11:50:56,605 [INFO] itemku: 💾 Simpan debug...
+2026-05-20 11:50:56,612 [INFO] itemku: 📦 __NEXT_DATA__ ditemukan
+2026-05-20 11:50:56,648 [INFO] itemku: ✅ Produk dari __NEXT_DATA__: 25
+2026-05-20 11:50:56,649 [INFO] itemku: 📦 Total produk: 25
+2026-05-20 11:50:56,649 [DEBUG] itemku: ⏳ Delay 4.7s...
+2026-05-20 11:51:01,337 [INFO] itemku: 
+============================================================
+2026-05-20 11:51:01,337 [INFO] itemku: 📂 KATEGORI: free-fire
+2026-05-20 11:51:01,337 [INFO] itemku: ============================================================
+2026-05-20 11:51:01,337 [INFO] itemku: 🔍 Scrape kategori:
+2026-05-20 11:51:01,337 [INFO] itemku:    URL: https://www.itemku.com/g/garena-free-fire
+2026-05-20 11:51:06,062 [INFO] itemku: 💾 Simpan debug...
+2026-05-20 11:51:06,065 [INFO] itemku: 📦 __NEXT_DATA__ ditemukan
+2026-05-20 11:51:06,073 [INFO] itemku: ✅ Produk dari __NEXT_DATA__: 45
+2026-05-20 11:51:06,073 [INFO] itemku: 📦 Total produk: 45
+2026-05-20 11:51:06,073 [DEBUG] itemku: ⏳ Delay 4.0s...
+2026-05-20 11:51:10,079 [INFO] itemku: 
+============================================================
+2026-05-20 11:51:10,079 [INFO] itemku: 📂 KATEGORI: pubg-mobile
+2026-05-20 11:51:10,080 [INFO] itemku: ============================================================
+2026-05-20 11:51:10,080 [INFO] itemku: 🔍 Scrape kategori:
+2026-05-20 11:51:10,080 [INFO] itemku:    URL: https://www.itemku.com/g/pubg-mobile
+2026-05-20 11:51:13,129 [INFO] itemku: 💾 Simpan debug...
+2026-05-20 11:51:13,133 [INFO] itemku: 📦 __NEXT_DATA__ ditemukan
+2026-05-20 11:51:13,142 [INFO] itemku: ✅ Produk dari __NEXT_DATA__: 6
+2026-05-20 11:51:13,143 [INFO] itemku: 📦 Total produk: 6
+2026-05-20 11:51:13,143 [DEBUG] itemku: ⏳ Delay 2.4s...
+2026-05-20 11:51:15,587 [INFO] itemku: 
+============================================================
+2026-05-20 11:51:15,588 [INFO] itemku: 📂 KATEGORI: genshin-impact
+2026-05-20 11:51:15,589 [INFO] itemku: ============================================================
+2026-05-20 11:51:15,590 [INFO] itemku: 🔍 Scrape kategori:
+2026-05-20 11:51:15,590 [INFO] itemku:    URL: https://www.itemku.com/g/genshin-impact
+2026-05-20 11:51:32,470 [INFO] itemku: 💾 Simpan debug...
+2026-05-20 11:51:32,473 [INFO] itemku: 📦 __NEXT_DATA__ ditemukan
+2026-05-20 11:51:32,480 [INFO] itemku: ✅ Produk dari __NEXT_DATA__: 7
+2026-05-20 11:51:32,481 [INFO] itemku: 📦 Total produk: 7
+2026-05-20 11:51:32,481 [DEBUG] itemku: ⏳ Delay 4.4s...
+2026-05-20 11:51:36,852 [INFO] itemku: 
+============================================================
+2026-05-20 11:51:36,853 [INFO] itemku: 📂 KATEGORI: valorant
+2026-05-20 11:51:36,853 [INFO] itemku: ============================================================
+2026-05-20 11:51:36,854 [INFO] itemku: 🔍 Scrape kategori:
+2026-05-20 11:51:36,854 [INFO] itemku:    URL: https://www.itemku.com/g/valorant
+2026-05-20 11:51:44,498 [ERROR] itemku: ❌ Error scrape: <urlopen error [WinError 10054] An existing connection was forcibly closed by the remote host>
+2026-05-20 11:51:44,499 [INFO] itemku: 📦 Total produk: 0
+2026-05-20 11:51:44,499 [DEBUG] itemku: ⏳ Delay 2.4s...
+2026-05-20 11:51:46,927 [INFO] itemku: 
+============================================================
+2026-05-20 11:51:46,927 [INFO] itemku: 📂 KATEGORI: steam-wallet
+2026-05-20 11:51:46,928 [INFO] itemku: ============================================================
+2026-05-20 11:51:46,928 [INFO] itemku: 🔍 Scrape kategori:
+2026-05-20 11:51:46,928 [INFO] itemku:    URL: https://www.itemku.com/g/steam-wallet
+2026-05-20 11:51:58,292 [INFO] itemku: 💾 Simpan debug...
+2026-05-20 11:51:58,339 [INFO] itemku: 📦 Total produk: 0
+2026-05-20 11:51:58,340 [DEBUG] itemku: ⏳ Delay 4.5s...
+2026-05-20 11:52:02,830 [INFO] itemku: 
+============================================================
+2026-05-20 11:52:02,834 [INFO] itemku: 📂 KATEGORI: honkai-star-rail
+2026-05-20 11:52:02,835 [INFO] itemku: ============================================================
+2026-05-20 11:52:02,836 [INFO] itemku: 🔍 Scrape kategori:
+2026-05-20 11:52:02,836 [INFO] itemku:    URL: https://www.itemku.com/g/honkai-star-rail
+2026-05-20 11:52:05,953 [INFO] itemku: 💾 Simpan debug...
+2026-05-20 11:52:05,959 [INFO] itemku: 📦 __NEXT_DATA__ ditemukan
+2026-05-20 11:52:05,986 [INFO] itemku: ✅ Produk dari __NEXT_DATA__: 7
+2026-05-20 11:52:05,986 [INFO] itemku: 📦 Total produk: 7
+2026-05-20 11:52:05,987 [DEBUG] itemku: ⏳ Delay 4.0s...
+2026-05-20 11:52:10,001 [INFO] itemku: 
+============================================================
+2026-05-20 11:52:10,001 [INFO] itemku: 📂 KATEGORI: point-blank
+2026-05-20 11:52:10,002 [INFO] itemku: ============================================================
+2026-05-20 11:52:10,002 [INFO] itemku: 🔍 Scrape kategori:
+2026-05-20 11:52:10,002 [INFO] itemku:    URL: https://www.itemku.com/g/point-blank
+2026-05-20 11:52:12,170 [INFO] itemku: 💾 Simpan debug...
+2026-05-20 11:52:12,177 [INFO] itemku: 📦 __NEXT_DATA__ ditemukan
+2026-05-20 11:52:12,192 [INFO] itemku: ✅ Produk dari __NEXT_DATA__: 7
+2026-05-20 11:52:12,194 [INFO] itemku: 📦 Total produk: 7
+2026-05-20 11:52:12,194 [DEBUG] itemku: ⏳ Delay 2.1s...
+2026-05-20 11:52:15,132 [INFO] itemku: 🔒 Browser ditutup
+2026-05-20 11:52:15,132 [INFO] run: ✅ Selesai scraping: 97 produk dari 8 kategori
+2026-05-20 11:52:15,133 [INFO] run: 
+🖊️  Membuat file PHP Seeder...
+2026-05-20 11:52:15,133 [INFO] seeder_generator: 
+🖊️  Membuat Laravel Seeder di: C:\TB SBD\TB-K1-Database\lapak_gaming\database\seeders
+2026-05-20 11:52:15,136 [INFO] seeder_generator: 📁 Seeder kategori: ../database/seeders\ItemkuCategoriesSeeder.php (8 kategori)
+2026-05-20 11:52:15,146 [INFO] seeder_generator: 📦 Seeder produk: ../database/seeders\ItemkuProductsSeeder.php (97 produk)
+2026-05-20 11:52:15,147 [INFO] run: 
+============================================================
+2026-05-20 11:52:15,148 [INFO] run: ✅ SEEDER BERHASIL DIBUAT!
+2026-05-20 11:52:15,148 [INFO] run:    📁 ../database/seeders\ItemkuCategoriesSeeder.php
+2026-05-20 11:52:15,148 [INFO] run:    📦 ../database/seeders\ItemkuProductsSeeder.php
+2026-05-20 11:52:15,149 [INFO] run: 
+   Kategori : 8
+2026-05-20 11:52:15,149 [INFO] run:    Produk   : 97
+2026-05-20 11:52:15,149 [INFO] run: 
+📌 Langkah selanjutnya di terminal Laravel:
+2026-05-20 11:52:15,150 [INFO] run:    php artisan db:seed --class=ItemkuCategoriesSeeder
+2026-05-20 11:52:15,150 [INFO] run:    php artisan db:seed --class=ItemkuProductsSeeder
+2026-05-20 11:52:15,150 [INFO] run: ============================================================
