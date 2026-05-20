@@ -10,6 +10,7 @@ use App\Models\Review;
 use App\Models\User;
 use App\Models\ProductStatistic;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class ProductViewsAndReviewsSeeder extends Seeder
 {
@@ -17,9 +18,17 @@ class ProductViewsAndReviewsSeeder extends Seeder
     {
         $this->command->info('Seeding product views, sales, and reviews...');
 
-        // Get all products
+        // Truncate existing orders and reviews cleanly
+        Schema::disableForeignKeyConstraints();
+        Review::truncate();
+        OrderFinancial::truncate();
+        OrderItem::truncate();
+        Order::truncate();
+        Schema::enableForeignKeyConstraints();
+
+        // Get all products and buyers
         $products = Product::all();
-        $buyers = User::where('role', 'buyer')->limit(500)->get();
+        $buyers = User::where('role', 'buyer')->get();
 
         if ($products->isEmpty() || $buyers->isEmpty()) {
             $this->command->warn('No products or buyers found. Skipping seeder.');
@@ -30,16 +39,11 @@ class ProductViewsAndReviewsSeeder extends Seeder
         $progressBar->start();
 
         foreach ($products as $product) {
-            // Generate realistic view counts (50-5000 views per product)
-            $viewsCount = random_int(50, 5000);
+            // Generate realistic view counts (50-2500 views per product)
+            $viewsCount = random_int(50, 2500);
 
-            // Generate sales (5-200 units sold, depending on popularity)
-            $popularityFactor = random_int(1, 10);
-            $soldCount = match(true) {
-                $popularityFactor <= 3 => random_int(5, 30),    // Low popularity
-                $popularityFactor <= 7 => random_int(30, 100),  // Medium popularity
-                default => random_int(100, 200),                 // High popularity
-            };
+            // Generate small number of sales (2-8 units sold) for very fast seeding
+            $soldCount = random_int(2, 8);
 
             // Create or update product statistic
             $statistic = ProductStatistic::updateOrCreate(
@@ -47,7 +51,7 @@ class ProductViewsAndReviewsSeeder extends Seeder
                 [
                     'sold_count' => $soldCount,
                     'views_count' => $viewsCount,
-                    'downloads_count' => random_int(10, $soldCount * 2),
+                    'downloads_count' => random_int(1, $soldCount * 2),
                 ]
             );
 
@@ -58,18 +62,18 @@ class ProductViewsAndReviewsSeeder extends Seeder
             for ($i = 0; $i < $soldCount; $i++) {
                 $buyer = $buyers->random();
 
-                // Create order using actual database schema (no subtotal/fee/escrow/grand_total)
+                // Create order
                 $subtotal = $product->price;
-                $feeAmount = $subtotal * 0.1; // 10% platform fee
+                $feeAmount = $subtotal * 0.05; // 5% fee
                 $grandTotal = $subtotal + $feeAmount;
 
                 $order = Order::create([
                     'buyer_id' => $buyer->id,
                     'seller_id' => $product->seller_id,
                     'invoice_number' => 'INV-' . now()->format('YmdHis') . '-' . uniqid(random_int(100, 999)),
-                    'payment_method' => collect(['wallet', 'bank_transfer', 'credit_card'])->random(),
+                    'payment_method' => collect(['wallet', 'bank_transfer'])->random(),
                     'status' => 'completed',
-                    'completed_at' => now()->subDays(random_int(0, 179)),
+                    'completed_at' => now()->subDays(random_int(0, 90)),
                 ]);
 
                 // Create order item
@@ -89,12 +93,12 @@ class ProductViewsAndReviewsSeeder extends Seeder
                     'subtotal' => $subtotal,
                     'fee_amount' => $feeAmount,
                     'escrow_amount' => 0,
-                    'grand_total' => $subtotal + $feeAmount,
+                    'grand_total' => $grandTotal,
                 ]);
 
-                // 70% of buyers leave reviews
-                if (random_int(1, 100) <= 70) {
-                    $rating = random_int(3, 5); // Skew towards positive reviews
+                // 80% chance of leaving a review
+                if (random_int(1, 100) <= 80) {
+                    $rating = random_int(4, 5); // Game items generally skew highly positive on itemku (4 or 5 stars)
                     $ratings[] = $rating;
                     $reviewCount++;
 
@@ -124,51 +128,24 @@ class ProductViewsAndReviewsSeeder extends Seeder
         }
 
         $progressBar->finish();
-        $this->command->info("\n✓ Product views, sales, and reviews seeding completed!");
-        $this->command->info("  • Products: {$products->count()}");
-        $this->command->info("  • Total orders created: " . Order::count());
-        $this->command->info("  • Total reviews created: " . Review::count());
+        $this->command->info("\n✓ Product views, sales, and reviews seeding completed successfully!");
     }
 
     private function generateReviewComment(int $rating): string
     {
         $positiveReviews = [
-            'Sangat memuaskan, rekomendasi banget!',
-            'Produk berkualitas tinggi, sesuai deskripsi.',
-            'Pengiriman cepat dan barang bagus, terima kasih!',
-            'Mantap, seller responsif dan produknya oke.',
-            'Wah, kualitasnya melebihi ekspektasi ku.',
-            'Ini bargain banget, worth it abis!',
-            'Seller profesional, packaging rapi, barang ok.',
-            'Cepat banget proses pengiriman, top deh!',
-            'Satisfied customer here, akan beli lagi!',
-            'Best seller ever, highly recommended!',
+            'Sangat cepat prosesnya, mantap!',
+            'Respon seller cepat dan ramah, recommended!',
+            'Legal dan aman. Senang belanja di sini.',
+            'Murah banget dibanding toko lain.',
+            'Diamond langsung masuk gak pakai lama.',
+            'Proses kilat cuma 1 menit langsung selesai!',
+            'Seller terpercaya, transaksi super aman.',
+            'Mantap lah, langganan terus di toko ini.',
+            'Udah berkali-kali beli di sini selalu puas.',
+            'Gak sampai 5 menit udah beres, mantul!'
         ];
 
-        $neutralReviews = [
-            'Produk standar, sesuai harga.',
-            'Cukup baik, tidak ada masalah.',
-            'Lumayan, seperti di deskripsi.',
-            'Biasa aja tapi tidak mengecewakan.',
-            'Produk oke, tapi pengiriman agak lambat.',
-            'Acceptable, bisa diperbaiki packaging nya.',
-            'Produk ok tapi ada kecil kekurangan.',
-        ];
-
-        $negativeReviews = [
-            'Kurang memuaskan, tapi masih bisa dipakai.',
-            'Ada cacat kecil tapi seller ramah.',
-            'Produk agak berbeda dari foto.',
-            'Kecewa dengan kualitasnya.',
-            'Semoga perbaikan untuk order berikutnya.',
-        ];
-
-        return match(true) {
-            $rating == 5 => collect($positiveReviews)->random(),
-            $rating == 4 => collect($positiveReviews)->random(),
-            $rating == 3 => collect($neutralReviews)->random(),
-            $rating == 2 => collect($negativeReviews)->random(),
-            default => 'Produk tidak sesuai harapan.',
-        };
+        return collect($positiveReviews)->random();
     }
 }

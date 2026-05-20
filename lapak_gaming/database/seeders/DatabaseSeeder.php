@@ -6,12 +6,36 @@ use App\Models\Wallet;
 use App\Models\WalletBalance;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 
 class DatabaseSeeder extends Seeder {
     public function run(): void {
+        $this->command->info('Starting database cleaning and seeding...');
+
+        // 1. Safe Truncation of all tables to ensure a perfectly clean slate
+        Schema::disableForeignKeyConstraints();
+        DB::table('wallet_transactions')->truncate();
+        DB::table('wallet_balances')->truncate();
+        DB::table('wallets')->truncate();
+        DB::table('seller_level_benefits')->truncate();
+        DB::table('seller_levels')->truncate();
+        DB::table('user_profiles')->truncate();
+        DB::table('product_statistics')->truncate();
+        DB::table('reviews')->truncate();
+        DB::table('order_financials')->truncate();
+        DB::table('order_items')->truncate();
+        DB::table('orders')->truncate();
+        DB::table('products')->truncate();
+        DB::table('categories')->truncate();
+        DB::table('users')->truncate();
+        Schema::enableForeignKeyConstraints();
+
+        $this->command->info('Database cleaned successfully! Starting seeders...');
+
+        // 2. Call basic seeders in order
         $this->call(SellerLevelSeeder::class);
 
-        // bulk seed categories, users (buyers), sellers and products
         $this->call([
             CategorySeeder::class,
             SellersTableSeeder::class,
@@ -25,7 +49,10 @@ class DatabaseSeeder extends Seeder {
             $this->call(ProductViewsAndReviewsSeeder::class);
         }
 
-        // Admin (only create if not exists)
+        // 3. Create Default Accounts (Admin, Demo Seller, Demo Buyer)
+        $this->command->info('Creating default system accounts...');
+
+        // Admin
         $admin = User::firstOrCreate(
             ['email' => 'administrator@lapakgaming.neoverse.my.id'],
             [
@@ -36,13 +63,14 @@ class DatabaseSeeder extends Seeder {
             ]
         );
 
-        // Demo Seller (only create if not exists)
+        // Demo Seller
         $seller = User::firstOrCreate(
             ['email' => 'seller@lapakgeming.com'],
             [
                 'name' => 'Seller Demo',
                 'password' => Hash::make('password123'),
                 'role' => 'seller',
+                'status' => 'active',
             ]
         );
 
@@ -56,13 +84,14 @@ class DatabaseSeeder extends Seeder {
             ]);
         }
 
-        // Demo Buyer (only create if not exists)
+        // Demo Buyer
         $buyer = User::firstOrCreate(
             ['email' => 'user@lapakgeming.com'],
             [
                 'name' => 'User Demo',
                 'password' => Hash::make('password123'),
                 'role' => 'buyer',
+                'status' => 'active',
             ]
         );
 
@@ -76,7 +105,6 @@ class DatabaseSeeder extends Seeder {
             ]);
         }
 
-        // Product/category bulk data is handled by:
-        // CategorySeeder, SellersTableSeeder, UsersTableSeeder, ProductsTableSeeder.
+        $this->command->info('All seeding tasks completed successfully!');
     }
 }
