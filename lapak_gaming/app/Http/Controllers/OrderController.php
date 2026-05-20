@@ -205,8 +205,6 @@ class OrderController extends Controller {
                     'quantity' => $item->quantity,
                     'status' => 'pending',
                 ]);
-
-                $item->product->decrement('stock', $item->quantity);
             }
 
             Cart::where('user_id', Auth::id())->where('is_selected', true)->delete();
