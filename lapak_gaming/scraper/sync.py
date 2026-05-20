@@ -13,6 +13,9 @@ from repository import upsert_category, upsert_product, get_scrape_summary
 from db import get_connection, test_connection
 from logger import get_logger
 
+# Load Laravel's .env first, then scraper's .env
+laravel_env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env'))
+load_dotenv(dotenv_path=laravel_env_path)
 load_dotenv()
 logger = get_logger("sync")
 
@@ -141,8 +144,11 @@ async def run_sync():
 
     # 2. Ambil konfigurasi
     seller_user_id = int(os.getenv("SELLER_USER_ID", 1))
-    raw_categories = os.getenv("TARGET_CATEGORIES", "mobile-legends")
-    target_categories = [c.strip() for c in raw_categories.split(",") if c.strip()]
+    raw_categories = os.getenv("TARGET_CATEGORIES", "all")
+    if raw_categories.strip().lower() == "all":
+        target_categories = list(CATEGORY_MAPPING.keys())
+    else:
+        target_categories = [c.strip() for c in raw_categories.split(",") if c.strip()]
 
     logger.info(f"👤 Seller User ID : {seller_user_id}")
     logger.info(f"🎯 Kategori target: {', '.join(target_categories)}")

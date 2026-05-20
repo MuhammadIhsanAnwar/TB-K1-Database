@@ -243,7 +243,7 @@ class ItemkuScraper:
 
             logger.info("📜 Scroll halaman...")
 
-            for _ in range(5):
+            for _ in range(20):
 
                 await page.mouse.wheel(0, 3000)
                 await page.wait_for_timeout(2000)

@@ -10,6 +10,9 @@ import os
 import sys
 from dotenv import load_dotenv
 
+# Load Laravel's .env first, then scraper's .env
+laravel_env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env'))
+load_dotenv(dotenv_path=laravel_env_path)
 load_dotenv()
 
 from itemku import ItemkuScraper
@@ -25,8 +28,12 @@ async def main():
     logger.info("=" * 60)
 
     seller_user_id    = int(os.getenv("SELLER_USER_ID", 1))
-    raw_categories    = os.getenv("TARGET_CATEGORIES", "mobile-legends")
-    target_categories = [c.strip() for c in raw_categories.split(",") if c.strip()]
+    from seeder_generator import CATEGORY_MAPPING
+    raw_categories    = os.getenv("TARGET_CATEGORIES", "all")
+    if raw_categories.strip().lower() == "all":
+        target_categories = list(CATEGORY_MAPPING.keys())
+    else:
+        target_categories = [c.strip() for c in raw_categories.split(",") if c.strip()]
     output_dir        = os.getenv("OUTPUT_DIR", "../database/seeders")
 
     logger.info(f"👤 Seller User ID  : {seller_user_id}")

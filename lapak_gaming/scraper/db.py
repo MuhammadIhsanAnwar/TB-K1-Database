@@ -5,9 +5,12 @@ db.py - Koneksi ke Database MySQL Laravel
 import pymysql
 import os
 from dotenv import load_dotenv
-from logger import get_logger
 
+# Load Laravel's .env first, then scraper's .env
+laravel_env_path = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '.env'))
+load_dotenv(dotenv_path=laravel_env_path)
 load_dotenv()
+
 logger = get_logger(__name__)
 
 
@@ -19,7 +22,7 @@ def get_connection():
             port=int(os.getenv("DB_PORT", 3306)),
             user=os.getenv("DB_USER", "root"),
             password=os.getenv("DB_PASSWORD", ""),
-            database=os.getenv("DB_NAME"),
+            database=os.getenv("DB_DATABASE", os.getenv("DB_NAME", "")),
             charset="utf8mb4",
             cursorclass=pymysql.cursors.DictCursor,
             autocommit=False,
