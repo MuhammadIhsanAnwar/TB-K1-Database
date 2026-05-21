@@ -470,6 +470,10 @@
 
                     </div>
 
+                    <form id="two-factor-confirm-form" action="{{ route('settings.security.confirm') }}" method="POST" class="hidden">
+                        @csrf
+                    </form>
+
                     <form action="{{ route('settings.security.update') }}" method="POST" class="space-y-6">
                         @csrf
                         @method('PUT')
@@ -529,20 +533,21 @@
                                     </div>
                                 </div>
 
-                                <form action="{{ route('settings.security.confirm') }}" method="POST" class="mt-6 space-y-4">
-                                    @csrf
-
+                                <div class="mt-6 space-y-4">
                                     <input type="text"
                                         name="verification_code"
                                         inputmode="numeric"
                                         maxlength="6"
                                         placeholder="Masukkan kode Authenticator"
+                                        form="two-factor-confirm-form"
                                         class="input-style">
 
-                                    <button type="submit" class="submit-green">
+                                    <button type="submit"
+                                        form="two-factor-confirm-form"
+                                        class="submit-green">
                                         Konfirmasi & Simpan Google Authenticator
                                     </button>
-                                </form>
+                                </div>
 
                                 <p class="mt-4 text-xs text-slate-500">Pengaturan belum disimpan permanen sampai kode Authenticator valid.</p>
 

@@ -224,6 +224,7 @@ Route::prefix('verification')->name('verification.')->group(function () {
     Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('role:buyer')->name('checkout.store');
     Route::post('/checkout/{order}/confirm', [CheckoutController::class, 'confirm'])->middleware('role:buyer')->name('checkout.confirm');
     Route::post('/checkout/{order}/dispute', [CheckoutController::class, 'dispute'])->middleware('role:buyer')->name('checkout.dispute');
+    Route::post('/seller/orders/{order}/process', [CheckoutController::class, 'process'])->middleware('role:seller')->name('seller.orders.process');
     Route::post('/seller/orders/{order}/deliver', [CheckoutController::class, 'deliver'])->middleware('role:seller')->name('seller.orders.deliver');
 
     // ─── Wallet ───────────────────────────────────────────────────────────────

@@ -18,7 +18,7 @@
                 <span class="rounded-full bg-amber-500/10 px-4 py-2 text-sm text-amber-200">Seller & Buyer</span>
             </div>
 
-            <form action="{{ route('seller.store.update') }}" method="POST" class="mt-8 space-y-6">
+            <form action="{{ route('seller.store.update') }}" method="POST" enctype="multipart/form-data" class="mt-8 space-y-6">
                 @csrf
                 @method('PUT')
 
@@ -38,10 +38,10 @@
                     <label class="block text-sm font-medium text-slate-300">Foto Toko</label>
                     <div class="mt-2 flex items-center gap-4">
                         <div class="w-24 h-24 rounded-lg overflow-hidden bg-black/40 border border-white/5">
-                            @if(!empty($user->shop_photo))
-                                <img src="{{ asset($user->shop_photo) }}" alt="Foto Toko" class="w-full h-full object-cover">
+                            @if(!empty($user->shop_photo_url))
+                                <img src="{{ $user->shop_photo_url }}" alt="Foto Toko" class="w-full h-full object-cover">
                             @elseif(!empty($profile?->avatar_path))
-                                <img src="{{ asset($profile->avatar_path) }}" alt="Foto Toko" class="w-full h-full object-cover">
+                                <img src="{{ asset('storage/' . $profile->avatar_path) }}" alt="Foto Toko" class="w-full h-full object-cover">
                             @else
                                 <div class="w-full h-full flex items-center justify-center text-sm text-slate-400">No Image</div>
                             @endif

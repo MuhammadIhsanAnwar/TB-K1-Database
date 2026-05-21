@@ -59,8 +59,8 @@ class Order extends Model {
         return match($this->status) {
             self::STATUS_PENDING_PAYMENT => 'Menunggu Pembayaran',
             self::STATUS_PAYMENT_UPLOADED => 'Pembayaran Dikirim',
-            self::STATUS_PROCESSING => 'Diproses Seller',
-            self::STATUS_DELIVERED => 'Dikirim',
+            self::STATUS_PROCESSING => 'Diproses',
+            self::STATUS_DELIVERED => 'Sudah Dikirim',
             self::STATUS_COMPLETED => 'Selesai',
             self::STATUS_DISPUTED => 'Sengketa',
             self::STATUS_CANCELLED => 'Dibatalkan',

@@ -190,6 +190,41 @@
 
                 </div>
 
+                {{-- SELLER ACTIONS --}}
+                @if($order->seller_id === auth()->id())
+                    <div class="reveal reveal-delay-3 mt-8 rounded-[26px] border border-white/5 bg-white/[0.03] p-6">
+                        <h2 class="text-xl font-black text-white">
+                            Aksi Seller
+                        </h2>
+
+                        <p class="mt-3 text-sm text-slate-400">
+                            Ubah status order buyer sesuai tahap proses transaksi.
+                        </p>
+
+                        <div class="mt-6 grid gap-4 md:grid-cols-2">
+                            @if($order->status === \App\Models\Order::STATUS_PAYMENT_UPLOADED)
+                                <form action="{{ route('seller.orders.process', $order) }}" method="POST">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full rounded-[26px] border border-amber-500/20 bg-amber-500/10 px-5 py-4 text-base font-bold text-amber-300 transition duration-300 hover:-translate-y-1 hover:bg-amber-500/20 hover:shadow-[0_0_25px_rgba(245,158,11,0.15)]">
+                                        Tandai Diproses
+                                    </button>
+                                </form>
+                            @endif
+
+                            @if($order->status === \App\Models\Order::STATUS_PROCESSING)
+                                <form action="{{ route('seller.orders.deliver', $order) }}" method="POST">
+                                    @csrf
+                                    <button type="submit"
+                                        class="w-full rounded-[26px] border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-base font-bold text-emerald-300 transition duration-300 hover:-translate-y-1 hover:bg-emerald-500/20 hover:shadow-[0_0_25px_rgba(16,185,129,0.15)]">
+                                        Tandai Sudah Dikirim
+                                    </button>
+                                </form>
+                            @endif
+                        </div>
+                    </div>
+                @endif
+
                 {{-- ACTION BUTTONS --}}
                 <div class="relative z-10 mt-8 grid gap-4 md:grid-cols-2">
 

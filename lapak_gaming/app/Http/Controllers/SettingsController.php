@@ -318,7 +318,7 @@ class SettingsController extends Controller
 
         if ($enabled && in_array('google', $methods, true)) {
             $request->session()->put('two_factor_setup_pending', [
-                'two_factor_enabled' => $enabled,
+                'two_factor_enabled' => true,
                 'two_factor_methods' => $methods,
                 'google_secret' => $googleSecret,
             ]);
@@ -331,8 +331,8 @@ class SettingsController extends Controller
         $user->forceFill([
             'two_factor_enabled' => $enabled,
             'two_factor_methods' => $enabled ? $methods : [],
-            'two_factor_google_secret' => null,
-            'two_factor_confirmed_at' => $enabled ? now() : null,
+            'two_factor_google_secret' => $enabled ? $user->two_factor_google_secret : null,
+            'two_factor_confirmed_at' => $enabled ? ($user->two_factor_confirmed_at ?? now()) : null,
         ])->save();
 
         return back()->with('success', 'Pengaturan verifikasi 2 langkah berhasil diperbarui.');

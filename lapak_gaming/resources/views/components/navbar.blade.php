@@ -81,6 +81,27 @@
   .dg-btn:hover .dg-btn-glow {
     transform: translateX(120%);
   }
+
+  .cat-menu-scroll {
+    max-height: min(72vh, 760px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(59,130,246,.55) rgba(15,23,42,.4);
+  }
+
+  .cat-menu-scroll::-webkit-scrollbar {
+    width: 8px;
+  }
+
+  .cat-menu-scroll::-webkit-scrollbar-track {
+    background: rgba(15,23,42,.35);
+    border-radius: 999px;
+  }
+
+  .cat-menu-scroll::-webkit-scrollbar-thumb {
+    background: linear-gradient(180deg, rgba(59,130,246,.7), rgba(37,99,235,.95));
+    border-radius: 999px;
+  }
 </style>
 @endpush
 
@@ -384,7 +405,7 @@
             <div id="cat-dropdown" class="dropdown-panel absolute top-full left-0 mt-2 w-[880px] max-w-[calc(100vw-2rem)] rounded-2xl shadow-card-hover overflow-visible"
                  style="background:#0D1421;border:1px solid #1E2D45;">
               <div class="grid grid-cols-[300px_minmax(0,1fr)] gap-0">
-                <div class="p-2" style="border-right:1px solid #1E2D45;">
+                <div class="cat-menu-scroll p-2" style="border-right:1px solid #1E2D45;">
                   <div class="px-3 py-2 mb-2 rounded-xl bg-white/5 border border-white/5">
                     <div class="text-sm font-semibold text-white">Kategori</div>
                     <div class="text-xs text-slate-400 mt-1">Arahkan kursor ke kategori untuk melihat subkategori.</div>

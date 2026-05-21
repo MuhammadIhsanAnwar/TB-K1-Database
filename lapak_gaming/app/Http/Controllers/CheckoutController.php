@@ -221,14 +221,27 @@ class CheckoutController extends Controller
         return back()->with('success', 'Dispute berhasil diajukan.');
     }
 
+    public function process(Request $request, Order $order): RedirectResponse
+    {
+        abort_unless($order->seller_id === $request->user()->id, 403);
+        abort_unless($order->status === Order::STATUS_PAYMENT_UPLOADED, 422, 'Order harus menunggu proses sebelum dipindahkan ke status diproses.');
+
+        $order->forceFill([
+            'status' => Order::STATUS_PROCESSING,
+        ])->save();
+
+        return back()->with('success', 'Pesanan berhasil dipindahkan ke status diproses.');
+    }
+
     public function deliver(Request $request, Order $order): RedirectResponse
     {
         abort_unless($order->seller_id === $request->user()->id, 403);
+        abort_unless($order->status === Order::STATUS_PROCESSING, 422, 'Order harus berstatus diproses sebelum ditandai sudah dikirim.');
 
         $order->forceFill([
-                'status' => 'delivered',
+            'status' => Order::STATUS_DELIVERED,
         ])->save();
 
-        return back()->with('success', 'Item digital ditandai sudah dikirim.');
+        return back()->with('success', 'Pesanan berhasil ditandai sudah dikirim.');
     }
 }

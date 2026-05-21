@@ -13,11 +13,35 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Schema;
 
 class OrderController extends Controller {
-    public function index() {
-        $orders = Order::where('buyer_id', Auth::id())
-            ->with('items.product')
-            ->latest()->paginate(10);
-        return view('orders.index', compact('orders'));
+    public function index(Request $request) {
+        $status = $request->query('status');
+        $allowedStatuses = [
+            'all',
+            Order::STATUS_PENDING_PAYMENT,
+            Order::STATUS_PAYMENT_UPLOADED,
+            Order::STATUS_PROCESSING,
+            Order::STATUS_DELIVERED,
+            Order::STATUS_COMPLETED,
+            Order::STATUS_CANCELLED,
+        ];
+
+        if (! $status || ! in_array($status, $allowedStatuses, true)) {
+            $status = 'all';
+        }
+
+        $baseQuery = Order::where('buyer_id', Auth::id())->with('items.product');
+
+        $ordersQuery = (clone $baseQuery)->latest();
+        if ($status !== 'all') {
+            $ordersQuery->where('status', $status);
+        }
+
+        $orders = $ordersQuery->paginate(10)->withQueryString();
+        $statusCounts = collect($allowedStatuses)
+            ->filter(fn ($itemStatus) => $itemStatus !== 'all')
+            ->mapWithKeys(fn ($itemStatus) => [$itemStatus => (clone $baseQuery)->where('status', $itemStatus)->count()]);
+
+        return view('orders.index', compact('orders', 'status', 'statusCounts'));
     }
 
     public function show($order_code) {

@@ -118,7 +118,7 @@
         {{-- ── STATS CARDS GRID (TRANSPARENT) ────────────────────── --}}
         <div class="reveal reveal-delay-1 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {{-- Card 1: Saldo --}}
-            <div class="rounded-2xl p-6 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] flex items-center justify-between group reveal">
+            <div class="group reveal relative flex items-center justify-between overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 px-5 py-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)]">
                 <div class="space-y-1">
                     <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Saldo Hasil Penjualan</div>
                     <div class="text-3xl font-extrabold text-amber-400">
@@ -131,7 +131,7 @@
             </div>
             
             {{-- Card 2: Produk Aktif --}}
-            <div class="rounded-2xl p-6 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] flex items-center justify-between group">
+            <div class="group relative flex items-center justify-between overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 px-5 py-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)]">
                 <div class="space-y-1">
                     <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Katalog Produk Aktif</div>
                     <div class="text-3xl font-extrabold text-white tracking-tight">
@@ -144,7 +144,7 @@
             </div>
 
             {{-- Card 3: Total Order --}}
-            <div class="rounded-2xl p-6 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] flex items-center justify-between group">
+            <div class="group relative flex items-center justify-between overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 px-5 py-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)]">
                 <div class="space-y-1">
                     <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Total Pesanan Masuk</div>
                     <div class="text-3xl font-extrabold text-white tracking-tight">
@@ -158,9 +158,22 @@
         </div>
 
         {{-- ── QUICK ACTIONS MACRO NAVIGATION ────────────────────── --}}
-        <div class="grid gap-4 sm:grid-cols-3">
+        <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            <a href="{{ route('seller.store.edit') }}" 
+               class="group relative flex items-center justify-between overflow-hidden rounded-[26px] border border-emerald-500/20 bg-emerald-500/5 px-5 py-5 transition duration-300 hover:-translate-y-1.5 hover:border-emerald-400/40 hover:shadow-[0_0_30px_rgba(16,185,129,0.12)]">
+                <div>
+                    <h3 class="text-lg font-bold text-white tracking-tight">Edit Profil Toko</h3>
+                    <p class="text-slate-400 text-xs font-medium mt-0.5">Nama, foto, dan bio toko</p>
+                </div>
+                <div class="bg-white/5 p-2.5 rounded-xl group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors text-slate-400">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4h2M12 4v16M7 8h10M7 16h10"/>
+                    </svg>
+                </div>
+            </a>
+
             <a href="{{ route('seller.produk.create') }}" 
-               class="flex items-center justify-between p-5 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] rounded-2xl group">
+               class="group relative flex items-center justify-between overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 px-5 py-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)]">
                 <div>
                     <h3 class="text-lg font-bold text-white tracking-tight">Tambah Produk</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Buka etalase jualan baru</p>
@@ -173,7 +186,7 @@
             </a>
             
             <a href="{{ route('seller.produk.index') }}" 
-               class="flex items-center justify-between p-5 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] rounded-2xl group">
+               class="group relative flex items-center justify-between overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 px-5 py-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)]">
                 <div>
                     <h3 class="text-lg font-bold text-white tracking-tight">Kelola Etalase</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Stok harian & arsip barang</p>
@@ -186,7 +199,7 @@
             </a>
             
             <a href="{{ route('chat.inbox') }}" 
-               class="flex items-center justify-between p-5 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] rounded-2xl group">
+               class="group relative flex items-center justify-between overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 px-5 py-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)]">
                 <div>
                     <h3 class="text-lg font-bold text-white tracking-tight">Pesan Pelanggan</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Balas pertanyaan & negosiasi</p>
@@ -203,7 +216,7 @@
         <div class="grid gap-8 lg:grid-cols-2">
             
             {{-- Left Column: Products Preview --}}
-            <section class="rounded-2xl p-6 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] space-y-5">
+            <section class="group relative space-y-5 overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 px-5 py-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)]">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
                         <span>📦</span> Katalog Dagangan Terbaru
@@ -213,7 +226,7 @@
                 
                 <div class="space-y-3">
                     @forelse ($products->take(5) as $product)
-                        <div class="flex items-center justify-between p-3.5 rounded-xl rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04] hover:-translate-y-1">
+                        <div class="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
                             <div class="flex items-center gap-3 min-w-0">
                                 <img src="{{ $product->image_url }}" class="w-9 h-9 rounded-lg object-cover bg-black/40 border border-white/5" alt="Thumbnail {{ $product->name }}">
                                 <div class="min-w-0">
@@ -237,7 +250,7 @@
             </section>
 
             {{-- Right Column: Orders Preview --}}
-            <section class="rounded-2xl p-6 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)] space-y-5">
+            <section class="group relative space-y-5 overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 px-5 py-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)]">
                 <div class="flex items-center justify-between">
                     <h2 class="text-lg font-bold text-white tracking-tight flex items-center gap-2">
                         <span>📥</span> Antrean Pesanan Masuk
@@ -247,7 +260,7 @@
                 
                 <div class="space-y-3">
                     @forelse ($orders->take(5) as $item)
-                        <div class="p-3.5 rounded-xl rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04] hover:-translate-y-1 flex items-center justify-between gap-4">
+                        <div class="flex items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
                             <div class="min-w-0">
                                 <div class="text-[10px] font-bold text-brand-400 uppercase tracking-wider">
                                     #{{ $item->order?->invoice_number ?? $item->order?->order_code ?? 'INV-UNKNWN' }}
