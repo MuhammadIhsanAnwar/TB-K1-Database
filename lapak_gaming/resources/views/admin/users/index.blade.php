@@ -456,7 +456,7 @@ a{
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
                       @if($user->status === 'active')
-                        <button type="button" data-user-id="{{ $user->id }}" data-user-name="{{ e($user->name) }}" onclick="openSuspendModal(this.dataset.userId, this.dataset.userName); return false;"
+                        <button type="button" data-modal-action="suspend-user" data-user-id="{{ $user->id }}" data-user-name="{{ e($user->name) }}"
                                 class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                           Suspend
                         </button>
@@ -614,12 +614,12 @@ a{
                     <td class="px-6 py-4 text-right whitespace-nowrap">
                       @if($seller->seller_status !== 'suspended')
                         <div class="inline-flex gap-2">
-                                <button type="button" data-user-id="{{ $seller->id }}" data-shop-name="{{ e($seller->shop_name ?? $seller->name) }}" onclick="openSuspendShopModal(this.dataset.userId, this.dataset.shopName); return false;"
+                                <button type="button" data-modal-action="suspend-shop" data-user-id="{{ $seller->id }}" data-shop-name="{{ e($seller->shop_name ?? $seller->name) }}"
                                   class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                             Suspend Toko
                           </button>
 
-                                <button type="button" data-user-id="{{ $seller->id }}" data-user-name="{{ e($seller->name) }}" onclick="openSuspendModal(this.dataset.userId, this.dataset.userName); return false;"
+                                <button type="button" data-modal-action="suspend-user" data-user-id="{{ $seller->id }}" data-user-name="{{ e($seller->name) }}"
                                   class="rounded-xl bg-amber-500/10 border border-amber-500/20 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-400 hover:text-white transition-all">
                             Suspend Akun
                           </button>
@@ -761,7 +761,7 @@ a{
                   </button>
                 </form>
 
-                <button data-user-id="{{ $applicant->id }}" data-user-name="{{ e($applicant->name) }}" onclick="openRejectModal(this.dataset.userId, this.dataset.userName)"
+                <button type="button" data-modal-action="reject-application" data-user-id="{{ $applicant->id }}" data-user-name="{{ e($applicant->name) }}"
                         class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-5 py-2.5 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                   <svg class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
@@ -897,6 +897,31 @@ a{
     document.getElementById('suspend-shop-modal').classList.remove('open');
     document.body.style.overflow = '';
   }
+
+  document.addEventListener('click', function(e) {
+    const trigger = e.target.closest('[data-modal-action]');
+    if (!trigger) {
+      return;
+    }
+
+    const action = trigger.dataset.modalAction;
+    if (action === 'suspend-user') {
+      e.preventDefault();
+      openSuspendModal(trigger.dataset.userId, trigger.dataset.userName);
+      return;
+    }
+
+    if (action === 'suspend-shop') {
+      e.preventDefault();
+      openSuspendShopModal(trigger.dataset.userId, trigger.dataset.shopName);
+      return;
+    }
+
+    if (action === 'reject-application') {
+      e.preventDefault();
+      openRejectModal(trigger.dataset.userId, trigger.dataset.userName);
+    }
+  });
 
   // ── Overlay Backdrop click close trigger ──────────────────────────────
   ['suspend-modal', 'suspend-shop-modal', 'reject-modal'].forEach(function(id) {
