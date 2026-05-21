@@ -456,7 +456,7 @@ a{
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
                       @if($user->status === 'active')
-                        <button data-user-id="{{ $user->id }}" data-user-name="{{ e($user->name) }}" onclick="openSuspendModal(this.dataset.userId, this.dataset.userName)"
+                        <button type="button" data-user-id="{{ $user->id }}" data-user-name="{{ e($user->name) }}" onclick="openSuspendModal(this.dataset.userId, this.dataset.userName); return false;"
                                 class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                           Suspend
                         </button>
@@ -614,12 +614,12 @@ a{
                     <td class="px-6 py-4 text-right whitespace-nowrap">
                       @if($seller->seller_status !== 'suspended')
                         <div class="inline-flex gap-2">
-                                <button data-user-id="{{ $seller->id }}" data-shop-name="{{ e($seller->shop_name ?? $seller->name) }}" onclick="openSuspendShopModal(this.dataset.userId, this.dataset.shopName)"
+                                <button type="button" data-user-id="{{ $seller->id }}" data-shop-name="{{ e($seller->shop_name ?? $seller->name) }}" onclick="openSuspendShopModal(this.dataset.userId, this.dataset.shopName); return false;"
                                   class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                             Suspend Toko
                           </button>
 
-                                <button data-user-id="{{ $seller->id }}" data-user-name="{{ e($seller->name) }}" onclick="openSuspendModal(this.dataset.userId, this.dataset.userName)"
+                                <button type="button" data-user-id="{{ $seller->id }}" data-user-name="{{ e($seller->name) }}" onclick="openSuspendModal(this.dataset.userId, this.dataset.userName); return false;"
                                   class="rounded-xl bg-amber-500/10 border border-amber-500/20 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-400 hover:text-white transition-all">
                             Suspend Akun
                           </button>
