@@ -43,10 +43,9 @@ class SellerStoreController extends Controller
             'bio' => ['nullable', 'string', 'max:1000'],
         ], $messages);
 
-        // Save store name to both user->name (legacy) and users.shop_name when available
-        $updates = [
-            'name' => $data['store_name'],
-        ];
+        // Save store name only to users.shop_name when available.
+        // Do NOT overwrite the account `name` field to avoid changing user's personal name.
+        $updates = [];
 
         if (Schema::hasColumn('users', 'shop_name')) {
             $updates['shop_name'] = $data['store_name'];

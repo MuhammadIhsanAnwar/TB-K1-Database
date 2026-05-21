@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\NotificationBroadcast;
 
 class MarketplaceNotification extends Model
 {
@@ -15,6 +16,7 @@ class MarketplaceNotification extends Model
 
     protected $fillable = [
         'user_id',
+        'broadcast_id',
         'title',
         'body',
         'link',
@@ -40,9 +42,15 @@ class MarketplaceNotification extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function broadcast()
+    {
+        return $this->belongsTo(NotificationBroadcast::class, 'broadcast_id');
+    }
+
     public function getCategoryAttribute(): string
     {
-        $metadataCategory = data_get($this->metadata, 'category');
+        $metadataCategory = data_get($this->metadata, 'category')
+            ?? data_get($this->broadcast?->metadata, 'category');
 
         if (in_array($metadataCategory, [
             self::CATEGORY_TRANSACTION,
@@ -52,15 +60,35 @@ class MarketplaceNotification extends Model
             return $metadataCategory;
         }
 
-        if ($this->type === 'admin-event_reward') {
+        if ($this->type === 'admin-event_reward' || $this->broadcast?->type === 'admin-event_reward') {
             return self::CATEGORY_EVENT_REWARD;
         }
 
-        if ($this->isTransactionType()) {
+        if ($this->isTransactionType() || ($this->broadcast?->isTransactionType() ?? false)) {
             return self::CATEGORY_TRANSACTION;
         }
 
         return self::CATEGORY_GENERAL;
+    }
+
+    public function getTitleAttribute(?string $value): ?string
+    {
+        return $value ?? $this->broadcast?->title;
+    }
+
+    public function getBodyAttribute(?string $value): ?string
+    {
+        return $value ?? $this->broadcast?->body;
+    }
+
+    public function getLinkAttribute(?string $value): ?string
+    {
+        return $value ?? $this->broadcast?->link;
+    }
+
+    public function getTypeAttribute(?string $value): ?string
+    {
+        return $value ?? $this->broadcast?->type;
     }
 
     public function getCategoryLabelAttribute(): string

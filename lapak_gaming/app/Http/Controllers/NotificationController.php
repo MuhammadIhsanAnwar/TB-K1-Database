@@ -128,7 +128,9 @@ class NotificationController extends Controller
         if ($filter === MarketplaceNotification::CATEGORY_EVENT_REWARD) {
             return $query->where(function ($q): void {
                 $q->where('type', 'admin-event_reward')
-                    ->orWhere('metadata->category', MarketplaceNotification::CATEGORY_EVENT_REWARD);
+                    ->orWhere('metadata->category', MarketplaceNotification::CATEGORY_EVENT_REWARD)
+                    ->orWhereHas('broadcast', fn ($q2) => $q2->where('type', 'admin-event_reward')
+                        ->orWhere('metadata->category', MarketplaceNotification::CATEGORY_EVENT_REWARD));
             });
         }
 
@@ -139,7 +141,13 @@ class NotificationController extends Controller
                     ->orWhere('type', 'like', 'payment-%')
                     ->orWhere('type', 'like', 'wallet-%')
                     ->orWhereIn('type', ['deposit', 'withdraw', 'escrow_hold'])
-                    ->orWhere('metadata->category', MarketplaceNotification::CATEGORY_TRANSACTION);
+                    ->orWhere('metadata->category', MarketplaceNotification::CATEGORY_TRANSACTION)
+                    ->orWhereHas('broadcast', fn ($q2) => $q2->where('type', 'transaction')
+                        ->orWhere('type', 'like', 'order-%')
+                        ->orWhere('type', 'like', 'payment-%')
+                        ->orWhere('type', 'like', 'wallet-%')
+                        ->orWhereIn('type', ['deposit', 'withdraw', 'escrow_hold'])
+                        ->orWhere('metadata->category', MarketplaceNotification::CATEGORY_TRANSACTION));
             });
         }
 
@@ -148,7 +156,12 @@ class NotificationController extends Controller
                 ->where('type', 'not like', 'order-%')
                 ->where('type', 'not like', 'payment-%')
                 ->where('type', 'not like', 'wallet-%')
-                ->whereNotIn('type', ['transaction', 'deposit', 'withdraw', 'escrow_hold']);
+                ->whereNotIn('type', ['transaction', 'deposit', 'withdraw', 'escrow_hold'])
+                ->orWhereHas('broadcast', fn ($q2) => $q2->where('type', '!=', 'admin-event_reward')
+                    ->where('type', 'not like', 'order-%')
+                    ->where('type', 'not like', 'payment-%')
+                    ->where('type', 'not like', 'wallet-%')
+                    ->whereNotIn('type', ['transaction', 'deposit', 'withdraw', 'escrow_hold']));
         });
     }
 }
