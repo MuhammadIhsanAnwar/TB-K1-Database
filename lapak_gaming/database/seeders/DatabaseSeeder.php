@@ -33,8 +33,15 @@ class DatabaseSeeder extends Seeder {
                 'password' => Hash::make('password123'),
                 'role' => 'admin',
                 'status' => 'active',
+                'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode('Admin Lapak Gaming') . '&background=111827&color=ffffff&bold=true&rounded=true',
             ]
         );
+
+        if (! $admin->avatar) {
+            $admin->forceFill([
+                'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($admin->name) . '&background=111827&color=ffffff&bold=true&rounded=true',
+            ])->save();
+        }
 
         // Demo Seller (only create if not exists)
         $seller = User::firstOrCreate(
@@ -43,8 +50,21 @@ class DatabaseSeeder extends Seeder {
                 'name' => 'Seller Demo',
                 'password' => Hash::make('password123'),
                 'role' => 'seller',
+                'seller_status' => 'approved',
+                'shop_name' => 'Seller Demo Store',
+                'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode('Seller Demo Store') . '&background=111827&color=ffffff&bold=true&rounded=true',
+                'shop_photo' => 'https://ui-avatars.com/api/?name=' . urlencode('Seller Demo Store') . '&background=111827&color=ffffff&bold=true&rounded=true',
             ]
         );
+
+        if (! $seller->avatar) {
+            $seller->forceFill([
+                'seller_status' => 'approved',
+                'shop_name' => $seller->shop_name ?: 'Seller Demo Store',
+                'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($seller->shop_name ?: $seller->name) . '&background=111827&color=ffffff&bold=true&rounded=true',
+                'shop_photo' => 'https://ui-avatars.com/api/?name=' . urlencode($seller->shop_name ?: $seller->name) . '&background=111827&color=ffffff&bold=true&rounded=true',
+            ])->save();
+        }
 
         // Create wallet for seller if not exists
         $sellerWallet = $seller->wallet ?? Wallet::create(['user_id' => $seller->id]);
@@ -63,8 +83,15 @@ class DatabaseSeeder extends Seeder {
                 'name' => 'User Demo',
                 'password' => Hash::make('password123'),
                 'role' => 'buyer',
+                'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode('User Demo') . '&background=1f2937&color=ffffff&bold=true&rounded=true',
             ]
         );
+
+        if (! $buyer->avatar) {
+            $buyer->forceFill([
+                'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($buyer->name) . '&background=1f2937&color=ffffff&bold=true&rounded=true',
+            ])->save();
+        }
 
         // Create wallet for buyer if not exists
         $buyerWallet = $buyer->wallet ?? Wallet::create(['user_id' => $buyer->id]);

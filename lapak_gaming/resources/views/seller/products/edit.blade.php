@@ -305,7 +305,7 @@ document.querySelectorAll('.remove-image-btn').forEach(btn => {
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
 <!-- Cropping Modal -->
-<div id="cropperModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+<div id="cropperModal" class="fixed inset-0 z-50 items-center justify-center p-4 bg-black/85 backdrop-blur-md" style="display:none;">
     <div class="bg-[#0b1320] border border-white/10 rounded-2xl max-w-2xl w-full flex flex-col max-h-[90vh]">
         <div class="flex items-center justify-between border-b border-white/5 px-5 py-4">
             <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
@@ -455,8 +455,7 @@ window.openCropper = function(idx) {
     const reader = new FileReader();
     reader.onload = function(e) {
         cropperImage.src = e.target.result;
-            cropperModal.classList.remove('hidden');
-            cropperModal.classList.add('flex');
+            cropperModal.style.display = 'flex';
         
         if (cropper) {
             cropper.destroy();
@@ -480,8 +479,7 @@ window.openCropper = function(idx) {
 };
 
 function closeCropper() {
-    cropperModal.classList.add('hidden');
-    cropperModal.classList.remove('flex');
+    cropperModal.style.display = 'none';
     if (cropper) {
         cropper.destroy();
         cropper = null;
