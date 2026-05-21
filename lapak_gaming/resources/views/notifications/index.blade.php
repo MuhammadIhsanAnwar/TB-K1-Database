@@ -27,7 +27,6 @@
                 <span class="text-gray-700">|</span>
                 <form action="{{ route('notifications.destroy-all') }}" method="POST" class="inline" onsubmit="return confirm('Apakah Anda yakin ingin menghapus semua notifikasi?')">
                     @csrf
-                    @method('DELETE')
                     <button type="submit" class="text-sm font-semibold text-red-400 hover:text-red-300 transition-colors">
                         Hapus Semua
                     </button>
