@@ -25,12 +25,23 @@ class ProductSalesAndCommentsSeeder extends Seeder
         foreach ($products as $product) {
             if ($buyers->isEmpty()) break;
 
+            $remainingStock = (int) $product->stock;
+
+            if ($remainingStock <= 0) {
+                continue;
+            }
+
             // Create random sales (orders) for this product
             $soldCount = random_int(10, 120);
+            $ordersToCreate = min($soldCount, $remainingStock);
 
-            for ($i = 0; $i < $soldCount; $i++) {
+            for ($i = 0; $i < $ordersToCreate; $i++) {
+                if ($remainingStock <= 0) {
+                    break;
+                }
+
                 $buyer = $buyers->random();
-                $quantity = random_int(1, 5);
+                $quantity = min(random_int(1, 5), $remainingStock);
 
                 // Create order
                 $subtotal = $product->price * $quantity;
@@ -60,6 +71,8 @@ class ProductSalesAndCommentsSeeder extends Seeder
                     'quantity' => $quantity,
                     'status' => 'confirmed',
                 ]);
+
+                $remainingStock -= $quantity;
 
                 // Create order financial
                 OrderFinancial::create([

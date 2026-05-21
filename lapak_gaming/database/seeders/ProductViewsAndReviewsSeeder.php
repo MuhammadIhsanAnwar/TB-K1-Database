@@ -31,6 +31,13 @@ class ProductViewsAndReviewsSeeder extends Seeder
         $progressBar->start();
 
         foreach ($products as $product) {
+            $remainingStock = (int) $product->stock;
+
+            if ($remainingStock <= 0) {
+                $progressBar->advance();
+                continue;
+            }
+
             // Generate realistic view counts (50-5000 views per product)
             $viewsCount = random_int(50, 5000);
 
@@ -46,7 +53,7 @@ class ProductViewsAndReviewsSeeder extends Seeder
             $statistic = ProductStatistic::updateOrCreate(
                 ['product_id' => $product->id],
                 [
-                    'sold_count' => $soldCount,
+                    'sold_count' => min($soldCount, $remainingStock),
                     'views_count' => $viewsCount,
                     'downloads_count' => random_int(10, $soldCount * 2),
                 ]
@@ -55,9 +62,15 @@ class ProductViewsAndReviewsSeeder extends Seeder
             // Create orders and reviews for sold items
             $ratings = [];
             $reviewCount = 0;
+            $ordersToCreate = min($soldCount, $remainingStock);
 
-            for ($i = 0; $i < $soldCount; $i++) {
+            for ($i = 0; $i < $ordersToCreate; $i++) {
+                if ($remainingStock <= 0) {
+                    break;
+                }
+
                 $buyer = $buyers->random();
+                $quantity = 1;
 
                 // Create order using actual database schema (no subtotal/fee/escrow/grand_total)
                 $subtotal = $product->price;
@@ -80,9 +93,11 @@ class ProductViewsAndReviewsSeeder extends Seeder
                     'seller_id' => $product->seller_id,
                     'name_snapshot' => $product->name,
                     'price_snapshot' => $product->price,
-                    'quantity' => 1,
+                    'quantity' => $quantity,
                     'status' => 'confirmed',
                 ]);
+
+                $remainingStock -= $quantity;
 
                 // Create order financial record
                 OrderFinancial::create([
