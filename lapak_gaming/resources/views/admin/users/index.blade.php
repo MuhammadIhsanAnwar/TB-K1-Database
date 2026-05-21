@@ -618,21 +618,30 @@ a{
                             class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                             Suspend Toko
                           </button>
+                        @else
+                          <form method="POST" action="{{ route('admin.verification.reinstate', $seller) }}" class="inline-block">
+                            @csrf
+                            <button type="submit" onclick="return confirm('Pulihkan status toko {{ addslashes($seller->shop_name ?? $seller->name) }}?')"
+                              class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-xs font-bold text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 transition-all">
+                              Aktifkan Kembali Toko
+                            </button>
+                          </form>
                         @endif
 
-                        <button type="button" data-modal-action="suspend-user" data-user-id="{{ $seller->id }}" data-user-name="{{ e($seller->name) }}"
-                          class="rounded-xl bg-amber-500/10 border border-amber-500/20 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-400 hover:text-white transition-all">
-                          Suspend Akun
-                        </button>
-
-                        @if($seller->seller_status === 'suspended')
-                        <form method="POST" action="{{ route('admin.users.status', $seller) }}" class="inline-block">
-                          @csrf @method('PUT')
-                          <input type="hidden" name="status" value="active" />
-                          <button type="submit" class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-xs font-bold text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 transition-all">
-                            Aktifkan Kembali
+                        @if($seller->status !== 'suspended')
+                          <button type="button" data-modal-action="suspend-user" data-user-id="{{ $seller->id }}" data-user-name="{{ e($seller->name) }}"
+                            class="rounded-xl bg-amber-500/10 border border-amber-500/20 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-400 hover:text-white transition-all">
+                            Suspend Akun
                           </button>
-                        </form>
+                        @else
+                          <form method="POST" action="{{ route('admin.users.status', $seller) }}" class="inline-block">
+                            @csrf @method('PUT')
+                            <input type="hidden" name="status" value="active" />
+                            <button type="submit" onclick="return confirm('Pulihkan status akun {{ addslashes($seller->name) }}?')"
+                              class="rounded-xl bg-emerald-500/10 border border-emerald-500/20 px-4 py-2 text-xs font-bold text-emerald-400 hover:bg-emerald-500 hover:text-slate-950 transition-all">
+                              Aktifkan Kembali Akun
+                            </button>
+                          </form>
                         @endif
                       </div>
                     </td>
