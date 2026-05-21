@@ -10,6 +10,7 @@ use App\Models\Review;
 use App\Models\User;
 use App\Models\ProductStatistic;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class ProductViewsAndReviewsSeeder extends Seeder
 {
@@ -99,15 +100,20 @@ class ProductViewsAndReviewsSeeder extends Seeder
                     $reviewCount++;
 
                     // Create review
-                    Review::create([
+                    $reviewData = [
                         'product_id' => $product->id,
                         'order_id' => $order->id,
                         'user_id' => $buyer->id,
-                        'seller_id' => $product->seller_id,
                         'rating' => $rating,
                         'comment' => $this->generateReviewComment($rating),
                         'is_public' => true,
-                    ]);
+                    ];
+
+                    if (Schema::hasColumn('reviews', 'seller_id')) {
+                        $reviewData['seller_id'] = $product->seller_id;
+                    }
+
+                    Review::create($reviewData);
                 }
             }
 

@@ -11,6 +11,7 @@ use App\Models\OrderItem;
 use App\Models\OrderFinancial;
 use App\Models\User;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\Schema;
 
 class ProductSalesAndCommentsSeeder extends Seeder
 {
@@ -85,12 +86,20 @@ class ProductSalesAndCommentsSeeder extends Seeder
 
                     // ~40% chance seller replies
                     if (random_int(1, 100) <= 40) {
-                        $sellerReply = ProductComment::create([
+                        $sellerReplyData = [
                             'product_id' => $product->id,
                             'user_id' => $product->seller_id,
                             'parent_comment_id' => $comment->id,
                             'content' => $this->getRandomSellerReply($rating),
                             'status' => 'approved',
+                        ];
+
+                        if (Schema::hasColumn('product_comments', 'seller_id')) {
+                            $sellerReplyData['seller_id'] = $product->seller_id;
+                        }
+
+                        $sellerReply = ProductComment::create([
+                            ...$sellerReplyData,
                         ]);
 
                         $comment->increment('replies_count');
