@@ -612,19 +612,20 @@ a{
                       @endif
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
-                      @if($seller->seller_status !== 'suspended')
-                        <div class="inline-flex gap-2">
-                                <button type="button" data-modal-action="suspend-shop" data-user-id="{{ $seller->id }}" data-shop-name="{{ e($seller->shop_name ?? $seller->name) }}"
-                                  class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
+                      <div class="inline-flex gap-2">
+                        @if($seller->seller_status !== 'suspended')
+                          <button type="button" data-modal-action="suspend-shop" data-user-id="{{ $seller->id }}" data-shop-name="{{ e($seller->shop_name ?? $seller->name) }}"
+                            class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                             Suspend Toko
                           </button>
+                        @endif
 
-                                <button type="button" data-modal-action="suspend-user" data-user-id="{{ $seller->id }}" data-user-name="{{ e($seller->name) }}"
-                                  class="rounded-xl bg-amber-500/10 border border-amber-500/20 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-400 hover:text-white transition-all">
-                            Suspend Akun
-                          </button>
-                        </div>
-                      @else
+                        <button type="button" data-modal-action="suspend-user" data-user-id="{{ $seller->id }}" data-user-name="{{ e($seller->name) }}"
+                          class="rounded-xl bg-amber-500/10 border border-amber-500/20 px-4 py-2 text-xs font-bold text-amber-400 hover:bg-amber-400 hover:text-white transition-all">
+                          Suspend Akun
+                        </button>
+
+                        @if($seller->seller_status === 'suspended')
                         <form method="POST" action="{{ route('admin.users.status', $seller) }}" class="inline-block">
                           @csrf @method('PUT')
                           <input type="hidden" name="status" value="active" />
@@ -632,7 +633,8 @@ a{
                             Aktifkan Kembali
                           </button>
                         </form>
-                      @endif
+                        @endif
+                      </div>
                     </td>
                   </tr>
                 @endforeach
