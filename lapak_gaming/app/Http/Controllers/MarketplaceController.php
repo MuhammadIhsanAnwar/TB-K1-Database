@@ -23,11 +23,11 @@ class MarketplaceController extends Controller
         }
 
         $categories = Schema::hasTable('categories')
-            ? Category::query()->active()->whereNull('parent_id')->with('children')->orderBy('sort_order')->take(13)->get()
+            ? Category::query()->active()->whereNull('parent_id')->with(['children' => fn ($query) => $query->active()->ordered()])->orderBy('sort_order')->get()
             : collect();
 
         $allCategories = Schema::hasTable('categories')
-            ? Category::query()->active()->orderBy('sort_order')->get()
+            ? Category::query()->active()->whereNull('parent_id')->with(['children' => fn ($query) => $query->active()->ordered()])->orderBy('sort_order')->get()
             : collect();
 
         // Select highly rated products but randomize order each refresh to keep homepage dynamic
@@ -126,6 +126,17 @@ class MarketplaceController extends Controller
             'heroBanners' => $heroBanners,
             'featuredBanners' => $featuredBanners,
             'categoryProducts' => $categoryProducts,
+        ]);
+    }
+
+    public function categories(): View
+    {
+        $categories = Schema::hasTable('categories')
+            ? Category::query()->active()->whereNull('parent_id')->with(['children' => fn ($query) => $query->active()->ordered()])->orderBy('sort_order')->get()
+            : collect();
+
+        return view('marketplace.categories', [
+            'categories' => $categories,
         ]);
     }
 

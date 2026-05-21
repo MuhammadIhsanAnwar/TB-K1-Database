@@ -69,8 +69,8 @@ class AppServiceProvider extends ServiceProvider
                 View::share('categories', Category::query()
                     ->active()
                     ->whereNull('parent_id')
+                    ->with(['children' => fn ($query) => $query->active()->ordered()])
                     ->orderBy('sort_order')
-                    ->take(13)
                     ->get());
             } catch (\Exception $e) {
                 View::share('categories', collect());
