@@ -49,6 +49,7 @@ Route::get('/', [MarketplaceController::class, 'home'])->name('home');
 Route::get('/products/type/{type}', [ProductController::class, 'byType'])->name('products.by-type');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/browse/search', [ProductController::class, 'search'])->name('products.search');
+Route::get('/categories', [MarketplaceController::class, 'categories'])->name('categories.index');
 Route::get('/categories/{category:slug}', [ProductController::class, 'byCategory'])->name('categories.show');
 
 // Artisan Terminal (dev tool – restrict in production)
