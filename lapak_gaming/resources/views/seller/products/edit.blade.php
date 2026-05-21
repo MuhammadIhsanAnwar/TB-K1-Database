@@ -49,6 +49,13 @@
 
 @section('content')
 @php
+    /** @var \Illuminate\Support\Collection $categories */
+    /** @var \App\Models\Product|array|null $produk */
+    $routeProduct = $produk;
+    if (! is_object($produk)) {
+        $produk = (object) ($produk ?? []);
+    }
+    $product = $produk;
     $subcategoryMap = $categories->mapWithKeys(function ($category) {
         return [
             (string) $category->id => $category->children->map(function ($child) {
@@ -59,11 +66,10 @@
             })->values()->all(),
         ];
     })->all();
-    $currentType = old('type', $produk->type);
+    $currentType = old('type', $product->type);
 @endphp
 
 <script type="application/json" id="subcategory-map-data">{!! json_encode($subcategoryMap, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
-    </script>
 
 <div class="min-h-screen py-12 px-4 relative overflow-hidden dashboard-transparent">
     {{-- Ambient Light penambah kontras --}}
@@ -104,11 +110,11 @@
             <div class="grid gap-5 lg:grid-cols-2">
                 <div class="block">
                     <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Nama Produk</span>
-                    <input name="name" type="text" value="{{ old('name', $produk->name) }}" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required />
+                    <input name="name" type="text" value="{{ old('name', $product->name) }}" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required />
                 </div>
                 <div class="block">
                     <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Harga (Rp)</span>
-                    <input name="price" type="number" value="{{ old('price', $produk->price) }}" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required />
+                    <input name="price" type="number" value="{{ old('price', $product->price) }}" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required />
                 </div>
             </div>
 
@@ -119,7 +125,7 @@
                     <select name="category_id" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required>
                         <option value="">Pilih kategori</option>
                         @foreach($categories as $category)
-                            <option value="{{ $category->id }}" @selected(old('category_id', $produk->category_id) == $category->id)>{{ $category->name }}</option>
+                            <option value="{{ $category->id }}" @selected(old('category_id', $product->category_id) == $category->id)>{{ $category->name }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -135,13 +141,13 @@
             <div class="grid gap-5 lg:grid-cols-2">
                 <div class="block">
                     <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Jumlah Stok</span>
-                    <input name="stock" type="number" value="{{ old('stock', $produk->stock) }}" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required />
+                    <input name="stock" type="number" value="{{ old('stock', $product->stock) }}" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required />
                 </div>
                 <div class="block">
                     <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Status Visibilitas Lapak</span>
                     <select name="status" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required>
                         @foreach(['published' => '⚡ Published (Tampilkan)', 'draft' => '💤 Draft (Sembunyikan)', 'archived' => '📁 Archived (Arsip)'] as $value => $label)
-                            <option value="{{ $value }}" @selected(old('status', $produk->status) === $value)>{{ $label }}</option>
+                            <option value="{{ $value }}" @selected(old('status', $product->status) === $value)>{{ $label }}</option>
                         @endforeach
                     </select>
                 </div>
@@ -152,13 +158,18 @@
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-3">Manajemen Galeri Foto</span>
                 
                 {{-- Existing Images Section --}}
-                @if($produk->image_paths)
+                @if($product->image_paths)
                     <div class="mb-5">
                         <h3 class="text-xs font-semibold text-slate-400 mb-2.5">Foto Saat Ini (Hover & klik tong sampah untuk hapus)</h3>
                         <div class="grid gap-3 grid-cols-2 sm:grid-cols-3 md:grid-cols-4">
-                            @foreach($produk->image_paths as $index => $imagePath)
+                            @foreach($product->image_paths as $index => $imagePath)
+                                @php
+                                    $imageUrl = str_starts_with($imagePath, 'http')
+                                        ? $imagePath
+                                        : asset('storage/' . ltrim($imagePath, '/'));
+                                @endphp
                                 <div class="relative rounded-xl overflow-hidden group border border-white/5 bg-black/40 backdrop-blur-sm p-1" data-image-index="{{ $index }}">
-                                    <img src="{{ Storage::disk('public_app_public')->url($imagePath) }}" 
+                                    <img src="{{ $imageUrl }}" 
                                          class="w-full h-24 object-cover rounded-lg" 
                                          alt="Produk {{ $index + 1 }}" />
                                     <button type="button" 
@@ -198,7 +209,7 @@
             {{-- Row 5: Deskripsi --}}
             <div class="block border-t border-white/5 pt-4">
                 <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Deskripsi / Cara Reedem / Informasi Akun</span>
-                <textarea name="description" rows="5" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none resize-none">{{ old('description', $produk->description) }}</textarea>
+                <textarea name="description" rows="5" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none resize-none">{{ old('description', $product->description) }}</textarea>
             </div>
 
             {{-- Form Actions Footer --}}

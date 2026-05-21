@@ -122,9 +122,10 @@ use Illuminate\Support\Str;
                                         <label class="text-[10px] uppercase tracking-wider font-bold text-slate-500 block mb-1">Catatan untuk Penjual</label>
                                         <input type="text" 
                                                id="note-input-{{ $item->id }}" 
+                                               data-item-id="{{ $item->id }}"
                                                placeholder="Tulis catatan (misal: kirim instan ya, username/ID game dll)..." 
                                                value="{{ $item->notes }}" 
-                                               onchange="updateItemNote({{ $item->id }})" 
+                                               onchange="updateItemNoteFromElement(this)" 
                                                class="w-full text-xs rounded-xl bg-slate-950 border border-slate-800 text-slate-300 px-3.5 py-2.5 outline-none focus:border-amber-500/50 transition-colors">
                                     </div>
                                 </div>
@@ -139,19 +140,24 @@ use Illuminate\Support\Str;
                                     {{-- Quantity Selector --}}
                                     <div class="flex items-center gap-2 mt-2">
                                         <button type="button" 
-                                                onclick="decrementQty({{ $item->id }})" 
+                                                data-item-id="{{ $item->id }}"
+                                                onclick="decrementQtyFromElement(this)" 
                                                 class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white flex items-center justify-center font-black text-lg select-none active:scale-95 transition-all">-</button>
                                         
                                         <input type="number" 
                                                id="qty-input-{{ $item->id }}" 
+                                               data-item-id="{{ $item->id }}"
+                                               data-max-stock="{{ $item->product->stock }}"
                                                value="{{ $item->quantity }}" 
                                                min="1" 
                                                max="{{ $item->product->stock }}"
-                                               onchange="onQtyInputChange({{ $item->id }}, {{ $item->product->stock }})"
+                                               onchange="onQtyInputChangeFromElement(this)"
                                                class="w-12 h-8 text-center rounded-lg bg-slate-950 border border-slate-800 text-white font-black text-sm [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none focus:border-amber-500/50 focus:outline-none">
                                         
                                         <button type="button" 
-                                                onclick="incrementQty({{ $item->id }}, {{ $item->product->stock }})" 
+                                                data-item-id="{{ $item->id }}"
+                                                data-max-stock="{{ $item->product->stock }}"
+                                                onclick="incrementQtyFromElement(this)" 
                                                 class="w-8 h-8 rounded-lg bg-slate-800 text-slate-400 hover:bg-slate-700 hover:text-white flex items-center justify-center font-black text-lg select-none active:scale-95 transition-all">+</button>
                                     </div>
 
@@ -287,8 +293,9 @@ use Illuminate\Support\Str;
             });
         }
 
-        function updateItemNote(id) {
-            const note = document.getElementById(`note-input-${id}`).value;
+        function updateItemNoteFromElement(el) {
+            const id = el.dataset.itemId;
+            const note = el.value;
             console.log("Updating note for item:", id, "Note:", note);
             fetch(`/cart/${id}/update-note`, {
                 method: 'POST',
@@ -308,10 +315,9 @@ use Illuminate\Support\Str;
             .then(data => {
                 console.log("Update Note response data:", data);
                 if (data.success) {
-                    const input = document.getElementById(`note-input-${id}`);
-                    input.classList.add('border-emerald-500');
+                    el.classList.add('border-emerald-500');
                     setTimeout(() => {
-                        input.classList.remove('border-emerald-500');
+                        el.classList.remove('border-emerald-500');
                     }, 1000);
                 }
             })
@@ -373,6 +379,23 @@ use Illuminate\Support\Str;
                 val = stock;
             }
             updateQty(id, val);
+        }
+
+        function incrementQtyFromElement(el) {
+            const id = el.dataset.itemId;
+            const stock = Number(el.dataset.maxStock);
+            incrementQty(id, stock);
+        }
+
+        function decrementQtyFromElement(el) {
+            const id = el.dataset.itemId;
+            decrementQty(id);
+        }
+
+        function onQtyInputChangeFromElement(el) {
+            const id = el.dataset.itemId;
+            const stock = Number(el.dataset.maxStock);
+            onQtyInputChange(id, stock);
         }
     </script>
 @endsection

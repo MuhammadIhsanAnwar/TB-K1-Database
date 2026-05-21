@@ -34,16 +34,15 @@ class SellersTableSeeder extends Seeder
             ->where(function ($query): void {
                 $query->whereNull('avatar')->orWhere('avatar', '');
             })
-            ->chunkById(200, function ($users): void {
-                foreach ($users as $user) {
-                    $shopName = $this->generateShopName($user->shop_name ?: $user->name);
+            ->get()
+            ->each(function (User $user): void {
+                $shopName = $this->generateShopName($user->shop_name ?: $user->name);
 
-                    $user->forceFill([
-                        'shop_name' => $user->shop_name ?: $shopName,
-                        'avatar' => $this->avatarUrl($shopName),
-                        'shop_photo' => $this->avatarUrl($shopName),
-                    ])->save();
-                }
+                $user->forceFill([
+                    'shop_name' => $user->shop_name ?: $shopName,
+                    'avatar' => $this->avatarUrl($shopName),
+                    'shop_photo' => $this->avatarUrl($shopName),
+                ])->save();
             });
     }
 

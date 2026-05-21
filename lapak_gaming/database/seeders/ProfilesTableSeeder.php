@@ -44,12 +44,11 @@ class ProfilesTableSeeder extends Seeder
         User::where(function ($query): void {
                 $query->whereNull('avatar')->orWhere('avatar', '');
             })
-            ->chunkById(200, function ($users): void {
-                foreach ($users as $user) {
-                    $user->forceFill([
-                        'avatar' => $this->avatarUrl($user->name ?: $user->email),
-                    ])->save();
-                }
+            ->get()
+            ->each(function (User $user): void {
+                $user->forceFill([
+                    'avatar' => $this->avatarUrl($user->name ?: $user->email),
+                ])->save();
             });
 
         $this->command->info('Profiles seeding completed!');

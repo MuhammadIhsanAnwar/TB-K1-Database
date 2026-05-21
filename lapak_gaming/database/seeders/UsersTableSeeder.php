@@ -3,7 +3,6 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\User;
-use Illuminate\Support\Str;
 
 class UsersTableSeeder extends Seeder
 {
@@ -16,6 +15,7 @@ class UsersTableSeeder extends Seeder
         if ($buyersNeeded > 0) {
             $buyers = User::factory()->count($buyersNeeded)->create();
 
+            /** @var \App\Models\User $user */
             foreach ($buyers as $user) {
                 $user->forceFill([
                     'avatar' => $this->avatarUrl($user->name),
@@ -31,6 +31,7 @@ class UsersTableSeeder extends Seeder
                 $query->whereNull('avatar')->orWhere('avatar', '');
             })
             ->chunkById(200, function ($users): void {
+                /** @var \App\Models\User $user */
                 foreach ($users as $user) {
                     $user->forceFill([
                         'avatar' => $this->avatarUrl($user->name),
