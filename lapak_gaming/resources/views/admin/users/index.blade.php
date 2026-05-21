@@ -710,43 +710,6 @@ a{
                 </div>
               </div>
 
-                {{-- ─────────────────────────────────────────────────────────────────────── --}}
-                {{-- MODAL INTERAKTIF HUD: SUSPEND TOKO (KHUSUS ADMIN VERIFICATION)          --}}
-                {{-- ─────────────────────────────────────────────────────────────────────── --}}
-                <div class="modal-overlay animate-fade-in" id="suspend-shop-modal" role="dialog" aria-modal="true" aria-labelledby="suspend-shop-modal-title">
-                  <div class="w-full max-w-md rounded-3xl p-6 sm:p-7 modal-box-glass border-rose-500/30">
-                    <div class="flex items-center gap-2 border-b border-white/5 pb-3 mb-4">
-                      <span class="text-xl">🏪</span>
-                      <h3 id="suspend-shop-modal-title" class="text-lg font-bold text-white tracking-tight">Suspend Toko Mitra</h3>
-                    </div>
-
-                    <p class="text-xs text-slate-400 leading-relaxed mb-4">
-                      Menonaktifkan aktivitas toko dan menolak akses seller dashboard untuk <strong id="suspend-shop-name" class="text-white font-bold"></strong>. Tuliskan catatan yang jelas untuk tim dan pengguna.
-                    </p>
-
-                    <form id="suspend-shop-form" method="POST" action="">
-                      @csrf
-                      <div class="mb-5">
-                        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
-                          Catatan Suspend Toko <span class="text-slate-500 font-normal lowercase">(muncul pada panel admin dan notifikasi)</span>
-                        </label>
-                        <textarea name="notes" rows="4" maxlength="1000" required
-                          class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none resize-none"
-                          placeholder="Contoh: Pelanggaran kebijakan: jual item ilegal, penyalahgunaan sistem top-up."></textarea>
-                      </div>
-
-                      <div class="flex gap-2.5">
-                        <button type="submit" class="flex-1 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 px-5 py-3 text-xs font-bold text-white transition-all shadow-md shadow-rose-600/10">
-                          EKSEKUSI SUSPEND TOKO
-                        </button>
-                        <button type="button" onclick="closeSuspendShopModal()" class="flex-1 rounded-xl border border-white/5 bg-white/5 px-5 py-3 text-xs font-bold text-slate-300 hover:bg-white/10 transition-colors">
-                          BATALKAN
-                        </button>
-                      </div>
-                    </form>
-                  </div>
-                </div>
-
               {{-- Footer Action Bar --}}
               <div class="border-t border-white/5 px-6 py-4 flex flex-col sm:flex-row justify-end items-center gap-2.5">
                 <form method="POST" action="{{ route('admin.users.approve-seller', $applicant) }}" class="w-full sm:w-auto">
@@ -813,6 +776,43 @@ a{
           EKSEKUSI BANNED
         </button>
         <button type="button" onclick="closeSuspendModal()" class="flex-1 rounded-xl border border-white/5 bg-white/5 px-5 py-3 text-xs font-bold text-slate-300 hover:bg-white/10 transition-colors">
+          BATALKAN
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+{{-- ─────────────────────────────────────────────────────────────────────── --}}
+{{-- MODAL INTERAKTIF HUD: SUSPEND TOKO                                    --}}
+{{-- ─────────────────────────────────────────────────────────────────────── --}}
+<div class="modal-overlay animate-fade-in" id="suspend-shop-modal" role="dialog" aria-modal="true" aria-labelledby="suspend-shop-modal-title">
+  <div class="w-full max-w-md rounded-3xl p-6 sm:p-7 modal-box-glass border-rose-500/30">
+    <div class="flex items-center gap-2 border-b border-white/5 pb-3 mb-4">
+      <span class="text-xl">🏪</span>
+      <h3 id="suspend-shop-modal-title" class="text-lg font-bold text-white tracking-tight">Suspend Toko Mitra</h3>
+    </div>
+
+    <p class="text-xs text-slate-400 leading-relaxed mb-4">
+      Menonaktifkan aktivitas toko dan menolak akses seller dashboard untuk <strong id="suspend-shop-name" class="text-white font-bold"></strong>. Tuliskan catatan yang jelas untuk tim dan pengguna.
+    </p>
+
+    <form id="suspend-shop-form" method="POST" action="">
+      @csrf
+      <div class="mb-5">
+        <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
+          Catatan Suspend Toko <span class="text-slate-500 font-normal lowercase">(muncul pada panel admin dan notifikasi)</span>
+        </label>
+        <textarea name="notes" rows="4" maxlength="1000" required
+          class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none resize-none"
+          placeholder="Contoh: Pelanggaran kebijakan: jual item ilegal, penyalahgunaan sistem top-up."></textarea>
+      </div>
+
+      <div class="flex gap-2.5">
+        <button type="submit" class="flex-1 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 px-5 py-3 text-xs font-bold text-white transition-all shadow-md shadow-rose-600/10">
+          EKSEKUSI SUSPEND TOKO
+        </button>
+        <button type="button" onclick="closeSuspendShopModal()" class="flex-1 rounded-xl border border-white/5 bg-white/5 px-5 py-3 text-xs font-bold text-slate-300 hover:bg-white/10 transition-colors">
           BATALKAN
         </button>
       </div>
