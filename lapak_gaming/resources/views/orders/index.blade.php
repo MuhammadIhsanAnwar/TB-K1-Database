@@ -124,7 +124,7 @@
                                     </div>
 
                                     <div class="mt-1 text-sm font-semibold text-white">
-                                        {{ $order->seller?->name ?? '-' }}
+                                        {{ $order->seller_label }}
                                     </div>
                                 </div>
 

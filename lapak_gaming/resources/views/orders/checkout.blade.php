@@ -26,6 +26,7 @@
                     <img src="{{ $item->product->image_url }}" class="w-14 h-14 rounded-lg object-cover" alt="">
                     <div class="flex-1">
                         <p class="text-sm text-gray-200">{{ $item->product->name }}</p>
+                        <p class="text-xs text-gray-500">Penjual: {{ $item->product->seller?->name ?? 'Unknown' }}</p>
                         <p class="text-xs text-gray-500">× {{ $item->quantity }}</p>
                     </div>
                     <p class="text-sm text-white font-bold">Rp {{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}</p>

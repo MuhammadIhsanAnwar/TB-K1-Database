@@ -140,6 +140,59 @@ class MarketplaceController extends Controller
         ]);
     }
 
+    public function browse(Request $request): View
+    {
+        $products = Schema::hasTable('products')
+            ? Product::query()->active()->inStock()->with(['category', 'seller'])->paginate(20)
+            : collect();
+
+        return view('products.search', [
+            'products' => $products,
+            'query' => $request->string('q')->toString(),
+            'title' => 'Semua Produk — Lapak Geming',
+            'heading' => 'Semua Produk',
+            'description' => 'Jelajahi semua produk aktif di marketplace.',
+        ]);
+    }
+
+    public function deals(Request $request): View
+    {
+        $products = Schema::hasTable('products')
+            ? Product::query()
+                ->active()
+                ->inStock()
+                ->where(function ($query) {
+                    $query->where('is_featured', true)
+                          ->orWhereNotNull('sale_price');
+                })
+                ->with(['category', 'seller'])
+                ->paginate(20)
+            : collect();
+
+        return view('products.search', [
+            'products' => $products,
+            'query' => $request->string('q')->toString(),
+            'title' => 'Penawaran & Deals — Lapak Geming',
+            'heading' => 'Penawaran & Deals',
+            'description' => 'Temukan produk unggulan, promo, dan harga diskon terbaik.',
+        ]);
+    }
+
+    public function category(string $slug): View
+    {
+        $category = Schema::hasTable('categories')
+            ? Category::query()->where('slug', $slug)->firstOrFail()
+            : throw new \Illuminate\Database\Eloquent\ModelNotFoundException();
+
+        $childrenIds = $category->children()->pluck('id')->push($category->id)->all();
+
+        $products = Schema::hasTable('products')
+            ? Product::query()->active()->inStock()->whereIn('category_id', $childrenIds)->with(['category', 'seller'])->paginate(20)
+            : collect();
+
+        return view('products.category', compact('category', 'products'));
+    }
+
     public function search(Request $request): JsonResponse
     {
         if (!Schema::hasTable('products')) {

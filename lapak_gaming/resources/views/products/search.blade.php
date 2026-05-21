@@ -1,12 +1,15 @@
 @extends('layouts.app')
-@section('title', 'Cari Produk — Lapak Geming')
+@section('title', $title ?? 'Cari Produk — Lapak Geming')
 
 @section('content')
 <section class="max-w-7xl mx-auto px-4 py-12">
+    @php
+        $resultTotal = method_exists($products, 'total') ? $products->total() : $products->count();
+    @endphp
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
         <div>
-            <h1 class="text-3xl font-bold text-white">Hasil Pencarian</h1>
-            <p class="text-sm text-gray-400 mt-2">Menemukan {{ $products->total() }} produk untuk "{{ $query }}".</p>
+            <h1 class="text-3xl font-bold text-white">{{ $heading ?? 'Hasil Pencarian' }}</h1>
+            <p class="text-sm text-gray-400 mt-2">{{ $description ?? "Menemukan {$resultTotal} produk untuk \"{$query}\"." }}</p>
         </div>
         <form action="{{ route('products.search') }}" method="GET" class="flex gap-2 w-full md:w-auto">
             <input type="text" name="q" value="{{ $query }}" placeholder="Cari produk..." class="w-full md:w-80 bg-gray-900 border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-blue-500">
@@ -28,7 +31,9 @@
     </div>
 
     <div class="mt-8">
-        {{ $products->withQueryString()->links() }}
+        @if(method_exists($products, 'links'))
+            {{ $products->withQueryString()->links() }}
+        @endif
     </div>
 </section>
 @endsection

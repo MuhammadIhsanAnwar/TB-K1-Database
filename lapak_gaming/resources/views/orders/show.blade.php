@@ -77,6 +77,19 @@
                 </div>
 
                 {{-- BUYER & SELLER --}}
+                @php
+                    $orderSellers = collect();
+
+                    if ($order->seller) {
+                        $orderSellers = collect([$order->seller]);
+                    } else {
+                        $orderSellers = $order->items->map(fn($item) => $item->product?->seller)
+                            ->filter()
+                            ->unique('id')
+                            ->values();
+                    }
+                @endphp
+
                 <div class="mt-8 grid gap-5 md:grid-cols-2">
 
                     <div class="reveal reveal-delay-1 rounded-[26px] border border-white/5 bg-white/[0.03] p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
@@ -105,11 +118,17 @@
 
                         <div class="mt-4 space-y-1">
                             <div class="text-sm font-semibold text-slate-300">
-                                {{ $order->seller->name ?? '-' }}
+                                {{ $order->seller_label }}
                             </div>
 
                             <div class="text-sm text-slate-500">
-                                {{ $order->seller->email ?? '-' }}
+                                @if($orderSellers->count() === 1)
+                                    {{ $orderSellers->first()->email ?? '-' }}
+                                @elseif($orderSellers->count() > 1)
+                                    {{ $orderSellers->count() }} seller berbeda
+                                @else
+                                    -
+                                @endif
                             </div>
                         </div>
 
@@ -142,6 +161,10 @@
                                 <div>
                                     <div class="text-base font-bold text-white">
                                         {{ $itemName }}
+                                    </div>
+
+                                    <div class="mt-1 text-sm text-slate-400">
+                                        Seller: {{ $item->product?->seller->name ?? $item->seller?->name ?? 'Unknown' }}
                                     </div>
 
                                     <div class="mt-1 text-sm text-slate-400">
@@ -191,7 +214,12 @@
                 </div>
 
                 {{-- SELLER ACTIONS --}}
-                @if($order->seller_id === auth()->id())
+                @php
+                    $isOrderSeller = $order->seller_id === auth()->id()
+                        || $order->items->pluck('product.seller_id')->filter()->contains(auth()->id());
+                @endphp
+
+                @if($isOrderSeller)
                     <div class="reveal reveal-delay-3 mt-8 rounded-[26px] border border-white/5 bg-white/[0.03] p-6">
                         <h2 class="text-xl font-black text-white">
                             Aksi Seller

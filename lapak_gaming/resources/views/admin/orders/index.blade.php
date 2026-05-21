@@ -154,7 +154,7 @@
                                     <td class="px-6 py-4">
                                         <div class="flex items-center gap-2 max-w-[180px]">
                                             <span class="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0"></span>
-                                            <span class="font-bold text-slate-300 tracking-tight break-words">{{ $order->seller?->name ?? 'Deleted Store' }}</span>
+                                            <span class="font-bold text-slate-300 tracking-tight break-words">{{ $order->seller_label === '-' ? 'Deleted Store' : $order->seller_label }}</span>
                                         </div>
                                     </td>
                                     

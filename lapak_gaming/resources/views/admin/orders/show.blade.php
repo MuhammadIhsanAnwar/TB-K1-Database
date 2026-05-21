@@ -99,8 +99,16 @@
                 </div>
                 <div class="min-w-0">
                     <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500 mb-1">Pihak Penjual (Seller)</p>
-                    <h2 class="text-base font-bold text-slate-300 tracking-tight truncate">{{ $order->seller->name ?? 'Deleted Store' }}</h2>
-                    <p class="text-xs text-slate-400 truncate mt-0.5 font-medium">{{ $order->seller->email ?? '—' }}</p>
+                    <h2 class="text-base font-bold text-slate-300 tracking-tight truncate">{{ $order->seller_label === '-' ? 'Deleted Store' : $order->seller_label }}</h2>
+                    <p class="text-xs text-slate-400 truncate mt-0.5 font-medium">
+                        @if($order->seller && !$order->has_multiple_sellers)
+                            {{ $order->seller->email ?? '—' }}
+                        @elseif($order->has_multiple_sellers)
+                            Beberapa seller terlibat
+                        @else
+                            —
+                        @endif
+                    </p>
                 </div>
             </div>
         </div>

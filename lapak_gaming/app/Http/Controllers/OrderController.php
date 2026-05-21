@@ -29,7 +29,7 @@ class OrderController extends Controller {
             $status = 'all';
         }
 
-        $baseQuery = Order::where('buyer_id', Auth::id())->with('items.product');
+        $baseQuery = Order::where('buyer_id', Auth::id())->with('items.product.seller');
 
         $ordersQuery = (clone $baseQuery)->latest();
         if ($status !== 'all') {
@@ -185,12 +185,18 @@ class OrderController extends Controller {
             }
             $combinedNotes = implode("\n", $notesArray);
 
+            $sellerIds = $cartItems->pluck('product.seller_id')->filter()->unique()->values();
+
             $orderData = [
                 'buyer_id'       => Auth::id(),
                 'invoice_number' => 'INV-' . strtoupper(Str::random(10)),
                 'status'         => Order::STATUS_PENDING_PAYMENT,
                 'payment_method' => $request->payment_method,
             ];
+
+            if ($sellerIds->count() === 1) {
+                $orderData['seller_id'] = $sellerIds->first();
+            }
 
             if (\Illuminate\Support\Facades\Schema::hasColumn('orders', 'total_price')) {
                 $orderData['total_price'] = $grand_total;
@@ -212,18 +218,20 @@ class OrderController extends Controller {
             }   
 
             foreach ($cartItems as $item) {
-              OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item->product_id,
+                OrderItem::create([
+                    'order_id' => $order->id,
+                    'product_id' => $item->product_id,
+                    'seller_id' => $item->product->seller_id,
 
-                'name_snapshot' => $item->product->name,
-                'price_snapshot' => $item->product->price,
+                    'name_snapshot' => $item->product->name,
+                    'price_snapshot' => $item->product->price,
 
-                'product_name' => $item->product->name,
-                'price' => $item->product->price,
-                'quantity' => $item->quantity,
-                'subtotal' => $item->product->price * $item->quantity,
-            ]);
+                    'product_name' => $item->product->name,
+                    'price' => $item->product->price,
+                    'quantity' => $item->quantity,
+                    'subtotal' => $item->product->price * $item->quantity,
+                ]);
+
                 $item->product->decrement('stock', $item->quantity);
             }
 
