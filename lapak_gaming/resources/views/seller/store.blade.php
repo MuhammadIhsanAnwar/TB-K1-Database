@@ -24,7 +24,7 @@
 
                 <div>
                     <label class="block text-sm font-medium text-slate-300">Nama Toko</label>
-                    <input name="store_name" type="text" value="{{ old('store_name', $user->shop_name) }}" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none" required />
+                    <input name="shop_name" type="text" value="{{ old('shop_name', $user->shop_name) }}" class="mt-2 w-full rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white outline-none" required />
                     @error('store_name') <p class="mt-2 text-sm text-rose-400">{{ $message }}</p> @enderror
                 </div>
 

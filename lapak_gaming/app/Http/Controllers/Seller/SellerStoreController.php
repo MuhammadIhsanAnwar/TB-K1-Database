@@ -29,8 +29,8 @@ class SellerStoreController extends Controller
         $profile = $user->profile;
 
         $messages = [
-            'store_name.required' => 'Nama toko wajib diisi.',
-            'store_name.max' => 'Nama toko maksimal 255 karakter.',
+            'shop_name.required' => 'Nama toko wajib diisi.',
+            'shop_name.max' => 'Nama toko maksimal 255 karakter.',
             'store_photo.image' => 'Foto toko harus berupa gambar.',
             'store_photo.mimes' => 'Format foto harus JPG, JPEG, PNG, atau WebP.',
             'store_photo.max' => 'Ukuran foto maksimal 5MB.',
@@ -38,7 +38,7 @@ class SellerStoreController extends Controller
         ];
 
         $data = $request->validate([
-            'store_name' => ['required', 'string', 'max:255'],
+            'shop_name' => ['required', 'string', 'max:255'],
             'store_photo' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
             'bio' => ['nullable', 'string', 'max:1000'],
         ], $messages);
@@ -48,7 +48,7 @@ class SellerStoreController extends Controller
         $updates = [];
 
         if (Schema::hasColumn('users', 'shop_name')) {
-            $updates['shop_name'] = $data['store_name'];
+            $updates['shop_name'] = $data['shop_name'];
         }
 
         // Handle shop photo upload

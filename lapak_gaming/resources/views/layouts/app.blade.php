@@ -843,13 +843,16 @@
 
       if (!panel || !body) return;
 
-      const url = panel.dataset.notificationsUrl;
-      if (!url) return;
+      const notificationsUrl = panel.dataset.notificationsUrl;
+      if (!notificationsUrl) return;
+
+      const notificationReadBaseUrl = new URL(notificationsUrl, window.location.href).pathname.replace(/\/poll\/?$/, '');
 
       body.innerHTML = '<div class="px-4 py-3 text-sm text-slate-400 text-center">Memuat notifikasi...</div>';
 
       try {
-        const response = await fetch(url, {
+        const response = await fetch(notificationsUrl, {
+          credentials: 'same-origin',
           headers: {
             'X-Requested-With': 'XMLHttpRequest',
             'Accept': 'application/json',
@@ -891,7 +894,7 @@
                 </div>
                 <div class="ml-2 flex shrink-0 flex-col items-end gap-2">
                   ${link ? `<button type="button" data-notification-id="${item.id}" data-notification-link="${link}" class="text-xs font-semibold text-brand-300 hover:text-brand-200">Buka</button>` : ''}
-                  ${unread ? `<button type="button" data-notification-id="${item.id}" data-notification-link="${link}" class="text-xs font-semibold text-slate-300 hover:text-white">Tandai dibaca</button>` : ''}
+                  ${unread ? `<button type="button" data-notification-id="${item.id}" class="text-xs font-semibold text-slate-300 hover:text-white">Tandai dibaca</button>` : ''}
                 </div>
               </div>
             </div>
@@ -905,11 +908,12 @@
             if (!notificationId) return;
 
             const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            const readUrl = `${window.location.origin}/notifications/${notificationId}/read`;
+            const readUrl = `${notificationReadBaseUrl}/${notificationId}/read`;
 
             try {
               await fetch(readUrl, {
                 method: 'POST',
+                credentials: 'same-origin',
                 headers: {
                   'X-CSRF-TOKEN': csrf || '',
                   'X-Requested-With': 'XMLHttpRequest',
@@ -967,6 +971,7 @@
       try {
         const response = await fetch(url, {
           method: 'POST',
+          credentials: 'same-origin',
           headers: {
             'X-CSRF-TOKEN': csrf || '',
             'X-Requested-With': 'XMLHttpRequest',

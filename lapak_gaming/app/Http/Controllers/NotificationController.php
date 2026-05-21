@@ -37,6 +37,7 @@ class NotificationController extends Controller
     public function poll(Request $request): JsonResponse
     {
         $notifications = MarketplaceNotification::query()
+            ->with('broadcast')
             ->where('user_id', $request->user()->id)
             ->latest()
             ->take(10)
