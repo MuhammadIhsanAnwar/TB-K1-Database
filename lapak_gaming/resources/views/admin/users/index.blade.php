@@ -899,7 +899,7 @@ a{
   }
 
   document.addEventListener('click', function(e) {
-    const trigger = e.target.closest('[data-modal-action]');
+    const trigger = e.target instanceof Element ? e.target.closest('[data-modal-action]') : null;
     if (!trigger) {
       return;
     }
