@@ -316,13 +316,10 @@
           </li>
           @else
           <li>
-            <form method="POST" action="{{ route('seller.register') }}">
-              @csrf
-              <button type="submit" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-amber-300 hover:text-amber-200 hover:bg-amber-900/20 text-sm transition-all">
-                <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 1.343-3 3v1H8a2 2 0 00-2 2v4h12v-4a2 2 0 00-2-2h-1v-1c0-1.657-1.343-3-3-3zm0 0V6m0 0l-2 2m2-2l2 2"/></svg>
-                Daftar Jadi Seller
-              </button>
-            </form>
+            <a href="{{ route('seller.register.form') }}" class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-amber-300 hover:text-amber-200 hover:bg-amber-900/20 text-sm transition-all">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 1.343-3 3v1H8a2 2 0 00-2 2v4h12v-4a2 2 0 00-2-2h-1v-1c0-1.657-1.343-3-3-3zm0 0V6m0 0l-2 2m2-2l2 2"/></svg>
+              Daftar Jadi Seller
+            </a>
           </li>
           @endif
         @endif
