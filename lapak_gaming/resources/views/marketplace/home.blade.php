@@ -356,7 +356,7 @@ spline-viewer iframe {
 
           @foreach($heroStats as $stat)
           <div class="text-center lg:text-left">
-            <div class="font-display font-bold text-2xl text-white js-stat-counter" data-target="{{ $stat['num'] }}">0</div>
+            <div class="font-display font-bold text-2xl text-white js-stat-counter" data-target="{{ $stat['num'] }}">{{ number_format($stat['num'], 0, ',', '.') }}</div>
             <div class="text-xs text-slate-500 mt-0.5">{{ $stat['label'] }}</div>
           </div>
           @endforeach
