@@ -140,11 +140,7 @@ class User extends Authenticatable implements MustVerifyEmail
 
     public function isSellerAccount(): bool
     {
-        if ($this->role === 'seller') {
-            return true;
-        }
-
-        return in_array(($this->attributes['user_type'] ?? null), ['seller', 'mixed'], true);
+        return $this->role === 'seller' || ($this->attributes['seller_status'] ?? 'none') === 'approved';
     }
 
     /** Whether the user has a pending seller application awaiting admin review. */
