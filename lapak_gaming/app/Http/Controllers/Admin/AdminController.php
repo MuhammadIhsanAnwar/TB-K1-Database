@@ -14,6 +14,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\View\View;
 
 class AdminController extends Controller
@@ -266,10 +267,61 @@ class AdminController extends Controller
 
     // ─── 4. NOTIFICATIONS & ORDERS ───────────────────────────────────────────
 
-    public function notifications(): View
+    public function notifications(Request $request): View
     {
-        $notifications = MarketplaceNotification::query()->latest()->paginate(20);
-        return view('admin.notifications.index', compact('notifications'));
+        $broadcasts = MarketplaceNotification::query()
+            ->whereIn('type', ['admin-event_reward', 'admin-general'])
+            ->latest()
+            ->get()
+            ->groupBy(function (MarketplaceNotification $notification) {
+                $metadata = $notification->metadata ?? [];
+                $broadcastId = data_get($metadata, 'broadcast_id');
+
+                if ($broadcastId) {
+                    return $broadcastId;
+                }
+
+                return md5(
+                    sprintf(
+                        '%s|%s|%s|%s|%s',
+                        $notification->type,
+                        $notification->title,
+                        $notification->body,
+                        $notification->link ?? '',
+                        data_get($metadata, 'audience', 'all')
+                    )
+                );
+            })
+            ->map(function ($group) {
+                $first = $group->first();
+
+                return (object) [
+                    'title' => $first->title,
+                    'body' => $first->body,
+                    'link' => $first->link,
+                    'type' => $first->type,
+                    'metadata' => $first->metadata,
+                    'category_label' => $first->category_label,
+                    'created_at' => $first->created_at,
+                    'recipient_count' => $group->count(),
+                ];
+            })
+            ->sortByDesc('created_at');
+
+        $perPage = 20;
+        $currentPage = LengthAwarePaginator::resolveCurrentPage();
+        $paginatedBroadcasts = new LengthAwarePaginator(
+            $broadcasts->slice(($currentPage - 1) * $perPage, $perPage)->values(),
+            $broadcasts->count(),
+            $perPage,
+            $currentPage,
+            [
+                'path' => $request->url(),
+                'query' => $request->query(),
+            ]
+        );
+
+        return view('admin.notifications.index', ['notifications' => $paginatedBroadcasts]);
     }
 
     public function sendNotification(Request $request): RedirectResponse
@@ -301,6 +353,8 @@ class AdminController extends Controller
             ->when($data['audience'] !== 'all', fn($q) => $q->where('role', $data['audience']))
             ->get();
 
+        $broadcastId = uniqid('broadcast_', true);
+
         foreach ($users as $user) {
             MarketplaceNotification::create([
                 'user_id' => $user->id,
@@ -313,6 +367,7 @@ class AdminController extends Controller
                 'metadata' => [
                     'category' => $data['category'],
                     'audience' => $data['audience'],
+                    'broadcast_id' => $broadcastId,
                 ],
             ]);
         }

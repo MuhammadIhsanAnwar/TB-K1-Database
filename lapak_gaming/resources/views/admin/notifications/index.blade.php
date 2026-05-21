@@ -171,16 +171,20 @@
                             <div class="flex flex-wrap items-center gap-2.5">
                                 {{-- Icon Category Decorator --}}
                                 @php
-                                    $cleanCategory = strtolower($notification->category ?? '');
-                                    $isReward = ($cleanCategory === 'event_reward' || str_contains($cleanCategory, 'reward'));
-                                @endphp
-                                <span class="pill-notify {{ $isReward ? 'pill-reward' : 'pill-general' }}">
-                                    <span class="w-1 h-1 rounded-full bg-current"></span>
-                                    {{ $notification->category_label }}
-                                </span>
-
-                                <h3 class="font-bold text-white tracking-tight group-hover:text-amber-400 transition-colors">
-                                    {{ $notification->title }}
+                                $cleanCategory = strtolower($notification->metadata['category'] ?? $notification->category ?? '');
+                                $isReward = ($cleanCategory === 'event_reward' || str_contains($cleanCategory, 'reward'));
+                                $audienceLabel = match ($notification->metadata['audience'] ?? 'all') {
+                                    'buyer' => 'Buyer',
+                                    'seller' => 'Seller',
+                                    default => 'Semua',
+                                };
+                            @endphp
+                            <span class="pill-notify {{ $isReward ? 'pill-reward' : 'pill-general' }}">
+                                <span class="w-1 h-1 rounded-full bg-current"></span>
+                                {{ $notification->category_label }}
+                            </span>
+                            <span class="target-badge">Target: {{ $audienceLabel }}</span>
+                            <span class="target-badge">Diterima oleh {{ $notification->recipient_count ?? 1 }} akun</span>
                                 </h3>
                             </div>
                             
