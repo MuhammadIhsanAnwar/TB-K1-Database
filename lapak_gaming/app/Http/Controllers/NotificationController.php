@@ -10,10 +10,10 @@ use Illuminate\Support\Facades\Auth;
 
 class NotificationController extends Controller
 {
-    public function index()
+    public function index(Request $request)
     {
         $user = Auth::user();
-        $filter = request()->query('filter', 'all');
+        $filter = $request->query('filter', 'all');
         $filter = in_array($filter, ['all', 'transaction', 'event_reward', 'general'], true) ? $filter : 'all';
 
         $baseQuery = MarketplaceNotification::query()
@@ -51,7 +51,7 @@ class NotificationController extends Controller
 
     public function markRead(Request $request, MarketplaceNotification $notification): JsonResponse|RedirectResponse
     {
-        if ($notification->user_id !== $request->user()->id) {
+        if ((int) $notification->user_id !== (int) $request->user()->id) {
             if ($request->expectsJson()) {
                 return response()->json(['success' => false, 'message' => 'Not found'], 404);
             }
@@ -90,7 +90,7 @@ class NotificationController extends Controller
 
     public function destroy(Request $request, MarketplaceNotification $notification): JsonResponse|RedirectResponse
     {
-        if ($notification->user_id !== $request->user()->id) {
+        if ((int) $notification->user_id !== (int) $request->user()->id) {
             if ($request->expectsJson()) {
                 return response()->json(['success' => false, 'message' => 'Not found'], 404);
             }
