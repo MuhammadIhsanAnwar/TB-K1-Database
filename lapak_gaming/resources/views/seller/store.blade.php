@@ -63,13 +63,13 @@
 
                 <form action="{{ route('seller.store.deactivate') }}" method="POST" class="mt-2 inline-block">
                     @csrf
-                    <button type="submit" class="rounded-2xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-amber-400">Nonaktifkan Toko</button>
+                    <button type="submit" onclick="return confirm('Nonaktifkan toko ini? Dashboard seller tetap bisa diakses untuk mengaktifkannya kembali.')" class="rounded-2xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-amber-400">Nonaktifkan Toko</button>
                 </form>
 
                 <form action="{{ route('seller.store.destroy') }}" method="POST" class="mt-2">
                     @csrf
                     @method('DELETE')
-                    <button type="submit" class="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-500">Hapus Toko Permanen</button>
+                    <button type="submit" onclick="return confirm('Hapus toko permanen? Tindakan ini tidak bisa dibatalkan dan status seller akan dihapus.')" class="rounded-2xl bg-red-600 px-5 py-3 font-semibold text-white transition hover:bg-red-500">Hapus Toko Permanen</button>
                 </form>
 
                 @if($errors->has('store'))

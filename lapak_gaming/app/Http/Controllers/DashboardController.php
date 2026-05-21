@@ -69,6 +69,8 @@ class DashboardController extends Controller
             ]);
         }
 
+        $storeDeactivated = ! empty($user->deactivated_at);
+
         $products = Schema::hasTable('products')
             ? Product::query()->where('seller_id', $user->id)->latest()->take(6)->get()
             : collect();
@@ -92,6 +94,7 @@ class DashboardController extends Controller
             'products' => $products,
             'orders' => $orders,
             'wallet' => $wallet,
+            'storeDeactivated' => $storeDeactivated,
         ]);
     }
 

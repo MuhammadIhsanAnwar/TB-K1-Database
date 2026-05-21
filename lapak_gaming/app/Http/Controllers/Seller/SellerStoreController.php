@@ -97,6 +97,7 @@ class SellerStoreController extends Controller
         $user->forceFill([
             'role' => 'buyer',
             'seller_status' => 'none',
+            'deactivated_at' => null,
         ])->save();
 
         $user->products()->update(['status' => 'archived']);
@@ -109,15 +110,23 @@ class SellerStoreController extends Controller
         /** @var User $user */
         $user = Auth::user();
 
-        // Mark user as non-seller but keep transaction history and shop data intact
+        // Mark the store as inactive without removing seller access.
         $user->forceFill([
-            'role' => 'buyer',
-            'seller_status' => Schema::hasColumn('users', 'seller_status') ? 'none' : ($user->seller_status ?? 'none'),
+            'deactivated_at' => now(),
         ])->save();
 
-        // Archive active products so they are not visible in marketplace
-        $user->products()->update(['status' => 'archived']);
+        return redirect()->route('seller.dashboard')->with('success', 'Toko berhasil dinonaktifkan. Anda dapat mengaktifkannya kembali dari dashboard seller.');
+    }
 
-        return redirect()->route('dashboard')->with('success', 'Toko berhasil dinonaktifkan. Anda dapat mengaktifkannya kembali setelah pengaturan ulang.');
+    public function activate(Request $request)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $user->forceFill([
+            'deactivated_at' => null,
+        ])->save();
+
+        return redirect()->route('seller.dashboard')->with('success', 'Toko berhasil diaktifkan kembali.');
     }
 }

@@ -115,6 +115,30 @@
         </div>
         @endif
 
+        @if(!empty($storeDeactivated))
+        <div class="rounded-2xl border border-sky-500/30 bg-sky-500/5 p-5 backdrop-blur-md">
+            <div class="flex items-start gap-4">
+                <div class="p-2 rounded-xl bg-sky-500/10 text-sky-300 shrink-0">
+                    <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M3.53 19.07A9 9 0 1119.07 3.53 9 9 0 013.53 19.07z"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-base font-bold text-sky-200">Toko sedang dinonaktifkan</h3>
+                    <p class="text-xs text-slate-300 mt-1 leading-relaxed">Toko tidak menerima pesanan sampai Anda mengaktifkannya kembali. Dashboard seller tetap dapat diakses untuk memulihkan toko.</p>
+                    <div class="mt-4">
+                        <form method="POST" action="{{ route('seller.store.activate') }}">
+                            @csrf
+                            <button type="submit" onclick="return confirm('Aktifkan kembali toko sekarang?')" class="rounded-2xl bg-sky-500 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-sky-400">
+                                Aktifkan Kembali Toko
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        @endif
+
         {{-- ── STATS CARDS GRID (TRANSPARENT) ────────────────────── --}}
         <div class="reveal reveal-delay-1 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {{-- Card 1: Saldo --}}

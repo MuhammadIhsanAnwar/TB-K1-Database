@@ -30,6 +30,7 @@ class CheckoutController extends Controller
 
         $product->load(['seller', 'category']);
         abort_unless($product->status === 'published', 404);
+        abort_unless(! empty($product->seller) && ! $product->seller->deactivated_at, 404);
 
         if ((int) $product->seller_id === (int) $request->user()->id) {
             return redirect()->route('products.show', $product->slug)
@@ -91,6 +92,7 @@ class CheckoutController extends Controller
         $order = DB::transaction(function () use ($request, $quantity, $paymentMethod): Order {
             $product = Product::query()
                 ->published()
+                ->whereHas('seller', fn ($seller) => $seller->whereNull('deactivated_at'))
                 ->lockForUpdate()
                 ->findOrFail($request->input('product_id'));
 
