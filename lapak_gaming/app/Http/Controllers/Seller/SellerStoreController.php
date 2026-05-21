@@ -95,7 +95,8 @@ class SellerStoreController extends Controller
 
         // Safe to remove seller status and archive products
         $user->forceFill([
-            'user_type' => 'buyer',
+            'role' => 'buyer',
+            'seller_status' => 'none',
         ])->save();
 
         $user->products()->update(['status' => 'archived']);
@@ -110,7 +111,7 @@ class SellerStoreController extends Controller
 
         // Mark user as non-seller but keep transaction history and shop data intact
         $user->forceFill([
-            'user_type' => 'buyer',
+            'role' => 'buyer',
             'seller_status' => Schema::hasColumn('users', 'seller_status') ? 'none' : ($user->seller_status ?? 'none'),
         ])->save();
 
