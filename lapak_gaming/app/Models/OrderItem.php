@@ -15,6 +15,6 @@ class OrderItem extends Model {
 
     public function order()   { return $this->belongsTo(Order::class); }
     public function product() { return $this->belongsTo(Product::class); }
-    public function seller()  { return $this->belongsTo(Seller::class); }
+    public function seller()  { return $this->belongsTo(\App\Models\User::class, 'seller_id'); }
     public function review()  { return $this->hasOne(Review::class); }
 }
