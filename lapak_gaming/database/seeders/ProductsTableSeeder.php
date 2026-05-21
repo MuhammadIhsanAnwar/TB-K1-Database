@@ -84,7 +84,7 @@ class ProductsTableSeeder extends Seeder
                         'is_auto_delivery' => $this->isAutoDeliveryForCategory($parent['slug']),
                         'is_featured' => $itemIndex % 12 === 0,
                         'is_trending' => $itemIndex % 7 === 0,
-                        'type' => $child['slug'],
+                        'type' => $this->productTypeForCategory($parent['slug']),
                         'status' => 'published',
                     ];
 
@@ -222,6 +222,17 @@ class ProductsTableSeeder extends Seeder
     private function isAutoDeliveryForCategory(string $parentSlug): bool
     {
         return in_array($parentSlug, ['top-up-game', 'voucher', 'koin-game', 'streaming', 'pulsa-utilitas'], true);
+    }
+
+    private function productTypeForCategory(string $parentSlug): string
+    {
+        return match ($parentSlug) {
+            'top-up-game', 'top-up-login' => 'topup',
+            'game-key' => 'gamekey',
+            'akun' => 'akun',
+            'voucher' => 'voucher',
+            default => 'item',
+        };
     }
 
     private function imageUrlsForCategory(string $parentSlug): array
