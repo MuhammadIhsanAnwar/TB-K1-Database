@@ -601,18 +601,18 @@ a{
                     </td>
                     <td class="px-6 py-4 text-slate-400 font-medium whitespace-nowrap">{{ $seller->email }}</td>
                     <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="pill {{ $seller->status === 'active' ? 'pill-active' : 'pill-suspended' }}">
-                        <span class="w-1.5 h-1.5 rounded-full {{ $seller->status === 'active' ? 'bg-emerald-400' : 'bg-red-400' }}"></span>
-                        {{ $seller->status === 'active' ? 'Verified Lapak' : 'Suspended' }}
+                      <span class="pill {{ $seller->seller_status === 'approved' ? 'pill-active' : 'pill-suspended' }}">
+                        <span class="w-1.5 h-1.5 rounded-full {{ $seller->seller_status === 'approved' ? 'bg-emerald-400' : 'bg-red-400' }}"></span>
+                        {{ $seller->seller_status === 'approved' ? 'Verified Lapak' : 'Suspended' }}
                       </span>
-                      @if($seller->status === 'suspended' && $seller->suspend_reason)
+                      @if($seller->seller_status === 'suspended' && $seller->suspend_reason)
                         <p class="text-[11px] text-rose-400/80 mt-1 max-w-[200px] truncate font-medium" title="{{ $seller->suspend_reason }}">
                           Reason: {{ $seller->suspend_reason }}
                         </p>
                       @endif
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">
-                      @if($seller->status === 'active')
+                      @if($seller->seller_status !== 'suspended')
                         <div class="inline-flex gap-2">
                                 <button data-user-id="{{ $seller->id }}" data-shop-name="{{ e($seller->shop_name ?? $seller->name) }}" onclick="openSuspendShopModal(this.dataset.userId, this.dataset.shopName)"
                                   class="rounded-xl bg-rose-500/10 border border-rose-500/20 px-4 py-2 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">

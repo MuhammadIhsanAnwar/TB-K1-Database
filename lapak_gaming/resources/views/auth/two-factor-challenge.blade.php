@@ -50,17 +50,20 @@
 
 @section('content')
 @php
-  $challengeMethod = $challengeMethod ?? 'google';
-  if (! in_array($challengeMethod, ['email', 'google'], true)) {
-    $challengeMethod = 'google';
+  $availableMethods = $availableMethods ?? [];
+  $challengeMethod = $challengeMethod ?? null;
+  if ($challengeMethod !== null && ! in_array($challengeMethod, ['email', 'google'], true)) {
+    $challengeMethod = null;
   }
   $challengeTitle = match ($challengeMethod) {
     'email' => 'Email',
-    default => 'Google Authenticator',
+    'google' => 'Google Authenticator',
+    default => 'Pilih Metode',
   };
   $challengeHelp = match ($challengeMethod) {
     'email' => 'Masukkan kode yang dikirim ke email akun Anda.',
-    default => 'Masukkan kode dari Google Authenticator untuk melanjutkan login ke akun ' . $user->email . '.',
+    'google' => 'Masukkan kode dari Google Authenticator untuk melanjutkan login ke akun ' . $user->email . '.',
+    default => 'Pilih metode verifikasi 2 langkah yang ingin Anda gunakan.',
   };
 @endphp
 
@@ -92,29 +95,64 @@
     @endif
 
     <div class="challenge-card p-7 sm:p-8">
-      <form method="POST" action="{{ route('two-factor.verify') }}" class="space-y-4">
-        @csrf
+      @if(count($availableMethods) > 1 && ! $challengeMethod)
+        <form method="POST" action="{{ route('two-factor.challenge.method') }}" class="space-y-4">
+          @csrf
 
-        <div>
-          <label class="block text-xs font-semibold text-slate-400 mb-1.5 tracking-wide">KODE {{ strtoupper($challengeTitle) }}</label>
-          <input type="text"
-                 name="verification_code"
-                 inputmode="numeric"
-                 maxlength="6"
-                 placeholder="6 digit kode"
-                 class="challenge-input"
-                 autocomplete="one-time-code"
-                 required>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1.5 tracking-wide">Pilih Metode Verifikasi</label>
+            <div class="space-y-3">
+              @foreach($availableMethods as $methodOption)
+                <label class="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white cursor-pointer">
+                  <input type="radio" name="method" value="{{ $methodOption }}" class="h-4 w-4 text-amber-500 focus:ring-amber-400" required>
+                  <span>{{ $methodOption === 'email' ? 'Email' : 'Google Authenticator' }}</span>
+                </label>
+              @endforeach
+            </div>
+          </div>
+
+          <button type="submit" class="challenge-btn">
+            Pilih Metode
+          </button>
+        </form>
+
+        <div class="mt-5 text-center text-xs text-slate-500">
+          Pilih salah satu metode untuk menerima kode verifikasi, lalu lanjutkan masuk.
         </div>
+      @else
+        <form method="POST" action="{{ route('two-factor.verify') }}" class="space-y-4">
+          @csrf
+          @if($challengeMethod)
+            <input type="hidden" name="method" value="{{ $challengeMethod }}">
+          @endif
 
-        <button type="submit" class="challenge-btn">
-          Verifikasi & Masuk
-        </button>
-      </form>
+          <div>
+            <label class="block text-xs font-semibold text-slate-400 mb-1.5 tracking-wide">KODE {{ strtoupper($challengeTitle) }}</label>
+            <input type="text"
+                   name="verification_code"
+                   inputmode="numeric"
+                   maxlength="6"
+                   placeholder="6 digit kode"
+                   class="challenge-input"
+                   autocomplete="one-time-code"
+                   required>
+          </div>
 
-      <div class="mt-5 text-center text-xs text-slate-500">
-        {{ $challengeMethod === 'google' ? 'Buka aplikasi Google Authenticator, ambil kode terbaru, lalu masukkan di atas.' : 'Cek kode terbaru di email akun Anda, lalu masukkan di atas.' }}
-      </div>
+          <button type="submit" class="challenge-btn">
+            Verifikasi & Masuk
+          </button>
+        </form>
+
+        <div class="mt-5 text-center text-xs text-slate-500">
+          @if($challengeMethod === 'google')
+            Buka aplikasi Google Authenticator, ambil kode terbaru, lalu masukkan di atas.
+          @elseif($challengeMethod === 'email')
+            Cek kode terbaru di email akun Anda, lalu masukkan di atas.
+          @else
+            Pilih metode verifikasi terlebih dahulu.
+          @endif
+        </div>
+      @endif
     </div>
   </div>
 </div>

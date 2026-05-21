@@ -551,21 +551,10 @@
 
                                 <p class="mt-4 text-xs text-slate-500">Pengaturan belum disimpan permanen sampai kode Authenticator valid.</p>
 
-                            @elseif($googleSecret)
-                                <div class="mt-6 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-center">
-                                    @if($googleQrCode)
-                                        <div class="rounded-3xl border border-white/10 bg-white p-4 flex items-center justify-center">
-                                            {!! $googleQrCode !!}
-                                        </div>
-                                    @endif
-
-                                    <div>
-                                        <p class="text-sm text-slate-400">Pindai QR code dengan Google Authenticator atau masukkan secret key berikut jika diperlukan.</p>
-                                        <div class="mt-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 font-mono text-sm text-cyan-100 break-all">
-                                            {{ $googleSecret }}
-                                        </div>
-                                        <p class="mt-4 text-xs text-slate-500">Setelah perubahan disimpan, secret akan tetap tersimpan untuk metode Google Authenticator.</p>
-                                    </div>
+                            @elseif(in_array('google', old('two_factor_methods', $twoFactorMethods ?? []), true) && $user->two_factor_confirmed_at)
+                                <div class="mt-6 rounded-3xl border border-emerald-500/20 bg-emerald-500/10 p-6">
+                                    <p class="text-sm text-white font-semibold">Google Authenticator sudah terkonfirmasi.</p>
+                                    <p class="mt-2 text-slate-400">QR dan secret tidak ditampilkan setelah konfigurasi berhasil. Anda dapat menggunakan Google Authenticator untuk login.</p>
                                 </div>
                             @else
                                 <p class="mt-4 text-sm text-slate-400">Secret Google Authenticator akan dibuat otomatis saat Anda mengaktifkan metode ini.</p>

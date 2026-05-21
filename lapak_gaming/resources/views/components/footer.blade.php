@@ -13,21 +13,6 @@
         <p class="text-sm text-slate-400 leading-relaxed max-w-xs">
           Platform marketplace game terpercaya Indonesia. Top-up, jual-beli akun, item, dan voucher dengan aman, cepat, dan terjamin.
         </p>
-        <div class="flex items-center gap-3 mt-5">
-          {{-- Social icons --}}
-          @foreach([
-            ['icon'=>'M23 3a10.9 10.9 0 01-3.14 1.53 4.48 4.48 0 00-7.86 3v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z','label'=>'Twitter'],
-            ['icon'=>'M21 2H3v16h5v4l4-4h5l4-4V2zM11 11V7m4 4V7','label'=>'Discord'],
-            ['icon'=>'M22.54 6.42a2.78 2.78 0 00-1.95-1.96C18.88 4 12 4 12 4s-6.88 0-8.59.46a2.78 2.78 0 00-1.95 1.96A29 29 0 001 12a29 29 0 00.46 5.58A2.78 2.78 0 003.41 19.6C5.12 20 12 20 12 20s6.88 0 8.59-.46a2.78 2.78 0 001.95-1.95A29 29 0 0023 12a29 29 0 00-.46-5.58z M9.75 15.02l5.75-3.02-5.75-3.02v6.04z','label'=>'YouTube'],
-            ['icon'=>'M21 2H3v16h5v4l4-4h5l4-4V2zm-10 6.5v5m3-5v5','label'=>'Instagram'],
-          ] as $soc)
-          <a href="#" aria-label="{{ $soc['label'] }}"
-             class="w-9 h-9 rounded-xl flex items-center justify-center text-slate-500 hover:text-white transition-colors"
-             style="background:#162032;border:1px solid #1E2D45;">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $soc['icon'] }}"/></svg>
-          </a>
-          @endforeach
-        </div>
       </div>
 
       {{-- Marketplace links --}}

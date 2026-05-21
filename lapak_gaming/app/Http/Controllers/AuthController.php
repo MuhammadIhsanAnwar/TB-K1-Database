@@ -99,31 +99,38 @@ class AuthController extends Controller
 
         if ($this->requiresTwoFactorChallenge($user)) {
             $twoFactor = app(TwoFactorChallengeService::class);
-            $challengeMethod = $twoFactor->resolveLoginMethod($user);
+            $methods = $twoFactor->enabledMethods($user);
+            $selectedMethod = count($methods) === 1 ? $methods[0] : null;
 
-            try {
-                $twoFactor->sendLoginChallenge($user, $challengeMethod);
-            } catch (\Throwable $exception) {
-                return back()->withErrors([
-                    'email' => 'Gagal mengirim kode verifikasi 2 langkah. Silakan coba lagi.',
-                ])->onlyInput('email');
-            }
+            if ($selectedMethod === 'email') {
+                try {
+                    $twoFactor->sendLoginChallenge($user, $selectedMethod);
+                } catch (\Throwable $exception) {
+                    return back()->withErrors([
+                        'email' => 'Gagal mengirim kode verifikasi 2 langkah. Silakan coba lagi.',
+                    ])->onlyInput('email');
+                }
 
-            // If a debug code was stored (e.g. mailer/SMS misconfigured), surface it to session for developer/testing.
-            $debugKey = 'two-factor-login:' . $user->id . ':' . $challengeMethod . ':debug';
-            $debugCode = Cache::get($debugKey);
-            if ($debugCode) {
-                $request->session()->put('two_factor_debug_code', $debugCode);
+                $debugKey = 'two-factor-login:' . $user->id . ':' . $selectedMethod . ':debug';
+                $debugCode = Cache::get($debugKey);
+                if ($debugCode) {
+                    $request->session()->put('two_factor_debug_code', $debugCode);
+                }
             }
 
             $request->session()->put('two_factor_login_pending', [
                 'user_id' => $user->id,
                 'remember' => $request->boolean('remember'),
-                'method' => $challengeMethod,
+                'methods' => $methods,
+                'method' => $selectedMethod,
             ]);
 
+            $message = count($methods) > 1
+                ? 'Pilih metode verifikasi 2 langkah lalu lanjutkan login.'
+                : 'Masukkan kode verifikasi yang dikirim melalui ' . $twoFactor->methodLabel($selectedMethod) . ' untuk menyelesaikan login.';
+
             return redirect()->route('two-factor.challenge')
-                ->with('status', 'Masukkan kode verifikasi yang dikirim melalui ' . $twoFactor->methodLabel($challengeMethod) . ' untuk menyelesaikan login.');
+                ->with('status', $message);
         }
 
         if (! Auth::attempt($credentials, $request->boolean('remember'))) {
@@ -166,8 +173,64 @@ class AuthController extends Controller
 
         return view('auth.two-factor-challenge', [
             'user' => $user,
-            'challengeMethod' => (string) ($pending['method'] ?? 'google'),
+            'availableMethods' => $pending['methods'] ?? [],
+            'challengeMethod' => $pending['method'] ?? null,
         ]);
+    }
+
+    public function selectTwoFactorMethod(Request $request): RedirectResponse
+    {
+        $pending = session('two_factor_login_pending');
+
+        if (! is_array($pending) || empty($pending['user_id']) || empty($pending['methods'])) {
+            return redirect()->route('login')->withErrors([
+                'email' => 'Sesi verifikasi 2 langkah tidak valid. Silakan login kembali.',
+            ]);
+        }
+
+        $data = $request->validate([
+            'method' => ['required', 'in:email,google'],
+        ]);
+
+        $method = $data['method'];
+
+        if (! in_array($method, $pending['methods'], true)) {
+            return redirect()->route('two-factor.challenge')->withErrors([
+                'verification_code' => 'Metode verifikasi yang dipilih tidak tersedia.',
+            ]);
+        }
+
+        /** @var User|null $user */
+        $user = User::find($pending['user_id']);
+
+        if (! $user) {
+            session()->forget('two_factor_login_pending');
+            return redirect()->route('login')->withErrors([
+                'email' => 'Sesi verifikasi 2 langkah tidak valid. Silakan login kembali.',
+            ]);
+        }
+
+        if ($method === 'email') {
+            $twoFactor = app(TwoFactorChallengeService::class);
+            try {
+                $twoFactor->sendLoginChallenge($user, $method);
+            } catch (\Throwable $exception) {
+                return redirect()->route('two-factor.challenge')->withErrors([
+                    'verification_code' => 'Gagal mengirim kode email. Silakan coba lagi.',
+                ]);
+            }
+
+            $debugKey = 'two-factor-login:' . $user->id . ':' . $method . ':debug';
+            $debugCode = Cache::get($debugKey);
+            if ($debugCode) {
+                session()->put('two_factor_debug_code', $debugCode);
+            }
+        }
+
+        $pending['method'] = $method;
+        session()->put('two_factor_login_pending', $pending);
+
+        return redirect()->route('two-factor.challenge')->with('status', 'Metode verifikasi telah diatur ke ' . ($method === 'email' ? 'Email' : 'Google Authenticator') . '.');
     }
 
     public function confirmTwoFactorChallenge(Request $request): RedirectResponse
@@ -182,13 +245,21 @@ class AuthController extends Controller
 
         $data = $request->validate([
             'verification_code' => ['required', 'digits:6'],
+            'method' => ['nullable', 'in:email,google'],
         ], [
             'verification_code.required' => 'Kode verifikasi wajib diisi.',
             'verification_code.digits' => 'Kode verifikasi harus terdiri dari 6 digit.',
+            'method.in' => 'Metode verifikasi tidak valid.',
         ]);
 
         $user = User::find($pending['user_id']);
-        $challengeMethod = (string) ($pending['method'] ?? 'google');
+        $challengeMethod = $data['method'] ?? $pending['method'] ?? null;
+
+        if (! $challengeMethod) {
+            return back()->withErrors([
+                'verification_code' => 'Pilih metode verifikasi terlebih dahulu.',
+            ])->withInput();
+        }
 
         if (! $user || ! $this->requiresTwoFactorChallenge($user)) {
             session()->forget('two_factor_login_pending');

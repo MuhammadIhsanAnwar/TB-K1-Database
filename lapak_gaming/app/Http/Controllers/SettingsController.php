@@ -69,10 +69,10 @@ class SettingsController extends Controller
         $profile = $user->profile;
         $pendingSetup = session('two_factor_setup_pending');
         $methods = $pendingSetup['two_factor_methods'] ?? ($user->two_factor_methods ?: []);
-        $googleSecret = $pendingSetup['google_secret'] ?? $user->two_factor_google_secret;
+        $googleSecret = $pendingSetup['google_secret'] ?? null;
         $googleQrCode = null;
 
-        if ($googleSecret && (in_array('google', $methods, true) || ! empty($pendingSetup))) {
+        if (! empty($pendingSetup) && $googleSecret && in_array('google', $methods, true)) {
             $google2fa = new Google2FAQRCode();
             $googleQrCode = $google2fa->getQRCodeInline(
                 config('app.name', 'Lapak Gaming'),
