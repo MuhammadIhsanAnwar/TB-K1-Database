@@ -49,7 +49,6 @@ Route::get('/', [MarketplaceController::class, 'home'])->name('home');
 Route::get('/products/type/{type}', [ProductController::class, 'byType'])->name('products.by-type');
 Route::get('/products/{product:slug}', [ProductController::class, 'show'])->name('products.show');
 Route::get('/browse/search', [ProductController::class, 'search'])->name('products.search');
-Route::get('/categories', [MarketplaceController::class, 'categories'])->name('categories.index');
 Route::get('/categories/{category:slug}', [ProductController::class, 'byCategory'])->name('categories.show');
 
 // Artisan Terminal (dev tool – restrict in production)
@@ -73,8 +72,8 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
     Route::delete('/cart', [CartController::class, 'clear'])->name('cart.clear');
 
     // Orders
-    Route::get('/cart/checkout', [OrderController::class, 'checkout'])->name('cart.checkout');
-    Route::post('/cart/checkout', [OrderController::class, 'store'])->name('cart.store');
+    Route::get('/cart/checkout', [OrderController::class, 'checkout'])->name('cart.checkout'); // <--- TAMBAHKAN INI
+    Route::post('/cart/checkout', [OrderController::class, 'store'])->name('cart.store'); // <--- TAMBAHKAN INI
     Route::get('/orders', [OrderController::class, 'index'])->name('orders.index');
     Route::get('/orders/{order:order_code}', [OrderController::class, 'show'])->name('orders.show');
     Route::get('/orders/{order:order_code}/receipt/pdf', [OrderController::class, 'downloadReceiptPdf'])->name('orders.receipt.pdf');
@@ -98,25 +97,83 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
     Route::get('/settings/{section}', [SettingsController::class, 'section'])
         ->whereIn('section', ['profile', 'account', 'password', 'security', 'seller'])
         ->name('settings.section');
+    Route::get('/settings/buyer', function () {
+        $user = Auth::user();
 
-    // Seller Dashboard (role:seller middleware applied)
-    Route::middleware('role:seller')->name('seller.')->prefix('seller')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'seller'])->name('dashboard');
-        Route::get('/products', [SellerProductController::class, 'index'])->name('products.index');
-        Route::get('/products/create', [SellerProductController::class, 'create'])->name('products.create');
-        Route::post('/products', [SellerProductController::class, 'store'])->name('products.store');
-        Route::get('/products/{product}/edit', [SellerProductController::class, 'edit'])->name('products.edit');
-        Route::put('/products/{product}', [SellerProductController::class, 'update'])->name('products.update');
-        Route::delete('/products/{product}', [SellerProductController::class, 'destroy'])->name('products.destroy');
-        Route::get('/store', [SellerStoreController::class, 'index'])->name('store.index');
-        Route::put('/store', [SellerStoreController::class, 'update'])->name('store.update');
-    });
+        if ($user instanceof User && $user->isAdmin()) {
+            return redirect()->route('admin.dashboard')->with('warning', 'Akun administrator tidak memiliki akses ke menu buyer/seller.');
+        }
 
-    // Buyer Dashboard (role:buyer middleware applied)
-    Route::middleware('role:buyer')->name('buyer.')->prefix('buyer')->group(function () {
-        Route::get('/dashboard', [DashboardController::class, 'buyer'])->name('dashboard');
-    });
+        return redirect()->route('settings.seller');
+    })->name('settings.buyer');
+    Route::put('/settings', [SettingsController::class, 'update'])->name('settings.update');
+    Route::post('/settings/password/code', [SettingsController::class, 'sendPasswordChangeCode'])->name('settings.password.sendCode');
+    Route::put('/settings/password', [SettingsController::class, 'updatePassword'])->name('settings.password.update');
+    Route::put('/settings/security', [SettingsController::class, 'updateSecurity'])->name('settings.security.update');
+    Route::post('/settings/security/confirm', [SettingsController::class, 'confirmSecurity'])->name('settings.security.confirm');
+    Route::post('/settings/account/delete-code', [SettingsController::class, 'sendDeletionCode'])->name('settings.account.sendDeletionCode');
+    Route::post('/settings/account/deactivation-code', [SettingsController::class, 'sendDeactivationCode'])->name('settings.account.sendDeactivationCode');
+    Route::get('/settings/account/delete', [SettingsController::class, 'confirmDeletionForm'])->name('settings.account.delete');
+    Route::delete('/settings', [SettingsController::class, 'destroy'])->name('settings.destroy');
+    Route::post('/settings/deactivate', [SettingsController::class, 'deactivate'])->name('settings.deactivate');
+    // Safety fallback: if a deployment missed the named route, point the same URI
+    // to the controller action so the security tab still renders.
+    Route::get('/settings/security', [SettingsController::class, 'security'])->name('settings.security.fallback');
 
+    // Profile
+    Route::get('/profile', [ProfileController::class, 'show'])->name('profile.show');
+    Route::get('/profile/edit', [ProfileController::class, 'edit'])->name('profile.edit');
+    Route::put('/profile', [ProfileController::class, 'update'])->name('profile.update');
+
+    // Subscription
+    Route::get('/subscription/upgrade', [SubscriptionController::class, 'upgrade'])->name('subscription.upgrade');
+    Route::post('/subscription/upgrade', [SubscriptionController::class, 'store'])->name('subscription.store');
+    Route::post('/subscription/cancel', [SubscriptionController::class, 'cancel'])->name('subscription.cancel');
+
+    // Notifications
+    Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
+    Route::post('/notifications/{notification}/read', [NotificationController::class, 'markRead'])->name('notifications.read');
+    Route::post('/notifications/read-all', [NotificationController::class, 'markAllRead'])->name('notifications.read-all');
+    Route::get('/notifications/poll', [NotificationController::class, 'poll'])->name('notifications.poll');
+    Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy'])->name('notifications.destroy');
+    Route::delete('/notifications/delete-all', [NotificationController::class, 'destroyAll'])->name('notifications.destroy-all');
+
+    // Seller Registration (pengajuan seller)
+    Route::get('/seller/register', [SellerRegistrationController::class, 'create'])->name('seller.register.form');
+    Route::post('/seller/register', [SellerRegistrationController::class, 'store'])->name('seller.register');
+
+    // Seller Store Management
+    Route::get('/seller/store', [SellerStoreController::class, 'edit'])->name('seller.store.edit');
+    Route::put('/seller/store', [SellerStoreController::class, 'update'])->name('seller.store.update');
+    Route::post('/seller/store/deactivate', [SellerStoreController::class, 'deactivate'])->name('seller.store.deactivate');
+    Route::delete('/seller/store', [SellerStoreController::class, 'destroy'])->name('seller.store.destroy');
+
+    // Seller Product Management
+    Route::get('/seller/products', [SellerProductController::class, 'index'])->name('seller.produk.index');
+    Route::get('/seller/products/create', [SellerProductController::class, 'create'])->name('seller.produk.create');
+    Route::post('/seller/products', [SellerProductController::class, 'store'])->name('seller.produk.store');
+    Route::get('/seller/products/{produk}/edit', [SellerProductController::class, 'edit'])->name('seller.produk.edit');
+    Route::put('/seller/products/{produk}', [SellerProductController::class, 'update'])->name('seller.produk.update');
+    Route::delete('/seller/products/{produk}', [SellerProductController::class, 'destroy'])->name('seller.produk.destroy');
+    Route::post('/seller/products/{produk}/activate', [SellerProductController::class, 'activate'])->name('seller.produk.activate');
+    Route::delete('/seller/products/{produk}/force', [SellerProductController::class, 'forceDestroy'])->name('seller.produk.forceDestroy');
+
+    // Auth
+    Route::post('/logout', [AuthController::class, 'destroy'])->name('logout');
+
+    // Email Verification
+    Route::get('/email/verify', 'App\\Http\\Controllers\\VerificationController@notice')->name('verification.notice');
+    Route::get('/email/verify/{id}/{hash}', 'App\\Http\\Controllers\\VerificationController@verify')
+        ->middleware(['signed', 'throttle:6,1'])
+        ->name('verification.verify');
+    Route::post('/email/verification-notification', 'App\\Http\\Controllers\\VerificationController@send')
+        ->middleware('throttle:6,1')
+        ->name('verification.send');
+
+    // Dashboards
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    Route::get('/buyer/dashboard', [DashboardController::class, 'buyer'])->middleware('role:buyer')->name('buyer.dashboard');
+    Route::get('/seller/dashboard', [DashboardController::class, 'seller'])->middleware('role:seller')->name('seller.dashboard');
     Route::get('/admin/dashboard', [DashboardController::class, 'admin'])->middleware('role:admin')->name('admin.dashboard');
 
     // ─── Admin Routes ─────────────────────────────────────────────────────────
@@ -146,7 +203,8 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
         Route::get('/terminal', fn() => redirect()->route('artisan.terminal.index'))->name('terminal.index');
 
         // ─── Verification ─────────────────────────────────────────────────────
-        Route::prefix('verification')->name('verification.')->group(function () {
+       // ─── Verification ─────────────────────────────────────────────────────
+Route::prefix('verification')->name('verification.')->group(function () {
             Route::get('/', [AdminVerificationController::class, 'index'])->name('index');
             Route::get('/{user}', [AdminVerificationController::class, 'show'])->name('show');
             Route::post('/{user}/review', [AdminVerificationController::class, 'markUnderReview'])->name('review');
@@ -165,7 +223,6 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
     Route::post('/checkout', [CheckoutController::class, 'store'])->middleware('role:buyer')->name('checkout.store');
     Route::post('/checkout/{order}/confirm', [CheckoutController::class, 'confirm'])->middleware('role:buyer')->name('checkout.confirm');
     Route::post('/checkout/{order}/dispute', [CheckoutController::class, 'dispute'])->middleware('role:buyer')->name('checkout.dispute');
-    Route::post('/seller/orders/{order}/process', [CheckoutController::class, 'process'])->middleware('role:seller')->name('seller.orders.process');
     Route::post('/seller/orders/{order}/deliver', [CheckoutController::class, 'deliver'])->middleware('role:seller')->name('seller.orders.deliver');
 
     // ─── Wallet ───────────────────────────────────────────────────────────────
@@ -182,7 +239,7 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
     Route::post('/messages/{conversation}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::get('/api/messages/{conversation}/poll', [ChatController::class, 'poll'])->name('chat.poll');
     Route::get('/api/messages/inbox/poll', [ChatController::class, 'pollInbox'])->name('chat.inbox.poll');
-    
+  Route::get('/chat/order/{order}', [ChatController::class, 'orderChat'])->name('chat.order');
     // Product chat
     Route::get('/chat/product/{product}', [ChatController::class, 'product'])->name('chat.product');
     Route::post('/chat/product/{product}', [ChatController::class, 'storeProduct'])->name('chat.product.store');
@@ -210,7 +267,6 @@ Route::middleware('guest')->group(function (): void {
     Route::get('/login', [AuthController::class, 'createLogin'])->name('login');
     Route::post('/login', [AuthController::class, 'storeLogin']);
     Route::get('/two-factor-challenge', [AuthController::class, 'twoFactorChallenge'])->name('two-factor.challenge');
-    Route::post('/two-factor-challenge/method', [AuthController::class, 'selectTwoFactorMethod'])->name('two-factor.challenge.method');
     Route::post('/two-factor-challenge', [AuthController::class, 'confirmTwoFactorChallenge'])->name('two-factor.verify');
     Route::get('/auth/google', [AuthController::class, 'google'])->name('google.auth');
     Route::get('/register', [AuthController::class, 'createRegister'])->name('register');
@@ -247,6 +303,6 @@ Route::get('/kebijakan-pengembalian-dana', [PageController::class, 'refund'])->n
 Route::get('/tentang-kami', [PageController::class, 'about'])->name('about');
 
 // Realtime Indicator
-Route::post('/chat/conversations/{conversation}/typing', [ChatController::class, 'updateTyping']);
+    Route::post('/chat/conversations/{conversation}/typing', [ChatController::class, 'updateTyping']);
 Route::patch('/chat/message/{message}', [ChatController::class, 'editMessage'])->name('chat.update');
 Route::delete('/chat/message/{message}', [ChatController::class, 'deleteMessage'])->name('chat.destroy');
