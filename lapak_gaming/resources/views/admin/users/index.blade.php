@@ -803,9 +803,10 @@ a{
         <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">
           Catatan Suspend Toko <span class="text-slate-500 font-normal lowercase">(muncul pada panel admin dan notifikasi)</span>
         </label>
-        <textarea name="notes" rows="4" maxlength="1000" required
+        <textarea name="notes" rows="4" minlength="10" maxlength="1000" required
           class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none resize-none"
           placeholder="Contoh: Pelanggaran kebijakan: jual item ilegal, penyalahgunaan sistem top-up."></textarea>
+        <p class="mt-1 text-[10px] text-slate-500">Minimal 10 karakter.</p>
       </div>
 
       <div class="flex gap-2.5">

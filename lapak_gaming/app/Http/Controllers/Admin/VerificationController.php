@@ -202,9 +202,16 @@ class VerificationController extends Controller
 
     public function suspend(Request $request, User $user): RedirectResponse
     {
+        $messages = [
+            'notes.required' => 'Alasan suspend wajib diisi.',
+            'notes.string' => 'Alasan suspend harus berupa teks.',
+            'notes.min' => 'Alasan suspend minimal 10 karakter.',
+            'notes.max' => 'Alasan suspend maksimal 2000 karakter.',
+        ];
+
         $data = $request->validate([
             'notes' => ['required', 'string', 'min:10', 'max:2000'],
-        ]);
+        ], $messages);
 
         $user->forceFill([
             'seller_status'  => 'suspended',
