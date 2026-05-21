@@ -7,6 +7,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\Builder;
+use App\Support\MarketplaceCategoryCatalog;
 
 class Product extends Model {
     use HasFactory;
@@ -104,6 +105,11 @@ class Product extends Model {
         return $this->image_paths[0] ?? null;
     }
 
+    public function getTypeLabelAttribute(): string
+    {
+        return MarketplaceCategoryCatalog::labelForType($this->type);
+    }
+
     public function getImageUrlAttribute(): string {
         // Primary: first image path derived from file_path
         $imagePath = $this->image_paths[0] ?? null;
@@ -134,11 +140,11 @@ class Product extends Model {
         }
 
         if (Storage::disk('public_app_public')->exists($imagePath)) {
-            return Storage::disk('public_app_public')->url($imagePath);
+            return asset('storage/' . $imagePath);
         }
 
         if (Storage::disk('public')->exists($imagePath)) {
-            return Storage::disk('public')->url($imagePath);
+            return asset('storage/' . $imagePath);
         }
 
         if (file_exists(public_path('storage/app/public/' . $imagePath))) {

@@ -107,7 +107,7 @@ use Illuminate\Support\Str;
                                             class="px-2 py-0.5 bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] font-black uppercase rounded">STOK
                                             TERSEDIA</span>
                                         <span
-                                            class="px-2 py-0.5 bg-slate-800 text-slate-400 text-[10px] font-black uppercase rounded">{{ $item->product->type ?? 'ITEM' }}</span>
+                                            class="px-2 py-0.5 bg-slate-800 text-slate-400 text-[10px] font-black uppercase rounded">{{ $item->product->type_label ?? 'ITEM' }}</span>
                                     </div>
                                     <h3
                                         class="text-lg font-bold text-white leading-tight mb-1 truncate group-hover:text-amber-500 transition-colors">

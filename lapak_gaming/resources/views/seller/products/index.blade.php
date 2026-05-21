@@ -121,7 +121,7 @@ use Illuminate\Support\Str;
                                 <h2 class="text-xl font-bold text-white tracking-tight truncate">{{ $product->name }}</h2>
                                 <div class="flex items-center justify-center gap-2 mt-1 md:mt-0">
                                     <span class="px-2.5 py-0.5 text-[10px] font-bold rounded-md uppercase tracking-wider type-badge">
-                                        {{ $product->type }}
+                                        {{ $product->type_label }}
                                     </span>
                                     <span class="px-2.5 py-0.5 text-[10px] font-bold rounded-md uppercase tracking-wider {{ $product->status == 'published' ? 'status-published' : 'status-archived' }}">
                                         {{ $product->status == 'published' ? '⚡ Published' : '💤 Archived' }}

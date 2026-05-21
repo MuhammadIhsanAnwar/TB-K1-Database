@@ -7,6 +7,7 @@ use App\Models\Category;
 use App\Models\Product;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Support\MarketplaceCategoryCatalog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
@@ -124,7 +125,13 @@ class SellerProductController extends Controller
 
     public function create()
     {
-        $categories = Category::all();
+        $categories = Category::query()
+            ->parent()
+            ->active()
+            ->ordered()
+            ->with(['children' => fn ($query) => $query->active()->ordered()])
+            ->get();
+
         return view('seller.products.create', compact('categories'));
     }
 
@@ -160,7 +167,7 @@ class SellerProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:100',
             'stock' => 'required|integer|min:0',
-            'type' => 'required|in:topup,item,akun,voucher,gamekey',
+            'type' => ['required', Rule::in(MarketplaceCategoryCatalog::leafSlugs())],
             'images' => ['nullable', 'array', 'max:10'],
             'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
         ], $messages);
@@ -209,7 +216,13 @@ class SellerProductController extends Controller
     public function edit(Product $produk)
     {
         abort_if((int) $produk->seller_id !== (int) Auth::id(), 403);
-        $categories = Category::all();
+        $categories = Category::query()
+            ->parent()
+            ->active()
+            ->ordered()
+            ->with(['children' => fn ($query) => $query->active()->ordered()])
+            ->get();
+
         return view('seller.products.edit', compact('produk', 'categories'));
     }
 
@@ -237,7 +250,7 @@ class SellerProductController extends Controller
             'description' => 'nullable|string',
             'price' => 'required|numeric|min:100',
             'stock' => 'required|integer|min:0',
-            'type' => 'required|in:topup,item,akun,voucher,gamekey',
+            'type' => ['required', Rule::in(MarketplaceCategoryCatalog::leafSlugs())],
             'status' => 'required|in:draft,published,archived',
             'images' => ['nullable', 'array', 'max:10'],
             'images.*' => ['image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],

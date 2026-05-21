@@ -184,6 +184,49 @@ class MarketplaceCategoryCatalog
         ];
     }
 
+    public static function parentOptions(): array
+    {
+        return array_map(static fn (array $category): array => [
+            'name' => $category['name'],
+            'slug' => $category['slug'],
+            'image' => $category['image'],
+            'children' => $category['children'],
+        ], self::tree());
+    }
+
+    public static function typeLabelMap(): array
+    {
+        $map = [];
+
+        foreach (self::tree() as $category) {
+            foreach ($category['children'] as $child) {
+                $map[$child['slug']] = $child['name'];
+            }
+        }
+
+        $map += [
+            'topup' => 'Top Up Game',
+            'item' => 'Item',
+            'akun' => 'Akun',
+            'voucher' => 'Voucher',
+            'gamekey' => 'Game Key',
+        ];
+
+        return $map;
+    }
+
+    public static function leafSlugs(): array
+    {
+        return array_keys(self::typeLabelMap());
+    }
+
+    public static function labelForType(?string $type): string
+    {
+        $type = (string) $type;
+
+        return self::typeLabelMap()[$type] ?? ($type !== '' ? Str::headline(str_replace(['-', '_'], ' ', $type)) : 'Item');
+    }
+
     public static function category(string $name, string $slug, string $image, array $children = []): array
     {
         return [

@@ -48,6 +48,21 @@
 @endpush
 
 @section('content')
+@php
+    $subcategoryMap = $categories->mapWithKeys(function ($category) {
+        return [
+            (string) $category->id => $category->children->map(function ($child) {
+                return [
+                    'value' => $child->slug,
+                    'label' => $child->name,
+                ];
+            })->values()->all(),
+        ];
+    })->all();
+@endphp
+
+<script type="application/json" id="subcategory-map-data">{!! json_encode($subcategoryMap, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES) !!}</script>
+
 <div class="min-h-screen py-12 px-4 relative overflow-hidden dashboard-transparent">
     {{-- Ambient Light penambah kontras --}}
     <div class="absolute top-0 right-1/4 w-96 h-96 bg-brand-500/10 rounded-full blur-[150px] pointer-events-none"></div>
@@ -106,12 +121,9 @@
                     </select>
                 </div>
                 <div class="block">
-                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Jenis Layanan Produk</span>
-                    <select name="type" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required>
-                        <option value="">Pilih tipe item</option>
-                        @foreach(['topup' => '⚡ Topup Kilat', 'item' => '⚔️ Item & Skin', 'akun' => '👤 Akun Game', 'voucher' => '🎫 Voucher Digital', 'gamekey' => '🔑 Game Key / Gift Card'] as $value => $label)
-                            <option value="{{ $value }}" @selected(old('type') === $value)>{{ $label }}</option>
-                        @endforeach
+                    <span class="text-xs font-bold uppercase tracking-wider text-slate-400">Sub Kategori Produk</span>
+                    <select id="product-type-select" name="type" data-selected-value="{{ old('type') }}" class="mt-2 w-full rounded-xl input-glass px-4 py-3 text-sm text-white outline-none" required>
+                        <option value="">Pilih sub kategori terlebih dahulu</option>
                     </select>
                 </div>
             </div>
@@ -162,7 +174,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.js"></script>
 
 <!-- Cropping Modal -->
-<div id="cropperModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/85 backdrop-blur-md">
+<div id="cropperModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/85 backdrop-blur-md">
     <div class="bg-[#0b1320] border border-white/10 rounded-2xl max-w-2xl w-full flex flex-col max-h-[90vh]">
         <div class="flex items-center justify-between border-b border-white/5 px-5 py-4">
             <h3 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
@@ -196,6 +208,50 @@
 </div>
 
 <script>
+document.addEventListener('DOMContentLoaded', () => {
+    const categorySelect = document.querySelector('select[name="category_id"]');
+    const typeSelect = document.getElementById('product-type-select');
+
+    if (!categorySelect || !typeSelect) return;
+
+    const subcategoriesByCategory = JSON.parse(document.getElementById('subcategory-map-data')?.textContent || '{}');
+    const selectedType = typeSelect.dataset.selectedValue || '';
+
+    const renderTypeOptions = (categoryId) => {
+        const options = subcategoriesByCategory[String(categoryId)] || [];
+        typeSelect.innerHTML = '<option value="">Pilih sub kategori</option>';
+
+        if (!options.length) {
+            const empty = document.createElement('option');
+            empty.value = '';
+            empty.textContent = 'Pilih kategori dulu';
+            empty.disabled = true;
+            typeSelect.appendChild(empty);
+            typeSelect.value = '';
+            typeSelect.disabled = true;
+            return;
+        }
+
+        typeSelect.disabled = false;
+
+        options.forEach((option) => {
+            const item = document.createElement('option');
+            item.value = option.value;
+            item.textContent = option.label;
+            if (option.value === selectedType) {
+                item.selected = true;
+            }
+            typeSelect.appendChild(item);
+        });
+    };
+
+    categorySelect.addEventListener('change', () => {
+        typeSelect.dataset.selectedValue = '';
+        renderTypeOptions(categorySelect.value);
+    });
+
+    renderTypeOptions(categorySelect.value);
+});
     function compressImage(file, maxWidth = 1200, maxHeight = 1200, quality = 0.8) {
         return new Promise((resolve) => {
             const reader = new FileReader();
@@ -309,6 +365,7 @@
         reader.onload = function(e) {
             cropperImage.src = e.target.result;
             cropperModal.classList.remove('hidden');
+            cropperModal.classList.add('flex');
             
             // Destroy any existing cropper first
             if (cropper) {
@@ -335,6 +392,7 @@
 
     function closeCropper() {
         cropperModal.classList.add('hidden');
+        cropperModal.classList.remove('flex');
         if (cropper) {
             cropper.destroy();
             cropper = null;

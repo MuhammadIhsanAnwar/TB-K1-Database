@@ -5,6 +5,7 @@ use Illuminate\Database\Seeder;
 use App\Models\Product;
 use App\Models\User;
 use App\Models\Category;
+use App\Support\MarketplaceCategoryCatalog;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 
@@ -48,7 +49,7 @@ class ProductsTableSeeder extends Seeder
                         'is_trending' => false,
                         'delivery_content' => null,
                         'file_path' => null,
-                        'type' => collect(['topup', 'item', 'akun', 'voucher', 'gamekey'])->random(),
+                        'type' => collect(MarketplaceCategoryCatalog::leafSlugs())->random(),
                         'status' => 'published',  // ✅ SET STATUS TO PUBLISHED
                     ];
 

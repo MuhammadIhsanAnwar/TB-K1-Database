@@ -12,7 +12,7 @@
 <a href="{{ route('products.show', $product->slug) }}" class="product-card group relative flex flex-col">
 
   {{-- Ribbon for special types --}}
-  @if(($product->type ?? '') === 'topup')
+  @if(($product->category?->slug ?? '') === 'top-up-game')
     <span class="ribbon ribbon-blue">Top Up</span>
   @elseif($product->sold_count > 100)
     <span class="ribbon">Bestseller</span>

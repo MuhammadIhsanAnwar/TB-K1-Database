@@ -1,16 +1,9 @@
 @extends('layouts.app')
-@section('title', ucfirst($type) . ' — Lapak Geming')
+@section('title', \App\Support\MarketplaceCategoryCatalog::labelForType($type) . ' — Lapak Geming')
 
 @section('content')
 @php
-    $typeLabels = [
-        'topup' => 'Top Up',
-        'item' => 'Item',
-        'akun' => 'Akun',
-        'voucher' => 'Voucher',
-        'gamekey' => 'Game Key',
-    ];
-    $label = $typeLabels[$type] ?? ucfirst($type);
+    $label = \App\Support\MarketplaceCategoryCatalog::labelForType($type);
 @endphp
 
 <section class="max-w-7xl mx-auto px-4 py-12">
