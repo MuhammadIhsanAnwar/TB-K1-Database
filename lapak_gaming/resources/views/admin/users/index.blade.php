@@ -576,6 +576,7 @@ a{
                     </a>
                   </th>
                   <th class="px-6 py-4">Status Toko</th>
+                  <th class="px-6 py-4">Status Operasional</th>
                   <th class="px-6 py-4 text-right">Tindakan Ketat</th>
                 </tr>
               </thead>
@@ -609,6 +610,24 @@ a{
                         <p class="text-[11px] text-rose-400/80 mt-1 max-w-[200px] truncate font-medium" title="{{ $seller->suspend_reason }}">
                           Reason: {{ $seller->suspend_reason }}
                         </p>
+                      @endif
+                    </td>
+                    <td class="px-6 py-4 whitespace-nowrap">
+                      @if($seller->seller_status !== 'approved')
+                        <span class="pill pill-suspended">
+                          <span class="w-1.5 h-1.5 rounded-full bg-red-400"></span>
+                          Nonaktif
+                        </span>
+                      @elseif(! empty($seller->deactivated_at))
+                        <span class="pill pill-pending">
+                          <span class="w-1.5 h-1.5 rounded-full bg-amber-400"></span>
+                          Nonaktif
+                        </span>
+                      @else
+                        <span class="pill pill-active">
+                          <span class="w-1.5 h-1.5 rounded-full bg-emerald-400"></span>
+                          Aktif
+                        </span>
                       @endif
                     </td>
                     <td class="px-6 py-4 text-right whitespace-nowrap">

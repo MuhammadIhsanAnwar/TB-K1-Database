@@ -139,6 +139,7 @@
         </div>
         @endif
 
+        @if(empty($storeDeactivated))
         {{-- ── STATS CARDS GRID (TRANSPARENT) ────────────────────── --}}
         <div class="reveal reveal-delay-1 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {{-- Card 1: Saldo --}}
@@ -314,6 +315,22 @@
             </section>
             
         </div>
+        @endif
+
+        @if(!empty($storeDeactivated))
+        <div class="rounded-[26px] border border-dashed border-slate-700 bg-[#0B1220]/90 px-6 py-8 text-center">
+            <h2 class="text-xl font-black text-white">Menu dashboard seller dibatasi sementara</h2>
+            <p class="mt-3 text-sm leading-relaxed text-slate-400">Karena toko sedang nonaktif, menu seperti edit profil, tambah produk, kelola etalase, dan pesan pelanggan disembunyikan sampai toko diaktifkan kembali.</p>
+            <div class="mt-6">
+                <form method="POST" action="{{ route('seller.store.activate') }}">
+                    @csrf
+                    <button type="submit" onclick="return confirm('Aktifkan kembali toko sekarang?')" class="rounded-2xl bg-sky-500 px-5 py-3 text-sm font-bold text-slate-950 transition hover:bg-sky-400">
+                        Aktifkan Kembali Toko
+                    </button>
+                </form>
+            </div>
+        </div>
+        @endif
     </div>
 </div>
 
