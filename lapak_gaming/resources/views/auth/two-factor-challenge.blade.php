@@ -95,7 +95,11 @@
     @endif
 
     <div class="challenge-card p-7 sm:p-8">
-      @if(count($availableMethods) > 1 && ! $challengeMethod)
+      @php
+        $hasMultipleMethods = count($availableMethods) > 1;
+      @endphp
+
+      @if($hasMultipleMethods)
         <form method="POST" action="{{ route('two-factor.challenge.method') }}" class="space-y-4">
           @csrf
 
@@ -104,7 +108,7 @@
             <div class="space-y-3">
               @foreach($availableMethods as $methodOption)
                 <label class="flex items-center gap-3 rounded-2xl border border-slate-700 bg-slate-950 px-4 py-3 text-white cursor-pointer">
-                  <input type="radio" name="method" value="{{ $methodOption }}" class="h-4 w-4 text-amber-500 focus:ring-amber-400" required>
+                  <input type="radio" name="method" value="{{ $methodOption }}" class="h-4 w-4 text-amber-500 focus:ring-amber-400" {{ $challengeMethod === $methodOption ? 'checked' : '' }} required>
                   <span>{{ $methodOption === 'email' ? 'Email' : 'Google Authenticator' }}</span>
                 </label>
               @endforeach
@@ -119,7 +123,24 @@
         <div class="mt-5 text-center text-xs text-slate-500">
           Pilih salah satu metode untuk menerima kode verifikasi, lalu lanjutkan masuk.
         </div>
-      @else
+
+        @if($challengeMethod)
+          <div class="mt-6 rounded-2xl border border-slate-700 bg-slate-950 p-4 text-slate-300 text-sm">
+            <p class="font-semibold text-white mb-2">Metode saat ini: {{ $challengeMethod === 'email' ? 'Email' : 'Google Authenticator' }}</p>
+            @if(in_array('email', $availableMethods, true))
+              <form method="POST" action="{{ route('two-factor.challenge.method') }}" class="space-y-3">
+                @csrf
+                <input type="hidden" name="method" value="email">
+                <button type="submit" class="challenge-btn">
+                  Kirim ulang kode lewat Email
+                </button>
+              </form>
+            @endif
+          </div>
+        @endif
+      @endif
+
+      @if(! $hasMultipleMethods || $challengeMethod)
         <form method="POST" action="{{ route('two-factor.verify') }}" class="space-y-4">
           @csrf
           @if($challengeMethod)
