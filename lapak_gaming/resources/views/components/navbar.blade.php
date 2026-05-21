@@ -526,6 +526,7 @@
         </button>
         <div id="notif-dropdown" data-notifications-url="{{ route('notifications.poll') }}" class="dropdown-panel absolute right-0 top-full mt-2 w-80 rounded-xl shadow-card-hover"
              data-notifications-read-all-url="{{ route('notifications.read-all') }}"
+             data-notifications-read-base-url="{{ route('notifications.index') }}"
              style="background:#0D1421;border:1px solid #1E2D45;">
           <div class="flex items-center justify-between px-4 py-3" style="border-bottom:1px solid #1E2D45;">
             <span class="font-display font-semibold text-sm text-white">Notifikasi</span>

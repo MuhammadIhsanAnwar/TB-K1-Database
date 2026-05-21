@@ -844,9 +844,8 @@
       if (!panel || !body) return;
 
       const notificationsUrl = panel.dataset.notificationsUrl;
-      if (!notificationsUrl) return;
-
-      const notificationReadBaseUrl = new URL(notificationsUrl, window.location.href).pathname.replace(/\/poll\/?$/, '');
+      const notificationReadBaseUrl = panel.dataset.notificationsReadBaseUrl;
+      if (!notificationsUrl || !notificationReadBaseUrl) return;
 
       body.innerHTML = '<div class="px-4 py-3 text-sm text-slate-400 text-center">Memuat notifikasi...</div>';
 
@@ -908,10 +907,11 @@
             if (!notificationId) return;
 
             const csrf = document.querySelector('meta[name="csrf-token"]')?.getAttribute('content');
-            const readUrl = `${notificationReadBaseUrl}/${notificationId}/read`;
+            const url = new URL(notificationReadBaseUrl, window.location.origin);
+            url.pathname = `${url.pathname.replace(/\/$/, '')}/${notificationId}/read`;
 
             try {
-              await fetch(readUrl, {
+              await fetch(url.toString(), {
                 method: 'POST',
                 credentials: 'same-origin',
                 headers: {
