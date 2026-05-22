@@ -166,18 +166,12 @@ class ProductSeederFromExcel extends Seeder
         $subSlug = $this->generateSlug($subName);
 
         if ($subSlug !== '') {
-            $childSlugCandidates = array_map(
-                fn(string $parentSlug) => $parentSlug . '-' . $subSlug,
-                $parentSlugCandidates
-            );
+            $childSlugCandidates = array_unique(array_filter(array_merge(
+                array_map(fn(string $parentSlug) => $parentSlug . '-' . $subSlug, $parentSlugCandidates),
+                [$subSlug]
+            )));
 
-            $childSlugCandidates[] = $subSlug;
-            $childSlugCandidates = array_unique(array_filter($childSlugCandidates));
-
-            $category = Category::query()
-                ->whereIn('slug', $childSlugCandidates)
-                ->first();
-
+            $category = Category::query()->whereIn('slug', $childSlugCandidates)->first();
             if ($category) {
                 return $category;
             }
@@ -186,16 +180,66 @@ class ProductSeederFromExcel extends Seeder
                 ->whereHas('parent', fn($query) => $query->whereIn('slug', $parentSlugCandidates))
                 ->whereRaw('LOWER(name) = ?', [strtolower($subName)])
                 ->first();
+            if ($category) {
+                return $category;
+            }
 
+            $parent = $this->findParentCategory($parentName);
+            if ($parent) {
+                $newSlug = $parent->slug . '-' . $subSlug;
+                return Category::firstOrCreate(
+                    ['slug' => $newSlug],
+                    [
+                        'name' => $subName,
+                        'parent_id' => $parent->id,
+                        'sort_order' => 0,
+                        'is_active' => true,
+                    ]
+                );
+            }
+        }
+
+        return $this->findParentCategory($parentName);
+    }
+
+    private function findParentCategory(string $name): ?Category
+    {
+        $slugCandidates = $this->getParentSlugCandidates($name);
+
+        foreach ($slugCandidates as $candidate) {
+            $category = Category::query()->where('slug', $candidate)->first();
             if ($category) {
                 return $category;
             }
         }
 
-        foreach ($parentSlugCandidates as $candidate) {
-            $category = Category::query()->where('slug', $candidate)->first();
+        if ($name !== '') {
+            $category = Category::query()
+                ->whereRaw('LOWER(name) = ?', [strtolower($name)])
+                ->first();
             if ($category) {
                 return $category;
+            }
+        }
+
+        foreach ($slugCandidates as $candidate) {
+            $fallbackName = match ($candidate) {
+                'top-up-game' => 'Top Up Game',
+                'pulsa-utilitas' => 'Pulsa & Utilitas',
+                'aplikasi-software' => 'Aplikasi & Software',
+                'game-key' => 'Game Key',
+                default => $name,
+            };
+
+            if ($fallbackName !== '') {
+                return Category::firstOrCreate(
+                    ['slug' => $candidate],
+                    [
+                        'name' => $fallbackName,
+                        'sort_order' => 0,
+                        'is_active' => true,
+                    ]
+                );
             }
         }
 
@@ -214,7 +258,7 @@ class ProductSeederFromExcel extends Seeder
         $lowerName = strtolower($parentName);
 
         if (str_contains($lowerName, 'top up') && !str_contains($lowerName, 'game')) {
-            $candidates[] = $this->generateSlug($parentName . ' Game');
+            $candidates[] = $this->generateSlug('Top Up Game');
         }
 
         if (str_contains($lowerName, 'pulsa') && !str_contains($lowerName, 'utilitas')) {
