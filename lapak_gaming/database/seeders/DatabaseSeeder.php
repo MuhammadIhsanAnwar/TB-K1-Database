@@ -22,7 +22,10 @@ class DatabaseSeeder extends Seeder {
         ]);
 
         if (app()->environment(['local', 'testing'])) {
-            $this->call(ProductViewsAndReviewsSeeder::class);
+            $this->call([
+                ProductViewsAndReviewsSeeder::class,
+                ComprehensiveReviewsSeeder::class,
+            ]);
         }
 
         // Admin (only create if not exists)

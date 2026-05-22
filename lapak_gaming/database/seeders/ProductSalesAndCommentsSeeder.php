@@ -111,9 +111,7 @@ class ProductSalesAndCommentsSeeder extends Seeder
                             $sellerReplyData['seller_id'] = $product->seller_id;
                         }
 
-                        $sellerReply = ProductComment::create([
-                            ...$sellerReplyData,
-                        ]);
+                        $sellerReply = ProductComment::create($sellerReplyData);
 
                         $comment->increment('replies_count');
                     }
