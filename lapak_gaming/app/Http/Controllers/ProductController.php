@@ -11,7 +11,7 @@ class ProductController extends Controller
     public function show(string $slug)
     {
         $product = Product::where('slug', $slug)->with([
-            'seller',
+            'seller' => fn ($query) => $query->withCount('products')->with('profile'),
             'category',
             'reviews.user',
         ])->firstOrFail();

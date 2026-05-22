@@ -203,6 +203,13 @@ class User extends Authenticatable implements MustVerifyEmail
         return (float) ($this->wallet?->balance ?? 0);
     }
 
+    public function getStoreNameAttribute(): string
+    {
+        $shopName = trim((string) ($this->attributes['shop_name'] ?? ''));
+
+        return $shopName !== '' ? $shopName : ($this->name ?? 'Toko');
+    }
+
     /** Return the shop photo URL or null. */
     public function getShopPhotoUrlAttribute(): ?string
     {

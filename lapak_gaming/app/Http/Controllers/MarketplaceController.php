@@ -147,6 +147,29 @@ class MarketplaceController extends Controller
         ]);
     }
 
+    public function store(User $seller): View
+    {
+        abort_unless($seller->isSellerAccount(), 404);
+
+        $seller->loadCount('products');
+        $seller->loadMissing(['profile']);
+
+        $products = Schema::hasTable('products')
+            ? Product::query()
+                ->active()
+                ->inStock()
+                ->where('seller_id', $seller->id)
+                ->with(['category', 'seller'])
+                ->latest()
+                ->paginate(12)
+            : collect();
+
+        return view('marketplace.store', [
+            'seller' => $seller,
+            'products' => $products,
+        ]);
+    }
+
     public function browse(Request $request): View
     {
         $products = Schema::hasTable('products')

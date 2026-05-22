@@ -4,6 +4,7 @@
   $productName = data_get($product, 'name', 'Produk');
   $productCategory = data_get($product, 'category');
   $productSeller = data_get($product, 'seller');
+  $storeName = data_get($productSeller, 'store_name', data_get($productSeller, 'name', 'Toko'));
   $productRating = data_get($product, 'rating_average', 0);
   $productReviews = data_get($product, 'reviews', collect());
   $productPrice = data_get($product, 'price', 0);
@@ -44,9 +45,12 @@
             <span class="badge badge-orange">⚡ Top Up</span>
           @endif
           @if($productSeller)
-            <span class="badge" style="background:rgba(30,45,69,0.8);color:#94a3b8;border:1px solid #1E2D45;">
-              Oleh {{ $productSeller->name }}
-            </span>
+            <a href="{{ route('marketplace.store', $productSeller) }}"
+               class="badge inline-flex items-center gap-2"
+               style="background:rgba(30,45,69,0.8);color:#94a3b8;border:1px solid #1E2D45;">
+              <span>Oleh {{ $storeName }}</span>
+              <span class="text-xs text-cyan-300">Lihat toko →</span>
+            </a>
           @endif
         </div>
 
@@ -235,7 +239,7 @@
               {{ strtoupper(substr($productSeller->name ?? 'S', 0, 2)) }}
             </div>
             <div>
-              <div class="font-semibold text-white text-sm">{{ $productSeller->name }}</div>
+              <div class="font-semibold text-white text-sm">{{ $storeName }}</div>
               <div class="text-xs text-slate-400 mt-0.5">
                 Level: <span class="text-brand-400">{{ $productSeller->sellerLevel?->name ?? 'Starter' }}</span>
               </div>
@@ -270,6 +274,11 @@
             class="btn-ghost w-full py-2.5 rounded-xl text-sm text-center"> 
             💬 Chat Penjual</a>
           @endauth
+
+          <a href="{{ route('marketplace.store', $productSeller) }}"
+             class="btn-primary w-full py-2.5 rounded-xl text-sm text-center mt-3">
+            Lihat Profil Toko
+          </a>
         </div>
         @endif
 

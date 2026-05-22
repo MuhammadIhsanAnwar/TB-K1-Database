@@ -42,6 +42,7 @@ Route::prefix('marketplace')->name('marketplace.')->group(function () {
     Route::get('/browse', [MarketplaceController::class, 'browse'])->name('browse');
     Route::get('/trending', [MarketplaceController::class, 'trending'])->name('trending');
     Route::get('/deals', [MarketplaceController::class, 'deals'])->name('deals');
+    Route::get('/store/{seller}', [MarketplaceController::class, 'store'])->name('store');
     Route::get('/category/{slug}', [MarketplaceController::class, 'category'])->name('category');
 });
 
