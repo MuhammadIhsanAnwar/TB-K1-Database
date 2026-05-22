@@ -658,7 +658,7 @@ spline-viewer iframe {
     {{-- CATEGORY GRID --}}
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 xl:grid-cols-6 gap-5">
 
-      @foreach($categories as $cat)
+      @foreach($categories->take(3) as $cat)
 
       <a href="{{ route('categories.show', $cat->slug) }}"
    class="cat-btn reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}

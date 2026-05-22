@@ -162,7 +162,7 @@ class ProductSeederFromExcel extends Seeder
     private function findCategory(array $data): ?Category
     {
         $parentName = $this->normalizeParentCategoryName($data['kategori'] ?? '');
-        $subName = trim($data['sub_kategori'] ?? '');
+        $subName = $this->normalizeSubCategoryName($data['sub_kategori'] ?? '');
         $parentSlugCandidates = $this->getParentSlugCandidates($parentName);
         $subSlug = $this->generateSlug($subName);
 
@@ -209,6 +209,18 @@ class ProductSeederFromExcel extends Seeder
         }
 
         return $this->findParentCategory($parentName);
+    }
+
+    private function normalizeSubCategoryName(string $name): string
+    {
+        $raw = strtolower(trim($name));
+        $aliases = [
+            "assassin's creed shadows" => "Assassin’s Creed Shadows",
+            'playstation gift card' => 'PlayStation Network Card',
+            'google play' => 'Google Play Gift Card',
+        ];
+
+        return $aliases[$raw] ?? trim($name);
     }
 
     private function normalizeParentCategoryName(string $name): string
