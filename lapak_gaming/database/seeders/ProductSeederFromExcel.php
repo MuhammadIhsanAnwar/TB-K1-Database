@@ -12,8 +12,8 @@ class ProductSeederFromExcel extends Seeder
 {
     public function run(): void
     {
-        // Path ke file CSV
-        $csvFile = 'd:/Data Scrape.csv';
+        // Path ke file CSV di folder seeder yang sama
+        $csvFile = __DIR__ . '/Data Scrape.csv';
 
         // Validasi file CSV ada
         if (!file_exists($csvFile)) {
