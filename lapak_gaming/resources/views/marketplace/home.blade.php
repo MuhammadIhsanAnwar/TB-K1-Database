@@ -506,6 +506,114 @@ spline-viewer iframe {
 @endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
+{{-- TOP 3 CATEGORIES FEATURED SECTION                          --}}
+{{-- ═══════════════════════════════════════════════════════════ --}}
+@if(isset($topThreeCategories) && $topThreeCategories->count() > 0)
+<section class="py-16 overflow-hidden">
+  <div class="max-w-7xl mx-auto px-4">
+    
+    {{-- HEADER --}}
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-blue-400/20 bg-blue-400/5 mb-4">
+        <span class="w-1.5 h-1.5 rounded-full bg-blue-400 animate-pulse"></span>
+        <span class="text-blue-300 text-xs font-bold tracking-wide uppercase">🔥 Kategori Populer</span>
+      </div>
+      
+      <h2 class="text-4xl md:text-5xl font-black text-white mb-3">
+        Kategori Pilihan Terbaik
+      </h2>
+      <p class="text-slate-400 max-w-2xl mx-auto">
+        Koleksi produk gaming paling dicari dengan harga terbaik dan rating tertinggi
+      </p>
+    </div>
+
+    {{-- GRID: 3 COLUMNS --}}
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      
+      @foreach($topThreeCategories as $index => $group)
+        @php
+          $category = $group['category'];
+          $products = $group['products'];
+          $colors = [
+            ['border' => 'border-cyan-500/40', 'bg-start' => 'from-cyan-500/20', 'bg-end' => 'to-blue-500/10', 'badge-bg' => 'bg-cyan-500/20', 'badge-text' => 'text-cyan-300', 'badge-border' => 'border-cyan-500/40', 'icon-bg' => 'from-cyan-400/15', 'text-accent' => 'text-cyan-300'],
+            ['border' => 'border-purple-500/40', 'bg-start' => 'from-purple-500/20', 'bg-end' => 'to-pink-500/10', 'badge-bg' => 'bg-purple-500/20', 'badge-text' => 'text-purple-300', 'badge-border' => 'border-purple-500/40', 'icon-bg' => 'from-purple-400/15', 'text-accent' => 'text-purple-300'],
+            ['border' => 'border-orange-500/40', 'bg-start' => 'from-orange-500/20', 'bg-end' => 'to-red-500/10', 'badge-bg' => 'bg-orange-500/20', 'badge-text' => 'text-orange-300', 'badge-border' => 'border-orange-500/40', 'icon-bg' => 'from-orange-400/15', 'text-accent' => 'text-orange-300'],
+          ];
+          $color = $colors[$index] ?? $colors[0];
+        @endphp
+        
+        <div class="reveal-card reveal-delay-{{ $index + 1 }} group relative rounded-[32px] border {{ $color['border'] }} bg-gradient-to-br {{ $color['bg-start'] }} {{ $color['bg-end'] }} p-7 overflow-hidden hover:-translate-y-2 transition-all duration-500">
+          
+          {{-- GLOW EFFECT --}}
+          <div class="absolute inset-0 opacity-0 group-hover:opacity-100 transition duration-500 pointer-events-none">
+            <div class="absolute -top-20 -right-20 w-64 h-64 rounded-full {{ $color['badge-bg'] }} blur-3xl"></div>
+            <div class="absolute -bottom-20 -left-20 w-64 h-64 rounded-full {{ $color['badge-bg'] }} blur-3xl opacity-50"></div>
+          </div>
+          
+          <div class="relative z-10">
+            
+            {{-- HEADER: Icon + Category Name --}}
+            <div class="flex items-start justify-between mb-7">
+              <div>
+                <div class="w-16 h-16 rounded-2xl bg-gradient-to-br {{ $color['icon-bg'] }} to-transparent border {{ $color['badge-border'] }} flex items-center justify-center text-3xl mb-4 group-hover:scale-110 transition duration-500">
+                  @if($category->image)
+                    <img src="{{ $category->image_url }}" alt="{{ $category->name }}" class="w-12 h-12 object-cover rounded-lg">
+                  @else
+                    {{ $category->icon ?? '🎮' }}
+                  @endif
+                </div>
+                
+                <h3 class="text-2xl font-bold text-white mb-2">{{ $category->name }}</h3>
+                <p class="text-slate-400 text-sm">{{ $products->count() }} produk tersedia</p>
+              </div>
+              
+              <a href="{{ route('categories.show', $category->slug) }}" class="flex items-center justify-center w-10 h-10 rounded-full {{ $color['badge-bg'] }} border {{ $color['badge-border'] }} {{ $color['text-accent'] }} hover:scale-110 transition duration-300">
+                →
+              </a>
+            </div>
+            
+            {{-- PRODUCTS SHOWCASE (3 Products) --}}
+            <div class="space-y-3">
+              @foreach($products->take(3) as $product)
+              <a href="{{ route('products.show', $product->slug) }}" class="flex items-start gap-4 p-4 rounded-xl bg-white/[0.03] hover:bg-white/[0.08] backdrop-blur-sm border border-white/5 hover:border-white/10 transition duration-300 group/item">
+                
+                {{-- PRODUCT IMAGE --}}
+                <div class="flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden bg-slate-900 border border-white/5">
+                  <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover/item:scale-110 transition duration-500">
+                </div>
+                
+                {{-- PRODUCT INFO --}}
+                <div class="flex-1 min-w-0">
+                  <h4 class="text-sm font-bold text-white truncate group-hover/item:{{ $color['text-accent'] }} transition">{{ $product->name }}</h4>
+                  
+                  {{-- RATING --}}
+                  <div class="flex items-center gap-2 mt-1 mb-2">
+                    <span class="text-xs text-yellow-300">⭐ {{ number_format($product->rating_average ?? 0, 1) }}</span>
+                    <span class="text-xs text-slate-500">({{ $product->reviews_count ?? 0 }} ulasan)</span>
+                  </div>
+                  
+                  {{-- PRICE --}}
+                  <div class="text-sm font-bold {{ $color['text-accent'] }}">Rp {{ number_format($product->price, 0, ',', '.') }}</div>
+                </div>
+              </a>
+              @endforeach
+            </div>
+            
+            {{-- FOOTER BUTTON --}}
+            <a href="{{ route('categories.show', $category->slug) }}" class="mt-6 block w-full text-center px-4 py-3 rounded-xl border {{ $color['badge-border'] }} {{ $color['badge-bg'] }} {{ $color['text-accent'] }} font-bold text-sm hover:scale-105 transition duration-300">
+              Lihat Semua Produk →
+            </a>
+            
+          </div>
+        </div>
+      @endforeach
+      
+    </div>
+  </div>
+</section>
+@endif
+
+{{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- CATEGORY SHORTCUTS — PREMIUM GRID                         --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="pb-16">

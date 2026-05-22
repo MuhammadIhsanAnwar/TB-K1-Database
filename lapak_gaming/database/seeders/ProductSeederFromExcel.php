@@ -166,24 +166,34 @@ class ProductSeederFromExcel extends Seeder
         $subSlug = $this->generateSlug($subName);
 
         if ($subSlug !== '') {
-            $childSlugCandidates = array_unique(array_filter(array_merge(
-                array_map(fn(string $parentSlug) => $parentSlug . '-' . $subSlug, $parentSlugCandidates),
-                [$subSlug]
-            )));
-
+            // Cari kategori berdasarkan slug dan parent
             $category = Category::query()
-                ->whereIn('slug', $childSlugCandidates)
-                ->orWhere(function ($query) use ($parentSlugCandidates, $subName) {
-                    $query->whereHas('parent', fn($query) => $query->whereIn('slug', $parentSlugCandidates))
-                        ->whereRaw('LOWER(name) = ?', [strtolower($subName)]);
+                ->where(function ($query) use ($parentSlugCandidates, $subSlug) {
+                    $childSlugCandidates = array_map(
+                        fn(string $parentSlug) => $parentSlug . '-' . $subSlug,
+                        $parentSlugCandidates
+                    );
+                    $query->whereIn('slug', array_merge($childSlugCandidates, [$subSlug]));
                 })
                 ->first();
+
             if ($category) {
                 return $category;
             }
 
+            // Cari kategori berdasarkan parent dan nama (case-insensitive)
             $parent = $this->findParentCategory($parentName);
             if ($parent) {
+                $category = Category::query()
+                    ->where('parent_id', $parent->id)
+                    ->whereRaw('LOWER(name) = ?', [strtolower($subName)])
+                    ->first();
+
+                if ($category) {
+                    return $category;
+                }
+
+                // Jika belum ada, buat kategori baru
                 $newSlug = $parent->slug . '-' . $subSlug;
                 return Category::firstOrCreate(
                     ['slug' => $newSlug],

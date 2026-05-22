@@ -88,6 +88,9 @@ class MarketplaceController extends Controller
             : collect();
 
         $categoryProducts = collect();
+        
+        // Get top 3 categories with products
+        $topThreeCategories = collect();
 
         if (Schema::hasTable('products')) {
             $categoryProducts = $allCategories->map(function (Category $category) {
@@ -108,6 +111,9 @@ class MarketplaceController extends Controller
                     ->take(12),
                 ];
             })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->values();
+            
+            // Get only first 3 categories for featured section
+            $topThreeCategories = $categoryProducts->take(3);
         }
         
         return view('marketplace.home', [
@@ -126,6 +132,7 @@ class MarketplaceController extends Controller
             'heroBanners' => $heroBanners,
             'featuredBanners' => $featuredBanners,
             'categoryProducts' => $categoryProducts,
+            'topThreeCategories' => $topThreeCategories,
         ]);
     }
 
