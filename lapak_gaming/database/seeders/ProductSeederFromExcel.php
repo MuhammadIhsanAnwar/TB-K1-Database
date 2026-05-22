@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use App\Models\Product;
 use App\Models\Category;
+use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 
@@ -24,6 +25,12 @@ class ProductSeederFromExcel extends Seeder
         // Baca dan parse CSV
         $products = $this->parseCSV($csvFile);
 
+        $sellerId = $this->getSellerId();
+        if (! $sellerId) {
+            $this->command->error('Tidak ada seller/user yang tersedia untuk seller_id. Tambahkan user seller terlebih dahulu.');
+            return;
+        }
+
         $this->command->info("Total produk yang akan di-seed: " . count($products));
 
         // Proses setiap produk
@@ -42,16 +49,26 @@ class ProductSeederFromExcel extends Seeder
                 // Bersihkan harga (hapus "Rp" dan karakter non-angka)
                 $price = $this->parsePrice($data['harga']);
 
-                // Upsert produk berdasarkan nama
+                $slug = $this->generateSlug($data['nama_produk']) . '-' . ($index + 1);
+
                 Product::updateOrCreate(
-                    ['name' => $data['nama_produk']],
+                    ['slug' => $slug],
                     [
+                        'seller_id' => $sellerId,
                         'category_id' => $category->id,
-                        'price' => $price,
-                        'image' => $data['foto_produk'] ?? null,
-                        'sold_count' => $this->parseSoldCount($data['jumlah_terjual']),
+                        'name' => $data['nama_produk'],
+                        'slug' => $slug,
                         'description' => null,
-                        'is_active' => true,
+                        'price' => $price,
+                        'sale_price' => null,
+                        'stock' => 10,
+                        'type' => 'item',
+                        'file_path' => $data['foto_produk'] ?? null,
+                        'delivery_content' => null,
+                        'is_auto_delivery' => true,
+                        'is_featured' => false,
+                        'is_trending' => false,
+                        'status' => 'published',
                     ]
                 );
 
@@ -103,12 +120,12 @@ class ProductSeederFromExcel extends Seeder
     /**
      * Parse harga "Rp28.360" menjadi integer 28360
      */
-    private function parsePrice(string $price): int
+    private function parsePrice(string $price): float
     {
         // Hapus "Rp" dan whitespace
         $cleaned = str_replace(['Rp', ' ', '.'], '', $price);
-        // Konversi ke integer
-        return (int) $cleaned;
+        // Konversi ke float dengan 2 desimal
+        return (float) $cleaned;
     }
 
     /**
@@ -136,5 +153,11 @@ class ProductSeederFromExcel extends Seeder
                 preg_replace('/[^\w\s-]/', '', $text)
             )
         );
+    }
+
+    private function getSellerId(): ?int
+    {
+        return User::query()->where('role', 'seller')->value('id')
+            ?? User::query()->value('id');
     }
 }
