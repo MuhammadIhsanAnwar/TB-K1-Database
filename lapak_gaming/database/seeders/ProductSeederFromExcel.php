@@ -160,7 +160,7 @@ class ProductSeederFromExcel extends Seeder
 
     private function findCategory(array $data): ?Category
     {
-        $parentName = trim($data['kategori'] ?? '');
+        $parentName = $this->normalizeParentCategoryName($data['kategori'] ?? '');
         $subName = trim($data['sub_kategori'] ?? '');
         $parentSlugCandidates = $this->getParentSlugCandidates($parentName);
         $subSlug = $this->generateSlug($subName);
@@ -171,14 +171,12 @@ class ProductSeederFromExcel extends Seeder
                 [$subSlug]
             )));
 
-            $category = Category::query()->whereIn('slug', $childSlugCandidates)->first();
-            if ($category) {
-                return $category;
-            }
-
             $category = Category::query()
-                ->whereHas('parent', fn($query) => $query->whereIn('slug', $parentSlugCandidates))
-                ->whereRaw('LOWER(name) = ?', [strtolower($subName)])
+                ->whereIn('slug', $childSlugCandidates)
+                ->orWhere(function ($query) use ($parentSlugCandidates, $subName) {
+                    $query->whereHas('parent', fn($query) => $query->whereIn('slug', $parentSlugCandidates))
+                        ->whereRaw('LOWER(name) = ?', [strtolower($subName)]);
+                })
                 ->first();
             if ($category) {
                 return $category;
@@ -200,6 +198,35 @@ class ProductSeederFromExcel extends Seeder
         }
 
         return $this->findParentCategory($parentName);
+    }
+
+    private function normalizeParentCategoryName(string $name): string
+    {
+        $raw = strtolower(trim($name));
+        $aliases = [
+            'top up' => 'Top Up Game',
+            'topup' => 'Top Up Game',
+            'top-up' => 'Top Up Game',
+            'top up game' => 'Top Up Game',
+            'top-up game' => 'Top Up Game',
+            'game key' => 'Game Key',
+            'voucher' => 'Voucher',
+            'pulsa' => 'Pulsa & Utilitas',
+            'pulsa utilitas' => 'Pulsa & Utilitas',
+            'pulsa & utilitas' => 'Pulsa & Utilitas',
+            'aplikasi software' => 'Aplikasi & Software',
+            'aplikasi & software' => 'Aplikasi & Software',
+            'aplikasi dan software' => 'Aplikasi & Software',
+            'item' => 'Item',
+            'joki' => 'Joki',
+            'streaming' => 'Streaming',
+            'live show' => 'Live Show',
+            'koin game' => 'Koin Game',
+            'top up login' => 'Top Up Login',
+            'roblox games' => 'Roblox Games',
+        ];
+
+        return $aliases[$raw] ?? trim($name);
     }
 
     private function findParentCategory(string $name): ?Category
@@ -228,6 +255,9 @@ class ProductSeederFromExcel extends Seeder
                 'pulsa-utilitas' => 'Pulsa & Utilitas',
                 'aplikasi-software' => 'Aplikasi & Software',
                 'game-key' => 'Game Key',
+                'top-up-login' => 'Top Up Login',
+                'roblox-games' => 'Roblox Games',
+                'koin-game' => 'Koin Game',
                 default => $name,
             };
 
