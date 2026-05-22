@@ -14,6 +14,10 @@ class ProductSeederFromExcel extends Seeder
 {
     public function run(): void
     {
+        // Pastikan kategori sudah ada sebelum seeding produk
+        $this->command->info('Memastikan kategori sudah tersedia...');
+        $this->call(CategorySeeder::class);
+
         // Path ke file CSV di folder seeder yang sama
         $csvFile = __DIR__ . '/Data Scrape.csv';
 
