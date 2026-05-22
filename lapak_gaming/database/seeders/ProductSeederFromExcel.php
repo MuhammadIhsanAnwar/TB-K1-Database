@@ -61,7 +61,7 @@ class ProductSeederFromExcel extends Seeder
                         'category_id' => $category->id,
                         'name' => $data['nama_produk'],
                         'slug' => $slug,
-                        'description' => null,
+                        'description' => $data['deskripsi'] ?: ('Deskripsi singkat untuk ' . $data['nama_produk']),
                         'price' => $price,
                         'sale_price' => null,
                         'stock' => 10,
@@ -111,6 +111,7 @@ class ProductSeederFromExcel extends Seeder
                     'jumlah_terjual' => trim($row[3] ?? ''),
                     'nama_produk' => trim($row[4] ?? ''),
                     'foto_produk' => trim($row[5] ?? ''),
+                    'deskripsi' => trim($row[6] ?? ''),
                 ];
             }
 
