@@ -8,6 +8,7 @@ use App\Models\Category;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductSeederFromExcel extends Seeder
 {
@@ -155,31 +156,76 @@ class ProductSeederFromExcel extends Seeder
 
     private function findCategory(array $data): ?Category
     {
-        $parentSlug = $this->generateSlug($data['kategori']);
-        $subSlug = $this->generateSlug($data['sub_kategori']);
+        $parentName = trim($data['kategori'] ?? '');
+        $subName = trim($data['sub_kategori'] ?? '');
+        $parentSlugCandidates = $this->getParentSlugCandidates($parentName);
+        $subSlug = $this->generateSlug($subName);
 
         if ($subSlug !== '') {
+            $childSlugCandidates = array_map(
+                fn(string $parentSlug) => $parentSlug . '-' . $subSlug,
+                $parentSlugCandidates
+            );
+
+            $childSlugCandidates[] = $subSlug;
+            $childSlugCandidates = array_unique(array_filter($childSlugCandidates));
+
             $category = Category::query()
-                ->where('slug', $subSlug)
-                ->whereHas('parent', fn($query) => $query->where('slug', $parentSlug))
+                ->whereIn('slug', $childSlugCandidates)
                 ->first();
 
             if ($category) {
                 return $category;
             }
 
-            // fallback: subcategory tanpa parent match
-            $category = Category::query()->where('slug', $subSlug)->first();
+            $category = Category::query()
+                ->whereHas('parent', fn($query) => $query->whereIn('slug', $parentSlugCandidates))
+                ->whereRaw('LOWER(name) = ?', [strtolower($subName)])
+                ->first();
+
             if ($category) {
                 return $category;
             }
         }
 
-        if ($parentSlug !== '') {
-            return Category::query()->where('slug', $parentSlug)->first();
+        foreach ($parentSlugCandidates as $candidate) {
+            $category = Category::query()->where('slug', $candidate)->first();
+            if ($category) {
+                return $category;
+            }
         }
 
         return null;
+    }
+
+    private function getParentSlugCandidates(string $parentName): array
+    {
+        $parentName = trim($parentName);
+        $candidates = [];
+
+        if ($parentName !== '') {
+            $candidates[] = $this->generateSlug($parentName);
+        }
+
+        $lowerName = strtolower($parentName);
+
+        if (str_contains($lowerName, 'top up') && !str_contains($lowerName, 'game')) {
+            $candidates[] = $this->generateSlug($parentName . ' Game');
+        }
+
+        if (str_contains($lowerName, 'pulsa') && !str_contains($lowerName, 'utilitas')) {
+            $candidates[] = $this->generateSlug('Pulsa & Utilitas');
+        }
+
+        if (str_contains($lowerName, 'software') || str_contains($lowerName, 'aplikasi')) {
+            $candidates[] = $this->generateSlug('Aplikasi & Software');
+        }
+
+        if (str_contains($lowerName, 'game key') && !str_contains($lowerName, 'game-key')) {
+            $candidates[] = $this->generateSlug('Game Key');
+        }
+
+        return array_values(array_unique(array_filter($candidates)));
     }
 
     private function getSellerId(): ?int
