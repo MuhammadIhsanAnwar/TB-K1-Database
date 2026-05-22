@@ -36,10 +36,8 @@ class ProductSeederFromExcel extends Seeder
         // Proses setiap produk
         foreach ($products as $index => $data) {
             try {
-                // Cari kategori berdasarkan slug
-                $category = Category::where('slug', $this->generateSlug($data['sub_kategori']))
-                    ->orWhere('slug', $this->generateSlug($data['kategori']))
-                    ->first();
+                // Cari kategori berdasarkan subkategori dan kategori induknya
+                $category = $this->findCategory($data);
 
                 if (!$category) {
                     $this->command->warn("Kategori tidak ditemukan untuk: {$data['kategori']} > {$data['sub_kategori']}");
@@ -153,6 +151,35 @@ class ProductSeederFromExcel extends Seeder
                 preg_replace('/[^\w\s-]/', '', $text)
             )
         );
+    }
+
+    private function findCategory(array $data): ?Category
+    {
+        $parentSlug = $this->generateSlug($data['kategori']);
+        $subSlug = $this->generateSlug($data['sub_kategori']);
+
+        if ($subSlug !== '') {
+            $category = Category::query()
+                ->where('slug', $subSlug)
+                ->whereHas('parent', fn($query) => $query->where('slug', $parentSlug))
+                ->first();
+
+            if ($category) {
+                return $category;
+            }
+
+            // fallback: subcategory tanpa parent match
+            $category = Category::query()->where('slug', $subSlug)->first();
+            if ($category) {
+                return $category;
+            }
+        }
+
+        if ($parentSlug !== '') {
+            return Category::query()->where('slug', $parentSlug)->first();
+        }
+
+        return null;
     }
 
     private function getSellerId(): ?int
