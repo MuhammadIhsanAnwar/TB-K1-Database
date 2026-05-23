@@ -3,7 +3,7 @@
 @section('title', 'Daftar Transaksi')
 
 @section('content')
-<div class="relative px-4 pt-28 pb-16">
+<div class="relative px-4 pt-28 pb-16 overflow-x-hidden"> {{-- Tambahkan overflow-x-hidden disini --}}
 
     {{-- BACKGROUND EFFECT --}}
     <div class="pointer-events-none absolute inset-0 -z-10">
@@ -69,7 +69,7 @@
                    class="inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-bold transition {{ $status === $tabKey ? 'border-blue-500/30 bg-blue-500/15 text-blue-200' : 'border-white/10 bg-white/[0.03] text-slate-300 hover:border-blue-500/20 hover:bg-blue-500/[0.08] hover:text-white' }}">
                     <span>{{ $tabLabel }}</span>
                     @if($tabKey !== 'all')
-                        <span class="rounded-full bg-black/20 px-2 py-0.5 text-[11px]">{{ $statusCounts[$tabKey] ?? 0 }}</span>
+                        <span class="rounded-full bg-black/20 px-2 py-0.5 text-[11px]">{{ $tabCount[$tabKey] ?? 0 }}</span>
                     @endif
                 </a>
             @endforeach
