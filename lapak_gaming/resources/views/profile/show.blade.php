@@ -1,53 +1,34 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="relative overflow-hidden bg-[#050816] px-4 py-14">
+<div class="min-h-screen bg-[#050816] px-4 pt-28 pb-14">
 
-    {{-- GLOBAL BACKGROUND --}}
-    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        <div class="absolute -top-40 -right-40 h-[380px] w-[380px] rounded-full bg-blue-500/10 blur-3xl"></div>
-        <div class="absolute bottom-[-180px] left-[-120px] h-[360px] w-[360px] rounded-full bg-orange-500/10 blur-3xl"></div>
-        <div class="absolute top-1/2 left-1/2 h-[260px] w-[260px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/5 blur-3xl"></div>
+    {{-- ═══════════════════════════════════════ --}}
+    {{-- ANIMATED BACKGROUND ELEMENTS          --}}
+    {{-- ═══════════════════════════════════════ --}}
+    <div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
+        
+        {{-- Animated Gradient Orbs --}}
+        <div class="absolute top-0 -left-20 w-[500px] h-[500px] bg-blue-500/20 rounded-full blur-[120px] animate-[orb1_18s_ease-in-out_infinite]"></div>
+        <div class="absolute top-1/3 -right-20 w-[450px] h-[450px] bg-orange-500/15 rounded-full blur-[120px] animate-[orb2_22s_ease-in-out_infinite]"></div>
+        <div class="absolute -bottom-32 left-1/3 w-[400px] h-[400px] bg-cyan-500/15 rounded-full blur-[120px] animate-[orb3_20s_ease-in-out_infinite]"></div>
+        <div class="absolute top-1/2 left-1/2 w-[350px] h-[350px] -translate-x-1/2 -translate-y-1/2 bg-purple-500/10 rounded-full blur-[100px] animate-[orb4_16s_ease-in-out_infinite]"></div>
+        
+        {{-- Floating Particles --}}
+        <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400/60 rounded-full animate-[float1_11s_ease-in-out_infinite]"></div>
+        <div class="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-orange-400/50 rounded-full animate-[float2_14s_ease-in-out_infinite]"></div>
+        <div class="absolute bottom-1/3 left-1/3 w-2 h-2 bg-cyan-400/50 rounded-full animate-[float3_13s_ease-in-out_infinite]"></div>
+        <div class="absolute top-2/3 right-1/4 w-1.5 h-1.5 bg-purple-400/50 rounded-full animate-[float4_12s_ease-in-out_infinite]"></div>
+        <div class="absolute top-1/2 left-1/2 w-2 h-2 bg-emerald-400/60 rounded-full animate-[float5_15s_ease-in-out_infinite]"></div>
+        <div class="absolute bottom-1/4 right-1/3 w-1.5 h-1.5 bg-blue-400/50 rounded-full animate-[float6_10s_ease-in-out_infinite]"></div>
     </div>
 
-    {{-- REVEAL ANIMATION --}}
-    <style>
-        .reveal{
-            opacity:0;
-            transform:translateY(45px);
-            animation:revealUp .9s cubic-bezier(.22,1,.36,1) forwards;
-        }
-
-        .reveal-delay-1{
-            animation-delay:.12s;
-        }
-
-        .reveal-delay-2{
-            animation-delay:.22s;
-        }
-
-        .reveal-delay-3{
-            animation-delay:.32s;
-        }
-
-        @keyframes revealUp{
-            to{
-                opacity:1;
-                transform:translateY(0);
-            }
-        }
-
-        select option{
-            background:#111827;
-            color:white;
-        }
-    </style>
-
-    <div class="relative z-10 mx-auto max-w-5xl space-y-7">
+    {{-- MAIN CONTENT --}}
+    <div class="relative z-10 mx-auto max-w-5xl opacity-0 translate-y-8 animate-[fadeReveal_.9s_ease-out_forwards]">
 
         {{-- HEADER --}}
         <div
-            class="reveal relative overflow-hidden rounded-[34px] border border-blue-500/15 bg-gradient-to-br from-[#060816] via-[#091225] to-[#0B1730] px-7 py-8 shadow-[0_0_80px_rgba(37,99,235,0.12)]">
+            class="relative overflow-hidden rounded-[34px] border border-blue-500/15 bg-gradient-to-br from-[#060816] via-[#091225] to-[#0B1730] px-7 py-8 shadow-[0_0_80px_rgba(37,99,235,0.12)]">
 
             <div
                 class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.18),transparent_35%)]">
@@ -60,7 +41,7 @@
                     <div
                         class="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.18em] text-blue-300 backdrop-blur-xl">
 
-                        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
                         ACCOUNT PROFILE
                     </div>
 
@@ -103,7 +84,7 @@
 
         {{-- PROFILE CARD --}}
         <div
-            class="reveal reveal-delay-1 overflow-hidden rounded-[34px] border border-white/10 bg-[#0B1220]/92 p-7 shadow-[0_0_60px_rgba(37,99,235,0.08)] backdrop-blur-xl">
+            class="mt-8 overflow-hidden rounded-[34px] border border-white/10 bg-[#0B1220]/95 p-7 shadow-[0_0_60px_rgba(37,99,235,0.08)] backdrop-blur-xl">
 
             {{-- PROFILE HEADER --}}
             <div
@@ -144,7 +125,7 @@
                         <span
                             class="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-xs font-bold tracking-wide text-emerald-300">
 
-                            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
                             ACCOUNT ACTIVE
                         </span>
 
@@ -154,8 +135,7 @@
             </div>
 
             {{-- ACCOUNT INFO --}}
-            <div
-                class="reveal reveal-delay-2 mt-7 grid gap-5 md:grid-cols-2">
+            <div class="mt-7 grid gap-5 md:grid-cols-2">
 
                 {{-- EMAIL --}}
                 <div
@@ -213,7 +193,7 @@
                         <span
                             class="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm font-bold text-emerald-300">
 
-                            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
                             Active
                         </span>
 
@@ -225,8 +205,7 @@
             {{-- ADDITIONAL INFO --}}
             @if($user->userProfile)
 
-            <div
-                class="reveal reveal-delay-3 mt-8 border-t border-white/10 pt-7">
+            <div class="mt-8 border-t border-white/10 pt-7">
 
                 <div class="flex items-center justify-between">
 
@@ -259,7 +238,7 @@
                             <span
                                 class="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-sm font-bold text-emerald-300">
 
-                                <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                                <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
                                 Verified
                             </span>
 
@@ -279,4 +258,80 @@
 
     </div>
 </div>
+
+{{-- ANIMATIONS --}}
+<style>
+    @keyframes fadeReveal {
+        0% {
+            opacity: 0;
+            transform: translateY(35px);
+        }
+        100% {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    /* Orb Animations */
+    @keyframes orb1 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        25% { transform: translate(80px, 40px) scale(1.15); }
+        50% { transform: translate(40px, 80px) scale(0.9); }
+        75% { transform: translate(-40px, 30px) scale(1.1); }
+    }
+    
+    @keyframes orb2 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        25% { transform: translate(-70px, -50px) scale(1.2); }
+        50% { transform: translate(-30px, -100px) scale(0.85); }
+        75% { transform: translate(50px, -30px) scale(1.05); }
+    }
+    
+    @keyframes orb3 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        33% { transform: translate(-50px, -60px) scale(1.1); }
+        66% { transform: translate(60px, -20px) scale(0.95); }
+    }
+    
+    @keyframes orb4 {
+        0%, 100% { transform: translate(0, 0) scale(1); }
+        50% { transform: translate(60px, -60px) scale(1.25); }
+    }
+    
+    /* Floating Particles */
+    @keyframes float1 {
+        0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+        25% { transform: translate(35px, -45px); opacity: 0.8; }
+        50% { transform: translate(-25px, -85px); opacity: 0.5; }
+        75% { transform: translate(45px, -55px); opacity: 0.9; }
+    }
+    
+    @keyframes float2 {
+        0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+        33% { transform: translate(-45px, -65px); opacity: 0.9; }
+        66% { transform: translate(25px, -35px); opacity: 0.6; }
+    }
+    
+    @keyframes float3 {
+        0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+        50% { transform: translate(55px, -75px); opacity: 0.8; }
+    }
+    
+    @keyframes float4 {
+        0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+        25% { transform: translate(-35px, -55px); opacity: 0.9; }
+        75% { transform: translate(35px, -45px); opacity: 0.7; }
+    }
+    
+    @keyframes float5 {
+        0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+        50% { transform: translate(-55px, -95px); opacity: 0.8; }
+    }
+    
+    @keyframes float6 {
+        0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+        33% { transform: translate(45px, -55px); opacity: 0.9; }
+        66% { transform: translate(-25px, -75px); opacity: 0.5; }
+    }
+</style>
 @endsection
