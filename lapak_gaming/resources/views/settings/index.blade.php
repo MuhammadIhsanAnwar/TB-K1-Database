@@ -10,10 +10,10 @@
         <div class="absolute inset-0 bg-[#050816]"></div>
 
         {{-- BLUE GLOW --}}
-        <div class="absolute top-[-180px] right-[-120px] h-[420px] w-[420px] rounded-full bg-blue-500/15 blur-3xl"></div>
+        <div class="absolute top-[-180px] right-[-120px] h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-3xl"></div>
 
         {{-- ORANGE GLOW --}}
-        <div class="absolute bottom-[-200px] left-[-140px] h-[420px] w-[420px] rounded-full bg-orange-500/12 blur-3xl"></div>
+        <div class="absolute bottom-[-200px] left-[-140px] h-[420px] w-[420px] rounded-full bg-orange-500/15 blur-3xl"></div>
 
         {{-- ANIMATED PARTICLES --}}
         <div class="particles"></div>
@@ -26,9 +26,9 @@
 
             {{-- SIDEBAR --}}
             <aside class="sticky top-28 h-fit w-full">
-                <div class="reveal-up rounded-[34px] border border-white/10 bg-[#0B1220]/40 p-6 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden">
+                <div class="reveal-up sidebar-box">
 
-                    <div class="absolute inset-0 rounded-[34px] bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.15),transparent_40%)]">
+                    <div class="absolute inset-0 rounded-[34px] bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.15),transparent_40%)] pointer-events-none">
                     </div>
 
                     <div class="relative z-10">
@@ -36,7 +36,7 @@
                         {{-- PROFILE --}}
                         <div class="text-center">
 
-                            <div class="mx-auto flex h-28 w-28 overflow-hidden rounded-full border border-blue-500/20 bg-[#111827]/60 shadow-[0_0_40px_rgba(37,99,235,0.25)]">
+                            <div class="mx-auto flex h-28 w-28 overflow-hidden rounded-full border border-blue-500/20 bg-[#111827]/30 shadow-[0_0_40px_rgba(37,99,235,0.25)]">
                                 <img src="{{ $user->avatar_url }}"
                                     alt="{{ $user->name }}"
                                     class="h-full w-full object-cover">
@@ -95,7 +95,7 @@
             </aside>
 
             {{-- MAIN --}}
-            <main class="reveal-up rounded-[36px] border border-white/10 bg-[#0B1220]/45 p-8 backdrop-blur-3xl shadow-[0_20px_60px_rgba(0,0,0,0.4)] relative">
+            <main class="reveal-up main-box">
 
                 {{-- ALERT --}}
                 @if (session('success'))
@@ -615,7 +615,7 @@
                         </h1>
 
                         <p class="mt-3 text-sm leading-relaxed text-slate-400">
-                            Maaf, pengajuan seller Anda tidak disetujui. Silakan pelajari alasan penolakan di bawah and coba lagi dengan informasi yang lebih lengkap.
+                            Maaf, pengajuan seller Anda tidak disetujui. Silakan pelajari alasan penolakan di bawah dan coba lagi dengan informasi yang lebih lengkap.
                         </p>
 
                     </div>
@@ -747,13 +747,13 @@ body::after{
     display: none !important;
 }
 
-/* PARTICLES (FOKUS: Opacity dinaikkan biar nembus box transparan dengan baik) */
+/* PARTICLES (FOKUS: Menghidupkan titik partikel di belakang panel) */
 .particles{
     position: absolute;
     inset: 0;
     background-image:
-        radial-gradient(rgba(37,99,235,.4) 1.2px, transparent 1.2px),
-        radial-gradient(rgba(249,115,22,.22) 1.2px, transparent 1.2px);
+        radial-gradient(rgba(37,99,235,.4) 1.5px, transparent 1.5px),
+        radial-gradient(rgba(249,115,22,.22) 1.5px, transparent 1.5px);
     background-size: 100px 100px;
     background-position: 0 0, 50px 50px;
     animation: particleMove 20s linear infinite;
@@ -763,6 +763,28 @@ body::after{
 @keyframes particleMove{
     from{ transform: translateY(0); }
     to{ transform: translateY(-100px); }
+}
+
+/* SIDEBAR BOX (FOKUS: Efek Kaca Transparan Tembus Pandang) */
+.sidebar-box {
+    border: 1px solid rgba(255, 255, 255, .1);
+    background: rgba(11, 18, 32, 0.35); /* Transparansi tipis 35% */
+    border-radius: 34px;
+    padding: 24px;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+/* MAIN PANEL BOX (FOKUS: Efek Kaca Transparan Tembus Pandang) */
+.main-box {
+    border: 1px solid rgba(255, 255, 255, .1);
+    background: rgba(11, 18, 32, 0.35); /* Transparansi tipis 35% */
+    border-radius: 36px;
+    padding: 32px;
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
 }
 
 /* MENU NAVIGASI */
@@ -791,26 +813,25 @@ body::after{
 
 .menu-active-blue{
     border: 1px solid rgba(59,130,246,.3);
-    background: rgba(59,130,246,.08);
+    background: rgba(59,130,246,.12);
     color: white;
     box-shadow: 0 8px 30px rgba(37,99,235,.12);
 }
 
 .menu-active-orange{
     border: 1px solid rgba(249,115,22,.3);
-    background: rgba(249,115,22,.08);
+    background: rgba(249,115,22,.12);
     color: white;
     box-shadow: 0 8px 30px rgba(249,115,22,.12);
 }
 
-/* GLASSMORPHISM BOX (FOKUS: Menggunakan bg transparan super tipis dan backdrop-blur tebal) */
+/* SUB-CARD CONTAINER DI DALAM PANEL */
 .card-box{
     border: 1px solid rgba(255,255,255,.05);
     background: rgba(255,255,255,.015);
     border-radius: 30px;
     padding: 24px;
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
+    backdrop-filter: blur(15px);
 }
 
 /* LABEL */
@@ -827,7 +848,7 @@ body::after{
     width: 100%;
     border-radius: 18px;
     border: 1px solid rgba(255,255,255,.06);
-    background: rgba(17, 24, 39, 0.55);
+    background: rgba(17, 24, 39, 0.45);
     padding: 16px 18px;
     color: white;
     outline: none;
@@ -841,7 +862,7 @@ body::after{
     background: rgba(17, 24, 39, 0.75);
 }
 
-/* BUTTON */
+/* BUTTONS */
 .submit-blue{
     width: 100%;
     border-radius: 22px;
