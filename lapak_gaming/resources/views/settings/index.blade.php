@@ -1,17 +1,24 @@
 @extends('layouts.app')
 
 @section('content')
+<div class="relative overflow-x-hidden bg-[#050816] px-4 pb-24 pt-32">
 
-{{-- GLOBAL BACKGROUND (fixed seperti wallet) --}}
-<div class="pointer-events-none fixed inset-0 z-0 overflow-hidden">
-    <div class="absolute inset-0 bg-[#050816]"></div>
-    <div class="absolute top-[-180px] right-[-120px] h-[420px] w-[420px] rounded-full bg-blue-500/10 blur-3xl animate-pulse"></div>
-    <div class="absolute bottom-[-200px] left-[-140px] h-[420px] w-[420px] rounded-full bg-orange-500/10 blur-3xl"></div>
-    <div class="absolute top-1/2 left-1/2 h-[260px] w-[260px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/5 blur-3xl"></div>
-    <div class="particles"></div>
-</div>
+    {{-- BACKGROUND GLOBAL --}}
+    <div class="fixed inset-0 -z-50 overflow-hidden">
 
-<div class="relative z-10 overflow-x-hidden bg-transparent px-4 pb-24 pt-32">
+        {{-- GRADIENT --}}
+        <div class="absolute inset-0 bg-[#050816]"></div>
+
+        {{-- BLUE GLOW --}}
+        <div class="absolute top-[-180px] right-[-120px] h-[420px] w-[420px] rounded-full bg-blue-500/10 blur-3xl"></div>
+
+        {{-- ORANGE GLOW --}}
+        <div class="absolute bottom-[-200px] left-[-140px] h-[420px] w-[420px] rounded-full bg-orange-500/10 blur-3xl"></div>
+
+        {{-- ANIMATED PARTICLES --}}
+        <div class="particles"></div>
+
+    </div>
 
     <div class="relative z-10 mx-auto max-w-7xl">
 
@@ -575,7 +582,7 @@
 
                 {{-- SELLER --}}
                 @elseif($user->seller_status === 'pending')
-
+                
                     <div class="mb-10">
 
                         <div
@@ -763,6 +770,7 @@ body{
     background:#050816;
 }
 
+/* REMOVE GHOST LINE */
 body::before,
 body::after{
     display:none !important;
@@ -782,8 +790,12 @@ body::after{
 }
 
 @keyframes particleMove{
-    from{ transform:translateY(0); }
-    to{ transform:translateY(-120px); }
+    from{
+        transform:translateY(0);
+    }
+    to{
+        transform:translateY(-120px);
+    }
 }
 
 /* MENU */
