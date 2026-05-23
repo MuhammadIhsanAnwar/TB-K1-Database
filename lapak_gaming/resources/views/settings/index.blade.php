@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="relative overflow-x-hidden bg-[#050816] px-4 pb-24 pt-32">
+<div class="relative overflow-x-hidden bg-transparent px-4 pb-24 pt-32">
 
     {{-- BACKGROUND GLOBAL --}}
     <div class="fixed inset-0 -z-50 overflow-hidden">
