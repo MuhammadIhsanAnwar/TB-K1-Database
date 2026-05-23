@@ -3,10 +3,10 @@
 @section('title', 'Daftar Transaksi')
 
 @section('content')
-<div class="relative px-4 pt-28 pb-16 overflow-x-hidden"> {{-- Tambahkan overflow-x-hidden disini --}}
+<div class="relative px-4 pt-28 pb-16 overflow-hidden"> {{-- Ganti overflow-x-hidden jadi overflow-hidden --}}
 
     {{-- BACKGROUND EFFECT --}}
-    <div class="pointer-events-none absolute inset-0 -z-10">
+    <div class="pointer-events-none absolute inset-0 -z-10 overflow-hidden"> {{-- Tambahkan overflow-hidden --}}
         <div class="absolute top-[-120px] right-[-120px] h-[320px] w-[320px] rounded-full bg-blue-500/10 blur-3xl"></div>
         <div class="absolute bottom-[-140px] left-[-120px] h-[320px] w-[320px] rounded-full bg-orange-500/10 blur-3xl"></div>
     </div>
@@ -63,10 +63,10 @@
             ];
         @endphp
 
-        <div class="mt-8 flex flex-wrap gap-3 rounded-[26px] border border-white/5 bg-[#0B1220]/90 p-4 backdrop-blur-xl">
+        <div class="mt-8 flex flex-wrap gap-3 rounded-[26px] border border-white/5 bg-[#0B1220]/90 p-4 backdrop-blur-xl overflow-x-auto"> {{-- Tambahkan overflow-x-auto untuk filter tab --}}
             @foreach($statusTabs as $tabKey => $tabLabel)
                 <a href="{{ route('orders.index', ['status' => $tabKey]) }}"
-                   class="inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-bold transition {{ $status === $tabKey ? 'border-blue-500/30 bg-blue-500/15 text-blue-200' : 'border-white/10 bg-white/[0.03] text-slate-300 hover:border-blue-500/20 hover:bg-blue-500/[0.08] hover:text-white' }}">
+                   class="inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-bold transition whitespace-nowrap {{ $status === $tabKey ? 'border-blue-500/30 bg-blue-500/15 text-blue-200' : 'border-white/10 bg-white/[0.03] text-slate-300 hover:border-blue-500/20 hover:bg-blue-500/[0.08] hover:text-white' }}">
                     <span>{{ $tabLabel }}</span>
                     @if($tabKey !== 'all')
                         <span class="rounded-full bg-black/20 px-2 py-0.5 text-[11px]">{{ $tabCount[$tabKey] ?? 0 }}</span>
@@ -87,16 +87,16 @@
                         <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
 
                         {{-- LEFT --}}
-                        <div>
+                        <div class="min-w-0 flex-1"> {{-- Tambahkan min-w-0 flex-1 --}}
 
                             <div class="flex flex-wrap items-center gap-3">
 
-                                <h2 class="text-xl font-black text-white transition duration-300 group-hover:text-blue-300">
+                                <h2 class="text-xl font-black text-white transition duration-300 group-hover:text-blue-300 break-all"> {{-- Tambahkan break-all --}}
                                     {{ $order->invoice_number }}
                                 </h2>
 
                                 <span
-                                    class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-300">
+                                    class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-[11px] font-bold uppercase tracking-wide text-blue-300 whitespace-nowrap">
                                     {{ $order->status_label }}
                                 </span>
 
@@ -111,7 +111,7 @@
                                         Tanggal
                                     </div>
 
-                                    <div class="mt-1 text-sm font-semibold text-white">
+                                    <div class="mt-1 text-sm font-semibold text-white whitespace-nowrap">
                                         {{ $order->created_at->translatedFormat('d F Y') }}
                                     </div>
                                 </div>
@@ -123,7 +123,7 @@
                                         Seller
                                     </div>
 
-                                    <div class="mt-1 text-sm font-semibold text-white">
+                                    <div class="mt-1 text-sm font-semibold text-white max-w-[200px] truncate"> {{-- Tambahkan truncate --}}
                                         {{ $order->seller_label }}
                                     </div>
                                 </div>
@@ -140,7 +140,7 @@
                                 Total Pembayaran
                             </div>
 
-                            <div class="mt-2 text-3xl font-black text-white">
+                            <div class="mt-2 text-3xl font-black text-white break-all"> {{-- Tambahkan break-all --}}
                                 Rp {{ number_format($order->grand_total, 0, ',', '.') }}
                             </div>
 
@@ -201,7 +201,7 @@
         </div>
 
         {{-- PAGINATION --}}
-        <div class="reveal-up mt-10">
+        <div class="reveal-up mt-10 overflow-x-auto"> {{-- Tambahkan overflow-x-auto --}}
             {{ $orders->links() }}
         </div>
 
