@@ -1870,14 +1870,14 @@ spline-viewer iframe {
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- FAQ — GLASSMORPHISM VERSION                               --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="pb-24">
+<section class="pb-24 relative overflow-visible">
 
   <div class="max-w-7xl mx-auto px-4">
 
-    <div class="grid lg:grid-cols-2 gap-10 items-start">
+    <div class="grid lg:grid-cols-2 gap-10 items-start relative h-full">
 
-      {{-- LEFT --}}
-      <div class="sticky top-24">
+      {{-- LEFT — Bagian Judul yang Dikunci --}}
+      <div class="sticky top-28 z-30 self-start hidden lg:block">
 
         <div class="inline-flex items-center gap-2
                     px-3 py-1 rounded-full
@@ -1897,15 +1897,23 @@ spline-viewer iframe {
         </h2>
 
         <p class="text-slate-400 text-lg leading-relaxed max-w-lg">
-          Semua informasi penting mengenai transaksi,
-          keamanan, top up, hingga sistem marketplace
-          tersedia di sini.
+          All information regarding transactions, security, top ups, and the marketplace system is available here.
         </p>
 
       </div>
 
-      {{-- RIGHT --}}
-      <div class="space-y-4">
+      {{-- RESPONSIVE LEFT FOR MOBILE (Hanya muncul di HP, tidak sticky) --}}
+      <div class="block lg:hidden mb-4">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-bold mb-3">
+          SUPPORT CENTER
+        </div>
+        <h2 class="text-3xl font-black text-white leading-tight mb-3">
+          Pertanyaan yang sering ditanyakan
+        </h2>
+      </div>
+
+      {{-- RIGHT — List Akordeon Jawaban --}}
+      <div class="space-y-4 z-10">
 
         @php
         $faqs = [
@@ -1937,7 +1945,7 @@ spline-viewer iframe {
 
           <button type="button"
                   data-faq-index="{{ $index }}"
-                  class="js-faq-toggle w-full p-6 flex items-center justify-between text-left">
+                  class="js-faq-toggle w-full p-6 flex items-center justify-between text-left transition hover:bg-white/[0.02]">
 
             <span class="text-lg font-bold text-white pr-5">
               {{ $faq['q'] }}
@@ -1949,9 +1957,9 @@ spline-viewer iframe {
                         border border-white/10
                         flex items-center justify-center
                         text-cyan-300
-                        transition duration-300">
+                        transition duration-300 shrink-0">
 
-              >
+              &gt;
 
             </div>
 
