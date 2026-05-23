@@ -1,382 +1,413 @@
 @extends('layouts.app')
 
+@section('title', 'Buyer Dashboard')
+
 @section('content')
-<div class="relative min-h-screen overflow-hidden bg-[#050816] px-4 py-14">
-
-    {{-- GLOBAL BACKGROUND EFFECTS --}}
-    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
-        {{-- Grid Pattern Background --}}
-        <div class="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.03)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.03)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
+<div class="relative min-h-screen overflow-hidden bg-[#050816]">
+    
+    {{-- ANIMATED BACKGROUND ELEMENTS --}}
+    <div class="pointer-events-none fixed inset-0 z-0">
         
-        {{-- Blue Glow Top Right --}}
-        <div class="absolute -top-60 -right-60 h-[500px] w-[500px] rounded-full bg-blue-600/20 blur-[100px] animate-pulse"></div>
+        {{-- Grid Pattern --}}
+        <div class="absolute inset-0 bg-[linear-gradient(rgba(59,130,246,0.05)_1px,transparent_1px),linear-gradient(90deg,rgba(59,130,246,0.05)_1px,transparent_1px)] bg-[size:50px_50px] [mask-image:radial-gradient(ellipse_at_center,black_30%,transparent_70%)]"></div>
         
-        {{-- Orange Glow Bottom Left --}}
-        <div class="absolute -bottom-60 -left-60 h-[500px] w-[500px] rounded-full bg-orange-500/20 blur-[100px] animate-pulse" style="animation-delay: 1s;"></div>
+        {{-- Animated Gradient Orbs --}}
+        <div class="absolute top-0 -left-40 w-96 h-96 bg-blue-500/20 rounded-full blur-[100px] animate-orb-1"></div>
+        <div class="absolute top-1/2 -right-40 w-96 h-96 bg-orange-500/20 rounded-full blur-[100px] animate-orb-2"></div>
+        <div class="absolute -bottom-40 left-1/2 w-96 h-96 bg-cyan-500/20 rounded-full blur-[100px] animate-orb-3"></div>
+        <div class="absolute top-1/4 left-1/3 w-64 h-64 bg-purple-500/10 rounded-full blur-[80px] animate-orb-4"></div>
         
-        {{-- Cyan Glow Center --}}
-        <div class="absolute top-1/2 left-1/2 h-[400px] w-[400px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-400/10 blur-[120px] animate-pulse" style="animation-delay: 2s;"></div>
+        {{-- Moving Lines --}}
+        <div class="absolute inset-0 overflow-hidden">
+            <div class="absolute top-20 left-0 w-full h-px bg-gradient-to-r from-transparent via-blue-500/20 to-transparent animate-line-1"></div>
+            <div class="absolute top-1/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-orange-500/20 to-transparent animate-line-2"></div>
+            <div class="absolute top-2/3 left-0 w-full h-px bg-gradient-to-r from-transparent via-cyan-500/20 to-transparent animate-line-3"></div>
+        </div>
         
-        {{-- Small Accent Glows --}}
-        <div class="absolute top-20 left-1/4 h-[200px] w-[200px] rounded-full bg-purple-500/10 blur-[80px]"></div>
-        <div class="absolute bottom-40 right-1/3 h-[250px] w-[250px] rounded-full bg-emerald-500/10 blur-[80px]"></div>
+        {{-- Floating Particles --}}
+        <div class="absolute top-1/4 left-1/4 w-2 h-2 bg-blue-400/60 rounded-full animate-float-1"></div>
+        <div class="absolute top-1/3 right-1/3 w-1.5 h-1.5 bg-orange-400/60 rounded-full animate-float-2"></div>
+        <div class="absolute bottom-1/3 left-1/3 w-2 h-2 bg-cyan-400/60 rounded-full animate-float-3"></div>
+        <div class="absolute top-2/3 right-1/4 w-1 h-1 bg-purple-400/60 rounded-full animate-float-4"></div>
+        <div class="absolute top-1/2 left-1/2 w-1.5 h-1.5 bg-emerald-400/60 rounded-full animate-float-5"></div>
+        <div class="absolute bottom-1/4 right-1/2 w-2 h-2 bg-blue-400/60 rounded-full animate-float-6"></div>
+        <div class="absolute top-3/4 left-3/4 w-1 h-1 bg-orange-400/60 rounded-full animate-float-7"></div>
+        <div class="absolute top-1/5 right-1/5 w-1.5 h-1.5 bg-cyan-400/60 rounded-full animate-float-8"></div>
     </div>
 
-    {{-- FLOATING PARTICLES --}}
-    <div class="pointer-events-none fixed inset-0 -z-5 overflow-hidden">
-        <div class="absolute top-1/4 left-1/3 h-1 w-1 rounded-full bg-blue-400/50 animate-float"></div>
-        <div class="absolute top-2/3 left-1/4 h-1.5 w-1.5 rounded-full bg-orange-400/40 animate-float" style="animation-delay: 0.5s;"></div>
-        <div class="absolute top-1/2 left-2/3 h-1 w-1 rounded-full bg-cyan-400/50 animate-float" style="animation-delay: 1s;"></div>
-        <div class="absolute top-1/3 left-3/4 h-2 w-2 rounded-full bg-purple-400/30 animate-float" style="animation-delay: 1.5s;"></div>
-        <div class="absolute top-3/4 left-1/2 h-1.5 w-1.5 rounded-full bg-emerald-400/40 animate-float" style="animation-delay: 0.8s;"></div>
-    </div>
-
-    {{-- REVEAL ANIMATION & ADDITIONAL STYLES --}}
+    {{-- ANIMATIONS STYLE --}}
     <style>
+        /* Reveal Animation */
         .reveal {
             opacity: 0;
-            transform: translateY(45px);
-            animation: revealUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+            transform: translateY(30px);
+            animation: revealUp .8s ease forwards;
         }
-
-        .reveal-delay-1 { animation-delay: 0.12s; }
-        .reveal-delay-2 { animation-delay: 0.22s; }
-        .reveal-delay-3 { animation-delay: 0.32s; }
-
+        .reveal-delay-1 { animation-delay: .15s; }
+        .reveal-delay-2 { animation-delay: .3s; }
+        .reveal-delay-3 { animation-delay: .45s; }
+        
         @keyframes revealUp {
             to {
                 opacity: 1;
                 transform: translateY(0);
             }
         }
-
-        @keyframes float {
-            0%, 100% {
-                transform: translateY(0px) translateX(0px);
-                opacity: 0.3;
-            }
-            25% {
-                transform: translateY(-20px) translateX(10px);
-                opacity: 0.6;
-            }
-            50% {
-                transform: translateY(-10px) translateX(-10px);
-                opacity: 0.4;
-            }
-            75% {
-                transform: translateY(-30px) translateX(5px);
-                opacity: 0.7;
-            }
+        
+        /* Orb Animations */
+        @keyframes orb1 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(100px, 50px) scale(1.1); }
+            50% { transform: translate(50px, 100px) scale(0.9); }
+            75% { transform: translate(-50px, 50px) scale(1.05); }
         }
-
-        .animate-float {
-            animation: float 6s ease-in-out infinite;
+        
+        @keyframes orb2 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-80px, -60px) scale(1.15); }
+            50% { transform: translate(-40px, -120px) scale(0.95); }
+            75% { transform: translate(60px, -40px) scale(1.1); }
         }
-
-        select option {
-            background: #111827;
-            color: white;
+        
+        @keyframes orb3 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            25% { transform: translate(-60px, -80px) scale(1.1); }
+            50% { transform: translate(-120px, -40px) scale(0.9); }
+            75% { transform: translate(-40px, -60px) scale(1.05); }
         }
-
-        /* Smooth transitions */
-        .transition-all {
-            transition-property: all;
-            transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
-            transition-duration: 300ms;
+        
+        @keyframes orb4 {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            50% { transform: translate(70px, -70px) scale(1.2); }
         }
-
-        /* Glass effect enhancement */
-        .glass-effect {
-            backdrop-filter: blur(20px) saturate(180%);
-            -webkit-backdrop-filter: blur(20px) saturate(180%);
+        
+        .animate-orb-1 { animation: orb1 20s ease-in-out infinite; }
+        .animate-orb-2 { animation: orb2 25s ease-in-out infinite; }
+        .animate-orb-3 { animation: orb3 22s ease-in-out infinite; }
+        .animate-orb-4 { animation: orb4 18s ease-in-out infinite; }
+        
+        /* Moving Lines */
+        @keyframes line1 {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(30px) rotate(2deg); }
+            100% { transform: translateY(0) rotate(0deg); }
         }
-
-        /* Gradient text effect */
-        .gradient-text {
-            background: linear-gradient(135deg, #60a5fa 0%, #34d399 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        
+        @keyframes line2 {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(-1deg); }
+            100% { transform: translateY(0) rotate(0deg); }
         }
+        
+        @keyframes line3 {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(40px) rotate(1deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        .animate-line-1 { animation: line1 8s ease-in-out infinite; }
+        .animate-line-2 { animation: line2 10s ease-in-out infinite; }
+        .animate-line-3 { animation: line3 9s ease-in-out infinite; }
+        
+        /* Floating Particles */
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+            25% { transform: translate(30px, -40px); opacity: 0.8; }
+            50% { transform: translate(-20px, -80px); opacity: 0.5; }
+            75% { transform: translate(40px, -50px); opacity: 0.9; }
+        }
+        
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+            33% { transform: translate(-40px, -60px); opacity: 0.9; }
+            66% { transform: translate(20px, -30px); opacity: 0.6; }
+        }
+        
+        @keyframes float3 {
+            0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+            50% { transform: translate(50px, -70px); opacity: 0.8; }
+        }
+        
+        @keyframes float4 {
+            0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+            25% { transform: translate(-30px, -50px); opacity: 0.9; }
+            75% { transform: translate(30px, -40px); opacity: 0.7; }
+        }
+        
+        @keyframes float5 {
+            0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+            50% { transform: translate(-50px, -90px); opacity: 0.8; }
+        }
+        
+        @keyframes float6 {
+            0%, 100% { transform: translate(0, 0); opacity: 0.3; }
+            33% { transform: translate(40px, -50px); opacity: 0.9; }
+            66% { transform: translate(-20px, -70px); opacity: 0.5; }
+        }
+        
+        @keyframes float7 {
+            0%, 100% { transform: translate(0, 0); opacity: 0.5; }
+            50% { transform: translate(-40px, -60px); opacity: 0.8; }
+        }
+        
+        @keyframes float8 {
+            0%, 100% { transform: translate(0, 0); opacity: 0.4; }
+            25% { transform: translate(30px, -80px); opacity: 0.9; }
+            75% { transform: translate(-30px, -40px); opacity: 0.6; }
+        }
+        
+        .animate-float-1 { animation: float1 12s ease-in-out infinite; }
+        .animate-float-2 { animation: float2 15s ease-in-out infinite; }
+        .animate-float-3 { animation: float3 14s ease-in-out infinite; }
+        .animate-float-4 { animation: float4 13s ease-in-out infinite; }
+        .animate-float-5 { animation: float5 16s ease-in-out infinite; }
+        .animate-float-6 { animation: float6 11s ease-in-out infinite; }
+        .animate-float-7 { animation: float7 17s ease-in-out infinite; }
+        .animate-float-8 { animation: float8 14s ease-in-out infinite; }
     </style>
 
-    <div class="relative z-10 mx-auto max-w-5xl space-y-7">
+    {{-- MAIN CONTENT --}}
+    <div class="relative z-10 mx-auto mt-10 max-w-5xl space-y-7 px-4 md:px-6 pb-16">
 
         {{-- HEADER --}}
         <div
-            class="reveal relative overflow-hidden rounded-[34px] border border-blue-500/20 bg-gradient-to-br from-[#060816]/95 via-[#091225]/95 to-[#0B1730]/95 px-7 py-8 shadow-[0_0_80px_rgba(37,99,235,0.15),0_0_200px_rgba(37,99,235,0.05)] backdrop-blur-2xl">
+            class="reveal relative overflow-hidden rounded-[30px] border border-blue-500/20 bg-gradient-to-br from-[#060816] via-[#091225] to-[#0B1730] px-7 py-8 shadow-[0_0_80px_rgba(37,99,235,0.12)]">
 
             <div
-                class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.25),transparent_40%)]">
+                class="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.18),transparent_35%)]">
             </div>
-            
-            {{-- Additional inner glow --}}
-            <div class="absolute inset-0 bg-[radial-gradient(circle_at_bottom_left,rgba(251,146,60,0.15),transparent_40%)]"></div>
 
             <div class="relative z-10 flex flex-col gap-7 lg:flex-row lg:items-center lg:justify-between">
 
-                <div>
-
+                <div class="max-w-2xl">
                     <div
-                        class="inline-flex items-center gap-2 rounded-full border border-blue-500/40 bg-blue-500/15 px-4 py-2 text-[11px] font-bold tracking-[0.18em] text-blue-300 backdrop-blur-xl shadow-[0_0_20px_rgba(59,130,246,0.2)]">
-
-                        <span class="h-2.5 w-2.5 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.5)]"></span>
-                        ACCOUNT PROFILE
+                        class="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-blue-300 backdrop-blur-xl">
+                        <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        BUYER DASHBOARD
                     </div>
 
-                    <h1 class="mt-5 text-4xl font-black text-white md:text-5xl gradient-text">
-                        My Profile
+                    <h1
+                        class="mt-5 text-3xl font-black leading-tight text-white md:text-5xl">
+                        Selamat Datang
                     </h1>
 
-                    <p class="mt-4 max-w-xl text-sm leading-relaxed text-slate-300/90">
-                        Kelola informasi akun dan lihat detail profil akun Lapak Gaming milikmu.
+                    <p class="mt-4 max-w-xl text-sm leading-relaxed text-slate-300 md:text-[15px]">
+                        Kelola transaksi, cek pesanan terbaru, dan pantau notifikasi akunmu dengan tampilan modern dan cepat.
                     </p>
-
                 </div>
 
-                <div class="flex items-center gap-4">
+                {{-- LOGO --}}
+                <div
+                    class="hidden lg:flex h-[180px] w-[180px] items-center justify-center rounded-full border border-blue-500/20 bg-blue-500/5 backdrop-blur-2xl">
 
-                    {{-- LOGO --}}
                     <div
-                        class="relative hidden h-[120px] w-[120px] items-center justify-center rounded-full border border-blue-500/30 bg-blue-500/10 backdrop-blur-2xl md:flex shadow-[0_0_50px_rgba(59,130,246,0.2)]">
-
-                        <div
-                            class="absolute h-[160px] w-[160px] rounded-full bg-blue-500/20 blur-3xl animate-pulse">
-                        </div>
-
-                        <img src="{{ asset('storage/app/public/logo/logo.png') }}"
-                            alt="Logo"
-                            class="relative z-10 h-20 w-20 object-contain drop-shadow-[0_0_30px_rgba(59,130,246,0.6)]">
+                        class="absolute h-[220px] w-[220px] rounded-full bg-blue-500/10 blur-3xl">
                     </div>
 
-                    {{-- BUTTON --}}
-                    <a href="{{ route('profile.edit') }}"
-                        class="group relative overflow-hidden rounded-2xl border border-blue-500/40 bg-gradient-to-r from-blue-600 to-blue-500 px-5 py-3 text-sm font-bold tracking-wide text-white transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_40px_rgba(59,130,246,0.4)] hover:border-blue-400/50">
-                        
-                        {{-- Button glow effect --}}
-                        <div class="absolute inset-0 bg-gradient-to-r from-white/0 via-white/10 to-white/0 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500"></div>
-                        
-                        <span class="relative z-10 flex items-center gap-2">
-                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
-                            </svg>
-                            Edit Profile
-                        </span>
-                    </a>
-
+                    <img src="{{ asset('storage/app/public/logo/logo.png') }}"
+                        alt="Logo"
+                        class="relative z-10 h-32 w-32 object-contain drop-shadow-[0_0_25px_rgba(59,130,246,0.55)]">
                 </div>
 
             </div>
         </div>
 
-        {{-- PROFILE CARD --}}
-        <div
-            class="reveal reveal-delay-1 overflow-hidden rounded-[34px] border border-white/10 bg-[#0B1220]/95 p-7 shadow-[0_0_60px_rgba(37,99,235,0.1),0_0_120px_rgba(37,99,235,0.05)] backdrop-blur-2xl glass-effect">
-
-            {{-- PROFILE HEADER --}}
-            <div
-                class="flex flex-col gap-6 border-b border-white/10 pb-7 md:flex-row md:items-center">
-
-                {{-- AVATAR --}}
-                <div
-                    class="relative flex h-28 w-28 items-center justify-center overflow-hidden rounded-full bg-gradient-to-br from-blue-500 via-cyan-400 to-orange-400 text-3xl font-black text-white shadow-[0_0_40px_rgba(59,130,246,0.4),0_0_80px_rgba(59,130,246,0.2)]">
-                    
-                    {{-- Avatar ring animation --}}
-                    <div class="absolute inset-0 rounded-full border-2 border-white/20 animate-spin-slow"></div>
-
-                    <img src="{{ $user->avatar_url }}"
-                        alt="Foto profil {{ $user->name }}"
-                        class="relative z-10 h-full w-full object-cover">
-
-                    <div
-                        class="absolute inset-0 rounded-full border border-white/30">
-                    </div>
+        {{-- PENDING SELLER STATUS --}}
+        @if($user->seller_status === 'pending')
+        <div class="reveal rounded-[26px] border border-yellow-700/50 bg-yellow-900/20 p-6 shadow-lg">
+            <div class="flex items-start gap-4">
+                <div class="pt-1">
+                    <svg class="w-6 h-6 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
                 </div>
-
-                {{-- USER INFO --}}
                 <div class="flex-1">
+                    <h3 class="text-lg font-bold text-yellow-200">Pengajuan Seller Anda Sedang Diproses</h3>
+                    <p class="text-sm text-yellow-300 mt-1">Tim kami sedang meninjau pendaftaran toko Anda. Anda akan menerima notifikasi saat status berubah. Terima kasih atas kesabaran Anda!</p>
+                </div>
+            </div>
+        </div>
+        @elseif($user->seller_status === 'rejected')
+        <div class="reveal rounded-[26px] border border-red-700/50 bg-red-900/20 p-6 shadow-lg">
+            <div class="flex items-start gap-4">
+                <div class="pt-1">
+                    <svg class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                    </svg>
+                </div>
+                <div class="flex-1">
+                    <h3 class="text-lg font-bold text-red-200">Pengajuan Seller Ditolak</h3>
+                    <p class="text-sm text-red-300 mt-1">{{ $user->seller_rejection_reason ?? 'Alasan penolakan tidak tersedia.' }}</p>
+                    <a href="{{ route('seller.register.form') }}" class="text-sm text-red-400 hover:text-red-300 mt-2 inline-block underline">Ajukan Kembali →</a>
+                </div>
+            </div>
+        </div>
+        @endif
 
-                    <h2 class="text-3xl font-black text-white">
-                        {{ $user->name }}
-                    </h2>
+        {{-- STATS --}}
+        <div class="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
 
-                    <p class="mt-2 text-sm text-slate-400/90">
-                        <span class="inline-block mr-2">📧</span> {{ $user->email }}
-                    </p>
+            {{-- WALLET --}}
+            <div
+                class="reveal reveal-delay-1 group relative overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-blue-400/40 hover:shadow-[0_0_30px_rgba(59,130,246,0.12)]">
 
-                    @if($user->phone)
-                    <p class="mt-1 text-sm text-slate-400/90">
-                        <span class="inline-block mr-2">📱</span> {{ $user->phone }}
-                    </p>
-                    @endif
-
-                    <div class="mt-4">
-
-                        <span
-                            class="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-4 py-2 text-xs font-bold tracking-wide text-emerald-300 shadow-[0_0_20px_rgba(52,211,153,0.2)]">
-
-                            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.5)]"></span>
-                            ACCOUNT ACTIVE
-                        </span>
-
-                    </div>
+                <div
+                    class="absolute right-0 top-0 h-28 w-28 rounded-full bg-blue-500/10 blur-3xl">
                 </div>
 
+                <div class="relative z-10">
+                    <div class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
+                        Saldo Wallet
+                    </div>
+
+                    <div class="mt-3 text-3xl font-black text-white">
+                        Rp {{ number_format($wallet?->balance ?? 0, 0, ',', '.') }}
+                    </div>
+
+                    <div class="mt-2 text-xs text-slate-400">
+                        Available:
+                        Rp {{ number_format($wallet?->available_balance ?? 0, 0, ',', '.') }}
+                    </div>
+                </div>
             </div>
 
-            {{-- ACCOUNT INFO --}}
+            {{-- ORDERS --}}
             <div
-                class="reveal reveal-delay-2 mt-7 grid gap-5 md:grid-cols-2">
+                class="reveal reveal-delay-2 group relative overflow-hidden rounded-[26px] border border-orange-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-orange-400/40 hover:shadow-[0_0_30px_rgba(249,115,22,0.12)]">
 
-                {{-- EMAIL --}}
                 <div
-                    class="group rounded-2xl border border-white/5 bg-white/[0.03] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-blue-500/[0.05] hover:shadow-[0_0_30px_rgba(59,130,246,0.15)]">
-
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="p-2 rounded-lg bg-blue-500/10 border border-blue-500/20">
-                            <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
-                            Email Address
-                        </p>
-                    </div>
-
-                    <p class="mt-2 text-lg font-bold text-white group-hover:text-blue-200 transition-colors">
-                        {{ $user->email }}
-                    </p>
+                    class="absolute right-0 top-0 h-28 w-28 rounded-full bg-orange-500/10 blur-3xl">
                 </div>
 
-                {{-- FULL NAME --}}
-                <div
-                    class="group rounded-2xl border border-white/5 bg-white/[0.03] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-orange-500/30 hover:bg-orange-500/[0.05] hover:shadow-[0_0_30px_rgba(251,146,60,0.15)]">
-
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="p-2 rounded-lg bg-orange-500/10 border border-orange-500/20">
-                            <svg class="w-5 h-5 text-orange-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
-                            </svg>
-                        </div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-orange-300">
-                            Full Name
-                        </p>
+                <div class="relative z-10">
+                    <div class="text-xs font-semibold uppercase tracking-[0.18em] text-orange-300">
+                        Pesanan
                     </div>
 
-                    <p class="mt-2 text-lg font-bold text-white group-hover:text-orange-200 transition-colors">
-                        {{ $user->name }}
-                    </p>
-                </div>
-
-                {{-- MEMBER SINCE --}}
-                <div
-                    class="group rounded-2xl border border-white/5 bg-white/[0.03] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-cyan-500/30 hover:bg-cyan-500/[0.05] hover:shadow-[0_0_30px_rgba(34,211,238,0.15)]">
-
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="p-2 rounded-lg bg-cyan-500/10 border border-cyan-500/20">
-                            <svg class="w-5 h-5 text-cyan-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-                            </svg>
-                        </div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">
-                            Member Since
-                        </p>
+                    <div class="mt-3 text-3xl font-black text-white">
+                        {{ $orders->count() }}
                     </div>
 
-                    <p class="mt-2 text-lg font-bold text-white group-hover:text-cyan-200 transition-colors">
-                        {{ $user->created_at->format('d M Y') }}
-                    </p>
-                </div>
-
-                {{-- STATUS --}}
-                <div
-                    class="group rounded-2xl border border-white/5 bg-white/[0.03] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-500/30 hover:bg-emerald-500/[0.05] hover:shadow-[0_0_30px_rgba(52,211,153,0.15)]">
-
-                    <div class="flex items-center gap-3 mb-2">
-                        <div class="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                            <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                            </svg>
-                        </div>
-                        <p class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
-                            Account Status
-                        </p>
-                    </div>
-
-                    <div class="mt-3">
-
-                        <span
-                            class="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-4 py-2 text-sm font-bold text-emerald-300 shadow-[0_0_15px_rgba(52,211,153,0.2)]">
-
-                            <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.5)]"></span>
-                            Active
-                        </span>
-
+                    <div class="mt-2 text-xs text-slate-400">
+                        Riwayat checkout & escrow
                     </div>
                 </div>
-
             </div>
 
-            {{-- ADDITIONAL INFO --}}
-            @if($user->userProfile)
-
+            {{-- NOTIFICATIONS --}}
             <div
-                class="reveal reveal-delay-3 mt-8 border-t border-white/10 pt-7">
+                class="reveal reveal-delay-3 group relative overflow-hidden rounded-[26px] border border-emerald-500/20 bg-[#0B1220]/95 p-5 transition duration-300 hover:-translate-y-1.5 hover:border-emerald-400/40 hover:shadow-[0_0_30px_rgba(16,185,129,0.12)]">
+
+                <div
+                    class="absolute right-0 top-0 h-28 w-28 rounded-full bg-emerald-500/10 blur-3xl">
+                </div>
+
+                <div class="relative z-10">
+                    <div class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
+                        Notifikasi
+                    </div>
+
+                    <div class="mt-3 text-3xl font-black text-white">
+                        {{ $notifications->count() }}
+                    </div>
+
+                    <div class="mt-2 text-xs text-slate-400">
+                        Update invoice & review
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {{-- CONTENT --}}
+        <div class="grid gap-5 lg:grid-cols-2">
+
+            {{-- RECENT ORDERS --}}
+            <section
+                class="reveal reveal-delay-2 rounded-[30px] border border-blue-500/20 bg-[#0B1220]/95 p-6 shadow-[0_0_50px_rgba(37,99,235,0.05)]">
 
                 <div class="flex items-center justify-between">
-
-                    <h3 class="text-2xl font-black text-white">
-                        Additional Information
-                    </h3>
+                    <h2 class="text-xl font-black text-white">
+                        Recent Orders
+                    </h2>
 
                     <div
-                        class="rounded-full border border-blue-500/30 bg-blue-500/15 px-3 py-1 text-[11px] font-bold text-blue-300 shadow-[0_0_15px_rgba(59,130,246,0.2)]">
-
-                        USER DATA
+                        class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-[11px] font-bold text-blue-300">
+                        {{ $orders->count() }} Orders
                     </div>
                 </div>
 
-                <div class="mt-5 grid gap-5 md:grid-cols-2">
+                <div class="mt-5 space-y-3">
 
-                    @if($user->userProfile->phone_verified_at)
+                    @forelse ($orders as $order)
+                        <div
+                            class="rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04] hover:-translate-y-1">
 
-                    <div
-                        class="group rounded-2xl border border-emerald-500/20 bg-emerald-500/[0.05] p-6 transition-all duration-300 hover:-translate-y-1 hover:border-emerald-400/30 hover:shadow-[0_0_30px_rgba(52,211,153,0.15)]">
+                            <div class="flex items-center justify-between gap-3">
+                                <span class="text-sm font-bold text-white">
+                                    {{ $order->invoice_number }}
+                                </span>
 
-                        <div class="flex items-center gap-3 mb-2">
-                            <div class="p-2 rounded-lg bg-emerald-500/10 border border-emerald-500/20">
-                                <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
-                                </svg>
+                                <span
+                                    class="rounded-full border border-blue-500/20 bg-blue-500/10 px-3 py-1 text-[10px] font-bold text-blue-300">
+                                    {{ $order->status_label }}
+                                </span>
                             </div>
-                            <p class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">
-                                Phone Verified
-                            </p>
+
+                            <div class="mt-2 text-xs text-slate-400">
+                                Total Rp
+                                {{ number_format($order->grand_total, 0, ',', '.') }}
+                            </div>
                         </div>
-
-                        <div class="mt-3">
-
-                            <span
-                                class="inline-flex items-center gap-2 rounded-full border border-emerald-500/30 bg-emerald-500/15 px-4 py-2 text-sm font-bold text-emerald-300 shadow-[0_0_15px_rgba(52,211,153,0.2)]">
-
-                                <span class="h-2 w-2 rounded-full bg-emerald-400 animate-pulse shadow-[0_0_10px_rgba(52,211,153,0.5)]"></span>
-                                Verified
-                            </span>
-
+                    @empty
+                        <div
+                            class="rounded-2xl border border-dashed border-white/10 py-8 text-center text-sm text-slate-500">
+                            Belum ada order.
                         </div>
-
-                    </div>
-
-                    @endif
+                    @endforelse
 
                 </div>
+            </section>
 
-            </div>
+            {{-- NOTIFICATIONS --}}
+            <section
+                class="reveal reveal-delay-3 rounded-[30px] border border-orange-500/20 bg-[#0B1220]/95 p-6 shadow-[0_0_50px_rgba(249,115,22,0.05)]">
 
-            @endif
+                <div class="flex items-center justify-between">
+                    <h2 class="text-xl font-black text-white">
+                        Notifications
+                    </h2>
+
+                    <div
+                        class="rounded-full border border-orange-500/20 bg-orange-500/10 px-3 py-1 text-[11px] font-bold text-orange-300">
+                        {{ $notifications->count() }} Alerts
+                    </div>
+                </div>
+
+                <div class="mt-5 space-y-3">
+
+                    @forelse ($notifications as $notification)
+                        <div
+                            class="rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:border-orange-500/30 hover:bg-orange-500/[0.04] hover:-translate-y-1">
+
+                            <div class="text-sm font-bold text-white">
+                                {{ $notification->title }}
+                            </div>
+
+                            <div class="mt-2 text-xs leading-relaxed text-slate-400">
+                                {{ $notification->body }}
+                            </div>
+                        </div>
+                    @empty
+                        <div
+                            class="rounded-2xl border border-dashed border-white/10 py-8 text-center text-sm text-slate-500">
+                            Belum ada notifikasi.
+                        </div>
+                    @endforelse
+
+                </div>
+            </section>
 
         </div>
-
     </div>
 </div>
 @endsection
