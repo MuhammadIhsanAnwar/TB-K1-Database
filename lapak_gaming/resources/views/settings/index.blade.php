@@ -1,12 +1,11 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="relative px-4 pb-24 pt-32">
+<div id="settings-wrapper" class="relative px-4 pb-24 pt-32 z-10">
 
-    {{-- BACKGROUND GLOBAL --}}
+    {{-- BACKGROUND GLOBAL (SAMA PERSIS DENGAN BERANDA/HOME) --}}
     <div class="fixed inset-0 -z-50 overflow-hidden pointer-events-none">
-
-        {{-- GRADIENT BACKGROUND --}}
+        {{-- GRADIENT LAYER --}}
         <div class="absolute inset-0 bg-[#050816]"></div>
 
         {{-- BLUE GLOW EFFECTS --}}
@@ -15,16 +14,15 @@
         {{-- ORANGE GLOW EFFECTS --}}
         <div class="absolute bottom-[-200px] left-[-140px] h-[420px] w-[420px] rounded-full bg-orange-500/15 blur-3xl"></div>
 
-        {{-- ANIMATED PARTICLES (Efek titik bergerak yang kamu maksud) --}}
-        <div class="particles"></div>
-
+        {{-- ANIMATED PARTICLES (Efek titik neon bergerak melayang dari halaman Home) --}}
+        <div class="particles-settings"></div>
     </div>
 
     <div class="relative z-10 mx-auto max-w-7xl">
 
         <div class="grid gap-8 lg:grid-cols-[290px_minmax(0,1fr)] items-start">
 
-            {{-- SIDEBAR CONTAINER --}}
+            {{-- SIDEBAR NAVIGASI --}}
             <aside class="sticky top-28 h-fit w-full">
                 <div class="reveal-up sidebar-box relative overflow-hidden">
 
@@ -35,11 +33,8 @@
 
                         {{-- PROFILE SHOWCASE --}}
                         <div class="text-center">
-
                             <div class="mx-auto flex h-28 w-28 overflow-hidden rounded-full border border-blue-500/20 bg-[#111827]/30 shadow-[0_0_40px_rgba(37,99,235,0.25)]">
-                                <img src="{{ $user->avatar_url }}"
-                                    alt="{{ $user->name }}"
-                                    class="h-full w-full object-cover">
+                                <img src="{{ $user->avatar_url }}" alt="{{ $user->name }}" class="h-full w-full object-cover">
                             </div>
 
                             <h2 class="mt-5 text-xl font-black text-white">
@@ -49,12 +44,10 @@
                             <p class="mt-2 text-sm text-slate-400">
                                 {{ $user->email }}
                             </p>
-
                         </div>
 
                         {{-- NAVIGATION MENU --}}
                         <nav class="mt-8 space-y-3">
-
                             <a href="{{ Route::has('settings.profile') ? route('settings.profile') : url('/settings/profile') }}"
                                 class="menu-item {{ $selectedTab === 'profile' ? 'menu-active-blue' : 'menu-normal' }}">
                                 Edit Profil
@@ -87,7 +80,6 @@
                                     Daftar Jadi Seller
                                 </a>
                             @endunless
-
                         </nav>
 
                     </div>
@@ -97,7 +89,7 @@
             {{-- MAIN PANEL CONTENT --}}
             <main class="reveal-up main-box">
 
-                {{-- ALERTS BLOCK --}}
+                {{-- SYSTEM ALERTS --}}
                 @if (session('success'))
                     <div class="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-emerald-200 backdrop-blur-md">
                         {{ session('success') }}
@@ -132,11 +124,10 @@
                     </div>
                 @endif
 
-                {{-- PROFILE TAB CONTENT --}}
+                {{-- 📑 TAB CONTENT: PROFILE --}}
                 @if ($selectedTab === 'profile')
 
                     <div class="mb-10">
-
                         <div class="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-blue-300">
                             <span class="h-2 w-2 rounded-full bg-blue-400"></span>
                             PROFILE SETTINGS
@@ -149,114 +140,50 @@
                         <p class="mt-3 text-sm leading-relaxed text-slate-400">
                             Kelola informasi profil akun Anda dengan tampilan modern dan futuristik.
                         </p>
-
                     </div>
 
-                    <form action="{{ route('settings.update') }}"
-                        method="POST"
-                        enctype="multipart/form-data"
-                        class="space-y-6">
-
+                    <form action="{{ route('settings.update') }}" method="POST" enctype="multipart/form-data" class="space-y-6">
                         @csrf
                         @method('PUT')
 
                         <div class="card-box">
-                            <label for="profile_photo" class="label-style">
-                                Foto Profil
-                            </label>
-
-                            <input type="file"
-                                name="profile_photo"
-                                id="profile_photo"
-                                accept="image/*"
+                            <label for="profile_photo" class="label-style">Foto Profil</label>
+                            <input type="file" name="profile_photo" id="profile_photo" accept="image/*"
                                 class="input-style file:mr-4 file:rounded-xl file:border-0 file:bg-blue-500 file:px-4 file:py-2 file:text-white cursor-pointer">
                         </div>
 
                         <div class="grid gap-5 lg:grid-cols-2">
-
                             <div class="card-box">
-                                <label for="name" class="label-style">
-                                    Nama Lengkap
-                                </label>
-
-                                <input type="text"
-                                    name="name"
-                                    id="name"
-                                    value="{{ old('name', $user->name) }}"
-                                    required
-                                    class="input-style">
+                                <label for="name" class="label-style">Nama Lengkap</label>
+                                <input type="text" name="name" id="name" value="{{ old('name', $user->name) }}" required class="input-style">
                             </div>
 
                             <div class="card-box">
-                                <label for="phone" class="label-style">
-                                    Nomor Telepon
-                                </label>
-
-                                <input type="text"
-                                    name="phone"
-                                    id="phone"
-                                    value="{{ old('phone', $profile?->phone ?? $user->phone) }}"
-                                    placeholder="08xxxxxxxxxx"
-                                    class="input-style">
+                                <label for="phone" class="label-style">Nomor Telepon</label>
+                                <input type="text" name="phone" id="phone" value="{{ old('phone', $profile?->phone ?? $user->phone) }}" placeholder="08xxxxxxxxxx" class="input-style">
                             </div>
-
                         </div>
 
                         <div class="grid gap-5 lg:grid-cols-2">
-
                             <div class="card-box">
-
-                                <label for="gender" class="label-style">
-                                    Jenis Kelamin
-                                </label>
-
-                                <select name="gender"
-                                    id="gender"
-                                    class="input-style cursor-pointer">
-
-                                    <option value="" class="bg-[#111827] text-white">
-                                        Pilih
-                                    </option>
-
-                                    <option value="male"
-                                        class="bg-[#111827] text-white"
-                                        @selected(old('gender', $profile?->gender) === 'male')>
-                                        Laki-laki
-                                    </option>
-
-                                    <option value="female"
-                                        class="bg-[#111827] text-white"
-                                        @selected(old('gender', $profile?->gender) === 'female')>
-                                        Perempuan
-                                    </option>
-
+                                <label for="gender" class="label-style">Jenis Kelamin</label>
+                                <select name="gender" id="gender" class="input-style cursor-pointer">
+                                    <option value="" class="bg-[#111827] text-white">Pilih</option>
+                                    <option value="male" class="bg-[#111827] text-white" @selected(old('gender', $profile?->gender) === 'male')>Laki-laki</option>
+                                    <option value="female" class="bg-[#111827] text-white" @selected(old('gender', $profile?->gender) === 'female')>Perempuan</option>
                                 </select>
-
                             </div>
 
                             <div class="card-box">
-
-                                <label for="birth_date" class="label-style">
-                                    Tanggal Lahir
-                                </label>
-
-                                <input type="date"
-                                    name="birth_date"
-                                    id="birth_date"
-                                    value="{{ old('birth_date', optional($profile?->birth_date)->format('Y-m-d')) }}"
-                                    class="input-style cursor-pointer">
+                                <label for="birth_date" class="label-style">Tanggal Lahir</label>
+                                <input type="date" name="birth_date" id="birth_date" value="{{ old('birth_date', optional($profile?->birth_date)->format('Y-m-d')) }}" class="input-style cursor-pointer">
                             </div>
-
                         </div>
 
-                        <button type="submit"
-                            class="submit-blue">
-                            Simpan Perubahan Profil
-                        </button>
-
+                        <button type="submit" class="submit-blue">Simpan Perubahan Profil</button>
                     </form>
 
-                {{-- ACCOUNT TAB CONTENT --}}
+                {{-- 📑 TAB CONTENT: ACCOUNT --}}
                 @elseif ($selectedTab === 'account')
 
                     <h1 class="mb-8 text-4xl font-black text-white">
@@ -264,106 +191,59 @@
                     </h1>
 
                     <div class="grid gap-6 lg:grid-cols-2">
-
                         <section class="card-box">
-
-                            <h2 class="text-xl font-bold text-white">
-                                Informasi Akun
-                            </h2>
-
+                            <h2 class="text-xl font-bold text-white">Informasi Akun</h2>
                             <dl class="mt-6 space-y-5 text-sm text-slate-300">
-
                                 <div>
-                                    <dt class="text-slate-500">
-                                        Email
-                                    </dt>
-
-                                    <dd class="mt-1 text-white">
-                                        {{ $user->email }}
-                                    </dd>
+                                    <dt class="text-slate-500">Email</dt>
+                                    <dd class="mt-1 text-white">{{ $user->email }}</dd>
                                 </div>
-
                                 <div>
-                                    <dt class="text-slate-500">
-                                        Status Verifikasi
-                                    </dt>
-
+                                    <dt class="text-slate-500">Status Verifikasi</dt>
                                     <dd class="mt-1 {{ $user->email_verified_at ? 'text-emerald-300' : 'text-amber-300' }}">
                                         {{ $user->email_verified_at ? 'Terverifikasi' : 'Belum Terverifikasi' }}
                                     </dd>
                                 </div>
-
                             </dl>
-
                         </section>
 
                         <section class="card-box border-amber-500/10 bg-amber-500/[0.02]">
-
-                            <h2 class="text-xl font-bold text-white">
-                                Nonaktifkan Akun
-                            </h2>
-
+                            <h2 class="text-xl font-bold text-white">Nonaktifkan Akun</h2>
                             <p class="mt-4 text-sm text-slate-400">
                                 Kode verifikasi akan dikirim ke email sebelum akun dinonaktifkan. Setelah berhasil, Anda akan otomatis logout.
                             </p>
 
-                            <form action="{{ route('settings.account.sendDeactivationCode') }}"
-                                method="POST"
-                                class="mt-6">
+                            <form action="{{ route('settings.account.sendDeactivationCode') }}" method="POST" class="mt-6">
                                 @csrf
-
-                                <button type="submit"
-                                    class="w-full rounded-2xl border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm font-bold text-amber-200 transition hover:bg-amber-500/20">
+                                <button type="submit" class="w-full rounded-2xl border border-amber-500/30 bg-amber-500/10 px-5 py-4 text-sm font-bold text-amber-200 transition hover:bg-amber-500/20">
                                     Kirim Kode Nonaktif
                                 </button>
                             </form>
 
-                            <form action="{{ route('settings.deactivate') }}"
-                                method="POST"
-                                class="mt-5 space-y-4">
+                            <form action="{{ route('settings.deactivate') }}" method="POST" class="mt-5 space-y-4">
                                 @csrf
-
-                                <input type="text"
-                                    name="deactivation_code"
-                                    inputmode="numeric"
-                                    maxlength="6"
-                                    placeholder="Kode Verifikasi"
-                                    class="input-style">
-
-                                <button type="submit"
-                                    onclick="return confirm('Nonaktifkan akun sekarang? Anda akan otomatis logout.')"
-                                    class="w-full rounded-2xl bg-amber-500 px-5 py-4 text-sm font-bold text-slate-950 transition hover:bg-amber-400">
+                                <input type="text" name="deactivation_code" inputmode="numeric" maxlength="6" placeholder="Kode Verifikasi" class="input-style">
+                                <button type="submit" onclick="return confirm('Nonaktifkan akun sekarang? Anda akan otomatis logout.')" class="w-full rounded-2xl bg-amber-500 px-5 py-4 text-sm font-bold text-slate-950 transition hover:bg-amber-400">
                                     Nonaktifkan Akun
                                 </button>
                             </form>
-
                         </section>
 
                         <section class="card-box border-rose-500/10 bg-rose-500/[0.02]">
-
-                            <h2 class="text-xl font-bold text-white">
-                                Hapus Akun
-                            </h2>
-
+                            <h2 class="text-xl font-bold text-white">Hapus Akun</h2>
                             <p class="mt-4 text-sm text-slate-400">
                                 Sistem akan mengirimkan kode verifikasi sebelum akun dihapus permanen.
                             </p>
-
-                            <a href="{{ route('settings.account.delete') }}"
-                                class="mt-6 flex items-center justify-center rounded-2xl bg-rose-600 px-5 py-4 text-sm font-bold text-white transition hover:bg-rose-500">
+                            <a href="{{ route('settings.account.delete') }}" class="mt-6 flex items-center justify-center rounded-2xl bg-rose-600 px-5 py-4 text-sm font-bold text-white transition hover:bg-rose-500">
                                 Mulai Proses Hapus Akun
                             </a>
-
                         </section>
-
                     </div>
 
-                {{-- PASSWORD TAB CONTENT --}}
+                {{-- 📑 TAB CONTENT: PASSWORD --}}
                 @elseif ($selectedTab === 'password')
 
-                    <h1 class="mb-8 text-4xl font-black text-white">
-                        Ubah Password
-                    </h1>
+                    <h1 class="mb-8 text-4xl font-black text-white">Ubah Password</h1>
 
                     @if($user->isGoogleAccount())
                         <div class="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-200">
@@ -372,89 +252,44 @@
                     @endif
 
                     <div class="grid gap-6 lg:grid-cols-2">
-
                         <section class="card-box">
-
-                            <h2 class="text-xl font-bold text-white">
-                                Kirim Kode Verifikasi
-                            </h2>
-
-                            <p class="mt-4 text-sm text-slate-400">
-                                Kode akan dikirim langsung ke email akun Anda.
-                            </p>
-
-                            <form action="{{ route('settings.password.sendCode') }}"
-                                method="POST"
-                                class="mt-6">
-
+                            <h2 class="text-xl font-bold text-white">Kirim Kode Verifikasi</h2>
+                            <p class="mt-4 text-sm text-slate-400">Kode akan dikirim langsung ke email akun Anda.</p>
+                            <form action="{{ route('settings.password.sendCode') }}" method="POST" class="mt-6">
                                 @csrf
-
-                                <button type="submit" @disabled($user->isGoogleAccount())
-                                    class="submit-blue disabled:opacity-40">
+                                <button type="submit" @disabled($user->isGoogleAccount()) class="submit-blue disabled:opacity-40">
                                     Kirim Kode
                                 </button>
-
                             </form>
-
                         </section>
 
                         <section class="card-box">
-
-                            <h2 class="text-xl font-bold text-white">
-                                Password Baru
-                            </h2>
-
-                            <form action="{{ route('settings.password.update') }}"
-                                method="POST"
-                                class="mt-6 space-y-5">
-
+                            <h2 class="text-xl font-bold text-white">Password Baru</h2>
+                            <form action="{{ route('settings.password.update') }}" method="POST" class="mt-6 space-y-5">
                                 @csrf
                                 @method('PUT')
-
-                                <input type="text"
-                                    name="verification_code"
-                                    placeholder="Kode Verifikasi"
-                                    class="input-style" @disabled($user->isGoogleAccount())>
-
-                                <input type="password"
-                                    name="password"
-                                    placeholder="Password Baru"
-                                    class="input-style" @disabled($user->isGoogleAccount())>
-
-                                <input type="password"
-                                    name="password_confirmation"
-                                    placeholder="Konfirmasi Password"
-                                    class="input-style" @disabled($user->isGoogleAccount())>
-
-                                <button type="submit" @disabled($user->isGoogleAccount())
-                                    class="submit-green disabled:opacity-40">
+                                <input type="text" name="verification_code" placeholder="Kode Verifikasi" class="input-style" @disabled($user->isGoogleAccount())>
+                                <input type="password" name="password" placeholder="Password Baru" class="input-style" @disabled($user->isGoogleAccount())>
+                                <input type="password" name="password_confirmation" placeholder="Konfirmasi Password" class="input-style" @disabled($user->isGoogleAccount())>
+                                <button type="submit" @disabled($user->isGoogleAccount()) class="submit-green disabled:opacity-40">
                                     Perbarui Password
                                 </button>
-
                             </form>
-
                         </section>
-
                     </div>
 
-                {{-- SECURITY TAB CONTENT --}}
+                {{-- 📑 TAB CONTENT: SECURITY (2FA) --}}
                 @elseif ($selectedTab === 'security')
 
                     <div class="mb-10">
-
                         <div class="inline-flex items-center gap-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-cyan-300">
                             <span class="h-2 w-2 rounded-full bg-cyan-400"></span>
                             TWO STEP VERIFICATION
                         </div>
-
-                        <h1 class="mt-5 text-4xl font-black text-white">
-                            Verifikasi 2 Langkah
-                        </h1>
-
+                        <h1 class="mt-5 text-4xl font-black text-white">Verifikasi 2 Langkah</h1>
                         <p class="mt-3 text-sm leading-relaxed text-slate-400">
                             Aktifkan perlindungan tambahan untuk login akun Anda. Anda dapat memilih Email atau Google Authenticator.
                         </p>
-
                     </div>
 
                     <form id="two-factor-confirm-form" action="{{ route('settings.security.confirm') }}" method="POST" class="hidden">
@@ -471,7 +306,6 @@
                                     <h2 class="text-xl font-bold text-white">Status Verifikasi 2 Langkah</h2>
                                     <p class="mt-3 text-sm text-slate-400">Gunakan satu atau lebih metode berikut sesuai kebutuhan Anda.</p>
                                 </div>
-
                                 <label class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-slate-200 cursor-pointer">
                                     <input type="checkbox" name="two_factor_enabled" value="1" @checked(old('two_factor_enabled', $user->two_factor_enabled))>
                                     Aktifkan verifikasi 2 langkah
@@ -481,7 +315,6 @@
 
                         <section class="card-box">
                             <h2 class="text-xl font-bold text-white">Pilih Metode</h2>
-
                             <div class="mt-6 grid gap-4 lg:grid-cols-3">
                                 <label class="rounded-3xl border border-white/10 bg-white/[0.02] p-5 text-sm text-slate-200 cursor-pointer">
                                     <div class="flex items-center gap-3">
@@ -503,7 +336,6 @@
 
                         <section class="card-box">
                             <h2 class="text-xl font-bold text-white">Google Authenticator</h2>
-
                             @if($pendingTwoFactorSetup ?? false)
                                 <div class="mt-6 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-center">
                                     @if($googleQrCode)
@@ -511,7 +343,6 @@
                                             {!! $googleQrCode !!}
                                         </div>
                                     @endif
-
                                     <div>
                                         <p class="text-sm text-slate-400">Scan QR code di bawah dengan Google Authenticator, lalu masukkan kode 6 digit untuk mengaktifkan dan menyimpan pengaturan.</p>
                                         <div class="mt-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 font-mono text-sm text-cyan-100 break-all">
@@ -521,23 +352,12 @@
                                 </div>
 
                                 <div class="mt-6 space-y-4">
-                                    <input type="text"
-                                        name="verification_code"
-                                        inputmode="numeric"
-                                        maxlength="6"
-                                        placeholder="Masukkan kode Authenticator"
-                                        form="two-factor-confirm-form"
-                                        class="input-style">
-
-                                    <button type="submit"
-                                        form="two-factor-confirm-form"
-                                        class="submit-green">
+                                    <input type="text" name="verification_code" inputmode="numeric" maxlength="6" placeholder="Masukkan kode Authenticator" form="two-factor-confirm-form" class="input-style">
+                                    <button type="submit" form="two-factor-confirm-form" class="submit-green">
                                         Konfirmasi & Simpan Google Authenticator
                                     </button>
                                 </div>
-
                                 <p class="mt-4 text-xs text-slate-500">Pengaturan belum disimpan permanen sampai kode Authenticator valid.</p>
-
                             @elseif(in_array('google', old('two_factor_methods', $twoFactorMethods ?? []), true) && $user->two_factor_confirmed_at)
                                 <div class="mt-6 rounded-3xl border border-emerald-500/20 bg-emerald-500/10 p-6">
                                     <p class="text-sm text-white font-semibold">Google Authenticator sudah terkonfirmasi.</p>
@@ -562,33 +382,24 @@
                             </div>
                         </section>
 
-                        <button type="submit" class="submit-blue">
-                            Simpan Pengaturan Verifikasi 2 Langkah
-                        </button>
+                        <button type="submit" class="submit-blue">Simpan Pengaturan Verifikasi 2 Langkah</button>
                     </form>
 
-                {{-- SELLER STATUS BLOCK --}}
+                {{-- 📑 TAB CONTENT: SELLER --}}
                 @elseif($user->seller_status === 'pending')
                 
                     <div class="mb-10">
-
                         <div class="inline-flex items-center gap-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-yellow-300">
                             <span class="h-2 w-2 rounded-full bg-yellow-400 animate-pulse"></span>
                             SELLER VERIFICATION
                         </div>
-
-                        <h1 class="mt-5 text-4xl font-black text-white">
-                            Pengajuan Seller Dalam Proses
-                        </h1>
-
+                        <h1 class="mt-5 text-4xl font-black text-white">Pengajuan Seller Dalam Proses</h1>
                         <p class="mt-3 text-sm leading-relaxed text-slate-400">
                             Terima kasih telah mendaftar sebagai seller. Kami sedang meninjau pengajuan Anda dan akan memberitahu hasil verifikasi segera.
                         </p>
-
                     </div>
 
                     <div class="overflow-hidden rounded-[34px] border border-yellow-500/10 bg-gradient-to-br from-[#111827]/30 to-[#0B1220]/30 p-8 backdrop-blur-md">
-
                         <div class="flex items-center gap-4">
                             <svg class="w-12 h-12 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/>
@@ -598,30 +409,22 @@
                                 <p class="text-sm text-yellow-300 mt-2">Pengajuan Anda sedang ditinjau oleh tim kami. Proses verifikasi biasanya memakan waktu 1-3 hari kerja. Anda akan menerima notifikasi via email saat status berubah.</p>
                             </div>
                         </div>
-
                     </div>
 
                 @elseif($user->seller_status === 'rejected')
 
                     <div class="mb-10">
-
                         <div class="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-red-300">
                             <span class="h-2 w-2 rounded-full bg-red-400"></span>
                             SELLER REJECTED
                         </div>
-
-                        <h1 class="mt-5 text-4xl font-black text-white">
-                            Pengajuan Seller Ditolak
-                        </h1>
-
+                        <h1 class="mt-5 text-4xl font-black text-white">Pengajuan Seller Ditolak</h1>
                         <p class="mt-3 text-sm leading-relaxed text-slate-400">
-                            Maaf, pengajuan seller Anda tidak disetujui. Silakan pelajari alasan penolakan di bawah and coba lagi dengan informasi yang lebih lengkap.
+                            Maaf, pengajuan seller Anda tidak disetujui. Silakan pelajari alasan penolakan di bawah dan coba lagi.
                         </p>
-
                     </div>
 
                     <div class="overflow-hidden rounded-[34px] border border-red-500/10 bg-gradient-to-br from-[#111827]/30 to-[#0B1220]/30 p-8 backdrop-blur-md">
-
                         <div class="flex items-start gap-4 mb-6">
                             <svg class="w-8 h-8 text-red-500 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -631,97 +434,47 @@
                                 <p class="text-sm text-red-300 mt-2">{{ $user->seller_rejection_reason ?? 'Alasan penolakan tidak tersedia.' }}</p>
                             </div>
                         </div>
-
-                        <a href="{{ route('seller.register.form') }}"
-                            class="inline-flex items-center justify-center rounded-2xl bg-red-500 px-5 py-4 text-sm font-bold text-white transition duration-300 hover:scale-[1.02] hover:bg-red-600">
+                        <a href="{{ route('seller.register.form') }}" class="inline-flex items-center justify-center rounded-2xl bg-red-500 px-5 py-4 text-sm font-bold text-white transition duration-300 hover:scale-[1.02] hover:bg-red-600">
                             Ajukan Ulang
                         </a>
-
                     </div>
 
                 @else
 
                     <div class="mb-10">
-
                         <div class="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-orange-300">
                             <span class="h-2 w-2 rounded-full bg-orange-400"></span>
                             SELLER ACCESS
                         </div>
-
-                        <h1 class="mt-5 text-4xl font-black text-white">
-                            Daftar Jadi Seller
-                        </h1>
-
-                        <p class="mt-3 text-sm leading-relaxed text-slate-400">
-                            Mulai membuka toko digital and jual item gaming Anda sekarang juga.
-                        </p>
-
+                        <h1 class="mt-5 text-4xl font-black text-white">Daftar Jadi Seller</h1>
+                        <p class="mt-3 text-sm leading-relaxed text-slate-400">Mulai membuka toko digital dan jual item gaming Anda sekarang juga.</p>
                     </div>
 
                     <div class="overflow-hidden rounded-[34px] border border-orange-500/10 bg-gradient-to-br from-[#111827]/30 to-[#0B1220]/30 p-8 backdrop-blur-md">
-
                         <div class="grid gap-8 lg:grid-cols-[1fr_280px] lg:items-center">
-
                             <div>
-
                                 @if ($user->isSellerAccount())
-
-                                    <div class="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-xs font-bold text-emerald-300">
-                                        ✓ Seller Aktif
-                                    </div>
-
-                                    <h2 class="mt-5 text-3xl font-black text-white">
-                                        Akun Seller Sudah Aktif
-                                    </h2>
-
-                                    <p class="mt-4 text-sm leading-relaxed text-slate-400">
-                                        Anda sudah dapat menjual produk and menerima transaksi.
-                                    </p>
-
+                                    <div class="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-xs font-bold text-emerald-300">✓ Seller Aktif</div>
+                                    <h2 class="mt-5 text-3xl font-black text-white">Akun Seller Sudah Aktif</h2>
+                                    <p class="mt-4 text-sm leading-relaxed text-slate-400">Anda sudah dapat menjual produk dan menerima transaksi.</p>
                                 @else
-
-                                    <div class="inline-flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-4 py-2 text-xs font-bold text-orange-300">
-                                        SELLER REGISTRATION
-                                    </div>
-
-                                    <h2 class="mt-5 text-3xl font-black text-white">
-                                        Mulai Jadi Seller
-                                    </h2>
-
-                                    <p class="mt-4 text-sm leading-relaxed text-slate-400">
-                                        Ajukan akun seller and mulai bisnis digital gaming Anda.
-                                    </p>
-
+                                    <div class="inline-flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-4 py-2 text-xs font-bold text-orange-300">SELLER REGISTRATION</div>
+                                    <h2 class="mt-5 text-3xl font-black text-white">Mulai Jadi Seller</h2>
+                                    <p class="mt-4 text-sm leading-relaxed text-slate-400">Ajukan akun seller dan mulai bisnis digital gaming Anda.</p>
                                 @endif
 
                                 <div class="mt-8 grid gap-4 sm:grid-cols-2">
-
-                                    <a href="{{ route('seller.register.form') }}"
-                                        class="flex items-center justify-center rounded-2xl bg-orange-500 px-5 py-4 text-sm font-bold text-slate-950 transition duration-300 hover:scale-[1.02] hover:bg-orange-400">
-                                        Ajukan Jadi Seller
-                                    </a>
-
-                                    <a href="{{ route('seller.dashboard') }}"
-                                        class="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] px-5 py-4 text-sm font-bold text-white transition duration-300 hover:border-orange-500/30 hover:bg-orange-500/[0.04]">
-                                        Buka Dashboard Seller
-                                    </a>
-
+                                    <a href="{{ route('seller.register.form') }}" class="flex items-center justify-center rounded-2xl bg-orange-500 px-5 py-4 text-sm font-bold text-slate-950 transition duration-300 hover:scale-[1.02] hover:bg-orange-400">Ajukan Jadi Seller</a>
+                                    <a href="{{ route('seller.dashboard') }}" class="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] px-5 py-4 text-sm font-bold text-white transition duration-300 hover:border-orange-500/30 hover:bg-orange-500/[0.04]">Buka Dashboard Seller</a>
                                 </div>
-
                             </div>
 
                             <div class="hidden lg:flex justify-center">
-
                                 <div class="flex h-56 w-56 items-center justify-center rounded-full border border-orange-500/20 bg-orange-500/[0.02] shadow-[0_0_60px_rgba(249,115,22,0.1)]">
-                                    <img src="{{ asset('storage/app/public/logo/logo.png') }}"
-                                        alt="Logo"
-                                        class="h-36 w-36 object-contain opacity-85">
+                                    <img src="{{ asset('storage/app/public/logo/logo.png') }}" alt="Logo" class="h-36 w-36 object-contain opacity-85">
                                 </div>
-
                             </div>
-
                         </div>
-
                     </div>
 
                 @endif
@@ -734,61 +487,73 @@
 </div>
 
 <style>
-/* PREVENT HORIZONTAL SCROLL & RESET LAYOUT BACKGROUND */
-html,
-body {
-    overflow-x: hidden;
-    background: #050816 !important;
+/* ── INJEKSI UTAMA: MERUNTUHKAN BACKGROUND PEKAT APP LAYOUT VIA WINDOWS GLOBAL ── */
+html, 
+body, 
+#app, 
+main,
+div[id="app"],
+.bg-slate-950,
+.bg-gray-900 {
+    background-color: #050816 !important;
 }
 
-/* REMOVE GHOST LINE LAYOUT IF PRESENT */
-body::before,
-body::after {
+/* Membersihkan tumpukan container utilitas Tailwind bawaan yang menghalangi view */
+div[class*="bg-slate-"], div[class*="bg-gray-"] {
+    background-color: transparent !important;
+}
+
+/* RESET SELECTION & LAYOUT HORIZONTAL ACCENTS */
+html, body {
+    overflow-x: hidden;
+}
+
+body::before, body::after {
     display: none !important;
 }
 
-/* PARTICLES SYSTEM (Sinkronisasi penuh dengan efek bergerak di halaman Home) */
-.particles {
+/* ANIMASI PARTIKEL BACKDROP BERGERAK (PERSIS SEPERTI CODES DI HOME/BERANDA) */
+.particles-settings {
     position: absolute;
     inset: 0;
     background-image:
-        radial-gradient(rgba(37,99,235,.35) 1.5px, transparent 1.5px),
-        radial-gradient(rgba(249,115,22,.18) 1.5px, transparent 1.5px);
+        radial-gradient(rgba(37, 99, 235, 0.35) 1.5px, transparent 1.5px),
+        radial-gradient(rgba(249, 115, 22, 0.18) 1.5px, transparent 1.5px);
     background-size: 80px 80px;
     background-position: 0 0, 40px 40px;
-    animation: particleMove 25s linear infinite;
-    opacity: 0.55;
+    animation: settingsParticleMove 25s linear infinite;
+    opacity: 0.6;
     pointer-events: none;
 }
 
-@keyframes particleMove {
+@keyframes settingsParticleMove {
     from { transform: translateY(0); }
     to { transform: translateY(-80px); }
 }
 
-/* SIDEBAR GLASS BOX EFFECT */
+/* SIDEBAR GLASS CONTAINER */
 .sidebar-box {
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(13, 20, 33, 0.40) !important; /* Diubah menjadi transparan tipis 40% */
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: rgba(13, 20, 33, 0.25) !important; /* Sengaja dibuat 25% tipis agar glow di belakangnya tembus */
     border-radius: 34px;
     padding: 24px;
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
     box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 }
 
-/* MAIN PANEL GLASS BOX EFFECT */
+/* MAIN PANEL GLASS CONTAINER */
 .main-box {
-    border: 1px solid rgba(255, 255, 255, 0.08);
-    background: rgba(13, 20, 33, 0.40) !important; /* Diubah menjadi transparan tipis 40% */
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    background: rgba(13, 20, 33, 0.25) !important; /* Sengaja dibuat 25% tipis agar panel keliatan berkaca-kaca */
     border-radius: 36px;
     padding: 32px;
-    backdrop-filter: blur(30px);
-    -webkit-backdrop-filter: blur(30px);
+    backdrop-filter: blur(30px) !important;
+    -webkit-backdrop-filter: blur(30px) !important;
     box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
-/* NAVIGATION LINKS STYLE */
+/* LINKS NAVIGASI ITEM */
 .menu-item {
     display: flex;
     align-items: center;
@@ -826,17 +591,16 @@ body::after {
     box-shadow: 0 8px 30px rgba(249,115,22,.15);
 }
 
-/* SUB-CARDS INNER CONTAINER */
+/* CARD BOX FIELDSET DI DALAM PANEL FORM */
 .card-box {
-    border: 1px solid rgba(255,255,255,.04);
-    background: rgba(255,255,255,.015);
+    border: 1px solid rgba(255,255,255,.04) !important;
+    background: rgba(255,255,255,.015) !important;
     border-radius: 30px;
     padding: 24px;
     backdrop-filter: blur(15px);
     -webkit-backdrop-filter: blur(15px);
 }
 
-/* FORM LABEL STYLE */
 .label-style {
     display: block;
     margin-bottom: 12px;
@@ -845,7 +609,6 @@ body::after {
     color: #cbd5e1;
 }
 
-/* FORM INPUT FIELDS STYLE */
 .input-style {
     width: 100%;
     border-radius: 18px;
@@ -864,7 +627,6 @@ body::after {
     background: rgba(17, 24, 39, 0.75);
 }
 
-/* SUBMIT BUTTON BLUE */
 .submit-blue {
     width: 100%;
     border-radius: 22px;
@@ -882,7 +644,6 @@ body::after {
     box-shadow: 0 10px 30px rgba(37,99,235,.35);
 }
 
-/* SUBMIT BUTTON GREEN */
 .submit-green {
     width: 100%;
     border-radius: 22px;
@@ -900,25 +661,22 @@ body::after {
     box-shadow: 0 10px 30px rgba(16,185,129,.35);
 }
 
-/* REVEAL ON LOAD ENTRANCE ANIMATION (Mencegah element stuck sembunyi) */
+/* ENTRANCE TRANSITION SMOOTH EFFECT */
 .reveal-up {
     opacity: 0;
-    transform: translateY(25px);
-    animation: revealSettingsUp 0.7s cubic-bezier(.16,1,.3,1) forwards;
+    transform: translateY(20px);
+    animation: revealSettingsUp 0.6s cubic-bezier(.16,1,.3,1) forwards;
 }
 
 @keyframes revealSettingsUp {
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
+    to { opacity: 1; transform: translateY(0); }
 }
 </style>
 
 @push('scripts')
 <script>
 document.addEventListener('DOMContentLoaded', () => {
-    // Memastikan transisi opacity berjalan lancar saat view selesai di-render browser
+    // Memastikan transisi entrance opacity dilepas paksa agar rendering stabil di browser
     const elements = document.querySelectorAll('.reveal-up');
     elements.forEach(el => {
         el.style.opacity = '1';
