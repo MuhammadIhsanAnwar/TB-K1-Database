@@ -1,21 +1,21 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="relative bg-[#050816] px-4 pb-24 pt-32">
+<div class="relative px-4 pb-24 pt-32">
 
     {{-- BACKGROUND GLOBAL --}}
-    <div class="fixed inset-0 -z-50 overflow-hidden">
+    <div class="fixed inset-0 -z-50 overflow-hidden pointer-events-none">
 
-        {{-- GRADIENT --}}
+        {{-- GRADIENT BACKGROUND --}}
         <div class="absolute inset-0 bg-[#050816]"></div>
 
-        {{-- BLUE GLOW --}}
+        {{-- BLUE GLOW EFFECTS --}}
         <div class="absolute top-[-180px] right-[-120px] h-[420px] w-[420px] rounded-full bg-blue-500/20 blur-3xl"></div>
 
-        {{-- ORANGE GLOW --}}
+        {{-- ORANGE GLOW EFFECTS --}}
         <div class="absolute bottom-[-200px] left-[-140px] h-[420px] w-[420px] rounded-full bg-orange-500/15 blur-3xl"></div>
 
-        {{-- ANIMATED PARTICLES --}}
+        {{-- ANIMATED PARTICLES (Efek titik bergerak yang kamu maksud) --}}
         <div class="particles"></div>
 
     </div>
@@ -24,16 +24,16 @@
 
         <div class="grid gap-8 lg:grid-cols-[290px_minmax(0,1fr)] items-start">
 
-            {{-- SIDEBAR --}}
+            {{-- SIDEBAR CONTAINER --}}
             <aside class="sticky top-28 h-fit w-full">
-                <div class="reveal-up sidebar-box">
+                <div class="reveal-up sidebar-box relative overflow-hidden">
 
                     <div class="absolute inset-0 rounded-[34px] bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.15),transparent_40%)] pointer-events-none">
                     </div>
 
                     <div class="relative z-10">
 
-                        {{-- PROFILE --}}
+                        {{-- PROFILE SHOWCASE --}}
                         <div class="text-center">
 
                             <div class="mx-auto flex h-28 w-28 overflow-hidden rounded-full border border-blue-500/20 bg-[#111827]/30 shadow-[0_0_40px_rgba(37,99,235,0.25)]">
@@ -52,7 +52,7 @@
 
                         </div>
 
-                        {{-- MENU --}}
+                        {{-- NAVIGATION MENU --}}
                         <nav class="mt-8 space-y-3">
 
                             <a href="{{ Route::has('settings.profile') ? route('settings.profile') : url('/settings/profile') }}"
@@ -94,10 +94,10 @@
                 </div>
             </aside>
 
-            {{-- MAIN --}}
+            {{-- MAIN PANEL CONTENT --}}
             <main class="reveal-up main-box">
 
-                {{-- ALERT --}}
+                {{-- ALERTS BLOCK --}}
                 @if (session('success'))
                     <div class="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-emerald-200 backdrop-blur-md">
                         {{ session('success') }}
@@ -132,7 +132,7 @@
                     </div>
                 @endif
 
-                {{-- PROFILE --}}
+                {{-- PROFILE TAB CONTENT --}}
                 @if ($selectedTab === 'profile')
 
                     <div class="mb-10">
@@ -256,7 +256,7 @@
 
                     </form>
 
-                {{-- ACCOUNT --}}
+                {{-- ACCOUNT TAB CONTENT --}}
                 @elseif ($selectedTab === 'account')
 
                     <h1 class="mb-8 text-4xl font-black text-white">
@@ -358,7 +358,7 @@
 
                     </div>
 
-                {{-- PASSWORD --}}
+                {{-- PASSWORD TAB CONTENT --}}
                 @elseif ($selectedTab === 'password')
 
                     <h1 class="mb-8 text-4xl font-black text-white">
@@ -437,7 +437,7 @@
 
                     </div>
 
-                {{-- SECURITY / 2FA --}}
+                {{-- SECURITY TAB CONTENT --}}
                 @elseif ($selectedTab === 'security')
 
                     <div class="mb-10">
@@ -567,7 +567,7 @@
                         </button>
                     </form>
 
-                {{-- SELLER --}}
+                {{-- SELLER STATUS BLOCK --}}
                 @elseif($user->seller_status === 'pending')
                 
                     <div class="mb-10">
@@ -615,7 +615,7 @@
                         </h1>
 
                         <p class="mt-3 text-sm leading-relaxed text-slate-400">
-                            Maaf, pengajuan seller Anda tidak disetujui. Silakan pelajari alasan penolakan di bawah dan coba lagi dengan informasi yang lebih lengkap.
+                            Maaf, pengajuan seller Anda tidak disetujui. Silakan pelajari alasan penolakan di bawah and coba lagi dengan informasi yang lebih lengkap.
                         </p>
 
                     </div>
@@ -653,7 +653,7 @@
                         </h1>
 
                         <p class="mt-3 text-sm leading-relaxed text-slate-400">
-                            Mulai membuka toko digital dan jual item gaming Anda sekarang juga.
+                            Mulai membuka toko digital and jual item gaming Anda sekarang juga.
                         </p>
 
                     </div>
@@ -675,7 +675,7 @@
                                     </h2>
 
                                     <p class="mt-4 text-sm leading-relaxed text-slate-400">
-                                        Anda sudah dapat menjual produk dan menerima transaksi.
+                                        Anda sudah dapat menjual produk and menerima transaksi.
                                     </p>
 
                                 @else
@@ -689,7 +689,7 @@
                                     </h2>
 
                                     <p class="mt-4 text-sm leading-relaxed text-slate-400">
-                                        Ajukan akun seller dan mulai bisnis digital gaming Anda.
+                                        Ajukan akun seller and mulai bisnis digital gaming Anda.
                                     </p>
 
                                 @endif
@@ -734,108 +734,110 @@
 </div>
 
 <style>
-/* PREVENT HORIZONTAL SCROLL */
+/* PREVENT HORIZONTAL SCROLL & RESET LAYOUT BACKGROUND */
 html,
-body{
+body {
     overflow-x: hidden;
-    background: #050816;
+    background: #050816 !important;
 }
 
-/* REMOVE GHOST LINE LAYOUT */
+/* REMOVE GHOST LINE LAYOUT IF PRESENT */
 body::before,
-body::after{
+body::after {
     display: none !important;
 }
 
-/* PARTICLES (FOKUS: Menghidupkan titik partikel di belakang panel) */
-.particles{
+/* PARTICLES SYSTEM (Sinkronisasi penuh dengan efek bergerak di halaman Home) */
+.particles {
     position: absolute;
     inset: 0;
     background-image:
-        radial-gradient(rgba(37,99,235,.4) 1.5px, transparent 1.5px),
-        radial-gradient(rgba(249,115,22,.22) 1.5px, transparent 1.5px);
-    background-size: 100px 100px;
-    background-position: 0 0, 50px 50px;
-    animation: particleMove 20s linear infinite;
-    opacity: 0.45;
+        radial-gradient(rgba(37,99,235,.35) 1.5px, transparent 1.5px),
+        radial-gradient(rgba(249,115,22,.18) 1.5px, transparent 1.5px);
+    background-size: 80px 80px;
+    background-position: 0 0, 40px 40px;
+    animation: particleMove 25s linear infinite;
+    opacity: 0.55;
+    pointer-events: none;
 }
 
-@keyframes particleMove{
-    from{ transform: translateY(0); }
-    to{ transform: translateY(-100px); }
+@keyframes particleMove {
+    from { transform: translateY(0); }
+    to { transform: translateY(-80px); }
 }
 
-/* SIDEBAR BOX (FOKUS: Efek Kaca Transparan Tembus Pandang) */
+/* SIDEBAR GLASS BOX EFFECT */
 .sidebar-box {
-    border: 1px solid rgba(255, 255, 255, .1);
-    background: rgba(11, 18, 32, 0.35); /* Transparansi tipis 35% */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(13, 20, 33, 0.40) !important; /* Diubah menjadi transparan tipis 40% */
     border-radius: 34px;
     padding: 24px;
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.4);
 }
 
-/* MAIN PANEL BOX (FOKUS: Efek Kaca Transparan Tembus Pandang) */
+/* MAIN PANEL GLASS BOX EFFECT */
 .main-box {
-    border: 1px solid rgba(255, 255, 255, .1);
-    background: rgba(11, 18, 32, 0.35); /* Transparansi tipis 35% */
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    background: rgba(13, 20, 33, 0.40) !important; /* Diubah menjadi transparan tipis 40% */
     border-radius: 36px;
     padding: 32px;
-    backdrop-filter: blur(25px);
-    -webkit-backdrop-filter: blur(25px);
-    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(30px);
+    -webkit-backdrop-filter: blur(30px);
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.5);
 }
 
-/* MENU NAVIGASI */
-.menu-item{
+/* NAVIGATION LINKS STYLE */
+.menu-item {
     display: flex;
     align-items: center;
     border-radius: 20px;
     padding: 16px 20px;
     font-size: 14px;
     font-weight: 700;
-    transition: .3s cubic-bezier(.25,.8,.25,1);
+    transition: all .3s cubic-bezier(.25,.8,.25,1);
 }
 
-.menu-normal{
-    border: 1px solid rgba(255,255,255,.04);
+.menu-normal {
+    border: 1px solid rgba(255,255,255,.03);
     background: rgba(255,255,255,.01);
     color: #94a3b8;
 }
 
-.menu-normal:hover{
+.menu-normal:hover {
     transform: translateX(6px);
-    border-color: rgba(59,130,246,.25);
-    background: rgba(59,130,246,.06);
+    border-color: rgba(59,130,246,.3);
+    background: rgba(59,130,246,.08);
     color: white;
 }
 
-.menu-active-blue{
-    border: 1px solid rgba(59,130,246,.3);
-    background: rgba(59,130,246,.12);
+.menu-active-blue {
+    border: 1px solid rgba(59,130,246,.4);
+    background: rgba(59,130,246,.15);
     color: white;
-    box-shadow: 0 8px 30px rgba(37,99,235,.12);
+    box-shadow: 0 8px 30px rgba(37,99,235,.15);
 }
 
-.menu-active-orange{
-    border: 1px solid rgba(249,115,22,.3);
-    background: rgba(249,115,22,.12);
+.menu-active-orange {
+    border: 1px solid rgba(249,115,22,.4);
+    background: rgba(249,115,22,.15);
     color: white;
-    box-shadow: 0 8px 30px rgba(249,115,22,.12);
+    box-shadow: 0 8px 30px rgba(249,115,22,.15);
 }
 
-/* SUB-CARD CONTAINER DI DALAM PANEL */
-.card-box{
-    border: 1px solid rgba(255,255,255,.05);
+/* SUB-CARDS INNER CONTAINER */
+.card-box {
+    border: 1px solid rgba(255,255,255,.04);
     background: rgba(255,255,255,.015);
     border-radius: 30px;
     padding: 24px;
     backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
 }
 
-/* LABEL */
-.label-style{
+/* FORM LABEL STYLE */
+.label-style {
     display: block;
     margin-bottom: 12px;
     font-size: 14px;
@@ -843,8 +845,8 @@ body::after{
     color: #cbd5e1;
 }
 
-/* INPUT FORM */
-.input-style{
+/* FORM INPUT FIELDS STYLE */
+.input-style {
     width: 100%;
     border-radius: 18px;
     border: 1px solid rgba(255,255,255,.06);
@@ -856,14 +858,14 @@ body::after{
     backdrop-filter: blur(10px);
 }
 
-.input-style:focus{
+.input-style:focus {
     border-color: rgba(59,130,246,.45);
     box-shadow: 0 0 15px rgba(59,130,246,.15);
     background: rgba(17, 24, 39, 0.75);
 }
 
-/* BUTTONS */
-.submit-blue{
+/* SUBMIT BUTTON BLUE */
+.submit-blue {
     width: 100%;
     border-radius: 22px;
     background: linear-gradient(to right, #2563eb, #3b82f6);
@@ -875,12 +877,13 @@ body::after{
     box-shadow: 0 4px 20px rgba(37,99,235,.2);
 }
 
-.submit-blue:hover{
+.submit-blue:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(37,99,235,.35);
 }
 
-.submit-green{
+/* SUBMIT BUTTON GREEN */
+.submit-green {
     width: 100%;
     border-radius: 22px;
     background: linear-gradient(to right, #059669, #10b981);
@@ -892,23 +895,37 @@ body::after{
     box-shadow: 0 4px 20px rgba(16,185,129,.2);
 }
 
-.submit-green:hover{
+.submit-green:hover {
     transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(16,185,129,.35);
 }
 
-/* REVEAL ENTRANCE ANIMATION */
-.reveal-up{
+/* REVEAL ON LOAD ENTRANCE ANIMATION (Mencegah element stuck sembunyi) */
+.reveal-up {
     opacity: 0;
-    transform: translateY(30px);
-    animation: revealUp 0.8s cubic-bezier(.16,1,.3,1) forwards;
+    transform: translateY(25px);
+    animation: revealSettingsUp 0.7s cubic-bezier(.16,1,.3,1) forwards;
 }
 
-@keyframes revealUp{
-    to{
+@keyframes revealSettingsUp {
+    to {
         opacity: 1;
         transform: translateY(0);
     }
 }
 </style>
+
+@push('scripts')
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+    // Memastikan transisi opacity berjalan lancar saat view selesai di-render browser
+    const elements = document.querySelectorAll('.reveal-up');
+    elements.forEach(el => {
+        el.style.opacity = '1';
+        el.style.transform = 'translateY(0)';
+    });
+});
+</script>
+@endpush
+
 @endsection
