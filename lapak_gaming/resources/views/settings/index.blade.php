@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="relative overflow-x-hidden bg-[#050816] px-4 pb-24 pt-32">
+<div class="relative bg-[#050816] px-4 pb-24 pt-32">
 
     {{-- BACKGROUND GLOBAL --}}
     <div class="fixed inset-0 -z-50 overflow-hidden">
@@ -10,10 +10,10 @@
         <div class="absolute inset-0 bg-[#050816]"></div>
 
         {{-- BLUE GLOW --}}
-        <div class="absolute top-[-180px] right-[-120px] h-[420px] w-[420px] rounded-full bg-blue-500/10 blur-3xl"></div>
+        <div class="absolute top-[-180px] right-[-120px] h-[420px] w-[420px] rounded-full bg-blue-500/15 blur-3xl"></div>
 
         {{-- ORANGE GLOW --}}
-        <div class="absolute bottom-[-200px] left-[-140px] h-[420px] w-[420px] rounded-full bg-orange-500/10 blur-3xl"></div>
+        <div class="absolute bottom-[-200px] left-[-140px] h-[420px] w-[420px] rounded-full bg-orange-500/12 blur-3xl"></div>
 
         {{-- ANIMATED PARTICLES --}}
         <div class="particles"></div>
@@ -22,105 +22,102 @@
 
     <div class="relative z-10 mx-auto max-w-7xl">
 
-        <div class="grid gap-8 lg:grid-cols-[290px_minmax(0,1fr)]">
+        <div class="grid gap-8 lg:grid-cols-[290px_minmax(0,1fr)] items-start">
 
             {{-- SIDEBAR --}}
-            <aside
-                class="reveal-up sticky top-28 h-fit rounded-[34px] border border-white/10 bg-[#0B1220]/85 p-6 backdrop-blur-2xl shadow-[0_0_60px_rgba(37,99,235,0.08)]">
+            <aside class="sticky top-28 h-fit w-full">
+                <div class="reveal-up rounded-[34px] border border-white/10 bg-[#0B1220]/40 p-6 backdrop-blur-xl shadow-[0_20px_50px_rgba(0,0,0,0.3)] relative overflow-hidden">
 
-                <div
-                    class="absolute inset-0 rounded-[34px] bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.15),transparent_40%)]">
-                </div>
-
-                <div class="relative z-10">
-
-                    {{-- PROFILE --}}
-                    <div class="text-center">
-
-                        <div
-                            class="mx-auto flex h-28 w-28 overflow-hidden rounded-full border border-blue-500/20 bg-[#111827] shadow-[0_0_40px_rgba(37,99,235,0.25)]">
-
-                            <img src="{{ $user->avatar_url }}"
-                                alt="{{ $user->name }}"
-                                class="h-full w-full object-cover">
-                        </div>
-
-                        <h2 class="mt-5 text-xl font-black text-white">
-                            {{ $user->name }}
-                        </h2>
-
-                        <p class="mt-2 text-sm text-slate-400">
-                            {{ $user->email }}
-                        </p>
-
+                    <div class="absolute inset-0 rounded-[34px] bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.15),transparent_40%)]">
                     </div>
 
-                    {{-- MENU --}}
-                    <nav class="mt-8 space-y-3">
+                    <div class="relative z-10">
 
-                        <a href="{{ Route::has('settings.profile') ? route('settings.profile') : url('/settings/profile') }}"
-                            class="menu-item {{ $selectedTab === 'profile' ? 'menu-active-blue' : 'menu-normal' }}">
-                            Edit Profil
-                        </a>
+                        {{-- PROFILE --}}
+                        <div class="text-center">
 
-                        <a href="{{ Route::has('settings.account') ? route('settings.account') : url('/settings/account') }}"
-                            class="menu-item {{ $selectedTab === 'account' ? 'menu-active-blue' : 'menu-normal' }}">
-                            Pengaturan Akun
-                        </a>
+                            <div class="mx-auto flex h-28 w-28 overflow-hidden rounded-full border border-blue-500/20 bg-[#111827]/60 shadow-[0_0_40px_rgba(37,99,235,0.25)]">
+                                <img src="{{ $user->avatar_url }}"
+                                    alt="{{ $user->name }}"
+                                    class="h-full w-full object-cover">
+                            </div>
 
-                        @if(! $user->isGoogleAccount())
-                        <a href="{{ Route::has('settings.password') ? route('settings.password') : url('/settings/password') }}"
-                            class="menu-item {{ $selectedTab === 'password' ? 'menu-active-blue' : 'menu-normal' }}">
-                            Ubah Password
-                        </a>
-                        @else
-                        <div class="menu-item menu-normal cursor-not-allowed opacity-60">
-                            Ubah Password
+                            <h2 class="mt-5 text-xl font-black text-white">
+                                {{ $user->name }}
+                            </h2>
+
+                            <p class="mt-2 text-sm text-slate-400">
+                                {{ $user->email }}
+                            </p>
+
                         </div>
-                        @endif
 
-                        <a href="{{ Route::has('settings.section') ? route('settings.section', ['section' => 'security']) : url('/settings/security') }}"
-                            class="menu-item {{ $selectedTab === 'security' ? 'menu-active-blue' : 'menu-normal' }}">
-                            Verifikasi 2 Langkah
-                        </a>
+                        {{-- MENU --}}
+                        <nav class="mt-8 space-y-3">
 
-                        @unless($user->isAdmin())
-                            <a href="{{ Route::has('settings.seller') ? route('settings.seller') : url('/settings/seller') }}"
-                                class="menu-item {{ $selectedTab === 'seller' ? 'menu-active-orange' : 'menu-normal' }}">
-                                Daftar Jadi Seller
+                            <a href="{{ Route::has('settings.profile') ? route('settings.profile') : url('/settings/profile') }}"
+                                class="menu-item {{ $selectedTab === 'profile' ? 'menu-active-blue' : 'menu-normal' }}">
+                                Edit Profil
                             </a>
-                        @endunless
 
-                    </nav>
+                            <a href="{{ Route::has('settings.account') ? route('settings.account') : url('/settings/account') }}"
+                                class="menu-item {{ $selectedTab === 'account' ? 'menu-active-blue' : 'menu-normal' }}">
+                                Pengaturan Akun
+                            </a>
 
+                            @if(! $user->isGoogleAccount())
+                            <a href="{{ Route::has('settings.password') ? route('settings.password') : url('/settings/password') }}"
+                                class="menu-item {{ $selectedTab === 'password' ? 'menu-active-blue' : 'menu-normal' }}">
+                                Ubah Password
+                            </a>
+                            @else
+                            <div class="menu-item menu-normal cursor-not-allowed opacity-40 select-none">
+                                Ubah Password
+                            </div>
+                            @endif
+
+                            <a href="{{ Route::has('settings.section') ? route('settings.section', ['section' => 'security']) : url('/settings/security') }}"
+                                class="menu-item {{ $selectedTab === 'security' ? 'menu-active-blue' : 'menu-normal' }}">
+                                Verifikasi 2 Langkah
+                            </a>
+
+                            @unless($user->isAdmin())
+                                <a href="{{ Route::has('settings.seller') ? route('settings.seller') : url('/settings/seller') }}"
+                                    class="menu-item {{ $selectedTab === 'seller' ? 'menu-active-orange' : 'menu-normal' }}">
+                                    Daftar Jadi Seller
+                                </a>
+                            @endunless
+
+                        </nav>
+
+                    </div>
                 </div>
             </aside>
 
             {{-- MAIN --}}
-            <main
-                class="reveal-up rounded-[36px] border border-white/10 bg-[#0B1220]/88 p-8 backdrop-blur-2xl shadow-[0_0_70px_rgba(37,99,235,0.08)]">
+            <main class="reveal-up rounded-[36px] border border-white/10 bg-[#0B1220]/45 p-8 backdrop-blur-3xl shadow-[0_20px_60px_rgba(0,0,0,0.4)] relative">
 
                 {{-- ALERT --}}
                 @if (session('success'))
-                    <div class="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-emerald-200">
+                    <div class="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 p-4 text-emerald-200 backdrop-blur-md">
                         {{ session('success') }}
                     </div>
                 @endif
 
                 @if (session('status'))
-                    <div class="mb-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 text-cyan-200">
+                    <div class="mb-6 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 text-cyan-200 backdrop-blur-md">
                         {{ session('status') }}
                     </div>
                 @endif
 
                 @if (session('warning'))
-                    <div class="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-200">
+                    <div class="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-200 backdrop-blur-md">
                         {{ session('warning') }}
                     </div>
                 @endif
 
                 @if ($errors->any())
-                    <div class="mb-6 rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-rose-200">
+                    <div class="mb-6 rounded-2xl border border-rose-500/20 bg-rose-500/10 p-4 text-rose-200 backdrop-blur-md">
                         <ul class="list-disc list-inside space-y-2 text-sm">
                             @foreach ($errors->all() as $error)
                                 <li>{{ $error }}</li>
@@ -130,7 +127,7 @@
                 @endif
 
                 @if($user->isAdmin())
-                    <div class="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-100">
+                    <div class="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/10 p-4 text-amber-100 backdrop-blur-md">
                         Menu buyer dan seller tidak tersedia untuk akun administrator.
                     </div>
                 @endif
@@ -140,10 +137,8 @@
 
                     <div class="mb-10">
 
-                        <div
-                            class="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-blue-300">
-
-                            <span class="h-2 w-2 rounded-full bg-emerald-400"></span>
+                        <div class="inline-flex items-center gap-2 rounded-full border border-blue-500/30 bg-blue-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-blue-300">
+                            <span class="h-2 w-2 rounded-full bg-blue-400"></span>
                             PROFILE SETTINGS
                         </div>
 
@@ -174,14 +169,7 @@
                                 name="profile_photo"
                                 id="profile_photo"
                                 accept="image/*"
-                                class="input-style
-                                file:mr-4
-                                file:rounded-xl
-                                file:border-0
-                                file:bg-blue-500
-                                file:px-4
-                                file:py-2
-                                file:text-white">
+                                class="input-style file:mr-4 file:rounded-xl file:border-0 file:bg-blue-500 file:px-4 file:py-2 file:text-white cursor-pointer">
                         </div>
 
                         <div class="grid gap-5 lg:grid-cols-2">
@@ -224,7 +212,7 @@
 
                                 <select name="gender"
                                     id="gender"
-                                    class="input-style">
+                                    class="input-style cursor-pointer">
 
                                     <option value="" class="bg-[#111827] text-white">
                                         Pilih
@@ -256,7 +244,7 @@
                                     name="birth_date"
                                     id="birth_date"
                                     value="{{ old('birth_date', optional($profile?->birth_date)->format('Y-m-d')) }}"
-                                    class="input-style">
+                                    class="input-style cursor-pointer">
                             </div>
 
                         </div>
@@ -309,7 +297,7 @@
 
                         </section>
 
-                        <section class="card-box border-amber-500/10 bg-amber-500/[0.03]">
+                        <section class="card-box border-amber-500/10 bg-amber-500/[0.02]">
 
                             <h2 class="text-xl font-bold text-white">
                                 Nonaktifkan Akun
@@ -351,7 +339,7 @@
 
                         </section>
 
-                        <section class="card-box border-rose-500/10 bg-rose-500/[0.03]">
+                        <section class="card-box border-rose-500/10 bg-rose-500/[0.02]">
 
                             <h2 class="text-xl font-bold text-white">
                                 Hapus Akun
@@ -363,7 +351,6 @@
 
                             <a href="{{ route('settings.account.delete') }}"
                                 class="mt-6 flex items-center justify-center rounded-2xl bg-rose-600 px-5 py-4 text-sm font-bold text-white transition hover:bg-rose-500">
-
                                 Mulai Proses Hapus Akun
                             </a>
 
@@ -403,7 +390,7 @@
                                 @csrf
 
                                 <button type="submit" @disabled($user->isGoogleAccount())
-                                    class="submit-blue">
+                                    class="submit-blue disabled:opacity-40">
                                     Kirim Kode
                                 </button>
 
@@ -440,7 +427,7 @@
                                     class="input-style" @disabled($user->isGoogleAccount())>
 
                                 <button type="submit" @disabled($user->isGoogleAccount())
-                                    class="submit-green">
+                                    class="submit-green disabled:opacity-40">
                                     Perbarui Password
                                 </button>
 
@@ -485,7 +472,7 @@
                                     <p class="mt-3 text-sm text-slate-400">Gunakan satu atau lebih metode berikut sesuai kebutuhan Anda.</p>
                                 </div>
 
-                                <label class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200">
+                                <label class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.02] px-4 py-3 text-sm text-slate-200 cursor-pointer">
                                     <input type="checkbox" name="two_factor_enabled" value="1" @checked(old('two_factor_enabled', $user->two_factor_enabled))>
                                     Aktifkan verifikasi 2 langkah
                                 </label>
@@ -496,7 +483,7 @@
                             <h2 class="text-xl font-bold text-white">Pilih Metode</h2>
 
                             <div class="mt-6 grid gap-4 lg:grid-cols-3">
-                                <label class="rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-sm text-slate-200">
+                                <label class="rounded-3xl border border-white/10 bg-white/[0.02] p-5 text-sm text-slate-200 cursor-pointer">
                                     <div class="flex items-center gap-3">
                                         <input type="checkbox" name="two_factor_methods[]" value="email" @checked(in_array('email', old('two_factor_methods', $twoFactorMethods ?? []), true))>
                                         <span class="font-semibold text-white">Email</span>
@@ -504,7 +491,7 @@
                                     <p class="mt-3 text-slate-400">Kode akan dikirim ke alamat email akun Anda.</p>
                                 </label>
 
-                                <label class="rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-sm text-slate-200">
+                                <label class="rounded-3xl border border-white/10 bg-white/[0.02] p-5 text-sm text-slate-200 cursor-pointer">
                                     <div class="flex items-center gap-3">
                                         <input type="checkbox" name="two_factor_methods[]" value="google" @checked(in_array('google', old('two_factor_methods', $twoFactorMethods ?? []), true))>
                                         <span class="font-semibold text-white">Google Authenticator</span>
@@ -564,11 +551,11 @@
                         <section class="card-box">
                             <h2 class="text-xl font-bold text-white">Informasi Pendukung</h2>
                             <div class="mt-4 grid gap-4 lg:grid-cols-2 text-sm text-slate-300">
-                                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                                <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
                                     <div class="text-slate-500">Email Terdaftar</div>
                                     <div class="mt-1 text-white">{{ $user->email }}</div>
                                 </div>
-                                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                                <div class="rounded-2xl border border-white/10 bg-white/[0.02] p-4">
                                     <div class="text-slate-500">Nomor Telepon</div>
                                     <div class="mt-1 text-white">{{ $user->phone ?? 'Belum diisi' }}</div>
                                 </div>
@@ -585,9 +572,7 @@
                 
                     <div class="mb-10">
 
-                        <div
-                            class="inline-flex items-center gap-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-yellow-300">
-
+                        <div class="inline-flex items-center gap-2 rounded-full border border-yellow-500/30 bg-yellow-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-yellow-300">
                             <span class="h-2 w-2 rounded-full bg-yellow-400 animate-pulse"></span>
                             SELLER VERIFICATION
                         </div>
@@ -602,8 +587,7 @@
 
                     </div>
 
-                    <div
-                        class="overflow-hidden rounded-[34px] border border-yellow-500/10 bg-gradient-to-br from-[#111827] to-[#0B1220] p-8">
+                    <div class="overflow-hidden rounded-[34px] border border-yellow-500/10 bg-gradient-to-br from-[#111827]/30 to-[#0B1220]/30 p-8 backdrop-blur-md">
 
                         <div class="flex items-center gap-4">
                             <svg class="w-12 h-12 text-yellow-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -621,9 +605,7 @@
 
                     <div class="mb-10">
 
-                        <div
-                            class="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-red-300">
-
+                        <div class="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-red-300">
                             <span class="h-2 w-2 rounded-full bg-red-400"></span>
                             SELLER REJECTED
                         </div>
@@ -633,13 +615,12 @@
                         </h1>
 
                         <p class="mt-3 text-sm leading-relaxed text-slate-400">
-                            Maaf, pengajuan seller Anda tidak disetujui. Silakan pelajari alasan penolakan di bawah dan coba lagi dengan informasi yang lebih lengkap.
+                            Maaf, pengajuan seller Anda tidak disetujui. Silakan pelajari alasan penolakan di bawah and coba lagi dengan informasi yang lebih lengkap.
                         </p>
 
                     </div>
 
-                    <div
-                        class="overflow-hidden rounded-[34px] border border-red-500/10 bg-gradient-to-br from-[#111827] to-[#0B1220] p-8">
+                    <div class="overflow-hidden rounded-[34px] border border-red-500/10 bg-gradient-to-br from-[#111827]/30 to-[#0B1220]/30 p-8 backdrop-blur-md">
 
                         <div class="flex items-start gap-4 mb-6">
                             <svg class="w-8 h-8 text-red-500 flex-shrink-0 mt-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -662,9 +643,7 @@
 
                     <div class="mb-10">
 
-                        <div
-                            class="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-orange-300">
-
+                        <div class="inline-flex items-center gap-2 rounded-full border border-orange-500/30 bg-orange-500/10 px-4 py-2 text-[11px] font-bold tracking-[0.2em] text-orange-300">
                             <span class="h-2 w-2 rounded-full bg-orange-400"></span>
                             SELLER ACCESS
                         </div>
@@ -679,8 +658,7 @@
 
                     </div>
 
-                    <div
-                        class="overflow-hidden rounded-[34px] border border-orange-500/10 bg-gradient-to-br from-[#111827] to-[#0B1220] p-8">
+                    <div class="overflow-hidden rounded-[34px] border border-orange-500/10 bg-gradient-to-br from-[#111827]/30 to-[#0B1220]/30 p-8 backdrop-blur-md">
 
                         <div class="grid gap-8 lg:grid-cols-[1fr_280px] lg:items-center">
 
@@ -688,9 +666,7 @@
 
                                 @if ($user->isSellerAccount())
 
-                                    <div
-                                        class="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-xs font-bold text-emerald-300">
-
+                                    <div class="inline-flex items-center gap-2 rounded-full border border-emerald-500/20 bg-emerald-500/10 px-4 py-2 text-xs font-bold text-emerald-300">
                                         ✓ Seller Aktif
                                     </div>
 
@@ -704,9 +680,7 @@
 
                                 @else
 
-                                    <div
-                                        class="inline-flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-4 py-2 text-xs font-bold text-orange-300">
-
+                                    <div class="inline-flex items-center gap-2 rounded-full border border-orange-500/20 bg-orange-500/10 px-4 py-2 text-xs font-bold text-orange-300">
                                         SELLER REGISTRATION
                                     </div>
 
@@ -724,13 +698,11 @@
 
                                     <a href="{{ route('seller.register.form') }}"
                                         class="flex items-center justify-center rounded-2xl bg-orange-500 px-5 py-4 text-sm font-bold text-slate-950 transition duration-300 hover:scale-[1.02] hover:bg-orange-400">
-
                                         Ajukan Jadi Seller
                                     </a>
 
                                     <a href="{{ route('seller.dashboard') }}"
-                                        class="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-bold text-white transition duration-300 hover:border-orange-500/30 hover:bg-orange-500/[0.06]">
-
+                                        class="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.02] px-5 py-4 text-sm font-bold text-white transition duration-300 hover:border-orange-500/30 hover:bg-orange-500/[0.04]">
                                         Buka Dashboard Seller
                                     </a>
 
@@ -740,12 +712,10 @@
 
                             <div class="hidden lg:flex justify-center">
 
-                                <div
-                                    class="flex h-56 w-56 items-center justify-center rounded-full border border-orange-500/20 bg-orange-500/[0.04] shadow-[0_0_60px_rgba(249,115,22,0.15)]">
-
+                                <div class="flex h-56 w-56 items-center justify-center rounded-full border border-orange-500/20 bg-orange-500/[0.02] shadow-[0_0_60px_rgba(249,115,22,0.1)]">
                                     <img src="{{ asset('storage/app/public/logo/logo.png') }}"
                                         alt="Logo"
-                                        class="h-36 w-36 object-contain opacity-95">
+                                        class="h-36 w-36 object-contain opacity-85">
                                 </div>
 
                             </div>
@@ -764,157 +734,159 @@
 </div>
 
 <style>
+/* PREVENT HORIZONTAL SCROLL */
 html,
 body{
-    overflow-x:hidden;
-    background:#050816;
+    overflow-x: hidden;
+    background: #050816;
 }
 
-/* REMOVE GHOST LINE */
+/* REMOVE GHOST LINE LAYOUT */
 body::before,
 body::after{
-    display:none !important;
+    display: none !important;
 }
 
-/* PARTICLES */
+/* PARTICLES (FOKUS: Opacity dinaikkan biar nembus box transparan dengan baik) */
 .particles{
-    position:absolute;
-    inset:0;
+    position: absolute;
+    inset: 0;
     background-image:
-        radial-gradient(rgba(37,99,235,.35) 1px, transparent 1px),
-        radial-gradient(rgba(249,115,22,.18) 1px, transparent 1px);
-    background-size:120px 120px;
-    background-position:0 0,60px 60px;
-    animation:particleMove 18s linear infinite;
-    opacity:.25;
+        radial-gradient(rgba(37,99,235,.4) 1.2px, transparent 1.2px),
+        radial-gradient(rgba(249,115,22,.22) 1.2px, transparent 1.2px);
+    background-size: 100px 100px;
+    background-position: 0 0, 50px 50px;
+    animation: particleMove 20s linear infinite;
+    opacity: 0.45;
 }
 
 @keyframes particleMove{
-    from{
-        transform:translateY(0);
-    }
-    to{
-        transform:translateY(-120px);
-    }
+    from{ transform: translateY(0); }
+    to{ transform: translateY(-100px); }
 }
 
-/* MENU */
+/* MENU NAVIGASI */
 .menu-item{
-    display:flex;
-    align-items:center;
-    border-radius:20px;
-    padding:16px 20px;
-    font-size:14px;
-    font-weight:700;
-    transition:.35s;
+    display: flex;
+    align-items: center;
+    border-radius: 20px;
+    padding: 16px 20px;
+    font-size: 14px;
+    font-weight: 700;
+    transition: .3s cubic-bezier(.25,.8,.25,1);
 }
 
 .menu-normal{
-    border:1px solid rgba(255,255,255,.06);
-    background:rgba(255,255,255,.03);
-    color:#94a3b8;
+    border: 1px solid rgba(255,255,255,.04);
+    background: rgba(255,255,255,.01);
+    color: #94a3b8;
 }
 
 .menu-normal:hover{
-    transform:translateX(6px);
-    border-color:rgba(59,130,246,.25);
-    background:rgba(59,130,246,.08);
-    color:white;
+    transform: translateX(6px);
+    border-color: rgba(59,130,246,.25);
+    background: rgba(59,130,246,.06);
+    color: white;
 }
 
 .menu-active-blue{
-    border:1px solid rgba(59,130,246,.3);
-    background:rgba(59,130,246,.12);
-    color:white;
-    box-shadow:0 0 25px rgba(37,99,235,.16);
+    border: 1px solid rgba(59,130,246,.3);
+    background: rgba(59,130,246,.08);
+    color: white;
+    box-shadow: 0 8px 30px rgba(37,99,235,.12);
 }
 
 .menu-active-orange{
-    border:1px solid rgba(249,115,22,.3);
-    background:rgba(249,115,22,.12);
-    color:white;
-    box-shadow:0 0 25px rgba(249,115,22,.15);
+    border: 1px solid rgba(249,115,22,.3);
+    background: rgba(249,115,22,.08);
+    color: white;
+    box-shadow: 0 8px 30px rgba(249,115,22,.12);
 }
 
-/* CARD */
+/* GLASSMORPHISM BOX (FOKUS: Menggunakan bg transparan super tipis dan backdrop-blur tebal) */
 .card-box{
-    border:1px solid rgba(255,255,255,.05);
-    background:rgba(255,255,255,.03);
-    border-radius:30px;
-    padding:24px;
-    backdrop-filter:blur(18px);
+    border: 1px solid rgba(255,255,255,.05);
+    background: rgba(255,255,255,.015);
+    border-radius: 30px;
+    padding: 24px;
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
 }
 
 /* LABEL */
 .label-style{
-    display:block;
-    margin-bottom:12px;
-    font-size:14px;
-    font-weight:700;
-    color:#cbd5e1;
+    display: block;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 700;
+    color: #cbd5e1;
 }
 
-/* INPUT */
+/* INPUT FORM */
 .input-style{
-    width:100%;
-    border-radius:18px;
-    border:1px solid rgba(255,255,255,.08);
-    background:#111827;
-    padding:16px 18px;
-    color:white;
-    outline:none;
-    transition:.3s;
+    width: 100%;
+    border-radius: 18px;
+    border: 1px solid rgba(255,255,255,.06);
+    background: rgba(17, 24, 39, 0.55);
+    padding: 16px 18px;
+    color: white;
+    outline: none;
+    transition: .25s ease;
+    backdrop-filter: blur(10px);
 }
 
 .input-style:focus{
-    border-color:rgba(59,130,246,.45);
-    box-shadow:0 0 0 4px rgba(59,130,246,.08);
+    border-color: rgba(59,130,246,.45);
+    box-shadow: 0 0 15px rgba(59,130,246,.15);
+    background: rgba(17, 24, 39, 0.75);
 }
 
 /* BUTTON */
 .submit-blue{
-    width:100%;
-    border-radius:22px;
-    background:linear-gradient(to right,#2563eb,#3b82f6);
-    padding:16px;
-    font-size:14px;
-    font-weight:800;
-    color:white;
-    transition:.35s;
+    width: 100%;
+    border-radius: 22px;
+    background: linear-gradient(to right, #2563eb, #3b82f6);
+    padding: 16px;
+    font-size: 14px;
+    font-weight: 800;
+    color: white;
+    transition: .3s ease;
+    box-shadow: 0 4px 20px rgba(37,99,235,.2);
 }
 
 .submit-blue:hover{
-    transform:translateY(-2px);
-    box-shadow:0 0 35px rgba(37,99,235,.28);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(37,99,235,.35);
 }
 
 .submit-green{
-    width:100%;
-    border-radius:22px;
-    background:linear-gradient(to right,#059669,#10b981);
-    padding:16px;
-    font-size:14px;
-    font-weight:800;
-    color:white;
-    transition:.35s;
+    width: 100%;
+    border-radius: 22px;
+    background: linear-gradient(to right, #059669, #10b981);
+    padding: 16px;
+    font-size: 14px;
+    font-weight: 800;
+    color: white;
+    transition: .3s ease;
+    box-shadow: 0 4px 20px rgba(16,185,129,.2);
 }
 
 .submit-green:hover{
-    transform:translateY(-2px);
-    box-shadow:0 0 35px rgba(16,185,129,.25);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(16,185,129,.35);
 }
 
-/* ANIMATION */
+/* REVEAL ENTRANCE ANIMATION */
 .reveal-up{
-    opacity:0;
-    transform:translateY(50px);
-    animation:revealUp 1s cubic-bezier(.22,1,.36,1) forwards;
+    opacity: 0;
+    transform: translateY(30px);
+    animation: revealUp 0.8s cubic-bezier(.16,1,.3,1) forwards;
 }
 
 @keyframes revealUp{
     to{
-        opacity:1;
-        transform:translateY(0);
+        opacity: 1;
+        transform: translateY(0);
     }
 }
 </style>
