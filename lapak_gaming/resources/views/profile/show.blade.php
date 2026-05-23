@@ -3,6 +3,12 @@
 @section('content')
 <div class="relative overflow-hidden bg-[#050816] px-4 py-14">
 
+    {{-- GLOBAL BACKGROUND --}}
+    <div class="pointer-events-none fixed inset-0 -z-10 overflow-hidden">
+        <div class="absolute -top-40 -right-40 h-[380px] w-[380px] rounded-full bg-blue-500/10 blur-3xl"></div>
+        <div class="absolute bottom-[-180px] left-[-120px] h-[360px] w-[360px] rounded-full bg-orange-500/10 blur-3xl"></div>
+        <div class="absolute top-1/2 left-1/2 h-[260px] w-[260px] -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyan-500/5 blur-3xl"></div>
+    </div>
 
     {{-- REVEAL ANIMATION --}}
     <style>
