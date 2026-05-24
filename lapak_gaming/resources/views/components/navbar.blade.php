@@ -42,8 +42,8 @@
 @endpush
 
 {{-- ═══ MOBILE SIDEBAR DRAWER ═══ --}}
-<aside id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col overflow-y-auto bg-white transition-transform -translate-x-full">
-  <div class="flex items-center justify-between p-4 border-b border-gray-200 navbar-top">
+<aside id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col overflow-y-auto bg-[#0D1421] text-slate-200 transition-transform -translate-x-full">
+  <div class="flex items-center justify-between p-4 border-b border-white/6 navbar-top">
     <a href="{{ route('marketplace.home') }}" class="flex items-center gap-2.5">
       <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Logo" class="w-8 h-8 rounded-lg object-contain bg-white">
       <span class="font-display font-bold text-base text-white tracking-wide">{{ config('app.name', 'Itemku') }}</span>
@@ -54,27 +54,27 @@
   </div>
 
   @auth
-  <div class="p-4 border-b border-gray-100 bg-gray-50">
+  <div class="p-4 border-b border-white/6 bg-transparent">
     <div class="flex items-center gap-3">
        <img src="{{ $authUser?->avatar_url ?? $avatarFallback }}" alt="Avatar" class="w-10 h-10 rounded-full object-cover shrink-0">
       <div class="flex-1 min-w-0">
-        <div class="text-sm font-semibold text-gray-900 truncate">{{ $authUser?->name ?? 'User' }}</div>
-        <div class="text-xs text-gray-500 truncate">{{ $authUser?->email ?? '' }}</div>
+        <div class="text-sm font-semibold text-slate-100 truncate">{{ $authUser?->name ?? 'User' }}</div>
+        <div class="text-xs text-slate-400 truncate">{{ $authUser?->email ?? '' }}</div>
       </div>
     </div>
   </div>
   @else
-  <div class="p-4 border-b border-gray-100 flex gap-2">
-    <a href="{{ route('login') }}" class="flex-1 text-center py-2 px-3 rounded-lg border border-itemku-blue text-itemku-blue text-sm font-semibold hover:bg-gray-50">Masuk</a>
+  <div class="p-4 border-b border-white/6 flex gap-2">
+    <a href="{{ route('login') }}" class="flex-1 text-center py-2 px-3 rounded-lg border border-itemku-blue text-itemku-blue text-sm font-semibold hover:bg-white/6">Masuk</a>
     <a href="{{ route('register') }}" class="flex-1 text-center py-2 px-3 rounded-lg bg-itemku-yellow text-white text-sm font-semibold hover:bg-yellow-600">Daftar</a>
   </div>
   @endauth
 
-  <div class="p-4 border-b border-gray-100">
+  <div class="p-4 border-b border-white/6">
     <form action="{{ route('products.search') }}" method="GET">
       <div class="relative">
         <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input type="text" name="q" placeholder="Cari Game, Item..." class="w-full pl-9 pr-3 py-2 bg-gray-100 border-none rounded-lg text-sm focus:ring-1 focus:ring-itemku-blue" />
+        <input type="text" name="q" placeholder="Cari Game, Item..." class="w-full pl-9 pr-3 py-2 bg-[#0E1420] border-none rounded-lg text-sm text-slate-300 focus:ring-1 focus:ring-itemku-blue" />
       </div>
     </form>
   </div>
@@ -185,13 +185,13 @@
               <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
               <span id="notif-badge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
             </button>
-            <div id="notif-dropdown" class="hidden absolute right-0 top-full mt-2 w-80 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden text-left text-gray-800 z-50">
-              <div class="px-4 py-3 border-b flex justify-between items-center bg-gray-50">
-                <span class="font-bold text-sm">Notifikasi</span>
+            <div id="notif-dropdown" class="hidden absolute right-0 top-full mt-2 w-80 bg-[#0D1421] rounded-lg shadow-xl border border-white/6 overflow-hidden text-left text-slate-200 z-50">
+              <div class="px-4 py-3 border-b flex justify-between items-center bg-transparent">
+                <span class="font-bold text-sm text-slate-100">Notifikasi</span>
                 <a href="{{ route('notifications.index') }}" class="text-xs text-itemku-blue">Lihat semua</a>
               </div>
               <div id="notif-dropdown-body" class="max-h-72 overflow-y-auto">
-                <div class="px-4 py-6 text-sm text-gray-500 text-center">Klik ikon notifikasi untuk memuat pesan terbaru.</div>
+                <div class="px-4 py-6 text-sm text-slate-400 text-center">Klik ikon notifikasi untuk memuat pesan terbaru.</div>
               </div>
             </div>
           </div>
@@ -213,9 +213,9 @@
                 <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
               @endif
             </button>
-            <div id="cart-dropdown" class="hidden absolute right-0 top-full mt-2 w-72 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden text-left z-50">
-              <div class="px-4 py-3 border-b flex justify-between items-center bg-gray-50">
-                <span class="font-bold text-sm text-gray-800">Keranjang</span>
+            <div id="cart-dropdown" class="hidden absolute right-0 top-full mt-2 w-72 bg-[#0D1421] rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50">
+              <div class="px-4 py-3 border-b flex justify-between items-center bg-transparent">
+                <span class="font-bold text-sm text-slate-100">Keranjang</span>
                 <a href="{{ route('cart.index') }}" class="text-xs text-itemku-blue">Lihat semua</a>
               </div>
               @if($cartItems->isNotEmpty())
@@ -231,7 +231,7 @@
                   @endforeach
                 </div>
               @else
-                <div class="p-6 text-center text-sm text-gray-500">Keranjang kosong</div>
+                <div class="p-6 text-center text-sm text-slate-400">Keranjang kosong</div>
               @endif
             </div>
           </div>
@@ -247,10 +247,10 @@
               <span class="text-sm font-medium truncate max-w-[100px]">{{ $authUser?->name ?? 'User' }}</span>
               <svg class="w-3 h-3 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
-            <div id="user-dropdown" class="hidden absolute right-0 top-full mt-3 w-56 bg-white rounded-lg shadow-xl border border-gray-100 overflow-hidden text-left z-50 py-2">
-              <div class="px-4 py-2 border-b border-gray-100 mb-1">
-                <p class="text-sm font-bold text-gray-800 truncate">{{ $authUser->name }}</p>
-                <p class="text-xs text-gray-500 truncate">{{ $authUser->email }}</p>
+            <div id="user-dropdown" class="hidden absolute right-0 top-full mt-3 w-56 bg-[#0D1421] rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50 py-2">
+              <div class="px-4 py-2 border-b border-white/6 mb-1">
+                <p class="text-sm font-bold text-slate-100 truncate">{{ $authUser->name }}</p>
+                <p class="text-xs text-slate-400 truncate">{{ $authUser->email }}</p>
               </div>
               
               @if($authUser->isAdmin())
@@ -300,12 +300,12 @@
           Kategori
         </button>
         {{-- Mega Menu (Hover to open) --}}
-        <div class="absolute left-0 top-full w-[800px] bg-white rounded-b-lg shadow-xl border border-gray-200 hidden group-hover:flex z-50 min-h-[400px]">
-          <div class="w-64 bg-gray-50 border-r border-gray-200 p-2 overflow-y-auto max-h-[600px]">
+            <div class="absolute left-0 top-full w-[800px] bg-[#0D1421] rounded-b-lg shadow-xl border border-white/6 hidden group-hover:flex z-50 min-h-[400px]">
+          <div class="w-64 bg-transparent border-r border-white/6 p-2 overflow-y-auto max-h-[600px]">
             @if($navCategories->isNotEmpty())
               @foreach($navCategories->take(15) as $cat)
-                <a href="{{ route('categories.show', $cat->slug) }}" class="flex items-center gap-3 px-3 py-2 text-sm text-gray-700 hover:bg-white hover:text-itemku-blue hover:font-medium rounded-lg transition-colors">
-                  <img src="{{ $cat->image_url }}" alt="" class="w-6 h-6 object-cover rounded bg-gray-200">
+                <a href="{{ route('categories.show', $cat->slug) }}" class="flex items-center gap-3 px-3 py-2 text-sm text-slate-200 hover:bg-white/6 hover:text-itemku-blue hover:font-medium rounded-lg transition-colors">
+                  <img src="{{ $cat->image_url }}" alt="" class="w-6 h-6 object-cover rounded bg-slate-800">
                   {{ $cat->name }}
                 </a>
               @endforeach
@@ -313,23 +313,23 @@
             @endif
           </div>
           <div class="flex-1 p-6">
-            <h3 class="font-bold text-gray-800 text-lg mb-4">Temukan Produk Digital Terbaik</h3>
+            <h3 class="font-bold text-slate-100 text-lg mb-4">Temukan Produk Digital Terbaik</h3>
             <div class="grid grid-cols-2 gap-4">
-              <a href="{{ route('products.search', ['category'=>'game-top-up']) }}" class="block p-4 border border-gray-100 rounded-lg hover:border-itemku-blue hover:shadow-md transition-all">
-                <span class="block font-bold text-gray-800 mb-1">Game Top Up</span>
-                <span class="text-xs text-gray-500">Mobile Legends, Free Fire, PUBG...</span>
+              <a href="{{ route('products.search', ['category'=>'game-top-up']) }}" class="block p-4 border border-white/6 rounded-lg hover:border-itemku-blue hover:shadow-md transition-all">
+                <span class="block font-bold text-slate-100 mb-1">Game Top Up</span>
+                <span class="text-xs text-slate-400">Mobile Legends, Free Fire, PUBG...</span>
               </a>
-              <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="block p-4 border border-gray-100 rounded-lg hover:border-itemku-blue hover:shadow-md transition-all">
-                <span class="block font-bold text-gray-800 mb-1">Game Key & Sharing</span>
-                <span class="text-xs text-gray-500">Steam, EA, Epic Games...</span>
+              <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="block p-4 border border-white/6 rounded-lg hover:border-itemku-blue hover:shadow-md transition-all">
+                <span class="block font-bold text-slate-100 mb-1">Game Key & Sharing</span>
+                <span class="text-xs text-slate-400">Steam, EA, Epic Games...</span>
               </a>
-              <a href="{{ route('products.search', ['category'=>'roblox']) }}" class="block p-4 border border-gray-100 rounded-lg hover:border-itemku-blue hover:shadow-md transition-all">
-                <span class="block font-bold text-gray-800 mb-1">Roblox</span>
-                <span class="text-xs text-gray-500">Robux, Item, Pet, Akun...</span>
+              <a href="{{ route('products.search', ['category'=>'roblox']) }}" class="block p-4 border border-white/6 rounded-lg hover:border-itemku-blue hover:shadow-md transition-all">
+                <span class="block font-bold text-slate-100 mb-1">Roblox</span>
+                <span class="text-xs text-slate-400">Robux, Item, Pet, Akun...</span>
               </a>
-              <a href="{{ route('products.search', ['category'=>'voucher']) }}" class="block p-4 border border-gray-100 rounded-lg hover:border-itemku-blue hover:shadow-md transition-all">
-                <span class="block font-bold text-gray-800 mb-1">Voucher & Gift Card</span>
-                <span class="text-xs text-gray-500">Steam Wallet, Google Play...</span>
+              <a href="{{ route('products.search', ['category'=>'voucher']) }}" class="block p-4 border border-white/6 rounded-lg hover:border-itemku-blue hover:shadow-md transition-all">
+                <span class="block font-bold text-slate-100 mb-1">Voucher & Gift Card</span>
+                <span class="text-xs text-slate-400">Steam Wallet, Google Play...</span>
               </a>
             </div>
           </div>

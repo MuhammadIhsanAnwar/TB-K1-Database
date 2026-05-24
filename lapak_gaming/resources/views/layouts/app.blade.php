@@ -128,8 +128,8 @@
     .page-bg {
       background-color: #060A12;
       background-image:
-        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(37,99,235,0.18) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 85% 5%,  rgba(249,115,22,0.10) 0%, transparent 55%),
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(37,99,235,0.08) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 85% 5%,  rgba(249,115,22,0.05) 0%, transparent 55%),
         linear-gradient(rgba(30,45,69,0.06) 1px, transparent 1px),
         linear-gradient(90deg, rgba(30,45,69,0.06) 1px, transparent 1px);
       background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
@@ -151,11 +151,11 @@
     /* ── Gradient Border Cards ─────────────────────────────────── */
     .card {
       background: #0D1421;
-      border: 1px solid #1E2D45;
-      border-radius: 16px;
-      transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+      border: 1px solid rgba(255,255,255,0.04);
+      border-radius: 12px;
+      transition: border-color 0.2s, box-shadow 0.2s, transform 0.18s;
     }
-    .card:hover { border-color: rgba(37,99,235,0.45); box-shadow: 0 8px 32px rgba(0,0,0,0.5); }
+    .card:hover { border-color: rgba(96,165,250,0.08); box-shadow: 0 6px 20px rgba(0,0,0,0.35); }
 
     .card-glow-border {
       position: relative;
@@ -167,9 +167,9 @@
       content: '';
       position: absolute;
       inset: 0;
-      border-radius: 16px;
+      border-radius: 12px;
       padding: 1px;
-      background: linear-gradient(135deg, rgba(37,99,235,0.5) 0%, transparent 50%, rgba(249,115,22,0.3) 100%);
+      background: linear-gradient(135deg, rgba(37,99,235,0.18) 0%, transparent 50%, rgba(249,115,22,0.12) 100%);
       mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
       -webkit-mask-composite: xor;
@@ -178,7 +178,7 @@
       transition: opacity 0.3s;
     }
     .card-glow-border:hover::before {
-      background: linear-gradient(135deg, rgba(37,99,235,0.8) 0%, rgba(59,130,246,0.4) 50%, rgba(249,115,22,0.6) 100%);
+      background: linear-gradient(135deg, rgba(37,99,235,0.28) 0%, rgba(59,130,246,0.18) 50%, rgba(249,115,22,0.18) 100%);
     }
 
     /* ── Product Cards ──────────────────────────────────────────── */
@@ -191,9 +191,9 @@
       cursor: pointer;
     }
     .product-card:hover {
-      transform: translateY(-5px) scale(1.015);
-      border-color: rgba(37,99,235,0.55);
-      box-shadow: 0 16px 48px rgba(0,0,0,0.5), 0 0 20px rgba(37,99,235,0.15);
+      transform: translateY(-3px) scale(1.01);
+      border-color: rgba(37,99,235,0.35);
+      box-shadow: 0 8px 24px rgba(0,0,0,0.35);
     }
 
     /* ── Buttons ────────────────────────────────────────────────── */
@@ -202,21 +202,21 @@
       align-items: center;
       justify-content: center;
       gap: 0.5rem;
-      padding: 0.75rem 1.5rem;
-      border-radius: 12px;
+      padding: 0.65rem 1.25rem;
+      border-radius: 10px;
       font-family: 'Oxanium', sans-serif;
       font-weight: 700;
       font-size: 0.9375rem;
       color: white;
-      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
-      border: 1px solid rgba(96,165,250,0.3);
-      transition: all 0.2s;
+      background: #2563eb; /* solid brand */
+      border: 1px solid rgba(37,99,235,0.12);
+      transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
       cursor: pointer;
       text-decoration: none;
     }
     .btn-primary:hover {
-      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
-      box-shadow: 0 0 20px rgba(37,99,235,0.5);
+      background: #1d4ed8;
+      box-shadow: 0 6px 18px rgba(37,99,235,0.12);
       transform: translateY(-1px);
     }
     .btn-accent {
@@ -1071,7 +1071,7 @@ document.addEventListener('DOMContentLoaded', () => {
         'plus'
     ];
 
-    for(let i = 0; i < 40; i++){
+    for(let i = 0; i < 8; i++){
 
         const particle = document.createElement('span');
 
@@ -1091,14 +1091,12 @@ document.addEventListener('DOMContentLoaded', () => {
         particle.style.animationDelay =
             Math.random() * 5 + 's';
 
-        particle.style.opacity =
-            Math.random() * 0.6 + 0.15;
+        particle.style.opacity = Math.random() * 0.35 + 0.08;
 
         /* ukuran random */
-        const scale = (Math.random() * 1.4 + 0.6);
+        const scale = (Math.random() * 0.8 + 0.6);
 
-        particle.style.transform =
-            `scale(${scale}) rotate(${Math.random() * 360}deg)`;
+        particle.style.transform = `scale(${scale}) rotate(${Math.random() * 360}deg)`;
 
         bg.appendChild(particle);
     }

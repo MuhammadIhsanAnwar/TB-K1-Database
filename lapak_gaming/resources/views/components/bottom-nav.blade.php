@@ -3,8 +3,9 @@
   Mobile bottom navigation matching itemku style.
 --}}
 
-<div class="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] z-[60] md:hidden">
-  <div class="flex justify-around items-center h-16 px-2">
+<div class="fixed bottom-0 left-0 right-0 z-[60] md:hidden">
+  <div class="backdrop-blur-sm bg-black/40 border-t border-white/6 shadow-sm" style="padding-bottom: env(safe-area-inset-bottom, 0);">
+    <div class="flex justify-around items-center h-16 px-2">
     
     {{-- Beranda --}}
     <a href="{{ route('marketplace.home') }}" class="flex flex-col items-center justify-center w-full h-full text-center {{ request()->routeIs('marketplace.home') ? 'text-itemku-blue' : 'text-gray-400 hover:text-gray-600' }}">
@@ -47,15 +48,16 @@
       <span class="text-[10px] font-semibold">Akun</span>
     </a>
 
+    </div>
   </div>
 </div>
 
-{{-- Add bottom padding to body for mobile so content doesn't hide under nav --}}
+{{-- Add bottom padding to body for mobile so content doesn't hide under nav (includes safe-area) --}}
 @push('styles')
 <style>
   @media (max-width: 768px) {
     body {
-      padding-bottom: 4rem; /* 64px */
+      padding-bottom: calc(4rem + env(safe-area-inset-bottom, 0)); /* 64px + safe area */
     }
   }
 </style>
