@@ -109,6 +109,7 @@ public function show(Request $request, Conversation $conversation)
 
     $messages = $conversation->messages()
     ->with('sender')
+    ->whereNull('deleted_for_everyone_at')
 
     ->where(function ($q) {
         $q->whereNull('deleted_for_sender_at')
@@ -142,6 +143,7 @@ public function poll(Conversation $conversation)
 
     $messages = $conversation->messages()
     ->with('sender')
+    ->whereNull('deleted_for_everyone_at')
 
     ->where(function ($q) {
         $q->whereNull('deleted_for_sender_at')
@@ -190,6 +192,7 @@ public function poll(Conversation $conversation)
             
         $messages = $conversation->messages()
         ->with(['sender', 'receiver'])
+        ->whereNull('deleted_for_everyone_at')
 
         ->where(function ($q) {
             $q->whereNull('deleted_for_sender_at')
@@ -286,6 +289,10 @@ public function poll(Conversation $conversation)
      */
     public function deleteMessage(Request $request, Message $message)
     {
+        if (Auth::id() !== $message->sender_id && Auth::id() !== $message->receiver_id) {
+            return response()->json(['error' => 'Forbidden'], 403);
+        }
+
         $type = $request->input('type'); // 'me' atau 'everyone'
 
         if ($type === 'everyone') {

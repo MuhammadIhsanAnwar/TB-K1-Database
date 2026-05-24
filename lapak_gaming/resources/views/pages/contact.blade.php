@@ -159,7 +159,7 @@
             </div>
 
             {{-- FAQ --}}
-            <div class="reveal-zoom delay-3 group bg-gray-925/80 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 hover:border-emerald-500/40 hover:-translate-y-1 transition-all duration-300">
+            <div class="reveal-zoom delay-3 group bg-gray-925/80 backdrop-blur-sm border border-gray-800 rounded-2xl p-6 hover:border-emerald-500/40 transition-all duration-300">
 
                 <div class="flex items-start gap-4">
 

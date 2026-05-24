@@ -339,13 +339,15 @@
       <div class="h-5 w-px bg-white/20 mx-2"></div>
 
       {{-- Horizontal Links --}}
-      <div class="flex-1 flex items-center gap-1 overflow-x-auto no-scrollbar mask-gradient-right">
-        <a href="{{ route('products.search', ['category'=>'roblox']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Roblox Games</a>
-        <a href="{{ route('products.search', ['category'=>'growtopia']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Growtopia</a>
-        <a href="{{ route('products.search', ['category'=>'genshin-impact']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Genshin Impact</a>
-        <a href="{{ route('products.search', ['category'=>'dota-2']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Dota 2 Item</a>
-        <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Game Key</a>
-        <a href="{{ route('products.search', ['category'=>'mobile-legends']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Mobile Legend Account</a>
+      <div class="flex-1 overflow-x-auto no-scrollbar mask-gradient-right">
+        <div class="flex items-center gap-1 min-w-max">
+          <a href="{{ route('products.search', ['category'=>'roblox']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Roblox Games</a>
+          <a href="{{ route('products.search', ['category'=>'growtopia']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Growtopia</a>
+          <a href="{{ route('products.search', ['category'=>'genshin-impact']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Genshin Impact</a>
+          <a href="{{ route('products.search', ['category'=>'dota-2']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Dota 2 Item</a>
+          <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Game Key</a>
+          <a href="{{ route('products.search', ['category'=>'mobile-legends']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Mobile Legend Account</a>
+        </div>
       </div>
 
     </div>

@@ -244,7 +244,8 @@ Route::prefix('verification')->name('verification.')->group(function () {
     Route::post('/messages/{conversation}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
     Route::get('/api/messages/{conversation}/poll', [ChatController::class, 'poll'])->name('chat.poll');
     Route::get('/api/messages/inbox/poll', [ChatController::class, 'pollInbox'])->name('chat.inbox.poll');
-  Route::get('/chat/order/{order}', [ChatController::class, 'orderChat'])->name('chat.order');
+    Route::patch('/chat/message/{message}', [ChatController::class, 'editMessage'])->name('chat.message.edit');
+    Route::delete('/chat/message/{message}', [ChatController::class, 'deleteMessage'])->name('chat.message.delete');
     // Product chat
     Route::get('/chat/product/{product}', [ChatController::class, 'product'])->name('chat.product');
     Route::post('/chat/product/{product}', [ChatController::class, 'storeProduct'])->name('chat.product.store');

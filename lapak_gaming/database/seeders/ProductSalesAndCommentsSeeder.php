@@ -36,6 +36,9 @@ class ProductSalesAndCommentsSeeder extends Seeder
             $ordersToCreate = min($soldCount, $remainingStock);
 
             for ($i = 0; $i < $ordersToCreate; $i++) {
+                $product->refresh();
+                $remainingStock = (int) $product->stock;
+
                 if ($remainingStock <= 0) {
                     break;
                 }
