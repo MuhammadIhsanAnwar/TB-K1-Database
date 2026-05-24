@@ -33,12 +33,12 @@ class MarketplaceController extends Controller
 
         // 2. Featured Game Keys ("Unlock the Simulation")
         $featuredGameKeys = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['seller', 'category'])->inRandomOrder()->take(6)->get()
+            ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['statistics', 'seller', 'category'])->inRandomOrder()->take(6)->get()
             : collect();
 
         // 3. Featured RPG Keys ("Unlock Epic RPG Worlds")
         $featuredRPGKeys = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['seller', 'category'])->inRandomOrder()->take(6)->get()
+            ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['statistics', 'seller', 'category'])->inRandomOrder()->take(6)->get()
             : collect();
 
         // 4. Category Sections
@@ -50,7 +50,7 @@ class MarketplaceController extends Controller
                 if ($cat) {
                     $categorySections->push([
                         'category' => $cat,
-                        'products' => Product::query()->active()->inStock()->where('category_id', $cat->id)->with(['seller', 'category'])->take(12)->get()
+                        'products' => Product::query()->active()->inStock()->where('category_id', $cat->id)->with(['statistics', 'seller', 'category'])->take(12)->get()
                     ]);
                 }
             }
@@ -61,7 +61,7 @@ class MarketplaceController extends Controller
             $categorySections = $allCategories->map(function (Category $category) {
                 return [
                     'category' => $category,
-                    'products' => Product::query()->active()->inStock()->where('category_id', $category->id)->with(['seller', 'category'])->take(12)->get(),
+                    'products' => Product::query()->active()->inStock()->where('category_id', $category->id)->with(['statistics', 'seller', 'category'])->take(12)->get(),
                 ];
             })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->take(5)->values();
         }
@@ -98,7 +98,7 @@ class MarketplaceController extends Controller
                 ->active()
                 ->inStock()
                 ->where('seller_id', $seller->id)
-                ->with(['category', 'seller'])
+                ->with(['statistics', 'category', 'seller'])
                 ->latest()
                 ->paginate(12)
             : collect();
@@ -112,7 +112,7 @@ class MarketplaceController extends Controller
     public function browse(Request $request): View
     {
         $products = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->with(['category', 'seller'])->paginate(20)
+            ? Product::query()->active()->inStock()->with(['statistics', 'category', 'seller'])->paginate(20)
             : collect();
 
         return view('products.search', [
@@ -134,7 +134,7 @@ class MarketplaceController extends Controller
                     $query->where('is_featured', true)
                           ->orWhereNotNull('sale_price');
                 })
-                ->with(['category', 'seller'])
+                ->with(['statistics', 'category', 'seller'])
                 ->paginate(20)
             : collect();
 
@@ -156,7 +156,7 @@ class MarketplaceController extends Controller
         $childrenIds = $category->children()->pluck('id')->push($category->id)->all();
 
         $products = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->whereIn('category_id', $childrenIds)->with(['category', 'seller'])->paginate(20)
+            ? Product::query()->active()->inStock()->whereIn('category_id', $childrenIds)->with(['statistics', 'category', 'seller'])->paginate(20)
             : collect();
 
         return view('products.category', compact('category', 'products'));
@@ -177,12 +177,12 @@ class MarketplaceController extends Controller
 
         $products = Product::query()
             ->published()
-            ->with(['seller', 'category'])
+            ->with(['statistics', 'seller', 'category'])
             ->search($request->string('q')->toString())
             ->when($request->filled('category'), fn($query) => $query->whereHas('category', fn($category) => $category->where('slug', $request->string('category'))))
             ->when($request->filled('sort'), function ($query) use ($request): void {
                 match ($request->string('sort')->toString()) {
-                    'popular' => $query->orderByDesc('views_count'),
+                    'popular' => $query->mostViewed(),
                     'price_low' => $query->orderBy('price'),
                     'price_high' => $query->orderByDesc('price'),
                     default => $query->latest(),
@@ -217,7 +217,7 @@ class MarketplaceController extends Controller
             ? Product::query()
                 ->active()
                 ->inStock()
-                ->with(['seller', 'category'])
+                ->with(['statistics', 'seller', 'category'])
                 ->orderByDesc('id')
                 ->paginate(12)
             : collect();

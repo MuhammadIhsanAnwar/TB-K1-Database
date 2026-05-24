@@ -60,10 +60,20 @@ class Product extends Model {
                 ->orWhere('type', 'like', '%' . $term . '%');
         });
     }
+
     public function scopePopular(Builder $q): Builder
     {
         return $q->orderByDesc(
             ProductStatistic::select('sold_count')
+                ->whereColumn('product_statistics.product_id', 'products.id')
+                ->limit(1)
+        );
+    }
+
+    public function scopeMostViewed(Builder $q): Builder
+    {
+        return $q->orderByDesc(
+            ProductStatistic::select('views_count')
                 ->whereColumn('product_statistics.product_id', 'products.id')
                 ->limit(1)
         );

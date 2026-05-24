@@ -16,17 +16,17 @@ class HomeController extends Controller
             ->get();
 
         $popularProducts = Product::active()->inStock()->popular()
-            ->with(['category', 'seller'])
+            ->with(['statistics', 'category', 'seller'])
             ->take(12)
             ->get();
 
         $topupProducts = Product::active()->inStock()->ofType('topup')
-            ->with(['category', 'seller'])
+            ->with(['statistics', 'category', 'seller'])
             ->take(8)
             ->get();
 
         $gameKeyProducts = Product::active()->inStock()->ofType('gamekey')
-            ->with(['category', 'seller'])
+            ->with(['statistics', 'category', 'seller'])
             ->take(8)
             ->get();
 

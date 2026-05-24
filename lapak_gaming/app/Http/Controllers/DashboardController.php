@@ -18,7 +18,9 @@ class DashboardController extends Controller
     private function hasDashboardTables(): bool
     {
         return Schema::hasTable('orders')
+            && Schema::hasTable('order_financials')
             && Schema::hasTable('products')
+            && Schema::hasTable('product_statistics')
             && Schema::hasTable('wallets')
             && Schema::hasTable('marketplace_notifications');
     }
@@ -39,7 +41,7 @@ class DashboardController extends Controller
     {
         $user = $request->user();
         $orders = Schema::hasTable('orders')
-            ? Order::query()->where('buyer_id', $user->id)->latest()->take(5)->get()
+            ? Order::query()->where('buyer_id', $user->id)->with('financial')->latest()->take(5)->get()
             : collect();
         $notifications = Schema::hasTable('marketplace_notifications')
             ? MarketplaceNotification::query()->where('user_id', $user->id)->latest()->take(5)->get()
@@ -79,7 +81,7 @@ class DashboardController extends Controller
         $orders = Schema::hasTable('orders')
             ? \App\Models\OrderItem::query()
                 ->whereHas('product', fn($query) => $query->where('seller_id', $user->id))
-                ->with(['order', 'product'])
+                ->with(['order.financial', 'product'])
                 ->latest()
                 ->take(6)
                 ->get()
@@ -155,14 +157,16 @@ class DashboardController extends Controller
                             (float) Order::query()
                                 ->leftJoin('order_financials', 'orders.id', '=', 'order_financials.order_id')
                                 ->whereBetween('orders.created_at', [$dayStart, $dayEnd])
-                                ->sum(DB::raw('COALESCE(order_financials.grand_total, orders.grand_total, 0)'))
+                                ->sum(DB::raw('COALESCE(order_financials.grand_total, 0)'))
                         );
-                    } else {
+                    } elseif (Schema::hasColumn('orders', 'grand_total')) {
                         $chartRevenue->push(
                             (float) Order::query()
                                 ->whereBetween('created_at', [$dayStart, $dayEnd])
                                 ->sum('grand_total')
                         );
+                    } else {
+                        $chartRevenue->push(0);
                     }
                 }
 
@@ -182,14 +186,16 @@ class DashboardController extends Controller
                             (float) Order::query()
                                 ->leftJoin('order_financials', 'orders.id', '=', 'order_financials.order_id')
                                 ->whereBetween('orders.created_at', [$yearStart, $yearEnd])
-                                ->sum(DB::raw('COALESCE(order_financials.grand_total, orders.grand_total, 0)'))
+                                ->sum(DB::raw('COALESCE(order_financials.grand_total, 0)'))
                         );
-                    } else {
+                    } elseif (Schema::hasColumn('orders', 'grand_total')) {
                         $chartRevenue->push(
                             (float) Order::query()
                                 ->whereBetween('created_at', [$yearStart, $yearEnd])
                                 ->sum('grand_total')
                         );
+                    } else {
+                        $chartRevenue->push(0);
                     }
                 }
 
@@ -209,14 +215,16 @@ class DashboardController extends Controller
                             (float) Order::query()
                                 ->leftJoin('order_financials', 'orders.id', '=', 'order_financials.order_id')
                                 ->whereBetween('orders.created_at', [$monthStart, $monthEnd])
-                                ->sum(DB::raw('COALESCE(order_financials.grand_total, orders.grand_total, 0)'))
+                                ->sum(DB::raw('COALESCE(order_financials.grand_total, 0)'))
                         );
-                    } else {
+                    } elseif (Schema::hasColumn('orders', 'grand_total')) {
                         $chartRevenue->push(
                             (float) Order::query()
                                 ->whereBetween('created_at', [$monthStart, $monthEnd])
                                 ->sum('grand_total')
                         );
+                    } else {
+                        $chartRevenue->push(0);
                     }
                 }
             }

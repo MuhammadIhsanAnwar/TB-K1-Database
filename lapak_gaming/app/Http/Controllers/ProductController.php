@@ -13,12 +13,14 @@ class ProductController extends Controller
         $product = Product::where('slug', $slug)->with([
             'seller' => fn ($query) => $query->withCount('products')->with('profile'),
             'category',
+            'statistics',
             'reviews.user',
         ])->firstOrFail();
 
         $relatedProducts = Product::active()->inStock()
             ->where('category_id', $product->category_id)
             ->where('id', '!=', $product->id)
+            ->with(['statistics', 'category', 'seller'])
             ->take(6)->get();
 
         $userOrder = null;
@@ -53,7 +55,7 @@ class ProductController extends Controller
             ->when($sort === 'rating', fn($q) => $q->topRated())
             ->when($sort === 'price_asc', fn($q) => $q->orderBy('price'))
             ->when($sort === 'price_desc', fn($q) => $q->orderByDesc('price'))
-            ->with(['category', 'seller'])
+            ->with(['statistics', 'category', 'seller'])
             ->paginate(20)->withQueryString();
 
         return view('products.search', compact('products', 'query'));
@@ -71,7 +73,7 @@ class ProductController extends Controller
                             ->orWhere('name', 'LIKE', "%{$type}%");
                       });
             })
-            ->with(['category', 'seller'])
+                        ->with(['statistics', 'category', 'seller'])
             ->paginate(20);
 
         return view('products.by-type', compact('products', 'type'));
@@ -96,7 +98,7 @@ class ProductController extends Controller
             ->when($sort === 'rating', fn($q) => $q->topRated())
             ->when($sort === 'price_asc', fn($q) => $q->orderBy('price'))
             ->when($sort === 'price_desc', fn($q) => $q->orderByDesc('price'))
-            ->with(['category', 'seller'])
+            ->with(['statistics', 'category', 'seller'])
             ->paginate(20)->withQueryString();
 
         return view('products.category', compact('category', 'products'));

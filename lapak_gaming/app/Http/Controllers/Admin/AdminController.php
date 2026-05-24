@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\Banner;
 use App\Models\MarketplaceNotification;
 use App\Models\NotificationBroadcast;
+use App\Models\OrderFinancial;
 use App\Models\Order;
 use App\Models\User;
 use App\Services\Pdf\PdfDocumentService;
@@ -341,14 +342,25 @@ class AdminController extends Controller
             $sort = 'created_at';
         }
 
-        $ordersQuery = Order::query()->with(['buyer', 'seller'])
+        $ordersQuery = Order::query()->with(['buyer', 'seller', 'financial'])
             ->when($q, function ($qBuilder) use ($q) {
                 $qBuilder->where('order_code', 'like', "%{$q}%")
                     ->orWhereHas('buyer', fn($b) => $b->where('name', 'like', "%{$q}%"))
                     ->orWhereHas('seller', fn($s) => $s->where('name', 'like', "%{$q}%"));
             });
 
-        $orders = $ordersQuery->orderBy($sort, $direction)->paginate(20)->appends(array_filter(['q' => $q, 'sort' => $sort, 'direction' => $direction]));
+        if ($sort === 'grand_total') {
+            $ordersQuery->orderBy(
+                OrderFinancial::select('grand_total')
+                    ->whereColumn('order_financials.order_id', 'orders.id')
+                    ->limit(1),
+                $direction
+            );
+        } else {
+            $ordersQuery->orderBy($sort, $direction);
+        }
+
+        $orders = $ordersQuery->paginate(20)->appends(array_filter(['q' => $q, 'sort' => $sort, 'direction' => $direction]));
 
         return view('admin.orders.index', compact('orders', 'q', 'sort', 'direction'));
     }
@@ -379,7 +391,7 @@ class AdminController extends Controller
 
     public function showOrder(Order $order): View
     {
-        $order->load(['buyer', 'seller', 'items.product']);
+        $order->load(['buyer', 'seller', 'items.product', 'financial']);
         return view('admin.orders.show', compact('order'));
     }
 }

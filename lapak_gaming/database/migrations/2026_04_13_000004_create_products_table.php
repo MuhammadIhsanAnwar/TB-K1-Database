@@ -24,10 +24,6 @@ return new class extends Migration
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_trending')->default(false);
             $table->enum('status', ['draft', 'published', 'archived'])->default('draft');
-            $table->decimal('rating_average', 4, 2)->default(0);
-            $table->unsignedInteger('review_count')->default(0);
-            $table->unsignedBigInteger('views_count')->default(0);
-            $table->unsignedBigInteger('downloads_count')->default(0);
             $table->timestamps();
 
             $table->index(['seller_id', 'status']);

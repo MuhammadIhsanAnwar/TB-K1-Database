@@ -29,7 +29,7 @@ class OrderController extends Controller {
             $status = 'all';
         }
 
-        $baseQuery = Order::where('buyer_id', Auth::id())->with('items.product.seller');
+        $baseQuery = Order::where('buyer_id', Auth::id())->with(['items.product.seller', 'financial']);
 
         $ordersQuery = (clone $baseQuery)->latest();
         if ($status !== 'all') {
@@ -59,7 +59,7 @@ class OrderController extends Controller {
             abort(403, 'AKSES DITOLAK: ANDA TIDAK MEMILIKI AKSES KE PESANAN INI.');
         }
 
-        $order->load('items.product.seller');
+        $order->load(['items.product.seller', 'financial']);
         return view('orders.show', compact('order'));
     }
 
@@ -119,6 +119,7 @@ class OrderController extends Controller {
     abort_if($order->buyer_id != Auth::id(), 403);
     abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
 
+    /** @var User $user */
     $user = Auth::user();
 
     $request->validate([

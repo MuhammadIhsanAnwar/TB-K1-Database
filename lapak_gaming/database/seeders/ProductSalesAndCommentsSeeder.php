@@ -23,6 +23,7 @@ class ProductSalesAndCommentsSeeder extends Seeder
         $buyers = User::withoutTrashed()->where('role', 'buyer')->get();
 
         foreach ($products as $product) {
+            /** @var Product $product */
             if ($buyers->isEmpty()) break;
 
             $remainingStock = (int) $product->stock;
@@ -68,7 +69,6 @@ class ProductSalesAndCommentsSeeder extends Seeder
                 $orderItem = OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $product->id,
-                    'seller_id' => $product->seller_id,
                     'name_snapshot' => $product->name,
                     'price_snapshot' => $product->price,
                     'quantity' => $quantity,
@@ -88,7 +88,7 @@ class ProductSalesAndCommentsSeeder extends Seeder
 
                 // ~70% chance buyer leaves a comment/rating
                 if (random_int(1, 100) <= 70) {
-                    $rating = collect([5, 5, 5, 4, 4, 3])->random();
+                    $rating = (int) collect([5, 5, 5, 4, 4, 3])->random();
                     $commentContent = $this->getRandomComment($rating);
 
                     $comment = ProductComment::create([
@@ -114,9 +114,7 @@ class ProductSalesAndCommentsSeeder extends Seeder
                             $sellerReplyData['seller_id'] = $product->seller_id;
                         }
 
-                        $sellerReply = ProductComment::create($sellerReplyData);
-
-                        $comment->increment('replies_count');
+                        ProductComment::create($sellerReplyData);
                     }
 
                     // Some other users like the comment
@@ -129,7 +127,6 @@ class ProductSalesAndCommentsSeeder extends Seeder
                                     'product_comment_id' => $comment->id,
                                     'user_id' => $liker->id,
                                 ]);
-                                $comment->increment('likes_count');
                             } catch (\Exception $e) {
                                 // Ignore duplicate likes
                             }

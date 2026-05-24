@@ -14,10 +14,6 @@ return new class extends Migration
             $table->foreignId('seller_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('invoice_number')->unique();
             $table->enum('status', ['pending_payment', 'payment_uploaded', 'processing', 'delivered', 'completed', 'disputed', 'cancelled'])->default('pending_payment');
-            $table->decimal('subtotal', 14, 2)->default(0);
-            $table->decimal('fee_amount', 14, 2)->default(0);
-            $table->decimal('escrow_amount', 14, 2)->default(0);
-            $table->decimal('grand_total', 14, 2)->default(0);
             $table->string('payment_method')->nullable();
             $table->string('payment_proof')->nullable();
             $table->text('delivery_notes')->nullable();

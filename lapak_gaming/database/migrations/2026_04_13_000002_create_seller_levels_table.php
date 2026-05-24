@@ -16,7 +16,6 @@ return new class extends Migration
                 $table->decimal('minimum_revenue', 14, 2)->default(0);
                 $table->decimal('fee_percent', 5, 2)->default(0);
                 $table->string('badge_color')->default('slate');
-                $table->json('benefits')->nullable();
                 $table->boolean('auto_approve')->default(false);
                 $table->timestamps();
             });

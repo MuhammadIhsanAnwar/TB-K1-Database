@@ -4,50 +4,35 @@ namespace App\Models;
 
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Notifications\Notifiable;
 
-class Seller extends Authenticatable implements MustVerifyEmail
+class Seller extends Model
 {
     use HasFactory, Notifiable;
 
     protected $table = 'sellers';
 
     protected $fillable = [
-        'name',
-        'username',
-        'email',
-        'password',
-        'phone',
-        'avatar',
+        'user_id',
         'seller_level_id',
-        'status',
-        'suspended_at',
     ];
 
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-        'suspended_at' => 'datetime',
-        'password' => 'hashed',
-    ];
-
-    // Scopes
     public function scopeActive($query)
     {
-        return $query->where('status', 'active');
+        return $query->whereHas('user', fn ($user) => $user->where('status', 'active'));
     }
 
     public function scopeVerified($query)
     {
-        return $query->whereNotNull('email_verified_at');
+        return $query->whereHas('user', fn ($user) => $user->whereNotNull('email_verified_at'));
     }
 
-    // Relations
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
     public function level()
     {
         return $this->belongsTo(SellerLevel::class, 'seller_level_id');
@@ -76,5 +61,40 @@ class Seller extends Authenticatable implements MustVerifyEmail
     public function notifications()
     {
         return $this->morphMany('Illuminate\Notifications\DatabaseNotification', 'notifiable')->latest();
+    }
+
+    public function getNameAttribute(): ?string
+    {
+        return $this->user?->name;
+    }
+
+    public function getUsernameAttribute(): ?string
+    {
+        return $this->user?->username;
+    }
+
+    public function getEmailAttribute(): ?string
+    {
+        return $this->user?->email;
+    }
+
+    public function getPhoneAttribute(): ?string
+    {
+        return $this->user?->phone;
+    }
+
+    public function getAvatarAttribute(): ?string
+    {
+        return $this->user?->avatar;
+    }
+
+    public function getStatusAttribute(): ?string
+    {
+        return $this->user?->status;
+    }
+
+    public function getSuspendedAtAttribute(): mixed
+    {
+        return $this->user?->suspended_at;
     }
 }

@@ -20,8 +20,6 @@ class ProductCommentFactory extends Factory
             'content' => $this->faker->paragraph(),
             'rating' => $this->faker->randomElement([null, null, null, 4, 5, 5, 5, 4, 4]),
             'is_verified_buyer' => $this->faker->boolean(70),
-            'likes_count' => 0,
-            'replies_count' => 0,
             'status' => 'approved',
         ];
     }
