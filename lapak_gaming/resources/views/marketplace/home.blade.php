@@ -1069,7 +1069,6 @@ spline-viewer iframe {
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- PREMIUM QUICK ACCESS                                       --}}
-{{-- GANTI FULL SECTION "QUICK ACCESS — TYPE BUTTONS" DENGAN INI --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 
 <section class="pb-14 reveal-card reveal-up">
@@ -1868,115 +1867,55 @@ spline-viewer iframe {
 @endif
 
 {{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- FAQ — GLASSMORPHISM VERSION                               --}}
+{{-- FAQ — GLASSMORPHISM VERSION (FIXED STICKY)                 --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="pb-24">
-
   <div class="max-w-7xl mx-auto px-4">
-
     <div class="grid lg:grid-cols-2 gap-10 items-start">
-
-      {{-- LEFT --}}
-      <div class="sticky top-24">
-
-        <div class="inline-flex items-center gap-2
-                    px-3 py-1 rounded-full
-                    bg-cyan-500/10 border border-cyan-500/20
-                    text-cyan-300 text-xs font-bold mb-5">
-
+      
+      {{-- LEFT: STICKY SIDE --}}
+      <div class="lg:sticky lg:top-28">
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-cyan-500/10 border border-cyan-500/20 text-cyan-300 text-xs font-bold mb-5">
           SUPPORT CENTER
-
         </div>
 
         <h2 class="text-4xl md:text-5xl font-black text-white leading-tight mb-5">
-          Pertanyaan
-          <br>
-          yang sering
-          <br>
-          ditanyakan
+          Pertanyaan yang sering ditanyakan
         </h2>
 
         <p class="text-slate-400 text-lg leading-relaxed max-w-lg">
-          Semua informasi penting mengenai transaksi,
-          keamanan, top up, hingga sistem marketplace
-          tersedia di sini.
+          Semua informasi penting mengenai transaksi, keamanan, top up, hingga sistem marketplace tersedia di sini.
         </p>
-
       </div>
 
-      {{-- RIGHT --}}
+      {{-- RIGHT: FAQ ACCORDIONS --}}
       <div class="space-y-4">
-
         @php
         $faqs = [
-          [
-            'q'=>'Marketplace Games Terbesar dan Terlengkap',
-            'a'=>'Lapak Gaming adalah marketplace destinasi utama bagi para gamers untuk yang mencari kenyamanan dan keandalan dalam bertransaksi digital.'
-          ],
-          [
-            'q'=>'Apa itu Lapak Gaming?',
-            'a'=>'Kami adalah platform perantara escrow yang menjamin keamanan transaksi antara penjual dan pembeli produk game di Indonesia.'
-          ],
-          [
-            'q'=>'Top-Up Game Terlengkap',
-            'a'=>'Nikmati layanan top up berbagai game populer dengan proses instan dan harga terbaik.'
-          ],
-          [
-            'q'=>'Voucher Digital',
-            'a'=>'Kami juga menyediakan voucher digital untuk berbagai kebutuhan hiburan digital.'
-          ],
+          ['q'=>'Marketplace Games Terbesar dan Terlengkap','a'=>'Lapak Gaming adalah marketplace destinasi utama bagi para gamers untuk yang mencari kenyamanan dan keandalan dalam bertransaksi digital.'],
+          ['q'=>'Apa itu Lapak Gaming?','a'=>'Kami adalah platform perantara escrow yang menjamin keamanan transaksi antara penjual dan pembeli produk game di Indonesia.'],
+          ['q'=>'Top-Up Game Terlengkap','a'=>'Nikmati layanan top up berbagai game populer dengan proses instan dan harga terbaik.'],
+          ['q'=>'Voucher Digital','a'=>'Kami juga menyediakan voucher digital untuk berbagai kebutuhan hiburan digital.'],
         ];
         @endphp
 
         @foreach($faqs as $index => $faq)
-
-        <div class="overflow-hidden rounded-[28px]
-                    border border-white/10
-                    bg-white/[0.03]
-                    backdrop-blur-xl">
-
-          <button type="button"
-                  data-faq-index="{{ $index }}"
-                  class="js-faq-toggle w-full p-6 flex items-center justify-between text-left">
-
-            <span class="text-lg font-bold text-white pr-5">
-              {{ $faq['q'] }}
-            </span>
-
-            <div id="icon-{{ $index }}"
-                 class="w-10 h-10 rounded-2xl
-                        bg-white/5
-                        border border-white/10
-                        flex items-center justify-center
-                        text-cyan-300
-                        transition duration-300">
-
-              >
-
-            </div>
-
+        <div class="overflow-hidden rounded-[28px] border border-white/10 bg-white/[0.03] backdrop-blur-xl">
+          <button type="button" data-faq-index="{{ $index }}" class="js-faq-toggle w-full p-6 flex items-center justify-between text-left">
+            <span class="text-lg font-bold text-white pr-5">{{ $faq['q'] }}</span>
+            <div id="icon-{{ $index }}" class="w-10 h-10 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center text-cyan-300 transition duration-300">+</div>
           </button>
-
-          <div id="faq-{{ $index }}"
-               class="max-h-0 overflow-hidden transition-all duration-300">
-
-            <div class="px-6 pb-6 text-slate-400 leading-relaxed">
-              {{ $faq['a'] }}
-            </div>
-
+          <div id="faq-{{ $index }}" class="max-h-0 overflow-hidden transition-all duration-300">
+            <div class="px-6 pb-6 text-slate-400 leading-relaxed">{{ $faq['a'] }}</div>
           </div>
-
         </div>
-
         @endforeach
-
       </div>
-
+      
     </div>
-
   </div>
-
 </section>
+
 @push('scripts')
 {{--
   ══════════════════════════════════════════════════════════════
@@ -2195,6 +2134,7 @@ splineEl.addEventListener('load', async (e) => {
 
     document.querySelectorAll('[id^="icon-"]').forEach(el => {
       el.style.transform = 'rotate(0deg)';
+      el.textContent = '+';
     });
 
     if (!isOpen) {
@@ -2202,7 +2142,8 @@ splineEl.addEventListener('load', async (e) => {
       content.style.maxHeight =
         content.scrollHeight + 'px';
 
-      icon.style.transform = 'rotate(180deg)';
+      icon.style.transform = 'rotate(45deg)';
+      icon.textContent = '×';
 
     }
 
