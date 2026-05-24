@@ -311,7 +311,7 @@ class OrderController extends Controller {
 
         $filename = time() . '_' . $file->getClientOriginalName();
 
-        $destination = public_path('storage/app/public/payment_proofs');
+        $destination = public_path('storage/payment_proofs');
 
         if (!file_exists($destination)) {
             mkdir($destination, 0777, true);
@@ -319,7 +319,7 @@ class OrderController extends Controller {
 
         $file->move($destination, $filename);
 
-        $path = 'app/public/payment_proofs/' . $filename;
+        $path = 'payment_proofs/' . $filename;
         $order->update(['payment_proof' => $path, 'status' => Order::STATUS_PAYMENT_UPLOADED, 'paid_at' => now()]);
         return back()->with('success', 'Bukti pembayaran berhasil diupload.');
     }

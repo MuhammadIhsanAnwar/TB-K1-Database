@@ -108,9 +108,20 @@ public function show(Request $request, Conversation $conversation)
     }
 
     $messages = $conversation->messages()
-        ->with('sender')
-        ->orderBy('created_at')
-        ->get();
+    ->with('sender')
+
+    ->where(function ($q) {
+        $q->whereNull('deleted_for_sender_at')
+          ->orWhere('sender_id', '!=', auth()->id());
+    })
+
+    ->where(function ($q) {
+        $q->whereNull('deleted_for_receiver_at')
+          ->orWhere('receiver_id', '!=', auth()->id());
+    })
+
+    ->orderBy('created_at')
+    ->get();
 
     return view('chat.show', [
         'conversation' => $conversation,
@@ -130,10 +141,21 @@ public function poll(Conversation $conversation)
     }
 
     $messages = $conversation->messages()
-        ->with('sender')
-        ->orderBy('created_at', 'asc')
-        ->take(50)
-        ->get();
+    ->with('sender')
+
+    ->where(function ($q) {
+        $q->whereNull('deleted_for_sender_at')
+          ->orWhere('sender_id', '!=', auth()->id());
+    })
+
+    ->where(function ($q) {
+        $q->whereNull('deleted_for_receiver_at')
+          ->orWhere('receiver_id', '!=', auth()->id());
+    })
+
+    ->orderBy('created_at', 'asc')
+    ->take(50)
+    ->get();
 
     return response()->json([
         'messages' => $messages->map(
@@ -167,9 +189,20 @@ public function poll(Conversation $conversation)
 
             
         $messages = $conversation->messages()
-            ->with(['sender', 'receiver'])
-            ->orderBy('created_at', 'asc')
-            ->paginate(30);
+        ->with(['sender', 'receiver'])
+
+        ->where(function ($q) {
+            $q->whereNull('deleted_for_sender_at')
+            ->orWhere('sender_id', '!=', auth()->id());
+        })
+
+        ->where(function ($q) {
+            $q->whereNull('deleted_for_receiver_at')
+            ->orWhere('receiver_id', '!=', auth()->id());
+        })
+
+        ->orderBy('created_at', 'asc')
+        ->paginate(30);
 
         return response()->json([
             'messages' => collect($messages->items())->map(fn($m) => $m->toChat(Auth::id())),
