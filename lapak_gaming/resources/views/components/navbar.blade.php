@@ -45,7 +45,7 @@
 <aside id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col overflow-y-auto bg-[#0D1421] text-slate-200 transition-transform -translate-x-full">
   <div class="flex items-center justify-between p-4 border-b border-white/6 navbar-top">
     <a href="{{ route('marketplace.home') }}" class="flex items-center gap-2.5">
-      <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Logo" class="w-8 h-8 rounded-lg object-contain bg-white">
+      <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Logo" class="w-8 h-8 rounded-lg object-contain surface-weak">
       <span class="font-display font-bold text-base text-white tracking-wide">{{ config('app.name', 'Itemku') }}</span>
     </a>
     <button onclick="closeDrawer()" class="text-white hover:text-gray-200">
@@ -65,7 +65,7 @@
   </div>
   @else
   <div class="p-4 border-b border-white/6 flex gap-2">
-    <a href="{{ route('login') }}" class="flex-1 text-center py-2 px-3 rounded-lg border border-itemku-blue text-itemku-blue text-sm font-semibold hover:bg-white/6">Masuk</a>
+    <a href="{{ route('login') }}" class="flex-1 text-center py-2 px-3 rounded-lg border border-itemku-blue text-itemku-blue text-sm font-semibold hover:brightness-105">Masuk</a>
     <a href="{{ route('register') }}" class="flex-1 text-center py-2 px-3 rounded-lg bg-itemku-yellow text-white text-sm font-semibold hover:bg-yellow-600">Daftar</a>
   </div>
   @endauth
@@ -141,30 +141,37 @@
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
         <a href="{{ route('marketplace.home') }}" class="flex shrink-0">
-          <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Logo" class="h-8 w-auto bg-white rounded p-1 hidden sm:block">
+          <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Logo" class="h-8 w-auto surface-weak rounded p-1 hidden sm:block">
           <span class="font-display font-bold text-white text-xl ml-2 sm:hidden tracking-tight">{{ config('app.name', 'Itemku') }}</span>
         </a>
       </div>
+
+      {{-- Theme toggle --}}
+      <button id="themeToggle" type="button" class="hidden md:inline-flex items-center justify-center p-1 rounded hover:opacity-90" aria-label="Toggle theme" onclick="toggleTheme()" style="color:var(--text)">
+        <svg id="themeIcon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
+        </svg>
+      </button>
 
       {{-- Search Bar --}}
       @if(! $isAdminRoute && ! $isAdminSettingsRoute)
       <div class="hidden md:flex flex-1 flex-col relative">
         <form action="{{ route('products.search') }}" method="GET" class="w-full relative">
-          <div class="flex items-center bg-white rounded w-full overflow-hidden p-0.5 border-2 border-transparent focus-within:border-itemku-yellow transition-colors">
-            <div class="pl-3 text-gray-500">
+          <div class="flex items-center surface-bg rounded w-full overflow-hidden p-0.5 border-2 border-transparent focus-within:border-itemku-yellow transition-colors">
+            <div class="pl-3 surface-muted">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </div>
-            <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari Game, Top Up, Akun..." class="w-full border-none outline-none py-2 px-2 text-sm text-gray-800" />
-            <button type="submit" class="bg-gray-100 hover:bg-gray-200 text-gray-600 px-4 py-1.5 rounded text-sm font-semibold mr-0.5 whitespace-nowrap">ENTER</button>
+            <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari Game, Top Up, Akun..." class="w-full border-none outline-none py-2 px-2 text-sm" style="color:var(--text)" />
+            <button type="submit" class="surface-panel hover:brightness-110 px-4 py-1.5 rounded text-sm font-semibold mr-0.5 whitespace-nowrap" style="color:var(--text)">ENTER</button>
           </div>
         </form>
         {{-- Trending Chips (Absolute positioned below search to not expand nav height) --}}
         <div class="absolute top-full left-0 mt-1.5 flex items-center gap-1.5 whitespace-nowrap overflow-hidden text-xs w-full">
-          <a href="{{ route('products.search', ['q'=>'cheap robux']) }}" class="px-2 py-0.5 rounded bg-white/10 text-white/90 hover:bg-white/20 transition-colors">cheap robux</a>
-          <a href="{{ route('products.search', ['q'=>'growtopia']) }}" class="px-2 py-0.5 rounded bg-white/10 text-white/90 hover:bg-white/20 transition-colors">growtopia</a>
-          <a href="{{ route('products.search', ['q'=>'genshin impact']) }}" class="px-2 py-0.5 rounded bg-white/10 text-white/90 hover:bg-white/20 transition-colors">genshin impact</a>
-          <a href="{{ route('products.search', ['q'=>'steam']) }}" class="px-2 py-0.5 rounded bg-white/10 text-white/90 hover:bg-white/20 transition-colors">steam</a>
-          <a href="{{ route('products.search', ['q'=>'mobile legends']) }}" class="px-2 py-0.5 rounded bg-white/10 text-white/90 hover:bg-white/20 transition-colors">mobile legends</a>
+          <a href="{{ route('products.search', ['q'=>'cheap robux']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">cheap robux</a>
+          <a href="{{ route('products.search', ['q'=>'growtopia']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">growtopia</a>
+          <a href="{{ route('products.search', ['q'=>'genshin impact']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">genshin impact</a>
+          <a href="{{ route('products.search', ['q'=>'steam']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">steam</a>
+          <a href="{{ route('products.search', ['q'=>'mobile legends']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">mobile legends</a>
         </div>
       </div>
       @endif
@@ -219,13 +226,13 @@
                 <a href="{{ route('cart.index') }}" class="text-xs text-itemku-blue">Lihat semua</a>
               </div>
               @if($cartItems->isNotEmpty())
-                <div class="max-h-72 overflow-y-auto divide-y divide-gray-100">
+                <div class="max-h-72 overflow-y-auto divide-y" style="border-color:var(--card-border)">
                   @foreach($cartItems as $item)
-                    <a href="{{ route('cart.index') }}" class="flex gap-3 px-4 py-3 hover:bg-gray-50">
-                      <img src="{{ $item->product?->image_url }}" alt="" class="w-10 h-10 object-cover rounded bg-gray-100">
+                    <a href="{{ route('cart.index') }}" class="flex gap-3 px-4 py-3 hover:surface-panel" style="text-decoration:none">
+                      <img src="{{ $item->product?->image_url }}" alt="" class="w-10 h-10 object-cover rounded" style="background:var(--card-border)">
                       <div class="flex-1 min-w-0">
-                        <div class="text-sm text-gray-800 font-medium truncate">{{ $item->product?->name ?? 'Produk' }}</div>
-                        <div class="text-xs text-gray-500 mt-1">{{ $item->quantity }} x Rp {{ number_format((float) ($item->product?->price ?? 0), 0, ',', '.') }}</div>
+                        <div class="text-sm surface-text font-medium truncate">{{ $item->product?->name ?? 'Produk' }}</div>
+                        <div class="text-xs surface-muted mt-1">{{ $item->quantity }} x Rp {{ number_format((float) ($item->product?->price ?? 0), 0, ',', '.') }}</div>
                       </div>
                     </a>
                   @endforeach
@@ -238,7 +245,7 @@
           @endif
           @endif
           
-          <div class="h-6 w-px bg-white/20 mx-1 hidden sm:block"></div>
+          <div class="h-6 w-px surface-weak mx-1 hidden sm:block"></div>
 
           {{-- User Avatar Dropdown --}}
           <div class="relative hidden sm:block">
@@ -295,7 +302,7 @@
       
       {{-- Kategori Dropdown --}}
       <div class="relative h-full flex items-center group">
-        <button class="flex items-center gap-2 text-white font-medium text-sm px-3 py-1.5 rounded hover:bg-white/10 transition-colors h-full">
+        <button class="flex items-center gap-2 text-white font-medium text-sm px-3 py-1.5 rounded hover:surface-weak transition-colors h-full">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h7"/></svg>
           Kategori
         </button>
@@ -304,7 +311,7 @@
           <div class="w-64 bg-transparent border-r border-white/6 p-2 overflow-y-auto max-h-[600px]">
             @if($navCategories->isNotEmpty())
               @foreach($navCategories->take(15) as $cat)
-                <a href="{{ route('categories.show', $cat->slug) }}" class="flex items-center gap-3 px-3 py-2 text-sm text-slate-200 hover:bg-white/6 hover:text-itemku-blue hover:font-medium rounded-lg transition-colors">
+                <a href="{{ route('categories.show', $cat->slug) }}" class="flex items-center gap-3 px-3 py-2 text-sm text-slate-200 hover:surface-weak hover:text-itemku-blue hover:font-medium rounded-lg transition-colors">
                   <img src="{{ $cat->image_url }}" alt="" class="w-6 h-6 object-cover rounded bg-slate-800">
                   {{ $cat->name }}
                 </a>
@@ -336,17 +343,17 @@
         </div>
       </div>
 
-      <div class="h-5 w-px bg-white/20 mx-2"></div>
+      <div class="h-5 w-px bg-slate-200/20 mx-2"></div>
 
       {{-- Horizontal Links --}}
       <div class="flex-1 overflow-x-auto no-scrollbar mask-gradient-right">
         <div class="flex items-center gap-1 min-w-max">
-          <a href="{{ route('products.search', ['category'=>'roblox']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Roblox Games</a>
-          <a href="{{ route('products.search', ['category'=>'growtopia']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Growtopia</a>
-          <a href="{{ route('products.search', ['category'=>'genshin-impact']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Genshin Impact</a>
-          <a href="{{ route('products.search', ['category'=>'dota-2']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Dota 2 Item</a>
-          <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Game Key</a>
-          <a href="{{ route('products.search', ['category'=>'mobile-legends']) }}" class="px-3 py-1.5 text-white text-sm hover:bg-white/10 rounded transition-colors whitespace-nowrap">Mobile Legend Account</a>
+          <a href="{{ route('products.search', ['category'=>'roblox']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Roblox Games</a>
+          <a href="{{ route('products.search', ['category'=>'growtopia']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Growtopia</a>
+          <a href="{{ route('products.search', ['category'=>'genshin-impact']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Genshin Impact</a>
+          <a href="{{ route('products.search', ['category'=>'dota-2']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Dota 2 Item</a>
+          <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Game Key</a>
+          <a href="{{ route('products.search', ['category'=>'mobile-legends']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Mobile Legend Account</a>
         </div>
       </div>
 
@@ -427,5 +434,41 @@
         });
     }
   }
+
+  /* Theme toggle helpers */
+  function getCurrentTheme(){
+    return document.documentElement.getAttribute('data-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+  }
+
+  function applyTheme(t){
+    document.documentElement.setAttribute('data-theme', t);
+    try{ localStorage.setItem('site-theme', t); }catch(e){}
+    updateThemeIcon(t);
+  }
+
+  function initTheme(){
+    try{
+      const saved = localStorage.getItem('site-theme');
+      const theme = saved || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+      applyTheme(theme);
+    }catch(e){ applyTheme(getCurrentTheme()); }
+  }
+
+  function toggleTheme(){
+    const cur = getCurrentTheme();
+    applyTheme(cur === 'dark' ? 'light' : 'dark');
+  }
+
+  function updateThemeIcon(t){
+    const icon = document.getElementById('themeIcon');
+    if(!icon) return;
+    if(t === 'dark'){
+      icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />';
+    } else {
+      icon.innerHTML = '<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 3v2m0 14v2m9-9h-2M5 12H3m15.364-6.364l-1.414 1.414M7.05 16.95l-1.414 1.414M16.95 16.95l1.414 1.414M7.05 7.05L5.636 5.636M12 8a4 4 0 100 8 4 4 0 000-8z" />';
+    }
+  }
+
+  document.addEventListener('DOMContentLoaded', initTheme);
 </script>
 @endpush

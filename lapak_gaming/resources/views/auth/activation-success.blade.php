@@ -3,7 +3,7 @@
 @section('title', 'Aktivasi Akun')
 
 @section('content')
-    <div class="mx-auto max-w-2xl rounded-4xl border border-slate-200 bg-white p-8 dark:border-slate-800 dark:bg-slate-900">
+    <div class="mx-auto max-w-2xl rounded-4xl border border-slate-200 surface-panel p-8 dark:border-slate-800 dark:bg-slate-900">
         <h1 class="text-3xl font-black">Aktivasi Akun</h1>
 
         @if(isset($already) && $already)

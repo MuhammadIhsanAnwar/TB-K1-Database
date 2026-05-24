@@ -39,7 +39,7 @@
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- HERO SECTION (BANNERS)                                     --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="bg-white pb-6 pt-4">
+<section class="surface-panel pb-6 pt-4">
   <div class="max-w-7xl mx-auto px-4">
     <div class="flex gap-4 h-64 md:h-80 lg:h-96">
       {{-- Main Banner Carousel (Left 70%) --}}
@@ -97,7 +97,7 @@
 {{-- CATEGORY NAVIGATION                                        --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="max-w-7xl mx-auto px-4 mb-10">
-  <div class="bg-white rounded-xl p-4 shadow-sm border border-gray-100">
+  <div class="surface-panel rounded-xl p-4 shadow-sm border border-gray-100">
     <div class="grid grid-cols-4 md:grid-cols-8 gap-4 justify-items-center text-center">
       @foreach($allCategories->take(8) as $cat)
       <a href="{{ route('categories.show', $cat->slug) }}" class="category-icon-wrapper block w-full">

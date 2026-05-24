@@ -106,17 +106,92 @@
   </script>
 
   <style>
+    /* Theme variables for light/dark modes */
+    :root{
+      --bg: #060A12;
+      --surface: #0D1421;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --primary: #2563eb;
+      --accent: #f97316;
+      --card-border: rgba(255,255,255,0.04);
+      --glass-bg: rgba(13,20,33,0.7);
+      --btn-primary-bg: #2563eb;
+      --input-bg: #090E1A;
+      --nav-top-bg: var(--primary);
+      --nav-main-bg: var(--primary);
+      --nav-cat-bg: #172554;
+      /* back-compat names used in some components */
+      --color-primary: var(--primary);
+      --color-bg-dark: var(--bg);
+      --color-surface: var(--surface);
+    }
+
+    @media (prefers-color-scheme: light) {
+      :root:not([data-theme]) {
+        /* Default to light if user prefers light */
+        --bg: #f8fafc;
+        --surface: #ffffff;
+        --text: #0f172a;
+        --muted: #64748b;
+        --primary: #2563eb;
+        --accent: #f97316;
+        --card-border: rgba(15,23,42,0.04);
+        --glass-bg: rgba(255,255,255,0.7);
+        --btn-primary-bg: #2563eb;
+        --input-bg: #ffffff;
+        --nav-top-bg: var(--primary);
+        --nav-main-bg: var(--primary);
+        --nav-cat-bg: #60a5fa;
+      }
+    }
+
+    /* explicit theme attribute overrides */
+    [data-theme="dark"]{
+      --bg: #060A12;
+      --surface: #0D1421;
+      --text: #e2e8f0;
+      --muted: #94a3b8;
+      --primary: #2563eb;
+      --accent: #f97316;
+      --card-border: rgba(255,255,255,0.04);
+      --glass-bg: rgba(13,20,33,0.7);
+      --btn-primary-bg: #2563eb;
+      --input-bg: #090E1A;
+    }
+
+    [data-theme="light"]{
+      --bg: #f8fafc;
+      --surface: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --primary: #2563eb;
+      --accent: #f97316;
+      --card-border: rgba(15,23,42,0.04);
+      --glass-bg: rgba(255,255,255,0.7);
+      --btn-primary-bg: #2563eb;
+      --input-bg: #ffffff;
+    }
+
     /* ── Reset & Base ──────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; }
     html { scroll-behavior: smooth; }
     body {
       font-family: 'DM Sans', sans-serif;
-      background-color: #060A12;
-      color: #e2e8f0;
+      background-color: var(--bg);
+      color: var(--text);
       min-height: 100vh;
       -webkit-font-smoothing: antialiased;
     }
     h1,h2,h3,h4,h5,.font-display { font-family: 'Oxanium', sans-serif; }
+
+    /* Surface utilities to make light/dark switching easier */
+    .surface-bg { background: var(--surface); color: var(--text); }
+    .surface-panel { background: var(--surface); border: 1px solid var(--card-border); color: var(--text); }
+    .surface-text { color: var(--text); }
+    .surface-muted { color: var(--muted); }
+    .surface-weak { background: rgba(255,255,255,0.03); }
+    .surface-panel:hover { filter: brightness(1.03); }
 
     /* ── Scrollbar ──────────────────────────────────────────────── */
     ::-webkit-scrollbar { width: 6px; height: 6px; }
@@ -126,10 +201,10 @@
 
     /* ── Page Grid Background ───────────────────────────────────── */
     .page-bg {
-      background-color: #060A12;
+      background-color: var(--bg);
       background-image:
-        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(37,99,235,0.08) 0%, transparent 60%),
-        radial-gradient(ellipse 60% 40% at 85% 5%,  rgba(249,115,22,0.05) 0%, transparent 55%),
+        radial-gradient(ellipse 80% 50% at 20% -10%, rgba(37,99,235,0.06) 0%, transparent 60%),
+        radial-gradient(ellipse 60% 40% at 85% 5%,  rgba(249,115,22,0.04) 0%, transparent 55%),
         linear-gradient(rgba(30,45,69,0.06) 1px, transparent 1px),
         linear-gradient(90deg, rgba(30,45,69,0.06) 1px, transparent 1px);
       background-size: 100% 100%, 100% 100%, 48px 48px, 48px 48px;
@@ -138,10 +213,10 @@
 
     /* ── Glassmorphism ──────────────────────────────────────────── */
     .glass {
-      background: rgba(13,20,33,0.7);
+      background: var(--glass-bg);
       backdrop-filter: blur(20px);
       -webkit-backdrop-filter: blur(20px);
-      border: 1px solid rgba(30,45,69,0.8);
+      border: 1px solid rgba(255,255,255,0.04);
     }
     .glass-hover:hover {
       background: rgba(22,32,50,0.85);
@@ -150,8 +225,8 @@
 
     /* ── Gradient Border Cards ─────────────────────────────────── */
     .card {
-      background: #0D1421;
-      border: 1px solid rgba(255,255,255,0.04);
+      background: var(--surface);
+      border: 1px solid var(--card-border);
       border-radius: 12px;
       transition: border-color 0.2s, box-shadow 0.2s, transform 0.18s;
     }
@@ -183,8 +258,8 @@
 
     /* ── Product Cards ──────────────────────────────────────────── */
     .product-card {
-      background: #0D1421;
-      border: 1px solid #1E2D45;
+      background: var(--surface);
+      border: 1px solid var(--card-border);
       border-radius: 14px;
       overflow: hidden;
       transition: transform 0.25s cubic-bezier(0.34,1.56,0.64,1), border-color 0.2s, box-shadow 0.25s;
@@ -208,7 +283,7 @@
       font-weight: 700;
       font-size: 0.9375rem;
       color: white;
-      background: #2563eb; /* solid brand */
+      background: var(--btn-primary-bg); /* solid brand */
       border: 1px solid rgba(37,99,235,0.12);
       transition: transform 0.15s ease, box-shadow 0.15s ease, background 0.15s ease;
       cursor: pointer;
@@ -262,8 +337,8 @@
     /* ── Form Inputs ────────────────────────────────────────────── */
     .input {
       width: 100%;
-      background: #090E1A;
-      border: 1px solid #1E2D45;
+      background: var(--input-bg);
+      border: 1px solid var(--card-border);
       border-radius: 12px;
       padding: 0.8125rem 1rem;
       color: #f1f5f9;
@@ -271,8 +346,8 @@
       outline: none;
       transition: border-color 0.2s, box-shadow 0.2s;
     }
-    .input::placeholder { color: #475569; }
-    .input:focus { border-color: #2563eb; box-shadow: 0 0 0 3px rgba(37,99,235,0.15); }
+    .input::placeholder { color: var(--muted); }
+    .input:focus { border-color: var(--primary); box-shadow: 0 0 0 3px rgba(37,99,235,0.12); }
 
     /* ── Badges & Pills ─────────────────────────────────────────── */
     .badge { display:inline-flex; align-items:center; gap:4px; padding:2px 10px; border-radius:99px; font-size:0.7rem; font-weight:700; font-family:'Oxanium',sans-serif; letter-spacing:0.05em; text-transform:uppercase; }

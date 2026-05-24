@@ -64,7 +64,7 @@
             
             <div class="flex flex-wrap items-center gap-3">
                 <a href="{{ route('admin.dashboard') }}"
-                   class="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide">
+                   class="inline-flex items-center gap-2 rounded-xl surface-weak hover:surface-weak border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide">
                     Dashboard
                 </a>
                     <a href="{{ route('admin.orders.report.pdf') }}"
@@ -81,7 +81,7 @@
         {{-- ── MAIN LEDGER TABLE PANEL ─────────────────────────── --}}
         <div class="rounded-3xl panel-card-glass overflow-hidden">
             {{-- 🛠️ PERBAIKAN: Diubah jadi flex-col di mobile agar tidak tabrakan/terpotong --}}
-            <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-400 text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">
+            <div class="px-6 py-4 border-b border-white/5 surface-weak font-medium text-slate-400 text-sm flex flex-col sm:flex-row sm:items-center justify-between gap-2">
                 <span>Menampilkan log perputaran invoice order marketplace.</span>
                 <div class="flex items-center gap-3">
                     <form method="GET" action="{{ route('admin.orders.index') }}" class="flex items-center gap-2">
@@ -128,7 +128,7 @@
                         </thead>
                         <tbody class="divide-y divide-white/5">
                             @foreach($orders as $order)
-                                <tr class="hover:bg-white/5 transition-colors">
+                                <tr class="hover:surface-weak transition-colors">
                                     {{-- Invoice ID --}}
                                     <td class="px-6 py-4 whitespace-nowrap">
                                         <div class="flex flex-col">

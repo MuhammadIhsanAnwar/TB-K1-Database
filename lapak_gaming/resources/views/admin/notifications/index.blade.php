@@ -76,7 +76,7 @@
                 <p class="text-slate-400 text-sm mt-0.5">Kirimkan maklumat pengumuman, promosi event, atau hadiah ke target audiens sistem.</p>
             </div>
             <a href="{{ route('admin.dashboard') }}"
-               class="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide self-start sm:self-auto">
+               class="inline-flex items-center gap-2 rounded-xl surface-weak hover:surface-weak border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide self-start sm:self-auto">
                 Dashboard
             </a>
         </div>
@@ -166,7 +166,7 @@
 
             <div class="space-y-4">
                 @forelse ($notifications as $notification)
-                    <article class="rounded-2xl border border-white/5 bg-black/20 p-4 hover:bg-white/5 transition-all duration-200 group">
+                    <article class="rounded-2xl border border-white/5 bg-black/20 p-4 hover:surface-weak transition-all duration-200 group">
                         <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/5 pb-2.5">
                             <div class="flex flex-wrap items-center gap-2.5">
                                 {{-- Icon Category Decorator --}}

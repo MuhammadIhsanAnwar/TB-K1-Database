@@ -214,7 +214,7 @@
 
             {{-- Form Actions Footer --}}
             <div class="mt-6 border-t border-white/5 pt-5 flex items-center justify-end gap-3">
-                <a href="{{ route('seller.produk.index') }}" class="rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 px-5 py-3 text-xs font-bold text-slate-300 transition-colors tracking-wide">
+                <a href="{{ route('seller.produk.index') }}" class="rounded-xl surface-weak hover:surface-weak border border-white/5 px-5 py-3 text-xs font-bold text-slate-300 transition-colors tracking-wide">
                     BATALKAN PERUBAHAN
                 </a>
                 <button type="submit" class="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 px-6 py-3 text-xs font-bold text-slate-950 transition-all shadow-md shadow-emerald-500/10 hover:scale-[1.01]">
@@ -330,15 +330,15 @@ document.querySelectorAll('.remove-image-btn').forEach(btn => {
         </div>
         <div class="border-t border-white/5 px-5 py-4 flex flex-col gap-4">
             <div class="flex flex-wrap items-center justify-center gap-3">
-                <button type="button" id="rotateLeftBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs font-semibold px-3 py-2 transition-colors">
+                <button type="button" id="rotateLeftBtn" class="rounded-lg surface-weak hover:surface-weak text-white text-xs font-semibold px-3 py-2 transition-colors">
                     🔄 Putar Kiri
                 </button>
-                <button type="button" id="rotateRightBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-xs font-semibold px-3 py-2 transition-colors">
+                <button type="button" id="rotateRightBtn" class="rounded-lg surface-weak hover:surface-weak text-white text-xs font-semibold px-3 py-2 transition-colors">
                     🔄 Putar Kanan
                 </button>
             </div>
             <div class="flex items-center justify-end gap-2 border-t border-white/5 pt-3">
-                <button id="cancelCropperBtn" type="button" class="rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 px-5 py-2.5 text-xs font-bold transition-colors">
+                <button id="cancelCropperBtn" type="button" class="rounded-xl surface-weak hover:surface-weak text-slate-300 px-5 py-2.5 text-xs font-bold transition-colors">
                     BATAL
                 </button>
                 <button id="saveCropperBtn" type="button" class="rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 hover:from-amber-400 hover:to-orange-400 text-slate-950 px-5 py-2.5 text-xs font-bold transition-all">

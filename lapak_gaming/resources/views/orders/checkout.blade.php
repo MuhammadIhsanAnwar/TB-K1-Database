@@ -40,7 +40,7 @@
             <div class="space-y-6">
                 
                 {{-- Items --}}
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                <div class="surface-panel border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                     <div class="bg-gray-50 border-b border-gray-200 px-5 py-3">
                         <h2 class="font-bold text-gray-800 text-sm">Item yang Dibeli</h2>
                     </div>
@@ -66,7 +66,7 @@
                 </div>
 
                 {{-- Payment Method --}}
-                <div class="bg-white border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                <div class="surface-panel border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                     <div class="bg-gray-50 border-b border-gray-200 px-5 py-3">
                         <h2 class="font-bold text-gray-800 text-sm">Metode Pembayaran</h2>
                     </div>
@@ -78,7 +78,7 @@
                                 <div class="text-xs text-gray-500">Saldo saat ini: <span class="font-bold {{ auth()->user()->balance < $total ? 'text-red-500' : 'text-green-600' }}">Rp {{ number_format(auth()->user()->balance, 0, ',', '.') }}</span></div>
                             </div>
                             @if(auth()->user()->balance < $total)
-                                <a href="{{ route('wallet.index') }}" class="absolute right-4 text-xs font-bold text-itemku-blue hover:underline bg-white px-3 py-1.5 rounded-lg border border-gray-200">Isi Saldo</a>
+                                <a href="{{ route('wallet.index') }}" class="absolute right-4 text-xs font-bold text-itemku-blue hover:underline surface-weak px-3 py-1.5 rounded-lg border border-gray-200">Isi Saldo</a>
                             @endif
                         </label>
                     </div>
@@ -88,7 +88,7 @@
 
             {{-- Right Column: Summary --}}
             <div>
-                <div class="bg-white border border-gray-200 rounded-xl shadow-sm p-5 sticky top-24">
+                <div class="surface-panel border border-gray-200 rounded-xl shadow-sm p-5 sticky top-24">
                     <h2 class="font-bold text-gray-800 text-sm mb-4 pb-3 border-b border-gray-100">Ringkasan Belanja</h2>
                     
                     <div class="space-y-3 mb-4">

@@ -12,7 +12,7 @@
       <p class="mt-3 max-w-2xl text-sm md:text-base text-slate-400">Halaman ini menampilkan struktur kategori marketplace: 13 kategori utama beserta subkategorinya. Tidak ada daftar produk di halaman ini.</p>
     </div>
 
-    <a href="{{ route('products.search') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-semibold text-white hover:border-cyan-400/25 hover:bg-cyan-400/10 transition-colors">
+    <a href="{{ route('products.search') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 surface-weak px-5 py-3 text-sm font-semibold text-white hover:border-cyan-400/25 hover:bg-cyan-400/10 transition-colors">
       Cari Produk
     </a>
   </div>
@@ -37,7 +37,7 @@
         <div class="p-5">
           <div class="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
             @foreach($category->children as $subCategory)
-              <a href="{{ route('categories.show', $subCategory->slug) }}" class="group flex items-center gap-3 rounded-2xl border border-white/5 bg-white/[0.02] px-4 py-3 text-sm text-slate-300 hover:border-cyan-400/25 hover:bg-cyan-400/10 hover:text-white transition-colors">
+              <a href="{{ route('categories.show', $subCategory->slug) }}" class="group flex items-center gap-3 rounded-2xl border border-white/5 surface-weak px-4 py-3 text-sm text-slate-300 hover:border-cyan-400/25 hover:bg-cyan-400/10 hover:text-white transition-colors">
                 <img src="{{ $subCategory->image_url }}" alt="{{ $subCategory->name }}" class="h-11 w-11 rounded-xl object-cover bg-slate-900/40 shrink-0" loading="lazy">
                 <span class="min-w-0 flex-1 truncate font-medium">{{ $subCategory->name }}</span>
                 <span class="text-cyan-300 opacity-0 group-hover:opacity-100 transition-opacity">→</span>

@@ -246,7 +246,7 @@
           @csrf
 
           {{-- STATUS --}}
-          <div class="rounded-3xl border border-white/5 bg-white/[0.03] p-5">
+          <div class="rounded-3xl border border-white/5 surface-weak p-5">
             <p class="text-sm leading-relaxed text-slate-400">
               Anda masuk sebagai
               <span class="font-semibold text-white">{{ Auth::user()->name }}</span>

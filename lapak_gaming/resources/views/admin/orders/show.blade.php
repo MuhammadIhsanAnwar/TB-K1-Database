@@ -70,7 +70,7 @@
             </div>
             
             <a href="{{ route('admin.orders.index') }}"
-               class="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide shrink-0">
+               class="inline-flex items-center gap-2 rounded-xl surface-weak hover:surface-weak border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide shrink-0">
                 <svg class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/>
                 </svg>
@@ -123,7 +123,7 @@
 
         {{-- ── CARD 2: MANIFEST ITEM PESANAN ─────────────────────── --}}
         <div class="rounded-3xl panel-card-glass overflow-hidden">
-            <div class="px-6 py-4 border-b border-white/5 bg-white/5 text-[11px] font-bold uppercase tracking-wider text-slate-400">
+            <div class="px-6 py-4 border-b border-white/5 surface-weak text-[11px] font-bold uppercase tracking-wider text-slate-400">
                 Aset Komoditas & Kuantitas Item
             </div>
             

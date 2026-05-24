@@ -117,7 +117,7 @@
         <div class="relative">
           <div class="absolute inset-0 rounded-xl bg-emerald-600/20 blur-md"></div>
           <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming"
-               class="relative w-11 h-11 rounded-xl object-contain bg-white/5 p-1 border border-white/10">
+               class="relative w-11 h-11 rounded-xl object-contain surface-weak p-1 border border-white/10">
         </div>
         <span class="font-display font-bold text-xl text-white group-hover:text-emerald-300 transition-colors">
           {{ config('app.name', 'Lapak Gaming') }}

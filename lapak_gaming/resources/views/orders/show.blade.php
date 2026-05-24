@@ -64,7 +64,7 @@
                         </p>
                     </div>
 
-                    <div class="rounded-[26px] border border-white/10 bg-white/[0.03] px-6 py-5 backdrop-blur-xl">
+                    <div class="rounded-[26px] border border-white/10 surface-weak px-6 py-5 backdrop-blur-xl">
                         <div class="text-sm text-slate-400">
                             Grand Total
                         </div>
@@ -92,7 +92,7 @@
 
                 <div class="mt-8 grid gap-5 md:grid-cols-2">
 
-                    <div class="reveal reveal-delay-1 rounded-[26px] border border-white/5 bg-white/[0.03] p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
+                    <div class="reveal reveal-delay-1 rounded-[26px] border border-white/5 surface-weak p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
 
                         <div class="text-lg font-black text-white">
                             Buyer
@@ -110,7 +110,7 @@
 
                     </div>
 
-                    <div class="reveal reveal-delay-2 rounded-[26px] border border-white/5 bg-white/[0.03] p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
+                    <div class="reveal reveal-delay-2 rounded-[26px] border border-white/5 surface-weak p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
 
                         <div class="text-lg font-black text-white">
                             Seller
@@ -139,7 +139,7 @@
                 {{-- ORDER ITEMS --}}
                 <div class="reveal reveal-delay-2 mt-8 overflow-hidden rounded-[26px] border border-blue-500/20 bg-[#0B1220]/95 shadow-[0_0_40px_rgba(37,99,235,0.06)]">
 
-                    <div class="border-b border-white/5 bg-white/[0.03] px-6 py-5">
+                    <div class="border-b border-white/5 surface-weak px-6 py-5">
 
                         <div class="text-[11px] font-bold uppercase tracking-[0.25em] text-blue-300">
                             Pesanan
@@ -187,7 +187,7 @@
                 {{-- PAYMENT INFO --}}
                 <div class="mt-8 grid gap-5 md:grid-cols-2">
 
-                    <div class="rounded-[26px] border border-white/5 bg-white/[0.03] p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
+                    <div class="rounded-[26px] border border-white/5 surface-weak p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
 
                         <div class="text-sm text-slate-400">
                             Metode Pembayaran
@@ -199,7 +199,7 @@
 
                     </div>
 
-                    <div class="rounded-[26px] border border-white/5 bg-white/[0.03] p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
+                    <div class="rounded-[26px] border border-white/5 surface-weak p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
 
                         <div class="text-sm text-slate-400">
                             Tanggal Pesanan
@@ -220,7 +220,7 @@
                 @endphp
 
                 @if($isOrderSeller)
-                    <div class="reveal reveal-delay-3 mt-8 rounded-[26px] border border-white/5 bg-white/[0.03] p-6">
+                    <div class="reveal reveal-delay-3 mt-8 rounded-[26px] border border-white/5 surface-weak p-6">
                         <h2 class="text-xl font-black text-white">
                             Aksi Seller
                         </h2>
@@ -295,7 +295,7 @@
                 {{-- PAYMENT PROOF --}}
                 @if($order->payment_proof)
 
-                <div class="reveal reveal-delay-3 mt-8 rounded-[26px] border border-white/5 bg-white/[0.03] p-6">
+                <div class="reveal reveal-delay-3 mt-8 rounded-[26px] border border-white/5 surface-weak p-6">
 
                     <h2 class="text-xl font-black text-white">
                         Bukti Pembayaran
@@ -322,7 +322,7 @@
                 @elseif($order->status === \App\Models\Order::STATUS_PENDING_PAYMENT)
 
                 {{-- PAYMENT FORM --}}
-                <div class="reveal reveal-delay-3 mt-8 rounded-[26px] border border-white/5 bg-white/[0.03] p-6">
+                <div class="reveal reveal-delay-3 mt-8 rounded-[26px] border border-white/5 surface-weak p-6">
 
                     <h2 class="text-xl font-black text-white">
                         Lanjutkan Pembayaran
@@ -368,7 +368,7 @@
                                        name="payment_proof"
                                        accept="image/*"
                                        required
-                                       class="mt-3 w-full rounded-[22px] border border-white/10 bg-white/[0.03] px-4 py-3 text-slate-100 file:mr-4 file:rounded-xl file:border-0 file:bg-blue-500/20 file:px-4 file:py-2 file:font-semibold file:text-blue-300" />
+                                       class="mt-3 w-full rounded-[22px] border border-white/10 surface-weak px-4 py-3 text-slate-100 file:mr-4 file:rounded-xl file:border-0 file:bg-blue-500/20 file:px-4 file:py-2 file:font-semibold file:text-blue-300" />
 
                             </label>
 

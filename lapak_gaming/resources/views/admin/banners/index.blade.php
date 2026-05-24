@@ -63,7 +63,7 @@
                 <p class="text-slate-400 text-sm mt-0.5">Atur baliho promo, event top-up, dan spanduk penawaran utama di halaman depan web.</p>
             </div>
             <a href="{{ route('admin.dashboard') }}"
-               class="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide self-start sm:self-auto">
+               class="inline-flex items-center gap-2 rounded-xl surface-weak hover:surface-weak border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide self-start sm:self-auto">
                 Dashboard
             </a>
         </div>
@@ -129,7 +129,7 @@
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Unggah File Gambar</label>
                 <input name="image" type="file" accept="image/*" 
-                       class="w-full rounded-xl input-glass px-3 py-2 text-xs text-slate-400 outline-none file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:bg-white/10 file:text-white file:hover:bg-white/20 file:transition-colors @error('image') border-red-500/40 bg-red-500/5 @enderror">
+                       class="w-full rounded-xl input-glass px-3 py-2 text-xs text-slate-400 outline-none file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:surface-weak file:text-white file:hover:surface-weak file:transition-colors @error('image') border-red-500/40 bg-red-500/5 @enderror">
                 <p class="mt-1.5 text-[10px] text-slate-500 leading-relaxed">Format: JPG, PNG, WebP. Maks 5MB.<br>Rekomendasi rasio -> Hero: 4:5 portrait | Featured: 3:1 landscape.</p>
                 @error('image')<p class="mt-1 text-[11px] text-red-400 font-medium">{{ $message }}</p>@enderror
             </div>

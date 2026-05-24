@@ -190,7 +190,7 @@
                     <h3 class="text-lg font-bold text-white tracking-tight">Edit Profil Toko</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Nama, foto, dan bio toko</p>
                 </div>
-                <div class="bg-white/5 p-2.5 rounded-xl group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors text-slate-400">
+                <div class="surface-weak p-2.5 rounded-xl group-hover:bg-emerald-500 group-hover:text-slate-950 transition-colors surface-muted">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4h2M12 4v16M7 8h10M7 16h10"/>
                     </svg>
@@ -203,7 +203,7 @@
                     <h3 class="text-lg font-bold text-white tracking-tight">Tambah Produk</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Buka etalase jualan baru</p>
                 </div>
-                <div class="bg-white/5 p-2.5 rounded-xl group-hover:bg-blue-500 group-hover:text-slate-950 transition-colors text-slate-400">
+                <div class="surface-weak p-2.5 rounded-xl group-hover:bg-blue-500 group-hover:text-slate-950 transition-colors surface-muted">
                     <svg class="w-5 h-5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15"/>
                     </svg>
@@ -216,7 +216,7 @@
                     <h3 class="text-lg font-bold text-white tracking-tight">Kelola Etalase</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Stok harian & arsip barang</p>
                 </div>
-                <div class="bg-white/5 p-2.5 rounded-xl group-hover:bg-blue-500 group-hover:text-slate-950 transition-colors text-slate-400">
+                <div class="surface-weak p-2.5 rounded-xl group-hover:bg-blue-500 group-hover:text-slate-950 transition-colors surface-muted">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/>
                     </svg>
@@ -229,7 +229,7 @@
                     <h3 class="text-lg font-bold text-white tracking-tight">Pesan Pelanggan</h3>
                     <p class="text-slate-400 text-xs font-medium mt-0.5">Balas pertanyaan & negosiasi</p>
                 </div>
-                <div class="bg-white/5 p-2.5 rounded-xl group-hover:bg-blue-500 group-hover:text-slate-950 transition-colors text-slate-400">
+                <div class="surface-weak p-2.5 rounded-xl group-hover:bg-blue-500 group-hover:text-slate-950 transition-colors surface-muted">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a.863.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"/>
                     </svg>
@@ -251,7 +251,7 @@
                 
                 <div class="space-y-3">
                     @forelse ($products->take(5) as $product)
-                        <div class="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
+                        <div class="flex items-center justify-between rounded-xl border border-white/5 surface-weak p-4 transition duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
                             <div class="flex items-center gap-3 min-w-0">
                                 <img src="{{ $product->image_url }}" class="w-9 h-9 rounded-lg object-cover bg-black/40 border border-white/5" alt="Thumbnail {{ $product->name }}">
                                 <div class="min-w-0">
@@ -285,7 +285,7 @@
                 
                 <div class="space-y-3">
                     @forelse ($orders->take(5) as $item)
-                        <div class="flex items-center justify-between gap-4 rounded-xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
+                        <div class="flex items-center justify-between gap-4 rounded-xl border border-white/5 surface-weak p-4 transition duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
                             <div class="min-w-0">
                                 <div class="text-[10px] font-bold text-brand-400 uppercase tracking-wider">
                                     #{{ $item->order?->invoice_number ?? $item->order?->order_code ?? 'INV-UNKNWN' }}

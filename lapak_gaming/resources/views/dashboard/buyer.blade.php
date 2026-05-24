@@ -204,7 +204,7 @@
 
                 @forelse ($orders as $order)
                     <div
-                        class="rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04] hover:-translate-y-1">
+                        class="rounded-2xl border border-white/5 surface-weak p-4 transition duration-300 hover:border-blue-500/30 hover:brightness-105 hover:-translate-y-1">
 
                         <div class="flex items-center justify-between gap-3">
                             <span class="text-sm font-bold text-white">
@@ -251,7 +251,7 @@
 
                 @forelse ($notifications as $notification)
                     <div
-                        class="rounded-2xl border border-white/5 bg-white/[0.03] p-4 transition duration-300 hover:border-orange-500/30 hover:bg-orange-500/[0.04] hover:-translate-y-1">
+                        class="rounded-2xl border border-white/5 surface-weak p-4 transition duration-300 hover:border-orange-500/30 hover:bg-orange-500/[0.04] hover:-translate-y-1">
 
                         <div class="text-sm font-bold text-white">
                             {{ $notification->title }}

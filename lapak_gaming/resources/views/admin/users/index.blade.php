@@ -311,12 +311,12 @@ a{
         <p class="text-slate-400 text-sm mt-0.5">Kelola data pengguna, hak akses seller, dan validasi pengajuan berkas toko.</p>
       </div>
       <a href="{{ route('admin.dashboard') }}"
-         class="inline-flex items-center gap-2 rounded-xl bg-white/5 hover:bg-white/10 border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide">
+         class="inline-flex items-center gap-2 rounded-xl surface-weak hover:brightness-105 border border-white/5 px-4 py-2.5 text-xs font-bold surface-muted transition-all tracking-wide">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
         </svg>
         KEMBALI KE DASBOR
-      </a>
+      </a>"
     </div>
     {{-- SEARCH & SORT FORM --}}
     <div class="mt-4 mb-2 flex items-center justify-end gap-3">
@@ -390,9 +390,9 @@ a{
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
     @if($tab === 'users')
       <div class="rounded-3xl panel-card-glass overflow-hidden section-spacing">
-        <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-300 text-sm">
+        <div class="px-6 py-4 border-b border-white/5 surface-weak font-medium surface-muted text-sm">
           Daftar akun pembeli (buyer) terdaftar. Anda berhak melakukan penangguhan (<span class="text-rose-400 font-bold">suspend</span>) jika akun terindikasi curang.
-        </div>
+        </div>"
 
         @if($regularUsers->isEmpty())
           <div class="py-16 text-center text-slate-500">
@@ -431,7 +431,7 @@ a{
               </thead>
               <tbody class="divide-y divide-white/5">
                 @foreach($regularUsers as $user)
-                  <tr class="hover:bg-white/5 transition-colors">
+                  <tr class="hover:surface-weak transition-colors">
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="flex items-center gap-3">
                         <img src="{{ $user->avatar_url }}" alt="Avatar {{ $user->name }}" class="w-9 h-9 rounded-full object-cover border border-white/10 bg-black/20" />
@@ -487,9 +487,9 @@ a{
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
     @if($tab === 'pending_verification')
       <div class="rounded-3xl panel-card-glass overflow-hidden section-spacing">
-        <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-300 text-sm">
+        <div class="px-6 py-4 border-b border-white/5 surface-weak font-medium surface-muted text-sm">
           Daftar pendaftaran akun baru yang belum menyelesaikan verifikasi link email.
-        </div>
+        </div>"
 
         @if($pendingVerifications->isEmpty())
           <div class="py-16 text-center text-slate-500">
@@ -510,7 +510,7 @@ a{
               </thead>
               <tbody class="divide-y divide-white/5">
                 @foreach($pendingVerifications as $user)
-                  <tr class="hover:bg-white/5 transition-colors">
+                  <tr class="hover:surface-weak transition-colors">
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="flex items-center gap-3">
                         <img src="{{ $user->avatar_url }}" alt="Avatar {{ $user->name }}" class="w-9 h-9 rounded-full object-cover border border-white/10 bg-black/20" />
@@ -546,7 +546,7 @@ a{
     {{-- ═══════════════════════════════════════════════════════════════════ --}}
     @if($tab === 'sellers')
       <div class="rounded-3xl panel-card-glass overflow-hidden section-spacing">
-        <div class="px-6 py-4 border-b border-white/5 bg-white/5 font-medium text-slate-300 text-sm">
+        <div class="px-6 py-4 border-b border-white/5 surface-weak font-medium text-slate-300 text-sm">
           Seluruh toko mitra pedagang aktif. Anda dapat membekukan hak penjualan mereka melalui tombol suspensi.
         </div>
 
@@ -582,7 +582,7 @@ a{
               </thead>
               <tbody class="divide-y divide-white/5">
                 @foreach($sellers as $seller)
-                  <tr class="hover:bg-white/5 transition-colors">
+                  <tr class="hover:surface-weak transition-colors">
                     <td class="px-6 py-4 whitespace-nowrap">
                       <div class="flex items-center gap-3">
                         <img src="{{ $seller->avatar_url }}" alt="Avatar {{ $seller->name }}" class="w-9 h-9 rounded-full object-cover border border-white/10" />
@@ -805,9 +805,9 @@ a{
         <button type="submit" class="flex-1 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 px-5 py-3 text-xs font-bold text-white transition-all shadow-md shadow-rose-600/10">
           EKSEKUSI BANNED
         </button>
-        <button type="button" onclick="closeSuspendModal()" class="flex-1 rounded-xl border border-white/5 bg-white/5 px-5 py-3 text-xs font-bold text-slate-300 hover:bg-white/10 transition-colors">
+                      <button type="button" onclick="closeSuspendModal()" class="flex-1 rounded-xl border border-white/5 surface-weak px-5 py-3 text-xs font-bold surface-muted hover:brightness-105 transition-colors">
           BATALKAN
-        </button>
+        </button>"
       </div>
     </form>
   </div>
@@ -843,9 +843,9 @@ a{
         <button type="submit" class="flex-1 rounded-xl bg-gradient-to-r from-rose-600 to-red-600 hover:from-rose-500 hover:to-red-500 px-5 py-3 text-xs font-bold text-white transition-all shadow-md shadow-rose-600/10">
           EKSEKUSI SUSPEND TOKO
         </button>
-        <button type="button" onclick="closeSuspendShopModal()" class="flex-1 rounded-xl border border-white/5 bg-white/5 px-5 py-3 text-xs font-bold text-slate-300 hover:bg-white/10 transition-colors">
+          <button type="button" onclick="closeSuspendShopModal()" class="flex-1 rounded-xl border border_white/5 surface-weak px-5 py-3 text-xs font-bold surface-muted hover:brightness-105 transition-colors">
           BATALKAN
-        </button>
+        </button>"
       </div>
     </form>
   </div>
@@ -882,9 +882,9 @@ a{
         <button type="submit" class="flex-1 rounded-xl bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 px-5 py-3 text-xs font-bold text-white transition-all shadow-md shadow-orange-600/10">
           KONFIRMASI REJECT
         </button>
-        <button type="button" onclick="closeRejectModal()" class="flex-1 rounded-xl border border-white/5 bg-white/5 px-5 py-3 text-xs font-bold text-slate-300 hover:bg-white/10 transition-colors">
+          <button type="button" onclick="closeRejectModal()" class="flex-1 rounded-xl border border-white/5 surface-weak px-5 py-3 text-xs font-bold surface-muted hover:brightness-105 transition-colors">
           BATALKAN
-        </button>
+        </button>"
       </div>
     </form>
   </div>

@@ -8,11 +8,11 @@
   $partnerId = $partner?->id;
 @endphp
 
-<div class="rounded-3xl border border-slate-200 bg-white p-6 dark:border-slate-800 dark:bg-slate-900">
+<div class="rounded-3xl surface-panel p-6">
   <div class="flex items-center justify-between gap-3 flex-wrap">
     <div>
       <h1 class="text-2xl font-black">Chat Produk</h1>
-      <p class="text-sm text-slate-500">
+      <p class="text-sm surface-muted">
         {{ $product->name }}
         @if($partner)
           • Lawan chat: {{ $partner->name }}
@@ -27,7 +27,7 @@
   <div class="mt-4 flex gap-2 flex-wrap">
     @foreach($participants as $participant)
       <a href="{{ route('chat.product', ['product' => $product->id, 'buyer' => $participant->id]) }}"
-         class="px-3 py-1.5 rounded-xl text-xs {{ ($partnerId === $participant->id) ? 'bg-brand-600 text-white' : 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200' }}">
+         class="px-3 py-1.5 rounded-xl text-xs {{ ($partnerId === $participant->id) ? 'bg-brand-600 text-white' : 'surface-panel surface-text' }}">
         {{ $participant->name }}
       </a>
     @endforeach
@@ -37,10 +37,11 @@
   <div id="chat-box"
        data-auth-id="{{ $authId }}"
        data-poll-url="{{ $authId === $product->seller_id && $partnerId ? route('chat.product.poll', ['product' => $product->id, 'buyer' => $partnerId]) : route('chat.product.poll', ['product' => $product->id]) }}"
-       class="mt-6 h-120 overflow-y-auto rounded-[1.75rem] bg-slate-50 p-4 dark:bg-slate-950/40">
+       class="mt-6 h-120 overflow-y-auto rounded-[1.75rem] surface-panel p-4">
     @forelse($messages as $message)
-      <div class="mb-3 flex {{ $message->sender_id === $authId ? 'justify-end' : 'justify-start' }}">
-        <div class="max-w-[75%] rounded-2xl px-4 py-3 text-sm {{ $message->sender_id === $authId ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950' : 'bg-white text-slate-900 dark:bg-slate-900 dark:text-white' }}">
+      @php $isMine = $message->sender_id === $authId; @endphp
+      <div class="mb-3 flex {{ $isMine ? 'justify-end' : 'justify-start' }}">
+        <div class="max-w-[75%] rounded-2xl px-4 py-3 text-sm" style="background: {{ $isMine ? 'var(--primary)' : 'var(--surface)'}}; color: {{ $isMine ? 'white' : 'var(--text)'}};">
           {{ $message->message }}
         </div>
       </div>
@@ -56,8 +57,8 @@
       <input type="hidden" name="receiver_id" value="{{ $partnerId }}">
     @endif
     <input id="chat-input" name="message" placeholder="Tulis pesan..."
-           class="flex-1 rounded-2xl border border-slate-200 px-4 py-3 dark:border-slate-700 dark:bg-slate-950" />
-    <button class="rounded-2xl bg-slate-950 px-5 py-3 font-bold text-white dark:bg-white dark:text-slate-950">Kirim</button>
+           class="flex-1 rounded-2xl surface-panel px-4 py-3" />
+    <button class="rounded-2xl px-5 py-3 font-bold" style="background:var(--primary); color:var(--text)">Kirim</button>
   </form>
   @else
   <div class="mt-4 text-sm text-slate-500">
@@ -93,7 +94,7 @@
 
     chatBox.innerHTML = messages.map((message) => `
       <div class="mb-3 flex ${Number(message.sender_id) === authId ? 'justify-end' : 'justify-start'}">
-        <div class="max-w-[75%] rounded-2xl px-4 py-3 text-sm ${Number(message.sender_id) === authId ? 'bg-slate-950 text-white dark:bg-white dark:text-slate-950' : 'bg-white text-slate-900 dark:bg-slate-900 dark:text-white'}">
+        <div class="max-w-[75%] rounded-2xl px-4 py-3 text-sm" style="${Number(message.sender_id) === authId ? 'background:var(--primary);color:white;' : 'background:var(--surface);color:var(--text);'}">
           ${escapeHtml(message.message)}
         </div>
       </div>

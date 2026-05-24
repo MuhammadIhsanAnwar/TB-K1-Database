@@ -147,7 +147,7 @@ use Illuminate\Support\Str;
                     {{-- ── CARD ACTIONS FOOTER ──────────────────────────── --}}
                     <div class="mt-5 flex flex-col sm:flex-row justify-end items-center gap-2 border-t border-white/5 pt-4">
                         <a href="{{ route('seller.produk.edit', $product) }}" 
-                           class="w-full sm:w-auto text-center rounded-xl bg-white/5 hover:bg-white/10 px-5 py-2.5 text-xs font-bold text-slate-300 transition-colors tracking-wide border border-white/5">
+                           class="w-full sm:w-auto text-center rounded-xl surface-weak hover:surface-weak px-5 py-2.5 text-xs font-bold text-slate-300 transition-colors tracking-wide border border-white/5">
                             EDIT DATA ITEM
                         </a>
 

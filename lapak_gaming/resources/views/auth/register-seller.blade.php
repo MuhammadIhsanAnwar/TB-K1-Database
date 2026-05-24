@@ -9,7 +9,7 @@
         </div>
 
         <div class="relative mx-auto grid max-w-7xl gap-8 px-4 lg:grid-cols-[0.9fr_1.1fr] lg:px-8">
-            <section class="rounded-[2rem] bg-white/5 backdrop-blur-xl p-6 shadow-2xl sm:p-8">
+            <section class="rounded-[2rem] surface-weak backdrop-blur-xl p-6 shadow-2xl sm:p-8">
                 <span class="inline-flex rounded-full border border-amber-400/30 bg-amber-400/10 px-4 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-amber-200">Akun Penjual</span>
                 <h1 class="mt-6 text-4xl font-black leading-tight">Mulai berjualan di Lapak Geming dengan modal minimal.</h1>
                 <p class="mt-4 max-w-xl text-sm leading-6 text-slate-300">
@@ -110,7 +110,7 @@
                         <h3 class="text-xl font-bold">Crop logo toko</h3>
                         <p class="text-sm text-slate-400">Pilih area terbaik sebelum menyimpan.</p>
                     </div>
-                    <button type="button" class="rounded-full bg-white/10 px-4 py-2 text-sm font-semibold text-white hover:bg-white/15" data-crop-cancel>Batalkan</button>
+                    <button type="button" class="rounded-full surface-weak px-4 py-2 text-sm font-semibold surface-text hover:brightness-105" data-crop-cancel>Batalkan</button>
                 </div>
 
                 <div class="overflow-hidden rounded-[1.5rem] bg-black">
@@ -118,7 +118,7 @@
                 </div>
 
                 <div class="flex flex-wrap items-center justify-end gap-3 px-2 py-4">
-                    <button type="button" class="rounded-2xl border border-white/15 px-4 py-2 text-sm font-semibold text-white hover:bg-white/10" data-crop-reset>Reset</button>
+                    <button type="button" class="rounded-2xl border border-white/15 px-4 py-2 text-sm font-semibold surface-text hover:brightness-105" data-crop-reset>Reset</button>
                     <button type="button" class="rounded-2xl bg-amber-400 px-4 py-2 text-sm font-semibold text-slate-950 hover:bg-amber-300" data-crop-save>Simpan Crop</button>
                 </div>
             </div>

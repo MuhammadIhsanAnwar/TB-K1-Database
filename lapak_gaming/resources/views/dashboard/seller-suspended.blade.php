@@ -6,7 +6,7 @@
 <div class="relative min-h-screen overflow-hidden bg-slate-950 px-4 py-16">
     <div class="absolute inset-0 bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.18),transparent_35%),radial-gradient(circle_at_bottom_right,rgba(239,68,68,0.12),transparent_32%)]"></div>
     <div class="relative mx-auto flex max-w-4xl items-center justify-center">
-        <div class="w-full rounded-[32px] border border-white/10 bg-white/[0.04] p-8 shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl md:p-10">
+        <div class="w-full rounded-[32px] border border-white/10 surface-weak p-8 shadow-[0_30px_120px_rgba(0,0,0,0.45)] backdrop-blur-2xl md:p-10">
             <div class="inline-flex items-center gap-2 rounded-full border border-red-500/30 bg-red-500/10 px-4 py-2 text-xs font-bold uppercase tracking-[0.2em] text-red-200">
                 <span class="h-2 w-2 rounded-full bg-red-400"></span>
                 Dashboard Ditangguhkan
@@ -54,7 +54,7 @@
                 <a href="{{ route('home') }}" class="inline-flex items-center justify-center rounded-2xl bg-blue-500 px-5 py-3 text-sm font-bold text-white transition hover:bg-blue-400">
                     Kembali ke Beranda
                 </a>
-                <a href="{{ route('settings.profile') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-sm font-bold text-slate-200 transition hover:border-white/20 hover:bg-white/[0.06]">
+                <a href="{{ route('settings.profile') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 surface-weak px-5 py-3 text-sm font-bold surface-text transition hover:border-white/20 hover:brightness-105">
                     Buka Pengaturan Akun
                 </a>
             </div>

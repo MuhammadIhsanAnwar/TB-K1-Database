@@ -485,7 +485,7 @@
                                     <p class="mt-3 text-sm text-slate-400">Gunakan satu atau lebih metode berikut sesuai kebutuhan Anda.</p>
                                 </div>
 
-                                <label class="inline-flex items-center gap-3 rounded-2xl border border-white/10 bg-white/[0.03] px-4 py-3 text-sm text-slate-200">
+                                <label class="inline-flex items-center gap-3 rounded-2xl border border-white/10 surface-weak px-4 py-3 text-sm text-slate-200">
                                     <input type="checkbox" name="two_factor_enabled" value="1" @checked(old('two_factor_enabled', $user->two_factor_enabled))>
                                     Aktifkan verifikasi 2 langkah
                                 </label>
@@ -496,7 +496,7 @@
                             <h2 class="text-xl font-bold text-white">Pilih Metode</h2>
 
                             <div class="mt-6 grid gap-4 lg:grid-cols-3">
-                                <label class="rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-sm text-slate-200">
+                                <label class="rounded-3xl border border-white/10 surface-weak p-5 text-sm text-slate-200">
                                     <div class="flex items-center gap-3">
                                         <input type="checkbox" name="two_factor_methods[]" value="email" @checked(in_array('email', old('two_factor_methods', $twoFactorMethods ?? []), true))>
                                         <span class="font-semibold text-white">Email</span>
@@ -504,7 +504,7 @@
                                     <p class="mt-3 text-slate-400">Kode akan dikirim ke alamat email akun Anda.</p>
                                 </label>
 
-                                <label class="rounded-3xl border border-white/10 bg-white/[0.03] p-5 text-sm text-slate-200">
+                                <label class="rounded-3xl border border-white/10 surface-weak p-5 text-sm text-slate-200">
                                     <div class="flex items-center gap-3">
                                         <input type="checkbox" name="two_factor_methods[]" value="google" @checked(in_array('google', old('two_factor_methods', $twoFactorMethods ?? []), true))>
                                         <span class="font-semibold text-white">Google Authenticator</span>
@@ -564,11 +564,11 @@
                         <section class="card-box">
                             <h2 class="text-xl font-bold text-white">Informasi Pendukung</h2>
                             <div class="mt-4 grid gap-4 lg:grid-cols-2 text-sm text-slate-300">
-                                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                                <div class="rounded-2xl border border-white/10 surface-weak p-4">
                                     <div class="text-slate-500">Email Terdaftar</div>
                                     <div class="mt-1 text-white">{{ $user->email }}</div>
                                 </div>
-                                <div class="rounded-2xl border border-white/10 bg-white/[0.03] p-4">
+                                <div class="rounded-2xl border border-white/10 surface-weak p-4">
                                     <div class="text-slate-500">Nomor Telepon</div>
                                     <div class="mt-1 text-white">{{ $user->phone ?? 'Belum diisi' }}</div>
                                 </div>
@@ -729,7 +729,7 @@
                                     </a>
 
                                     <a href="{{ route('seller.dashboard') }}"
-                                        class="flex items-center justify-center rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-4 text-sm font-bold text-white transition duration-300 hover:border-orange-500/30 hover:bg-orange-500/[0.06]">
+                                        class="flex items-center justify-center rounded-2xl border border-white/10 surface-weak px-5 py-4 text-sm font-bold text-white transition duration-300 hover:border-orange-500/30 hover:bg-orange-500/[0.06]">
 
                                         Buka Dashboard Seller
                                     </a>
@@ -919,3 +919,4 @@ body::after{
 }
 </style>
 @endsection
+

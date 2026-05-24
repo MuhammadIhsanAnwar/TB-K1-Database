@@ -160,7 +160,7 @@
 
                 {{-- EMAIL --}}
                 <div
-                    class="rounded-2xl border border-white/5 bg-white/[0.03] p-5 transition duration-300 hover:-translate-y-1 hover:border-blue-500/20 hover:bg-blue-500/[0.03]">
+                    class="rounded-2xl border border-white/5 surface-weak p-5 transition duration-300 hover:-translate-y-1 hover:border-blue-500/20 hover:bg-blue-500/[0.03]">
 
                     <p
                         class="text-xs font-semibold uppercase tracking-[0.18em] text-blue-300">
@@ -174,7 +174,7 @@
 
                 {{-- FULL NAME --}}
                 <div
-                    class="rounded-2xl border border-white/5 bg-white/[0.03] p-5 transition duration-300 hover:-translate-y-1 hover:border-orange-500/20 hover:bg-orange-500/[0.03]">
+                    class="rounded-2xl border border-white/5 surface-weak p-5 transition duration-300 hover:-translate-y-1 hover:border-orange-500/20 hover:bg-orange-500/[0.03]">
 
                     <p
                         class="text-xs font-semibold uppercase tracking-[0.18em] text-orange-300">
@@ -188,7 +188,7 @@
 
                 {{-- MEMBER SINCE --}}
                 <div
-                    class="rounded-2xl border border-white/5 bg-white/[0.03] p-5 transition duration-300 hover:-translate-y-1 hover:border-cyan-500/20 hover:bg-cyan-500/[0.03]">
+                    class="rounded-2xl border border-white/5 surface-weak p-5 transition duration-300 hover:-translate-y-1 hover:border-cyan-500/20 hover:bg-cyan-500/[0.03]">
 
                     <p
                         class="text-xs font-semibold uppercase tracking-[0.18em] text-cyan-300">
@@ -202,7 +202,7 @@
 
                 {{-- STATUS --}}
                 <div
-                    class="rounded-2xl border border-white/5 bg-white/[0.03] p-5 transition duration-300 hover:-translate-y-1 hover:border-emerald-500/20 hover:bg-emerald-500/[0.03]">
+                    class="rounded-2xl border border-white/5 surface-weak p-5 transition duration-300 hover:-translate-y-1 hover:border-emerald-500/20 hover:bg-emerald-500/[0.03]">
 
                     <p
                         class="text-xs font-semibold uppercase tracking-[0.18em] text-emerald-300">

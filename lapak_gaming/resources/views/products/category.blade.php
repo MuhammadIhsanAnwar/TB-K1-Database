@@ -21,7 +21,7 @@
     
     {{-- Left Sidebar: Filters --}}
     <aside class="w-full lg:w-64 shrink-0">
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 sticky top-24">
+      <div class="surface-panel rounded-xl shadow-sm border border-gray-200 p-5 sticky top-24">
         <h3 class="font-bold text-gray-800 mb-4 flex items-center gap-2">
           <svg class="w-4 h-4 text-itemku-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
           Filter Produk
@@ -80,14 +80,14 @@
       </div>
 
       {{-- Toolbar (Sort & Count) --}}
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between bg-white rounded-xl border border-gray-200 p-3 mb-6 shadow-sm gap-4">
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between surface-panel rounded-xl border border-gray-200 p-3 mb-6 shadow-sm gap-4">
         <div class="text-sm text-gray-500">
           Menampilkan <span class="font-bold text-gray-800">{{ $products->firstItem() ?? 0 }}</span> - <span class="font-bold text-gray-800">{{ $products->lastItem() ?? 0 }}</span> dari <span class="font-bold text-gray-800">{{ $products->total() }}</span> produk
         </div>
         
         <div class="flex items-center gap-3">
           <span class="text-sm text-gray-500 font-medium">Urutkan:</span>
-          <select onchange="window.location.href=this.value" class="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:border-itemku-blue focus:ring-1 focus:ring-itemku-blue outline-none text-gray-700 bg-white">
+          <select onchange="window.location.href=this.value" class="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:border-itemku-blue focus:ring-1 focus:ring-itemku-blue outline-none text-gray-700 surface-bg">
             @php $q = request()->except('sort'); @endphp
             <option value="{{ route('categories.show', array_merge(['category' => $category->slug, 'sort' => 'popular'], $q)) }}" {{ request('sort') === 'popular' ? 'selected' : '' }}>Paling Populer</option>
             <option value="{{ route('categories.show', array_merge(['category' => $category->slug, 'sort' => 'rating'], $q)) }}" {{ request('sort') === 'rating' ? 'selected' : '' }}>Rating Tertinggi</option>
@@ -102,7 +102,7 @@
         @forelse($products as $product)
           @include('components.product-card', ['product' => $product])
         @empty
-          <div class="col-span-full py-16 flex flex-col items-center justify-center text-center bg-white rounded-xl border border-gray-200 shadow-sm">
+          <div class="col-span-full py-16 flex flex-col items-center justify-center text-center surface-panel rounded-xl border border-gray-200 shadow-sm">
             <svg class="w-16 h-16 text-gray-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
             <h3 class="text-lg font-bold text-gray-800 mb-1">Produk tidak ditemukan</h3>
             <p class="text-sm text-gray-500 max-w-md">Coba sesuaikan filter Anda atau cari produk dengan kata kunci lain.</p>

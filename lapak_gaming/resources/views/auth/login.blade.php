@@ -196,7 +196,7 @@
           <div class="absolute inset-0 rounded-xl bg-brand-600/40 blur-md group-hover:blur-lg transition-all duration-300"></div>
           <img src="{{ url('storage/app/public/logo/logo.png') }}"
                alt="Lapak Gaming"
-               class="relative w-11 h-11 rounded-xl object-contain bg-white/5 p-1 border border-white/10">
+               class="relative w-11 h-11 rounded-xl object-contain surface-weak p-1 border border-white/10">
         </div>
         <span class="font-display font-bold text-xl text-white tracking-wide group-hover:text-brand-300 transition-colors">
           {{ config('app.name', 'Lapak Gaming') }}

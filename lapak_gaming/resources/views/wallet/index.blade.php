@@ -105,7 +105,7 @@
                     {{-- DEPOSIT --}}
                     <form method="POST"
                         action="{{ route('wallet.deposit') }}"
-                        class="group rounded-[24px] border border-emerald-500/20 bg-white/[0.03] p-5 transition duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:bg-emerald-500/[0.03]">
+                        class="group rounded-[24px] border border-emerald-500/20 surface-weak p-5 transition duration-300 hover:-translate-y-1 hover:border-emerald-400/40 hover:bg-emerald-500/[0.03]">
 
                         @csrf
 
@@ -130,7 +130,7 @@
                     {{-- WITHDRAW --}}
                     <form method="POST"
                         action="{{ route('wallet.withdraw') }}"
-                        class="group rounded-[24px] border border-orange-500/20 bg-white/[0.03] p-5 transition duration-300 hover:-translate-y-1 hover:border-orange-400/40 hover:bg-orange-500/[0.03]">
+                        class="group rounded-[24px] border border-orange-500/20 surface-weak p-5 transition duration-300 hover:-translate-y-1 hover:border-orange-400/40 hover:bg-orange-500/[0.03]">
 
                         @csrf
 
@@ -183,7 +183,7 @@
                     @forelse (($wallet?->transactions ?? collect()) as $transaction)
 
                         <div
-                            class="group rounded-[22px] border border-white/5 bg-white/[0.03] p-5 transition duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-blue-500/[0.03]">
+                            class="group rounded-[22px] border border-white/5 surface-weak p-5 transition duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-blue-500/[0.03]">
 
                             <div class="flex items-center justify-between">
 

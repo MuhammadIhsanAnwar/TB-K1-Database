@@ -3,7 +3,7 @@
   Itemku style 5-column footer.
 --}}
 
-<footer class="bg-white border-t border-gray-200 mt-20 pt-16 pb-8">
+<footer class="surface-panel border-t border-gray-200 mt-20 pt-16 pb-8">
   <div class="max-w-7xl mx-auto px-4">
 
     {{-- Top section: 5 Columns --}}

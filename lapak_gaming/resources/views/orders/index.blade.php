@@ -66,7 +66,7 @@
         <div class="mt-8 flex flex-wrap gap-3 rounded-[26px] border border-white/5 bg-[#0B1220]/90 p-4 backdrop-blur-xl overflow-x-auto"> {{-- Tambahkan overflow-x-auto untuk filter tab --}}
             @foreach($statusTabs as $tabKey => $tabLabel)
                 <a href="{{ route('orders.index', ['status' => $tabKey]) }}"
-                   class="inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-bold transition whitespace-nowrap {{ $status === $tabKey ? 'border-blue-500/30 bg-blue-500/15 text-blue-200' : 'border-white/10 bg-white/[0.03] text-slate-300 hover:border-blue-500/20 hover:bg-blue-500/[0.08] hover:text-white' }}">
+                   class="inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-bold transition whitespace-nowrap {{ $status === $tabKey ? 'border-blue-500/30 bg-blue-500/15 text-blue-200' : 'border-white/10 surface-weak text-slate-300 hover:border-blue-500/20 hover:bg-blue-500/[0.08] hover:text-white' }}">
                     <span>{{ $tabLabel }}</span>
                     @if($tabKey !== 'all')
                         <span class="rounded-full bg-black/20 px-2 py-0.5 text-[11px]">{{ $statusCounts[$tabKey] ?? 0 }}</span>
@@ -105,7 +105,7 @@
                             <div class="mt-4 flex flex-wrap items-center gap-3">
 
                                 <div
-                                    class="rounded-2xl border border-white/5 bg-white/[0.03] px-4 py-3 transition duration-300 group-hover:border-blue-500/20">
+                                    class="rounded-2xl border border-white/5 surface-weak px-4 py-3 transition duration-300 group-hover:border-blue-500/20">
 
                                     <div class="text-[11px] uppercase tracking-wider text-slate-500">
                                         Tanggal
@@ -117,7 +117,7 @@
                                 </div>
 
                                 <div
-                                    class="rounded-2xl border border-white/5 bg-white/[0.03] px-4 py-3 transition duration-300 group-hover:border-orange-500/20">
+                                    class="rounded-2xl border border-white/5 surface-weak px-4 py-3 transition duration-300 group-hover:border-orange-500/20">
 
                                     <div class="text-[11px] uppercase tracking-wider text-slate-500">
                                         Seller

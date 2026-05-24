@@ -8,7 +8,7 @@
     $rating = $product->rating_average ?? $product->rating ?? 0;
 @endphp
 
-<a href="{{ route('products.show', $product->slug) }}" class="group flex flex-col bg-white rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-itemku-blue transition-all duration-300 relative h-full">
+<a href="{{ route('marketplace.product', $product) }}" class="group flex flex-col surface-panel rounded-xl border border-gray-200 overflow-hidden hover:shadow-lg hover:border-itemku-blue transition-all duration-300 relative h-full">
 
   {{-- Top/Platform Ribbon --}}
   @if(($product->category?->slug ?? '') === 'top-up-game')

@@ -729,19 +729,19 @@
                     </div>
                     <div class="border-t border-white/5 px-4 py-3 flex flex-col gap-3.5">
                         <div class="flex flex-wrap items-center justify-center gap-2.5">
-                            <button type="button" id="chatRotateLeftBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-[10px] font-semibold px-2.5 py-1.5 transition-colors">
+                            <button type="button" id="chatRotateLeftBtn" class="rounded-lg surface-weak hover:surface-weak text-white text-[10px] font-semibold px-2.5 py-1.5 transition-colors">
                                 🔄 Putar Kiri
                             </button>
-                            <button type="button" id="chatRotateRightBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-[10px] font-semibold px-2.5 py-1.5 transition-colors">
+                            <button type="button" id="chatRotateRightBtn" class="rounded-lg surface-weak hover:surface-weak text-white text-[10px] font-semibold px-2.5 py-1.5 transition-colors">
                                 🔄 Putar Kanan
                             </button>
-                            <span class="w-px h-4 bg-white/10 mx-1"></span>
-                            <button type="button" id="chatRatioFreeBtn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-[10px] px-2 py-1 transition-colors">Bebas</button>
-                            <button type="button" id="chatRatio1Btn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-[10px] px-2 py-1 transition-colors">1:1</button>
-                            <button type="button" id="chatRatio169Btn" class="rounded-lg bg-white/5 hover:bg-white/10 text-white text-[10px] px-2 py-1 transition-colors">16:9</button>
+                            <span class="w-px h-4 surface-weak mx-1"></span>
+                            <button type="button" id="chatRatioFreeBtn" class="rounded-lg surface-weak hover:surface-weak text-white text-[10px] px-2 py-1 transition-colors">Bebas</button>
+                            <button type="button" id="chatRatio1Btn" class="rounded-lg surface-weak hover:surface-weak text-white text-[10px] px-2 py-1 transition-colors">1:1</button>
+                            <button type="button" id="chatRatio169Btn" class="rounded-lg surface-weak hover:surface-weak text-white text-[10px] px-2 py-1 transition-colors">16:9</button>
                         </div>
                         <div class="flex items-center justify-end gap-2 border-t border-white/5 pt-2.5">
-                            <button id="cancelChatCropperBtn" type="button" class="rounded-xl bg-white/5 hover:bg-white/10 text-slate-300 px-4 py-2 text-xs font-bold transition-colors">
+                            <button id="cancelChatCropperBtn" type="button" class="rounded-xl surface-weak hover:surface-weak text-slate-300 px-4 py-2 text-xs font-bold transition-colors">
                                 BATAL
                             </button>
                             <button id="saveChatCropperBtn" type="button" class="rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-slate-950 px-4 py-2 text-xs font-bold transition-all">

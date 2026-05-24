@@ -186,7 +186,7 @@
                     </button>
 
                     <a href="{{ route('profile.show') }}"
-                        class="flex-1 rounded-2xl border border-white/10 bg-white/[0.03] px-5 py-3 text-center text-sm font-semibold text-slate-300 transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:bg-white/[0.05] hover:text-white">
+                        class="flex-1 rounded-2xl border border-white/10 surface-weak px-5 py-3 text-center text-sm font-semibold text-slate-300 transition duration-300 hover:-translate-y-1 hover:border-white/20 hover:surface-weak hover:text-white">
 
                         Cancel
                     </a>

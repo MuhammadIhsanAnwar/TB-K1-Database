@@ -47,7 +47,7 @@
     <div class="space-y-6">
 
       {{-- Main Product Card --}}
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5 md:p-6 flex flex-col md:flex-row gap-6">
+      <div class="surface-panel rounded-xl shadow-sm border border-gray-200 p-5 md:p-6 flex flex-col md:flex-row gap-6">
         
         {{-- Product Image --}}
         <div class="w-full md:w-5/12 shrink-0">
@@ -108,7 +108,7 @@
       </div>
 
       {{-- Tabs Section --}}
-      <div class="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      <div class="surface-panel rounded-xl shadow-sm border border-gray-200 overflow-hidden">
         <div class="flex border-b border-gray-200">
           <button class="tab-btn active flex-1 py-3.5 text-sm font-medium text-gray-500 hover:text-gray-800" onclick="showTab('desc')">Deskripsi</button>
           <button class="tab-btn flex-1 py-3.5 text-sm font-medium text-gray-500 hover:text-gray-800" onclick="showTab('reviews')">Ulasan</button>
@@ -166,7 +166,7 @@
     {{-- ─── RIGHT COLUMN — Sticky Purchase Panel ─── --}}
     <div class="space-y-4">
       <div class="sticky top-24">
-        <div class="bg-white rounded-xl shadow-sm border border-gray-200 p-5">
+        <div class="surface-panel rounded-xl shadow-sm border border-gray-200 p-5">
           <h2 class="text-lg font-bold text-gray-800 mb-4">Beli Produk</h2>
           
           <div class="font-bold text-3xl text-itemku-blue mb-1">
@@ -192,9 +192,9 @@
               <div class="flex items-center justify-between">
                 <label class="text-sm text-gray-600 font-medium">Jumlah Pembelian</label>
                 <div class="flex items-center gap-1 bg-gray-50 border border-gray-200 rounded-lg p-1">
-                  <button type="button" onclick="changeQty(-1)" class="w-7 h-7 flex items-center justify-center font-bold text-gray-500 hover:text-itemku-blue hover:bg-white rounded transition-colors">−</button>
+                  <button type="button" onclick="changeQty(-1)" class="w-7 h-7 flex items-center justify-center font-bold text-gray-500 hover:text-itemku-blue hover:surface-weak rounded transition-colors">−</button>
                   <input type="number" id="qty-input" name="quantity" min="1" max="{{ data_get($product, 'stock', 999) }}" value="1" class="w-10 text-center text-sm font-semibold text-gray-800 bg-transparent border-none outline-none appearance-none" />
-                  <button type="button" onclick="changeQty(1)" class="w-7 h-7 flex items-center justify-center font-bold text-gray-500 hover:text-itemku-blue hover:bg-white rounded transition-colors">+</button>
+                  <button type="button" onclick="changeQty(1)" class="w-7 h-7 flex items-center justify-center font-bold text-gray-500 hover:text-itemku-blue hover:surface-weak rounded transition-colors">+</button>
                 </div>
               </div>
 
@@ -216,13 +216,13 @@
                 @csrf
                 <input type="hidden" name="product_id" value="{{ data_get($product, 'id') }}">
                 <input type="hidden" name="quantity" value="1">
-                <button type="submit" class="w-full py-2.5 bg-white border border-gray-300 hover:bg-gray-50 text-gray-700 font-semibold text-sm rounded-lg transition-colors">
+                <button type="submit" class="w-full py-2.5 surface-weak border border-gray-300 hover:brightness-105 text-gray-700 font-semibold text-sm rounded-lg transition-colors">
                   + Keranjang
                 </button>
               </form>
               
               @if(auth()->id() !== data_get($productSeller, 'id'))
-              <a href="{{ route('chat.product', $product) }}" class="flex-1 flex items-center justify-center py-2.5 bg-white border border-itemku-blue text-itemku-blue hover:bg-blue-50 font-semibold text-sm rounded-lg transition-colors">
+              <a href="{{ route('chat.product', $product) }}" class="flex-1 flex items-center justify-center py-2.5 surface-weak border border-itemku-blue text-itemku-blue hover:brightness-105 font-semibold text-sm rounded-lg transition-colors">
                 💬 Chat
               </a>
               @endif
