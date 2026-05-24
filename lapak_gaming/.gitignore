@@ -1,3 +1,5 @@
 /storage/logs/*.log
 bootstrap/cache/.gitignore
 storage/logs/.gitignore
+/bootstrap/cache/*.php
+!/bootstrap/cache/.gitignore
