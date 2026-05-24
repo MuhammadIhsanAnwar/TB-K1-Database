@@ -1,108 +1,91 @@
-<footer style="background:#090E1A;border-top:1px solid #1E2D45;" class="mt-20">
-  <div class="max-w-7xl mx-auto px-4 pt-14 pb-8">
+{{--
+  Component: components/footer.blade.php
+  Itemku style 5-column footer.
+--}}
 
-    {{-- Top section --}}
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-12">
+<footer class="bg-white border-t border-gray-200 mt-20 pt-16 pb-8">
+  <div class="max-w-7xl mx-auto px-4">
 
-      {{-- Brand column --}}
-      <div class="lg:col-span-2">
-        <a href="{{ route('marketplace.home') }}" class="flex items-center gap-2.5 mb-4">
-          <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="w-9 h-9 rounded-xl object-contain bg-white/5 p-1" style="box-shadow:0 0 16px rgba(37,99,235,0.35);">
-          <span class="font-display font-bold text-xl text-white">{{ config('app.name', 'Lapak Gaming') }}</span>
+    {{-- Top section: 5 Columns --}}
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-12">
+
+      {{-- Column 1: Tentang Kami --}}
+      <div>
+        <h4 class="font-bold text-gray-800 text-base mb-4">Lapak Gaming</h4>
+        <ul class="space-y-3">
+          <li><a href="#" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Tentang Kami</a></li>
+          <li><a href="#" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Aturan Penggunaan</a></li>
+          <li><a href="#" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Kebijakan Privasi</a></li>
+          <li><a href="#" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Berita & Artikel</a></li>
+          <li><a href="#" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Karir</a></li>
+        </ul>
+      </div>
+
+      {{-- Column 2: Bantuan --}}
+      <div>
+        <h4 class="font-bold text-gray-800 text-base mb-4">Bantuan</h4>
+        <ul class="space-y-3">
+          <li><a href="#" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Pusat Bantuan</a></li>
+          <li><a href="#" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Cara Pembelian</a></li>
+          <li><a href="#" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Cara Berjualan</a></li>
+          <li><a href="#" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Hubungi Kami</a></li>
+        </ul>
+      </div>
+
+      {{-- Column 3: Pembeli --}}
+      <div>
+        <h4 class="font-bold text-gray-800 text-base mb-4">Pembeli</h4>
+        <ul class="space-y-3">
+          <li><a href="{{ route('register') }}" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Cara Daftar</a></li>
+          <li><a href="{{ route('products.search') }}" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Semua Kategori</a></li>
+          <li><a href="#" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Promo Terkini</a></li>
+          <li><a href="#" class="text-sm text-gray-500 hover:text-itemku-blue transition-colors">Program Afiliasi</a></li>
+        </ul>
+      </div>
+
+      {{-- Column 4: Ikuti Lapak Gaming --}}
+      <div>
+        <h4 class="font-bold text-gray-800 text-base mb-4">Ikuti Kami</h4>
+        <div class="flex gap-4">
+          <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-itemku-blue hover:text-white transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z"/></svg>
+          </a>
+          <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-itemku-blue hover:text-white transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z"/></svg>
+          </a>
+          <a href="#" class="w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-gray-600 hover:bg-itemku-blue hover:text-white transition-colors">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>
+          </a>
+        </div>
+      </div>
+
+      {{-- Column 5: Download App --}}
+      <div>
+        <h4 class="font-bold text-gray-800 text-base mb-4">Download App</h4>
+        <a href="#" class="block hover:opacity-80 transition-opacity">
+          <img src="https://upload.wikimedia.org/wikipedia/commons/7/78/Google_Play_Store_badge_EN.svg" alt="Get it on Google Play" class="h-10">
         </a>
-        <p class="text-sm text-slate-400 leading-relaxed max-w-xs">
-          Platform marketplace game terpercaya Indonesia. Top-up, jual-beli akun, item, dan voucher dengan aman, cepat, dan terjamin.
-        </p>
       </div>
 
-      {{-- Marketplace links --}}
-      <div>
-        <h4 class="font-display font-semibold text-white text-sm mb-4">Marketplace</h4>
-        <ul class="space-y-2.5">
-          @foreach([
-            ['route'=>'marketplace.home',    'label'=>'Beranda'],
-            ['route'=>'products.search',     'label'=>'Semua Produk'],
-            ['route'=>'marketplace.trending','label'=>'Trending'],
-            ['route'=>'products.by-type',    'label'=>'Top Up',     'param'=>'topup'],
-          ] as $link)
-          <li>
-            <a href="{{ isset($link['param']) ? route($link['route'], $link['param']) : route($link['route']) }}"
-               class="text-sm text-slate-400 hover:text-white transition-colors">{{ $link['label'] }}</a>
-          </li>
-          @endforeach
-        </ul>
-      </div>
-
-      {{-- Account links --}}
-      <div>
-        <h4 class="font-display font-semibold text-white text-sm mb-4">Akun</h4>
-        <ul class="space-y-2.5">
-          @foreach([
-            ['route'=>'login',                'label'=>'Masuk',    'guest'=>true],
-            ['route'=>'register',             'label'=>'Daftar',   'guest'=>true],
-            ['route'=>'dashboard',            'label'=>'Dashboard','auth'=>true],
-            ['route'=>'wallet.index',         'label'=>'Wallet',   'auth'=>true],
-            ['route'=>'orders.index',         'label'=>'Pesanan',  'auth'=>true],
-            ['route'=>'profile.show',         'label'=>'Profil',   'auth'=>true],
-          ] as $link)
-          @if((isset($link['guest']) && !Auth::check()) || (isset($link['auth']) && Auth::check()) || (!isset($link['guest']) && !isset($link['auth'])))
-          <li>
-            <a href="{{ route($link['route']) }}" class="text-sm text-slate-400 hover:text-white transition-colors">{{ $link['label'] }}</a>
-          </li>
-          @endif
-          @endforeach
-        </ul>
-      </div>
-
-      {{-- Support links --}}
-      <div>
-        <h4 class="font-display font-semibold text-white text-sm mb-4">Tentang Kami</h4>
-        <ul class="space-y-2.5">
-          <li><a href="{{ route('about') }}" class="text-sm text-slate-400 hover:text-white transition-colors">Tentang Lapak Gaming</a></li>
-          <li><a href="{{ route('terms') }}" class="text-sm text-slate-400 hover:text-white transition-colors">Syarat & Ketentuan</a></li>
-          <li><a href="{{ route('contact') }}" class="text-sm text-slate-400 hover:text-white transition-colors">Hubungi Kami</a></li>
-          <li><a href="{{ route('privacy') }}" class="text-sm text-slate-400 hover:text-white transition-colors">Kebijakan Privasi</a></li>
-          <li><a href="{{ route('refund') }}" class="text-sm text-slate-400 hover:text-white transition-colors">Kebijakan Pengembalian Dana</a></li>
-        </ul>
-      </div>
-    </div>
-
-    {{-- Trust badges --}}
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 py-8" style="border-top:1px solid #1E2D45;border-bottom:1px solid #1E2D45;">
-      @foreach([
-        ['icon'=>'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z',
-          'label'=>'Transaksi 100% Aman','sub'=>'Escrow protected'],
-        ['icon'=>'M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z',
-          'label'=>'Garansi Uang Kembali','sub'=>'7 hari garansi'],
-        ['icon'=>'M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z',
-          'label'=>'Ribuan Seller Verified','sub'=>'Terverifikasi KYC'],
-        ['icon'=>'M18.364 5.636l-3.536 3.536m0 5.656l3.536 3.536M9.172 9.172L5.636 5.636m3.536 9.192l-3.536 3.536M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-5 0a4 4 0 11-8 0 4 4 0 018 0z',
-          'label'=>'Support 24/7','sub'=>'Siap membantu'],
-      ] as $trust)
-      <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
-             style="background:rgba(37,99,235,0.1);border:1px solid rgba(37,99,235,0.2);">
-          <svg class="w-5 h-5 text-brand-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="{{ $trust['icon'] }}"/></svg>
-        </div>
-        <div>
-          <div class="text-xs font-semibold text-white">{{ $trust['label'] }}</div>
-          <div class="text-xs text-slate-500">{{ $trust['sub'] }}</div>
-        </div>
-      </div>
-      @endforeach
     </div>
 
     {{-- Bottom bar --}}
-    <div class="flex flex-col sm:flex-row items-center justify-between gap-4 pt-8">
-      <p class="text-xs text-slate-500">
-        © {{ date('Y') }} {{ config('app.name', 'Lapak Gaming') }}. All rights reserved.
-      </p>
-      <div class="flex items-center gap-4">
-        {{-- Payment method icons --}}
-        @foreach(['QRIS','GoPay','OVO','DANA','Bank Transfer'] as $pm)
-        <span class="px-2 py-1 rounded text-[10px] font-bold text-slate-500" style="background:#162032;border:1px solid #1E2D45;">{{ $pm }}</span>
+    <div class="flex flex-col md:flex-row items-center justify-between gap-6 pt-8 border-t border-gray-100">
+      
+      <div class="flex items-center gap-3">
+        <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Logo" class="w-6 h-6 object-contain grayscale opacity-50">
+        <p class="text-xs text-gray-400 font-medium">
+          Lapak Gaming v1.0 © {{ date('Y') }} Hak Cipta Terpelihara.
+        </p>
+      </div>
+
+      {{-- Payment methods --}}
+      <div class="flex flex-wrap items-center justify-center gap-3">
+        @foreach(['QRIS','GoPay','OVO','DANA','ShopeePay','Bank Transfer'] as $pm)
+          <span class="px-2.5 py-1 rounded bg-gray-50 border border-gray-200 text-[10px] font-bold text-gray-500 uppercase tracking-wider">{{ $pm }}</span>
         @endforeach
       </div>
+
     </div>
   </div>
 </footer>

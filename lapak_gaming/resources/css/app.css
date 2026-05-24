@@ -2,13 +2,27 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Project-specific theme variables */
+/* Project-specific theme variables (Itemku Style) */
 :root {
-    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji', 'Segoe UI Symbol', 'Noto Color Emoji';
+    --font-sans: 'Inter', 'Instrument Sans', ui-sans-serif, system-ui, sans-serif;
+    
+    --color-primary: #1e4aa3;
+    --color-primary-dark: #0e2d6c;
+    --color-primary-light: #307FE2;
+    --color-bg-dark: #08399b;
+    --color-surface: #ffffff;
+    --color-surface-dark: #0D1421;
+    --color-accent: #E09600;
+    --color-success: #00c853;
+    --color-muted: #f5f5f5;
 }
 
-/* Source hints (used by IDEs) */
-/* source: ../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php */
-/* source: ../../storage/framework/views/*.php */
-/* source: ../**/*.blade.php */
-/* source: ../**/*.js */
+@layer utilities {
+    .no-scrollbar::-webkit-scrollbar {
+        display: none;
+    }
+    .no-scrollbar {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+}

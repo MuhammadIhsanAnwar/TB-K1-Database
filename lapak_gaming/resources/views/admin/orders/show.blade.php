@@ -158,6 +158,16 @@
                     </div>
                 </div>
 
+                {{-- Payment Proof --}}
+                @if($order->payment_proof)
+                <div class="p-4 rounded-2xl sub-panel-glass border border-white/5 flex flex-col justify-between items-start gap-2 col-span-full sm:col-span-1">
+                    <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500">Bukti Pembayaran</p>
+                    <a href="{{ asset('storage/' . $order->payment_proof) }}" target="_blank" class="block w-full h-32 rounded-lg overflow-hidden border border-white/10 hover:border-itemku-blue transition-colors">
+                        <img src="{{ asset('storage/' . $order->payment_proof) }}" alt="Payment Proof" class="w-full h-full object-cover">
+                    </a>
+                </div>
+                @endif
+
                 {{-- Status Badging --}}
                 <div class="p-4 rounded-2xl sub-panel-glass border border-white/5 flex flex-col justify-between items-start gap-2">
                     <p class="text-[10px] uppercase tracking-wider font-bold text-slate-500">Status Validasi Alur</p>

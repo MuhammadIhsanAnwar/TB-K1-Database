@@ -805,6 +805,7 @@
   {{-- Footer --}}
   @unless(request()->routeIs('admin.*'))
     @include('components.footer')
+    @include('components.bottom-nav')
   @endunless
 
   {{-- ═══ CORE SCRIPTS ═══ --}}

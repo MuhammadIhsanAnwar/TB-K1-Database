@@ -22,117 +22,56 @@ class MarketplaceController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        $categories = Schema::hasTable('categories')
-            ? Category::query()->active()->whereNull('parent_id')->with(['children' => fn ($query) => $query->active()->ordered()])->orderBy('sort_order')->get()
-            : collect();
-
         $allCategories = Schema::hasTable('categories')
             ? Category::query()->active()->whereNull('parent_id')->with(['children' => fn ($query) => $query->active()->ordered()])->orderBy('sort_order')->get()
             : collect();
 
-        // Select highly rated products but randomize order each refresh to keep homepage dynamic
-        $popularProducts = Schema::hasTable('products')? Product::query()->active()->inStock()->with(['seller', 'category'])->get()->sortByDesc(function ($product) {
-            return ($product->rating_average ?? 0) + rand(0, 3);
-        })->take(12) : collect();
-
-        $topupProducts = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->ofType('topup')->with(['seller', 'category'])->inRandomOrder()->take(8)->get()
-            : collect();
-
-        $featuredProducts = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->where('is_featured', true)->with(['seller', 'category'])->inRandomOrder()->take(8)->get()
-            : collect();
-
-        $activeUsers = Schema::hasTable('users')
-            ? User::query()
-                ->where('status', 'active')
-                ->whereNull('deactivated_at')
-                ->count()
-            : 0;
-
-        $availableProducts = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->count()
-            : 0;
-
-        $verifiedSellers = 0;
-
-        if (Schema::hasTable('sellers')) {
-            $verifiedSellers = Seller::query()->active()->verified()->count();
-        }
-
-        if ($verifiedSellers === 0 && Schema::hasTable('users')) {
-            $verifiedSellers = User::query()
-                ->where('role', 'seller')
-                ->where('status', 'active')
-                ->count();
-        }
-
-        $averageRating = Schema::hasTable('reviews')
-            ? (float) (Review::query()->avg('rating') ?? 0.0)
-            : 0.0;
-
-        $transactionCount = Schema::hasTable('orders')
-            ? Order::query()->completed()->count()
-            : 0;
-
-        $todayTransactions = Schema::hasTable('orders')
-            ? Order::query()->completed()->whereDate('completed_at', now())->count()
-            : 0;
-
+        // 1. Hero Banners
         $heroBanners = Schema::hasTable('banners')
-            ? Banner::query()->active()->where('position', 'hero')->orderByDesc('sort_order')->latest()->take(6)->get()
+            ? Banner::query()->active()->where('position', 'hero')->orderByDesc('sort_order')->latest()->take(4)->get()
             : collect();
 
-        $featuredBanners = Schema::hasTable('banners')
-            ? Banner::query()->active()->where('position', 'featured')->latest()->take(6)->get()
+        // 2. Featured Game Keys ("Unlock the Simulation")
+        $featuredGameKeys = Schema::hasTable('products')
+            ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['seller', 'category'])->inRandomOrder()->take(6)->get()
             : collect();
 
-        $categoryProducts = collect();
-        
-        // Get top 3 categories with products
-        $topThreeCategories = collect();
+        // 3. Featured RPG Keys ("Unlock Epic RPG Worlds")
+        $featuredRPGKeys = Schema::hasTable('products')
+            ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['seller', 'category'])->inRandomOrder()->take(6)->get()
+            : collect();
 
+        // 4. Category Sections
+        $categorySections = collect();
         if (Schema::hasTable('products')) {
-            $categoryProducts = $allCategories->map(function (Category $category) {
+            $categoriesToFetch = ['Game Top Up', 'Game Key', 'Roblox Games', 'Account', 'Gift Cards', 'Currency'];
+            foreach($categoriesToFetch as $catName) {
+                $cat = Category::query()->active()->where('name', 'like', "%{$catName}%")->first();
+                if ($cat) {
+                    $categorySections->push([
+                        'category' => $cat,
+                        'products' => Product::query()->active()->inStock()->where('category_id', $cat->id)->with(['seller', 'category'])->take(12)->get()
+                    ]);
+                }
+            }
+        }
+
+        // Keep default categories if not found by name
+        if ($categorySections->isEmpty() && Schema::hasTable('products')) {
+            $categorySections = $allCategories->map(function (Category $category) {
                 return [
                     'category' => $category,
-                    'products' => Product::query()
-                        ->active()
-                        ->inStock()
-                        ->where('category_id', $category->id)
-                        ->with(['seller', 'category'])
-                        ->get()
-                    ->sortByDesc(function ($product) {
-                        return
-                            ($product->rating_average ?? 0) * 2 +
-                            ($product->views_count ?? 0) / 100 +
-                            rand(0, 5);
-                    })
-                    ->take(12),
+                    'products' => Product::query()->active()->inStock()->where('category_id', $category->id)->with(['seller', 'category'])->take(12)->get(),
                 ];
-            })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->values();
-            
-            // Get only first 3 categories for featured section
-            $topThreeCategories = $categoryProducts->take(3);
+            })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->take(5)->values();
         }
-        
+
         return view('marketplace.home', [
-            'categories' => $categories,
             'allCategories' => $allCategories,
-            'popularProducts' => $popularProducts,
-            'topupProducts' => $topupProducts,
-            'featuredProducts' => $featuredProducts,
-            'search' => $request->string('q')->toString(),
-            'activeUsers' => $activeUsers,
-            'availableProducts' => $availableProducts,
-            'verifiedSellers' => $verifiedSellers,
-            'averageRating' => $averageRating,
-            'transactionCount' => $transactionCount,
-            'todayTransactions' => $todayTransactions,
             'heroBanners' => $heroBanners,
-            'featuredBanners' => $featuredBanners,
-            'categoryProducts' => $categoryProducts,
-            'topThreeCategories' => $topThreeCategories,
+            'featuredGameKeys' => $featuredGameKeys,
+            'featuredRPGKeys' => $featuredRPGKeys,
+            'categorySections' => $categorySections,
         ]);
     }
 

@@ -21,6 +21,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\Seller\SellerProductController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\SeederController;
+
+Route::get('/itemku-seed', [SeederController::class, 'itemkuSeeder']);
 use App\Http\Controllers\WishlistController;
 use App\Http\Controllers\SettingsController;
 use App\Http\Controllers\ProfileController;
