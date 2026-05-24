@@ -347,3 +347,4 @@ public function poll(Conversation $conversation)
     return redirect()->route('chat.show', $conversation->id);
    }
 } 
+
