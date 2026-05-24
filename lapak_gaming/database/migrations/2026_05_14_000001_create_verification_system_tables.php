@@ -18,15 +18,17 @@ return new class extends Migration
     {
         // ── 1. Extend seller_status enum ────────────────────────────────────
         // MySQL: ALTER COLUMN to extend enum values (safe – no data loss)
-        DB::statement("ALTER TABLE users MODIFY seller_status ENUM(
-            'none',
-            'pending',
-            'under_review',
-            'need_revision',
-            'approved',
-            'rejected',
-            'suspended'
-        ) NOT NULL DEFAULT 'none'");
+        if (Schema::hasTable('users') && Schema::hasColumn('users', 'seller_status')) {
+            DB::statement("ALTER TABLE users MODIFY seller_status ENUM(
+                'none',
+                'pending',
+                'under_review',
+                'need_revision',
+                'approved',
+                'rejected',
+                'suspended'
+            ) NOT NULL DEFAULT 'none'");
+        }
 
         // Add seller_reviewed_at so admin can track when they last touched it
         if (! Schema::hasColumn('users', 'seller_reviewed_at')) {
@@ -91,12 +93,16 @@ return new class extends Migration
         Schema::dropIfExists('verification_logs');
 
         // Revert enum to original 4 values
-        DB::statement("ALTER TABLE users MODIFY seller_status ENUM(
-            'none','pending','approved','rejected'
-        ) NOT NULL DEFAULT 'none'");
+        if (Schema::hasTable('users') && Schema::hasColumn('users', 'seller_status')) {
+            DB::statement("ALTER TABLE users MODIFY seller_status ENUM(
+                'none','pending','approved','rejected'
+            ) NOT NULL DEFAULT 'none'");
+        }
 
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn(['seller_reviewed_at', 'seller_submitted_at']);
-        });
+        if (Schema::hasTable('users')) {
+            Schema::table('users', function (Blueprint $table) {
+                $table->dropColumn(['seller_reviewed_at', 'seller_submitted_at']);
+            });
+        }
     }
 };

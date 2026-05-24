@@ -8,15 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('wallets', function (Blueprint $table): void {
-            $table->id();
-            $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
-            $table->decimal('balance', 14, 2)->default(0);
-            $table->decimal('available_balance', 14, 2)->default(0);
-            $table->decimal('locked_balance', 14, 2)->default(0);
-            $table->string('currency', 10)->default('IDR');
-            $table->timestamps();
-        });
+        if (! Schema::hasTable('wallets')) {
+            Schema::create('wallets', function (Blueprint $table): void {
+                $table->id();
+                $table->foreignId('user_id')->unique()->constrained()->cascadeOnDelete();
+                $table->decimal('balance', 14, 2)->default(0);
+                $table->decimal('available_balance', 14, 2)->default(0);
+                $table->decimal('locked_balance', 14, 2)->default(0);
+                $table->string('currency', 10)->default('IDR');
+                $table->timestamps();
+            });
+        }
     }
 
     public function down(): void

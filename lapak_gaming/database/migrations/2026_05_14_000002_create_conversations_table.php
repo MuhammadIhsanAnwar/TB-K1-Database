@@ -53,7 +53,7 @@ return new class extends Migration
         }
 
         // ── 2. Add conversation_id to messages ──────────────────────────────
-        if (! Schema::hasColumn('messages', 'conversation_id')) {
+        if (Schema::hasTable('messages') && ! Schema::hasColumn('messages', 'conversation_id')) {
             Schema::table('messages', function (Blueprint $table) {
                 $table->foreignId('conversation_id')
                     ->nullable()
@@ -67,10 +67,12 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('messages', function (Blueprint $table) {
-            $table->dropForeign(['conversation_id']);
-            $table->dropColumn('conversation_id');
-        });
+        if (Schema::hasTable('messages') && Schema::hasColumn('messages', 'conversation_id')) {
+            Schema::table('messages', function (Blueprint $table) {
+                $table->dropForeign(['conversation_id']);
+                $table->dropColumn('conversation_id');
+            });
+        }
 
         Schema::dropIfExists('conversations');
     }

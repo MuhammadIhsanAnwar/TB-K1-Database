@@ -8,15 +8,17 @@ return new class extends Migration
 {
     public function up(): void
     {
-        Schema::create('seller_level_benefits', function (Blueprint $table): void {
-            $table->id();
-            $table->foreignId('seller_level_id')->constrained()->cascadeOnDelete();
-            $table->unsignedInteger('sort_order')->default(0);
-            $table->string('benefit');
-            $table->timestamps();
+        if (! Schema::hasTable('seller_level_benefits')) {
+            Schema::create('seller_level_benefits', function (Blueprint $table): void {
+                $table->id();
+                $table->foreignId('seller_level_id')->constrained()->cascadeOnDelete();
+                $table->unsignedInteger('sort_order')->default(0);
+                $table->string('benefit');
+                $table->timestamps();
 
-            $table->unique(['seller_level_id', 'sort_order']);
-        });
+                $table->unique(['seller_level_id', 'sort_order']);
+            });
+        }
     }
 
     public function down(): void
