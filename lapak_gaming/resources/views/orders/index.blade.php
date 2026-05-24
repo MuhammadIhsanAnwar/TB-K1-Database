@@ -69,7 +69,7 @@
                    class="inline-flex items-center gap-2 rounded-2xl border px-4 py-3 text-sm font-bold transition whitespace-nowrap {{ $status === $tabKey ? 'border-blue-500/30 bg-blue-500/15 text-blue-200' : 'border-white/10 bg-white/[0.03] text-slate-300 hover:border-blue-500/20 hover:bg-blue-500/[0.08] hover:text-white' }}">
                     <span>{{ $tabLabel }}</span>
                     @if($tabKey !== 'all')
-                        <span class="rounded-full bg-black/20 px-2 py-0.5 text-[11px]">{{ $tabCount[$tabKey] ?? 0 }}</span>
+                        <span class="rounded-full bg-black/20 px-2 py-0.5 text-[11px]">{{ $statusCounts[$tabKey] ?? 0 }}</span>
                     @endif
                 </a>
             @endforeach
@@ -155,7 +155,7 @@
                             Lihat Detail
                         </a>
 
-                        @if($order->buyer_id === auth()->id() && $order->status === \App\Models\Order::STATUS_COMPLETED)
+                        @if($order->buyer_id == auth()->id() && $order->status === \App\Models\Order::STATUS_COMPLETED)
                             <a href="{{ route('orders.receipt.pdf', $order->order_code) }}"
                                target="_blank"
                                rel="noopener noreferrer"
