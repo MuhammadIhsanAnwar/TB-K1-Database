@@ -110,48 +110,46 @@ class OrderController extends Controller {
         return view('orders.checkout', compact('cartItems', 'subtotal', 'fee', 'total'));
     }
 
-    public function pay(Request $request, $order_code) {
-        $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();
-        
-        // Pakai != (bukan !==)
-        abort_if($order->buyer_id != Auth::id(), 403);
-        abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
+    public function pay(Request $request, $order_code)
+{
+    $order = Order::where('order_code', $order_code)
+        ->orWhere('invoice_number', $order_code)
+        ->firstOrFail();
 
-        /** @var User $user */
-        $user = Auth::user();
-        abort_if(! $user, 403);
+    abort_if($order->buyer_id != Auth::id(), 403);
+    abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
 
-        $messages = [
-            'payment_method.required' => 'Metode pembayaran wajib dipilih.',
-            'payment_method.in' => 'Metode pembayaran tidak valid.',
-        ];
+    $user = Auth::user();
 
-        $request->validate([
-            'payment_method' => 'required|in:balance',
-        ], $messages);
+    $request->validate([
+        'payment_method' => 'required|in:balance',
+    ]);
 
-        DB::transaction(function () use ($request, $order) {
-            /** @var User $user */
-            $user = Auth::user();
-            abort_if(! $user, 403);
+    $amount = (float) ($order->grand_total ?? $order->total_price ?? 0);
 
-            $amount = (float) ($order->grand_total ?? $order->total_price ?? 0);
-            if ($user->balance < $amount) {
-                throw new \Exception('Saldo tidak mencukupi!');
-            }
-
-            $user->deductBalance($amount, "Pembayaran Order #{$order->order_code}", $order->id);
-            $order->update([
-                'status' => Order::STATUS_PAYMENT_UPLOADED,
-                'payment_method' => 'balance',
-                'paid_at' => now(),
-            ]);
-        });
-
-        return redirect()->route('orders.show', $order->order_code ?? $order->invoice_number)
-            ->with('success', 'Pembayaran berhasil!');
+    if ($user->balance < $amount) {
+        return back()->with('error', 'Saldo tidak mencukupi!');
     }
 
+    DB::transaction(function () use ($order, $user, $amount) {
+
+        $user->deductBalance(
+            $amount,
+            "Pembayaran Order #{$order->order_code}",
+            $order->id
+        );
+
+        $order->update([
+            'status' => Order::STATUS_PAYMENT_UPLOADED,
+            'payment_method' => 'balance',
+            'paid_at' => now(),
+        ]);
+    });
+
+    return redirect()
+        ->route('orders.show', $order->order_code ?? $order->invoice_number)
+        ->with('success', 'Pembayaran berhasil!');
+}
     public function store(Request $request) {
         $messages = [
             'payment_method.required' => 'Metode pembayaran wajib dipilih.',
