@@ -307,7 +307,19 @@ class OrderController extends Controller {
         // Pakai != (bukan !==)
         abort_if($order->buyer_id != Auth::id(), 403);
         $request->validate(['payment_proof' => 'required|image|max:2048']);
-        $path = $request->file('payment_proof')->store('payment_proofs', 'public');
+        $file = $request->file('payment_proof');
+
+        $filename = time() . '_' . $file->getClientOriginalName();
+
+        $destination = public_path('storage/app/public/payment_proofs');
+
+        if (!file_exists($destination)) {
+            mkdir($destination, 0777, true);
+        }
+
+        $file->move($destination, $filename);
+
+        $path = 'app/public/payment_proofs/' . $filename;
         $order->update(['payment_proof' => $path, 'status' => Order::STATUS_PAYMENT_UPLOADED, 'paid_at' => now()]);
         return back()->with('success', 'Bukti pembayaran berhasil diupload.');
     }

@@ -1,1 +1,0 @@
-<?php /**PATH D:\0_Project_VS_Code\3. Sistem Basis Data\TB-K1-Database\lapak_gaming\resources\views\welcome.blade.php ENDPATH**/ ?>
