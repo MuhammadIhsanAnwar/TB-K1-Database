@@ -953,7 +953,9 @@
         const items = Array.isArray(data.items) ? data.items : [];
 
         if (badge) {
-          badge.classList.toggle('hidden', !(Number(data.unread_count) > 0));
+          const count = Number(data.unread_count) || 0;
+          badge.textContent = count > 99 ? '99+' : count;
+          badge.classList.toggle('hidden', count <= 0);
         }
 
         if (!items.length) {

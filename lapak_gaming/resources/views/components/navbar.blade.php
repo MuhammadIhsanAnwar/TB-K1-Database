@@ -171,7 +171,9 @@
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </div>
             <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari Game, Top Up, Akun..." class="w-full border-none outline-none py-2 px-2 text-sm" style="color:var(--text)" />
-            <button type="submit" class="surface-panel hover:brightness-110 px-4 py-1.5 rounded text-sm font-semibold mr-0.5 whitespace-nowrap" style="color:var(--text)">ENTER</button>
+            <button type="submit" class="surface-panel hover:brightness-110 px-4 py-1.5 rounded text-sm font-semibold mr-0.5 whitespace-nowrap" style="color:var(--text)">
+              <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+            </button>
           </div>
         </form>
         {{-- Trending Chips (Absolute positioned below search to not expand nav height) --}}
@@ -393,79 +395,6 @@
 
 @push('scripts')
 <script>
-  function openDrawer() {
-    const drawer = document.getElementById('mobile-drawer');
-    drawer.classList.remove('-translate-x-full');
-  }
-  
-  function closeDrawer() {
-    const drawer = document.getElementById('mobile-drawer');
-    drawer.classList.add('-translate-x-full');
-  }
-
-  function toggleDropdown(id) {
-    const dropdown = document.getElementById(id);
-    const allDropdowns = document.querySelectorAll('.dropdown-panel, [id$="-dropdown"]');
-    
-    const isHidden = dropdown.classList.contains('hidden');
-    
-    allDropdowns.forEach(d => {
-      if(d.id !== id && !d.classList.contains('hidden')) {
-        d.classList.add('hidden');
-      }
-    });
-
-    if (isHidden) {
-      dropdown.classList.remove('hidden');
-    } else {
-      dropdown.classList.add('hidden');
-    }
-  }
-
-  document.addEventListener('click', function(event) {
-    const isDropdownButton = event.target.closest('button[onclick^="toggleDropdown"]');
-    const isDropdownPanel = event.target.closest('[id$="-dropdown"]');
-    
-    if (!isDropdownButton && !isDropdownPanel) {
-      const allDropdowns = document.querySelectorAll('[id$="-dropdown"]');
-      allDropdowns.forEach(d => {
-        if (!d.classList.contains('hidden') && d.id !== 'mobile-drawer') {
-          d.classList.add('hidden');
-        }
-      });
-    }
-  });
-
-  // Keep existing notification preview logic if needed
-  function loadNotificationPreview() {
-    // Basic implementation since we removed complex data attributes for simplicity
-    const body = document.getElementById('notif-dropdown-body');
-    if(body && body.innerHTML.includes('Klik ikon')) {
-      body.innerHTML = '<div class="p-4 text-center text-sm surface-muted">Memuat...</div>';
-      fetch('/notifications/poll')
-        .then(r => r.json())
-        .then(data => {
-            if(data.count > 0 && data.notifications) {
-                let html = '<div class="divide-y divide-gray-100 max-h-72 overflow-y-auto">';
-                data.notifications.slice(0,5).forEach(n => {
-                    html += `<a href="${n.action_url||'#'}" class="block px-4 py-3 hover:bg-white/5 ${n.read_at ? 'opacity-70' : 'bg-blue-500/10'}">
-                        <div class="text-sm font-semibold surface-text">${n.title}</div>
-                        <div class="text-xs surface-muted mt-1 line-clamp-2">${n.message}</div>
-                    </a>`;
-                });
-                html += '</div>';
-                body.innerHTML = html;
-            } else {
-                body.innerHTML = '<div class="p-6 text-center text-sm text-gray-500">Belum ada notifikasi baru</div>';
-            }
-        })
-        .catch(() => {
-            body.innerHTML = '<div class="p-4 text-center text-sm text-red-500">Gagal memuat notifikasi</div>';
-        });
-    }
-  }
-
-  /* Theme toggle helpers */
   function getCurrentTheme(){
     return document.documentElement.getAttribute('data-theme') || (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
   }
