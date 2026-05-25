@@ -33,7 +33,7 @@
     /* ── Cyber Badge Overlays ────────────────────────────────── */
     .floating-badge {
         backdrop-filter: blur(8px);
-        font-[900] !important;
+        font-weight: 900 !important;
         letter-spacing: 0.05em;
         text-transform: uppercase;
     }
