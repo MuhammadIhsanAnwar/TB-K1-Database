@@ -94,7 +94,7 @@
   <div class="p-4 border-b border-white/6">
     <form action="{{ route('products.search') }}" method="GET">
         <div class="relative">
-        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 surface-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
         <input type="text" name="q" placeholder="Cari Game, Item..." class="w-full pl-9 pr-3 py-2 border-none rounded-lg text-sm text-slate-300" style="background:var(--input-bg); color:var(--text)" />
       </div>
     </form>
@@ -103,27 +103,28 @@
   <nav class="p-4 flex-1 space-y-4">
     <div>
       <ul class="space-y-1">
-        <li><a href="{{ route('marketplace.home') }}" class="flex items-center py-2 text-gray-700 hover:text-itemku-blue text-sm font-medium">Beranda</a></li>
-        <li><a href="{{ route('marketplace.browse') }}" class="flex items-center py-2 text-gray-700 hover:text-itemku-blue text-sm font-medium">Semua Produk</a></li>
-        <li><a href="{{ route('marketplace.trending') }}" class="flex items-center py-2 text-gray-700 hover:text-itemku-blue text-sm font-medium">Trending</a></li>
+        <li><a href="{{ route('marketplace.home') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium">Beranda</a></li>
+        <li><a href="{{ route('marketplace.browse') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium">Semua Produk</a></li>
+        <li><a href="{{ route('marketplace.trending') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium">Trending</a></li>
       </ul>
     </div>
     
     @auth
     <div>
-      <p class="text-xs font-semibold text-gray-500 uppercase mb-2">Akun Saya</p>
+      <p class="text-xs font-semibold surface-muted uppercase mb-2">Akun Saya</p>
       <ul class="space-y-1">
         @if($authUser?->isAdmin())
-          <li><a href="{{ route('admin.dashboard') }}" class="flex items-center py-2 text-gray-700 hover:text-itemku-blue text-sm">Panel Admin</a></li>
+          <li><a href="{{ route('admin.dashboard') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Panel Admin</a></li>
+          <li><a href="{{ route('admin.orders.index') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Transaksi</a></li>
         @else
-          <li><a href="{{ route('dashboard') }}" class="flex items-center py-2 text-gray-700 hover:text-itemku-blue text-sm">Dashboard</a></li>
-          <li><a href="{{ route('orders.index') }}" class="flex items-center py-2 text-gray-700 hover:text-itemku-blue text-sm">Pesanan Saya</a></li>
-          <li><a href="{{ route('wallet.index') }}" class="flex items-center py-2 text-gray-700 hover:text-itemku-blue text-sm">Wallet</a></li>
+          <li><a href="{{ route('dashboard') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Dashboard</a></li>
+          <li><a href="{{ route('orders.index') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Pesanan Saya</a></li>
+          <li><a href="{{ route('wallet.index') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Wallet</a></li>
         @endif
         <li>
           <form method="POST" action="{{ route('logout') }}">
             @csrf
-            <button type="submit" class="w-full flex items-center py-2 text-red-500 hover:text-red-700 text-sm text-left">Keluar</button>
+            <button type="submit" class="w-full flex items-center py-2 text-red-400 hover:text-red-200 text-sm text-left">Keluar</button>
           </form>
         </li>
       </ul>
@@ -135,23 +136,6 @@
 {{-- ═══ DESKTOP NAVBAR ═══ --}}
 <header id="main-navbar" class="sticky top-0 z-40 shadow-sm w-full font-sans">
   
-  {{-- 1. Top Bar (Dark Blue) --}}
-  <div class="navbar-top hidden sm:block h-8">
-    <div class="max-w-7xl mx-auto px-4 h-full flex items-center justify-between">
-      <div class="flex items-center gap-2 text-xs text-white">
-        <span class="opacity-80">⭐ Trustpilot Score 4.5/5</span>
-      </div>
-      <div class="flex items-center gap-4 text-xs text-white">
-        <a href="#" class="hover:underline opacity-90 flex items-center gap-1">
-          <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-          Bantuan
-        </a>
-        <a href="#" class="hover:underline opacity-90">USD | EN</a>
-        <a href="#" class="hover:underline opacity-90">Download App</a>
-      </div>
-    </div>
-  </div>
-
   {{-- 2. Main Bar (Blue) --}}
   <div class="navbar-container h-20 flex flex-col justify-center">
     <div class="max-w-7xl mx-auto px-4 w-full flex items-center gap-6">
@@ -166,13 +150,6 @@
           <span class="font-display font-bold text-white text-xl ml-2 sm:hidden tracking-tight">{{ config('app.name', 'Itemku') }}</span>
         </a>
       </div>
-
-      {{-- Theme toggle --}}
-      <button id="themeToggle" type="button" class="hidden md:inline-flex items-center justify-center p-1 rounded hover:opacity-90" aria-label="Toggle theme" onclick="toggleTheme()" style="color:var(--text)">
-        <svg id="themeIcon" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />
-        </svg>
-      </button>
 
       {{-- Search Bar --}}
       @if(! $isAdminRoute && ! $isAdminSettingsRoute)
@@ -282,17 +259,18 @@
               </div>
               
               @if($authUser->isAdmin())
-                <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Panel Admin</a>
-                <a href="{{ route('admin.users.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Kelola Akun</a>
-                <a href="{{ route('admin.orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Transaksi</a>
+                <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Panel Admin</a>
+                <a href="{{ route('admin.users.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Kelola Akun</a>
+                <a href="{{ route('admin.orders.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Transaksi</a>
+                <a href="{{ route('admin.banners.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Banner</a>
               @else
-                <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Dashboard</a>
-                <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Pesanan Saya</a>
-                <a href="{{ route('wallet.index') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Wallet</a>
+                <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Dashboard</a>
+                <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pesanan Saya</a>
+                <a href="{{ route('wallet.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Wallet</a>
                 @if($authUser->isSellerAccount())
-                  <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">Dashboard Penjual</a>
+                  <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Dashboard Penjual</a>
                 @else
-                  <a href="{{ route('seller.register.form') }}" class="block px-4 py-2 text-sm text-amber-600 font-medium hover:bg-amber-50">Daftar Jadi Penjual</a>
+                  <a href="{{ route('seller.register.form') }}" class="block px-4 py-2 text-sm text-amber-400 font-medium hover:bg-amber-800/10">Daftar Jadi Penjual</a>
                 @endif
               @endif
               {{-- Pengaturan Akun (visible to all authenticated users) --}}
@@ -439,16 +417,16 @@
     // Basic implementation since we removed complex data attributes for simplicity
     const body = document.getElementById('notif-dropdown-body');
     if(body && body.innerHTML.includes('Klik ikon')) {
-      body.innerHTML = '<div class="p-4 text-center text-sm text-gray-500">Memuat...</div>';
+      body.innerHTML = '<div class="p-4 text-center text-sm surface-muted">Memuat...</div>';
       fetch('/notifications/poll')
         .then(r => r.json())
         .then(data => {
             if(data.count > 0 && data.notifications) {
                 let html = '<div class="divide-y divide-gray-100 max-h-72 overflow-y-auto">';
                 data.notifications.slice(0,5).forEach(n => {
-                    html += `<a href="${n.action_url||'#'}" class="block px-4 py-3 hover:bg-gray-50 ${n.read_at ? 'opacity-70' : 'bg-blue-50'}">
-                        <div class="text-sm font-semibold text-gray-800">${n.title}</div>
-                        <div class="text-xs text-gray-500 mt-1 line-clamp-2">${n.message}</div>
+                    html += `<a href="${n.action_url||'#'}" class="block px-4 py-3 hover:bg-white/5 ${n.read_at ? 'opacity-70' : 'bg-blue-500/10'}">
+                        <div class="text-sm font-semibold surface-text">${n.title}</div>
+                        <div class="text-xs surface-muted mt-1 line-clamp-2">${n.message}</div>
                     </a>`;
                 });
                 html += '</div>';

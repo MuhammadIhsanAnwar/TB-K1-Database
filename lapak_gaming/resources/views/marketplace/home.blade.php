@@ -45,7 +45,7 @@
   .category-list a:nth-child(12) .category-animate { animation-delay: 0.88s; }
   .category-list a:nth-child(13) .category-animate { animation-delay: 0.96s; }
   .section-title {
-    color: #333;
+    color: var(--text);
     font-size: 1.25rem;
     font-weight: 700;
     margin-bottom: 1rem;
@@ -72,8 +72,8 @@
             <img src="{{ $mainBanner->image_url }}" class="w-full h-full object-cover" alt="Main Promo">
           </a>
         @else
-          <div class="w-full h-full bg-blue-100 flex items-center justify-center">
-            <span class="text-blue-500 font-bold text-xl">Promo Utama</span>
+          <div class="w-full h-full surface-panel flex items-center justify-center">
+            <span class="text-itemku-blue font-bold text-xl">Promo Utama</span>
           </div>
         @endif
       </div>
@@ -87,8 +87,8 @@
           </a>
           @endforeach
         @else
-          <div class="flex-1 rounded-xl bg-blue-100 flex items-center justify-center">Promo 2</div>
-          <div class="flex-1 rounded-xl bg-blue-100 flex items-center justify-center">Promo 3</div>
+          <div class="flex-1 rounded-xl surface-panel flex items-center justify-center">Promo 2</div>
+          <div class="flex-1 rounded-xl surface-panel flex items-center justify-center">Promo 3</div>
         @endif
       </div>
     </div>
