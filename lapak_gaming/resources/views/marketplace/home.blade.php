@@ -165,7 +165,7 @@
 @endpush
 
 @section('content')
-<div class="relative overflow-hidden">
+<div class="relative overflow-visible">
   <div class="auth-radial absolute inset-0 pointer-events-none"></div>
   <div class="auth-particle w-1.5 h-1.5 bg-brand-500 absolute" style="left:12%; top:82%; --dur:7s; --delay:0s; --op:0.25;"></div>
   <div class="auth-particle w-2 h-2 bg-accent-400 absolute" style="left:78%; top:86%; --dur:9s; --delay:1.5s; --op:0.2;"></div>
@@ -197,10 +197,10 @@
   {{-- ═══════════════════════════════════════════════════════════ --}}
   {{-- HERO SECTION (BANNERS)                                     --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
-  <section class="relative overflow-hidden pb-6">
-    <div class="absolute inset-x-0 top-0 h-[220px] bg-gradient-to-b from-[#0f2a5b] via-[#09182e] to-transparent pointer-events-none"></div>
+  <section class="relative overflow-visible pb-6">
+    <div class="absolute inset-x-0 top-0 h-[120px] bg-gradient-to-b from-[#0f2a5b] via-[#09182e] to-transparent pointer-events-none z-0"></div>
     <div class="max-w-7xl mx-auto px-4 pt-3">
-      <div class="rounded-[32px] border border-white/10 bg-[#081125]/95 p-6 shadow-[0_30px_90px_rgba(5,12,35,0.28)]">
+      <div class="relative z-20 rounded-[32px] border border-white/10 bg-[#081125]/95 p-6 shadow-[0_30px_90px_rgba(5,12,35,0.28)]">
         {{-- Header with interactive robot --}}
         <div class="flex flex-col gap-6">
           {{-- Left & Right text with Robot in center --}}
