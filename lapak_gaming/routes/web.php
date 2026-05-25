@@ -307,7 +307,4 @@ Route::get('/kebijakan-privasi', [PageController::class, 'privacy'])->name('priv
 Route::get('/kebijakan-pengembalian-dana', [PageController::class, 'refund'])->name('refund');
 Route::get('/tentang-kami', [PageController::class, 'about'])->name('about');
 
-// Realtime Indicator
-    Route::post('/chat/conversations/{conversation}/typing', [ChatController::class, 'updateTyping']);
-Route::patch('/chat/message/{message}', [ChatController::class, 'editMessage'])->name('chat.update');
-Route::delete('/chat/message/{message}', [ChatController::class, 'deleteMessage'])->name('chat.destroy');
+// Note: Chat routes (edit/delete) are already defined inside middleware('auth') group above
