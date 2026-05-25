@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Chat — ' . ($conversation->partner(auth()->id())?->name ?? 'Percakapan'))
+@section('title', 'Chat — ' . (
+    $role === 'buyer'
+        ? ($conversation->seller?->store_name ?? $conversation->seller?->name)
+        : ($conversation->buyer?->name)
+) ?? 'Percakapan')
 
 @push('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
@@ -605,12 +609,20 @@
                     'role' => $role
                 ]) }}"
                class="conv-item {{ $active ? 'active' : '' }}"
-               data-name="{{ strtolower($p2?->name ?? '') }}">
+               data-name="{{ strtolower(
+                    $role === 'buyer'
+                        ? ($p2?->store_name ?? $p2?->name ?? '')
+                        : ($p2?->name ?? '')
+                ) }}">
                 <img src="{{ $p2?->avatar_url ?? 'https://ui-avatars.com/api/?name=?' }}"
                      class="conv-avatar" alt="">
                 <div class="conv-content">
                     <div class="flex justify-between items-center">
-                        <span class="conv-name">{{ $p2?->name ?? '?' }}</span>
+                        <span class="conv-name">{{
+                            $role === 'buyer'
+                                ? ($p2?->store_name ?? $p2?->name ?? 'Toko')
+                                : ($p2?->name ?? 'Buyer')
+                        }}</span>
                         <span class="conv-time">{{ $conv->last_message_at?->format('H:i') }}</span>
                     </div>
                     <div class="flex justify-between items-center">
@@ -635,7 +647,13 @@
             <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=?' }}"
                  class="chat-header-avatar" alt="{{ $partner?->name }}">
             <div class="chat-header-info">
-                <h2>{{ $partner?->name ?? 'Pengguna' }}</h2>
+                <h2>
+                    {{
+                        $role === 'buyer'
+                            ? ($partner?->store_name ?? $partner?->name ?? 'Toko')
+                            : ($partner?->name ?? 'Pengguna')
+                    }}
+                </h2>
                 <p class="text-xs text-blue-400 mt-1">
                     {{ $role === 'seller' ? 'Mode Seller' : 'Mode Buyer' }}
                 </p>
