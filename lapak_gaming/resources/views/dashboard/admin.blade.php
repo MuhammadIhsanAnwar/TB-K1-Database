@@ -264,7 +264,7 @@
     {{-- ═══════════════════════════════════════════════
          QUICK LINKS
     ═══════════════════════════════════════════════ --}}
-    <div class="anim-fade-up anim-delay-2 grid gap-6 xl:grid-cols-3">
+    <div class="anim-fade-up anim-delay-2 grid gap-6 xl:grid-cols-4">
 
         <a href="{{ route('admin.users.index') }}"
            class="quick-link reveal dashboard-card glass-card group rounded-[30px]border border-blue-500/20 bg-[#0B1220]/95 p-6 transition hover:border-amber-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-amber-500/5">
@@ -315,6 +315,47 @@
                     <p class="mt-1.5 text-sm leading-relaxed text-slate-400">Kirim pengumuman massal atau pemberitahuan penting kepada seluruh buyer dan seller.</p>
                 </div>
                 <svg class="mt-0.5 h-4 w-4 shrink-0 text-slate-600 transition group-hover:translate-x-1 group-hover:text-purple-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+            </div>
+        </a>
+
+        <a href="{{ route('admin.contact-messages.index') }}"
+           class="quick-link reveal dashboard-card glass-card group rounded-[30px] border border-blue-500/20 bg-[#0B1220]/95 p-6 transition hover:border-emerald-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-emerald-500/5">
+            <div class="quick-link-icon mb-4 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-emerald-500/10 text-emerald-500">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M21 8V7a2 2 0 00-2-2H7l-4 4v8a2 2 0 002 2h12a2 2 0 002-2V8z" />
+                </svg>
+            </div>
+            <div class="flex items-start justify-between gap-4">
+                <div>
+                    <div class="flex items-center gap-3">
+                        <h2 class="text-lg font-bold text-white">Pesan Masuk</h2>
+                        @if($unreadMessages > 0)
+                            <span class="rounded-full bg-emerald-500 px-3 py-1 text-[11px] font-semibold uppercase text-slate-950">{{ $unreadMessages }} baru</span>
+                        @endif
+                    </div>
+                    <p class="mt-1.5 text-sm leading-relaxed text-slate-400">Lihat pesan pengguna dan balas langsung dari panel admin.</p>
+                </div>
+                <svg class="mt-0.5 h-4 w-4 shrink-0 text-slate-600 transition group-hover:translate-x-1 group-hover:text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+            </div>
+        </a>
+
+        <a href="{{ route('admin.terminal.index') }}"
+           class="quick-link reveal dashboard-card glass-card group rounded-[30px] border border-blue-500/20 bg-[#0B1220]/95 p-6 transition hover:border-slate-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-slate-500/5">
+            <div class="quick-link-icon mb-4 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-slate-500/10 text-slate-400">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M8 17l4-4-4-4m5 8h5V7h-5" />
+                </svg>
+            </div>
+            <div class="flex items-start justify-between">
+                <div>
+                    <h2 class="text-lg font-bold text-white">Terminal</h2>
+                    <p class="mt-1.5 text-sm leading-relaxed text-slate-400">Akses cepat ke terminal Artisan (dev tools termasuk perintah artisan).</p>
+                </div>
+                <svg class="mt-0.5 h-4 w-4 shrink-0 text-slate-600 transition group-hover:translate-x-1 group-hover:text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                     <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
                 </svg>
             </div>

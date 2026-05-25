@@ -156,9 +156,9 @@
         <button onclick="openDrawer()" class="lg:hidden text-white hover:opacity-80">
           <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
-        <a href="{{ route('marketplace.home') }}" class="flex shrink-0">
-          <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Logo" class="h-8 w-auto surface-weak rounded p-1 hidden sm:block">
-          <span class="font-display font-bold text-white text-xl ml-2 sm:hidden tracking-tight">{{ config('app.name', 'Itemku') }}</span>
+        <a href="{{ route('marketplace.home') }}" class="flex items-center gap-2 shrink-0">
+          <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Logo" class="h-8 w-auto surface-weak rounded p-1">
+          <span class="font-display font-bold text-white text-lg ml-1 tracking-tight">{{ config('app.name', 'Lapak Gaming') }}</span>
         </a>
       </div>
 
@@ -201,7 +201,7 @@
               <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
               <span id="notif-badge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
             </button>
-            <div id="notif-dropdown" class="hidden absolute right-0 top-full mt-2 w-80 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left text-slate-200 z-50">
+            <div id="notif-dropdown" data-notifications-url="{{ route('notifications.poll') }}" data-notifications-read-base-url="{{ route('notifications.index') }}" data-notifications-read-all-url="{{ route('notifications.read-all') }}" class="hidden absolute right-0 top-full mt-2 w-80 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left text-slate-200 z-50">
               <div class="px-4 py-3 border-b flex justify-between items-center bg-transparent">
                 <span class="font-bold text-sm text-slate-100">Notifikasi</span>
                 <a href="{{ route('notifications.index') }}" class="text-xs text-itemku-blue">Lihat semua</a>
@@ -264,7 +264,6 @@
               <a href="{{ route('admin.orders.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Transaksi</a>
               <a href="{{ route('admin.banners.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Banner</a>
               <a href="{{ route('admin.notifications.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Notifikasi</a>
-              <a href="{{ route('artisan.terminal.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Artisan</a>
               <a href="{{ route('admin.terminal.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Terminal</a>
             </div>
           @endif

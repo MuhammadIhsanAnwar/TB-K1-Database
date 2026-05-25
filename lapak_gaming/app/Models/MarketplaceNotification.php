@@ -33,6 +33,7 @@ class MarketplaceNotification extends Model
     protected $appends = [
         'category',
         'category_label',
+        'is_read',
     ];
 
     public function user()
