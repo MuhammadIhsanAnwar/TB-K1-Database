@@ -27,7 +27,7 @@
           <svg class="w-4 h-4 text-itemku-blue" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"/></svg>
           Filter Produk
           </h3>
-          <p class="text-xs surface-muted leading-relaxed">Saring produk berdasarkan kategori, tipe, dan rentang harga agar hasil lebih cepat sesuai.</p>
+          <p class="text-xs surface-muted leading-relaxed">Saring produk berdasarkan kategori dan rentang harga agar hasil lebih cepat sesuai.</p>
         </div>
         
         <form action="{{ route('products.search') }}" method="GET" id="filter-form">
@@ -44,12 +44,12 @@
           <div>
             <h4 class="text-xs font-semibold surface-muted uppercase mb-3 tracking-wide">Kategori</h4>
             <div class="flex flex-wrap gap-2">
-              <a href="{{ route('products.search', array_filter(['q' => request('q'), 'type' => request('type'), 'sort' => request('sort'), 'min_price' => request('min_price'), 'max_price' => request('max_price')])) }}"
+              <a href="{{ route('products.search', array_filter(['q' => request('q'), 'sort' => request('sort'), 'min_price' => request('min_price'), 'max_price' => request('max_price')])) }}"
                  class="px-3 py-2 rounded-full text-xs font-semibold transition-colors {{ request('category') ? 'surface-weak surface-muted' : 'bg-primary text-white' }}">
                 Semua
               </a>
               @foreach($categories as $category)
-                <a href="{{ route('products.search', array_filter(['q' => request('q'), 'type' => request('type'), 'sort' => request('sort'), 'min_price' => request('min_price'), 'max_price' => request('max_price'), 'category' => $category->slug])) }}"
+                <a href="{{ route('products.search', array_filter(['q' => request('q'), 'sort' => request('sort'), 'min_price' => request('min_price'), 'max_price' => request('max_price'), 'category' => $category->slug])) }}"
                    class="px-3 py-2 rounded-full text-xs font-semibold transition-colors {{ request('category') === $category->slug ? 'bg-primary text-white' : 'surface-weak surface-text hover:brightness-110' }}">
                   {{ $category->name }}
                 </a>
@@ -57,19 +57,7 @@
             </div>
           </div>
           @endif
-
-          {{-- Type Filter --}}
-          <div>
-            <h4 class="text-xs font-semibold surface-muted uppercase mb-3 tracking-wide">Tipe Produk</h4>
-            <div class="grid grid-cols-2 gap-2">
-              @foreach(['topup' => 'Top Up', 'key' => 'Game Key', 'account' => 'Akun', 'item' => 'Item'] as $val => $label)
-              <label class="flex items-center gap-2 text-sm surface-text cursor-pointer rounded-xl border border-white/10 px-3 py-2.5 surface-weak hover:brightness-110 transition-colors {{ request('type') === $val ? 'ring-1 ring-primary/60 border-primary/40' : '' }}">
-                <input type="radio" name="type" value="{{ $val }}" onchange="this.form.submit()" {{ request('type') === $val ? 'checked' : '' }} class="text-itemku-blue focus:ring-itemku-blue">
-                <span class="font-medium">{{ $label }}</span>
-              </label>
-              @endforeach
-            </div>
-          </div>
+          {{-- Type filter removed — only category and price range supported --}}
 
           {{-- Price Range Filter --}}
           <div>
@@ -82,8 +70,8 @@
           </div>
           
           {{-- Reset Filter --}}
-          @if(request('type') || request('min_price') || request('max_price'))
-            <a href="{{ route('products.search', ['q' => request('q'), 'category' => request('category')]) }}" class="block w-full text-center py-2.5 text-red-300 hover:text-red-200 text-sm font-semibold rounded-xl border border-red-400/20 surface-weak transition-colors">Hapus Filter</a>
+          @if(request('min_price') || request('max_price') || request('category'))
+            <a href="{{ route('products.search', ['q' => request('q')]) }}" class="block w-full text-center py-2.5 text-red-300 hover:text-red-200 text-sm font-semibold rounded-xl border border-red-400/20 surface-weak transition-colors">Hapus Filter</a>
           @endif
         </form>
       </div>
@@ -107,9 +95,7 @@
             @if(request('category'))
               <span class="px-3 py-1 rounded-full bg-primary/15 text-primary font-semibold">Kategori: {{ optional($categories->firstWhere('slug', request('category')))->name ?? request('category') }}</span>
             @endif
-            @if(request('type'))
-              <span class="px-3 py-1 rounded-full surface-weak surface-text font-semibold">Tipe: {{ strtoupper(request('type')) }}</span>
-            @endif
+            {{-- Type removed --}}
             @if(request('min_price') || request('max_price'))
               <span class="px-3 py-1 rounded-full surface-weak surface-text font-semibold">
                 Harga: {{ request('min_price') ? 'Rp'.number_format((int) request('min_price'), 0, ',', '.') : 'Min' }} - {{ request('max_price') ? 'Rp'.number_format((int) request('max_price'), 0, ',', '.') : 'Maks' }}

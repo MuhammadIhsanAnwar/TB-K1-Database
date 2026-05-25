@@ -37,7 +37,7 @@ class ProductController extends Controller
     public function search(Request $request)
     {
         $query = $request->input('q', '');
-        $type = $request->input('type');
+        // Removed type filter — only category and price range are supported
         $sort = $request->input('sort', 'popular');
         $minPrice = $request->input('min_price');
         $maxPrice = $request->input('max_price');
@@ -48,7 +48,6 @@ class ProductController extends Controller
                 $q->where('name', 'like', "%$query%")->orWhere('description', 'like', "%$query%");
             }))
             ->when($categorySlug, fn($q) => $q->whereHas('category', fn($c) => $c->where('slug', $categorySlug)))
-            ->when($type, fn($q) => $q->where('type', $type))
             ->when($minPrice, fn($q) => $q->where('price', '>=', $minPrice))
             ->when($maxPrice, fn($q) => $q->where('price', '<=', $maxPrice))
             ->when($sort === 'popular', fn($q) => $q->popular())
@@ -64,7 +63,7 @@ class ProductController extends Controller
                 ->active()
                 ->whereNull('parent_id')
                 ->ordered()
-                ->take(8)
+                ->take(13)
                 ->get();
         }
 

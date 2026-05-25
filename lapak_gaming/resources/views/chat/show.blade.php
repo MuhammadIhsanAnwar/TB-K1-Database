@@ -1221,10 +1221,12 @@ async function updateMessage(id, newText) {
 
         const res = await fetch(`${MESSAGE_BASE_URL}/${encodeURIComponent(id)}`, {
             method: 'PATCH',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': CSRF,
                 'X-HTTP-Method-Override': 'PATCH',
+                'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
@@ -1271,10 +1273,12 @@ async function confirmDelete(msgId) {
 
         const res = await fetch(`${MESSAGE_BASE_URL}/${encodeURIComponent(msgId)}`, {
             method: 'DELETE',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': CSRF,
                 'X-HTTP-Method-Override': 'DELETE',
+                'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json'
             }
         });

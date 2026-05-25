@@ -15,21 +15,45 @@
   .banner-slide {
     scroll-snap-align: start;
   }
+  /* Category icons: compact modern look */
   .category-icon-wrapper {
-    transition: transform 0.2s;
+    transition: transform .22s cubic-bezier(.2,.9,.3,1), opacity .22s;
+    text-align: center;
   }
+  .category-icon-wrapper:focus,
   .category-icon-wrapper:hover {
-    transform: translateY(-5px);
+    transform: translateY(-6px) scale(1.03);
+    opacity: 1;
+    z-index: 2;
   }
-  .category-icon { transition: transform .25s ease, box-shadow .25s ease; }
-  .category-icon .icon { width: 100%; height: 100%; display: inline-block; border-radius: 9999px; }
-  .category-icon:hover { transform: translateY(-6px) scale(1.04); box-shadow: 0 8px 20px rgba(2,6,23,0.45); }
+  .category-icon {
+    transition: transform .22s, box-shadow .22s, background .22s;
+  }
+  .category-icon .icon {
+    width: 56px;
+    height: 56px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    backdrop-filter: blur(6px);
+    box-shadow: 0 6px 18px rgba(2,6,23,0.18);
+    overflow: hidden;
+  }
+  .category-icon .icon img { width: 100%; height: 100%; object-fit: cover; border-radius: inherit; }
+  .category-icon .icon span { font-size: 20px; line-height: 1; }
+  .category-icon-wrapper .category-animate { transform-origin: center; }
+  @media (max-width: 640px) {
+    .category-icon .icon { width: 48px; height: 48px; border-radius: 10px; }
+    .category-icon-wrapper { width: 64px; }
+  }
   @keyframes floaty {
     0% { transform: translateY(0); }
-    50% { transform: translateY(-6px); }
+    50% { transform: translateY(-4px); }
     100% { transform: translateY(0); }
   }
-  .category-animate { animation: floaty 6s ease-in-out infinite; }
+  .category-animate { animation: floaty 5.6s ease-in-out infinite; }
   /* Staggered delays for up to 13 icons */
   .category-list a:nth-child(1) .category-animate { animation-delay: 0s; }
   .category-list a:nth-child(2) .category-animate { animation-delay: 0.08s; }
@@ -99,185 +123,15 @@
     font-weight: 800;
   }
 
-  /* Interactive Robot Element */
-  #hero-robot-container {
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    height: 240px;
-    margin-bottom: 1.5rem;
-  }
-  #hero-robot-head {
-    width: 90px;
-    height: 110px;
-    background: linear-gradient(180deg, rgba(59, 130, 246, 0.4), rgba(37, 99, 235, 0.3));
-    border: 2px solid rgba(59, 130, 246, 0.6);
-    border-radius: 16px 16px 12px 12px;
-    position: relative;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    transition: transform 0.1s ease-out;
-    perspective: 1000px;
-    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
-    overflow: hidden;
-  }
-  /* Antenna */
-  #hero-robot-head::before {
-    content: '';
-    position: absolute;
-    top: -12px;
-    left: 50%;
-    width: 3px;
-    height: 20px;
-    background: linear-gradient(180deg, rgba(59, 130, 246, 0.8), rgba(59, 130, 246, 0.3));
-    border-radius: 2px;
-    transform: translateX(-50%);
-    box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
-  }
-  /* Face plate detail */
-  #hero-robot-head::after {
-    content: '';
-    position: absolute;
-    inset: 2px;
-    border: 1px solid rgba(59, 130, 246, 0.2);
-    border-radius: 14px 14px 10px 10px;
-    pointer-events: none;
-  }
-  .robot-eyes {
-    display: flex;
-    gap: 14px;
-    align-items: center;
-    justify-content: center;
-    margin-top: -8px;
-    z-index: 2;
-  }
-  .robot-eye {
-    width: 18px;
-    height: 18px;
-    background: radial-gradient(circle at 30% 30%, #00ff88, #00cc66);
-    border-radius: 50%;
-    box-shadow: 0 0 12px rgba(0, 255, 136, 0.8), inset -2px -2px 4px rgba(0, 0, 0, 0.4);
-    position: relative;
-    border: 1px solid rgba(0, 255, 136, 0.4);
-  }
-  .robot-pupil {
-    width: 7px;
-    height: 7px;
-    background: #001a33;
-    border-radius: 50%;
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
-  }
-  /* Mouth / LED display */
-  .robot-mouth {
-    display: flex;
-    gap: 3px;
-    margin-top: 6px;
-    z-index: 2;
-  }
-  .robot-mouth span {
-    width: 4px;
-    height: 4px;
-    background: radial-gradient(circle at 30% 30%, #ff6600, #ff4400);
-    border-radius: 50%;
-    box-shadow: 0 0 6px rgba(255, 102, 0, 0.7);
-  }
-  /* Robot body */
-  .robot-body {
-    position: absolute;
-    bottom: -35px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 70px;
-    height: 30px;
-    background: linear-gradient(180deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
-    border: 1.5px solid rgba(59, 130, 246, 0.4);
-    border-top: none;
-    border-radius: 0 0 12px 12px;
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
-  }
-  .robot-body::before,
-  .robot-body::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    width: 12px;
-    height: 12px;
-    background: radial-gradient(circle at 30% 30%, #0066ff, #0044cc);
-    border-radius: 50%;
-    transform: translateY(-50%);
-    box-shadow: 0 0 8px rgba(0, 102, 255, 0.6);
-  }
-  .robot-body::before {
-    left: 8px;
-  }
-  .robot-body::after {
-    right: 8px;
-  }
-  .robot-text {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    font-size: 0.875rem;
-    font-weight: 600;
-    color: rgba(59, 130, 246, 0.7);
-    min-width: 80px;
-    text-align: center;
-    line-height: 1.3;
-  }
-  @media (max-width: 768px) {
-    #hero-robot-container {
-      height: 180px;
-    }
-    #hero-robot-head {
-      width: 70px;
-      height: 85px;
-    }
-    #hero-robot-head::before {
-      height: 16px;
-      top: -10px;
-    }
-    .robot-eye {
-      width: 14px;
-      height: 14px;
-    }
-    .robot-pupil {
-      width: 5px;
-      height: 5px;
-    }
-    .robot-mouth span {
-      width: 3px;
-      height: 3px;
-    }
-    .robot-body {
-      width: 55px;
-      height: 24px;
-    }
-    .robot-body::before,
-    .robot-body::after {
-      width: 10px;
-      height: 10px;
-    }
-    .robot-text {
-      font-size: 0.75rem;
-      min-width: 60px;
-    }
-  }
+  /* Robot element removed — UI simplified */
 
   /* Featured banners: marquee animation */
   @keyframes featuredScroll {
     0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+    100% { transform: translateX(-100%); }
   }
   .featured-scroll { overflow: hidden; }
-  .animate-featured-scroll { display: inline-flex; gap: 1rem; flex-wrap: nowrap; animation: featuredScroll 20s linear infinite; }
+  .animate-featured-scroll { display: flex; gap: 1rem; flex-wrap: nowrap; align-items: center; animation: featuredScroll 20s linear infinite; }
   @keyframes authFloat {
     0%   { transform: translateY(0) scale(1);   opacity: 0; }
     15%  { opacity: var(--op, 0.18); }
@@ -314,25 +168,7 @@
                 <span class="text-slate-400 text-xs">Fast Delivery</span>
               </div>
             </div>
-            {{-- Robot Container --}}
-            <div id="hero-robot-container" class="flex-none">
-              <div id="hero-robot-head">
-                <div class="robot-eyes">
-                  <div class="robot-eye">
-                    <div class="robot-pupil"></div>
-                  </div>
-                  <div class="robot-eye">
-                    <div class="robot-pupil"></div>
-                  </div>
-                </div>
-                <div class="robot-mouth">
-                  <span></span>
-                  <span></span>
-                  <span></span>
-                </div>
-              </div>
-              <div class="robot-body"></div>
-            </div>
+            {{-- Robot removed per request --}}
             {{-- Right Text --}}
             <div class="hidden lg:flex flex-col justify-center text-right space-y-2 flex-1">
               <div class="robot-text">
@@ -549,60 +385,6 @@
     function resetTimer() { clearInterval(timer); timer = setInterval(() => { goTo(index + 1); }, 4000); }
   })();
 
-  // Featured banners: duplicate items for continuous marquee animation
-  (function() {
-    const marquee = document.querySelector('.featured-scroll .animate-featured-scroll');
-    if (!marquee) return;
-    // Duplicate children to allow seamless loop
-    const clone = marquee.cloneNode(true);
-    marquee.parentNode.appendChild(clone);
-  })();
-
-  // Interactive robot head that follows cursor
-  (function() {
-    const robotContainer = document.getElementById('hero-robot-container');
-    const robotHead = document.getElementById('hero-robot-head');
-    const pupils = document.querySelectorAll('.robot-pupil');
-    
-    if (!robotContainer || !robotHead || pupils.length === 0) return;
-
-    document.addEventListener('mousemove', (e) => {
-      const containerRect = robotContainer.getBoundingClientRect();
-      const containerCenterX = containerRect.left + containerRect.width / 2;
-      const containerCenterY = containerRect.top + containerRect.height / 2;
-      
-      const mouseX = e.clientX;
-      const mouseY = e.clientY;
-      
-      // Calculate angle from container center to mouse
-      const angle = Math.atan2(mouseY - containerCenterY, mouseX - containerCenterX);
-      const distance = Math.hypot(mouseX - containerCenterX, mouseY - containerCenterY);
-      
-      // Clamp rotation for subtle effect
-      const maxRotation = 25;
-      const rotation = Math.max(-maxRotation, Math.min(maxRotation, (mouseX - containerCenterX) * 0.02));
-      
-      // Update robot head rotation
-      robotHead.style.transform = `perspective(600px) rotateY(${rotation}deg)`;
-      
-      // Update pupils to look at cursor
-      pupils.forEach(pupil => {
-        const pupilRadius = 3;
-        const maxDistance = 4;
-        const pupilX = Math.cos(angle) * Math.min(maxDistance, Math.max(0, distance * 0.001));
-        const pupilY = Math.sin(angle) * Math.min(maxDistance, Math.max(0, distance * 0.001));
-        
-        pupil.style.transform = `translate(calc(-50% + ${pupilX}px), calc(-50% + ${pupilY}px))`;
-      });
-    });
-    
-    // Reset on mouse leave
-    document.addEventListener('mouseleave', () => {
-      robotHead.style.transform = 'perspective(600px) rotateY(0deg)';
-      pupils.forEach(pupil => {
-        pupil.style.transform = 'translate(-50%, -50%)';
-      });
-    });
-  })();
+  // Featured banners: auto-scroll animation retained (single-row, no duplication)
 </script>
 @endpush
