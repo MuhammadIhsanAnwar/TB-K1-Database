@@ -115,6 +115,7 @@ class CheckoutController extends Controller
 
             $order = Order::create([
                 'buyer_id' => $request->user()->id,
+                'seller_id' => $product->seller_id,
                 'invoice_number' => 'INV-'.now()->format('YmdHis').'-'.str_pad((string) random_int(1, 9999), 4, '0', STR_PAD_LEFT),
                 'status' => 'pending_payment',
                 'payment_method' => $paymentMethod,
