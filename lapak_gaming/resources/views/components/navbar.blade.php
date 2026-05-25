@@ -483,7 +483,22 @@
           </svg>
           Beranda
       </a>
-      <div class="flex-1 overflow-x-auto no-scrollbar mask-gradient-right">
+            <div class="flex-1 overflow-x-auto no-scrollbar mask-gradient-right">
+              <a href="{{ route('products.search', ['q'=>'top up game']) }}"
+        class="nav-modern-link flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-cyan-300 bg-cyan-500/10 border border-cyan-400/20 whitespace-nowrap">
+          <span class="px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-200 text-[10px] font-bold">
+              HOT
+          </span>
+          Top Up Game
+      </a>
+      <a href="{{ route('products.search', ['q'=>'akun game']) }}"
+        class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">
+          Akun Game
+      </a>
+      <a href="{{ route('products.search', ['q'=>'voucher game']) }}"
+        class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">
+          Voucher Game
+      </a>
         <div class="flex items-center gap-2 min-w-max">
           <a href="{{ route('products.search', ['category'=>'roblox']) }}"
             class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">Roblox Games </a>
