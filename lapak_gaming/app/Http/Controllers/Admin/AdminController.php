@@ -398,6 +398,15 @@ class AdminController extends Controller
         $q = trim((string) $request->query('q', ''));
         $sort = $request->query('sort', 'created_at');
         $direction = strtolower($request->query('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
+        $perPage = $request->query('per_page', 50);
+
+        if ($perPage !== 'all') {
+            $perPage = (int) $perPage;
+
+            if (!in_array($perPage, [50, 100, 300, 500, 1000])) {
+                $perPage = 50;
+            }
+        }
 
         $allowedSorts = ['created_at', 'order_code', 'grand_total'];
         if (! in_array($sort, $allowedSorts, true)) {
@@ -422,7 +431,18 @@ class AdminController extends Controller
             $ordersQuery->orderBy($sort, $direction);
         }
 
-        $orders = $ordersQuery->paginate(20)->appends(array_filter(['q' => $q, 'sort' => $sort, 'direction' => $direction]));
+        $orders = $ordersQuery
+        ->paginate(
+            $perPage === 'all'
+                ? max($ordersQuery->count(), 1)
+                : $perPage
+        )
+        ->appends(array_filter([
+            'q' => $q,
+            'sort' => $sort,
+            'direction' => $direction,
+            'per_page' => $perPage
+        ]));
 
         return view('admin.orders.index', compact('orders', 'q', 'sort', 'direction'));
     }
