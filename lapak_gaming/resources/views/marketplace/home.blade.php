@@ -15,9 +15,26 @@
   .banner-slide {
     scroll-snap-align: start;
   }
+  .hero-banner-track {
+    display: flex;
+    gap: 1rem;
+    width: max-content;
+    will-change: transform;
+  }
+  .hero-banner-scroll {
+    overflow: hidden;
+    position: relative;
+  }
+  .hero-banner-marquee {
+    animation: heroBannerScroll 28s linear infinite;
+  }
+  @keyframes heroBannerScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
   /* Category icons: compact modern look */
   .category-icon-wrapper {
-    transition: transform .22s cubic-bezier(.2,.9,.3,1), opacity .22s;
+    transition: transform .22s cubic-bezier(.2,.9,.3,1), opacity .22s, box-shadow .22s, border-color .22s;
     text-align: center;
   }
   .category-icon-wrapper:focus,
@@ -28,6 +45,60 @@
   }
   .category-icon {
     transition: transform .22s, box-shadow .22s, background .22s;
+  }
+  .category-panel {
+    position: relative;
+    overflow: hidden;
+    background:
+      radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 28%),
+      radial-gradient(circle at top right, rgba(249,115,22,0.10), transparent 24%),
+      linear-gradient(180deg, rgba(8,17,37,0.82), rgba(8,17,37,0.56));
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 20px 50px rgba(2,6,23,0.24);
+  }
+  .category-panel::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(135deg, rgba(255,255,255,0.03) 0%, transparent 35%, rgba(255,255,255,0.02) 70%, transparent 100%);
+    pointer-events: none;
+  }
+  .category-heading {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1rem;
+    padding-bottom: .85rem;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+  }
+  .category-heading-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    border-radius: 9999px;
+    padding: .45rem .8rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    color: #e2e8f0;
+    font-size: .75rem;
+    font-weight: 700;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+  }
+  .category-heading-title {
+    display: flex;
+    flex-direction: column;
+    gap: .15rem;
+  }
+  .category-heading-title h2 {
+    margin: 0;
+  }
+  .category-heading-title p {
+    margin: 0;
+    color: #94a3b8;
+    font-size: .875rem;
   }
   .category-icon .icon {
     width: 56px;
@@ -47,6 +118,7 @@
   @media (max-width: 640px) {
     .category-icon .icon { width: 48px; height: 48px; border-radius: 10px; }
     .category-icon-wrapper { width: 64px; }
+    .category-heading { align-items: flex-start; flex-direction: column; }
   }
   @keyframes floaty {
     0% { transform: translateY(0); }
@@ -250,32 +322,60 @@
           </div>
           {{-- Action Buttons --}}
           <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
-            <a href="{{ route('products.search', ['q'=>'top up game']) }}" class="inline-flex items-center justify-center rounded-2xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-400">Beli Sekarang</a>
             <a href="{{ route('marketplace.trending') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">Lihat Trending</a>
           </div>
         </div>
 
-        <div class="mt-6 grid gap-4 lg:grid-cols-4">
+        <div class="mt-6">
           @if(isset($heroBanners) && $heroBanners->count())
-            @foreach($heroBanners->take(4) as $banner)
-              <a href="{{ $banner->link_url ?: '#' }}" class="group relative overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/80 shadow-[0_25px_60px_rgba(3,8,32,0.35)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_32px_90px_rgba(3,8,32,0.45)] aspect-[4/5]">
-                <img src="{{ $banner->image_url }}" alt="{{ $banner->title ?? 'Banner Promo' }}" class="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-105" />
-                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent"></div>
-                <div class="absolute inset-x-0 bottom-0 p-5">
-                  <span class="inline-flex rounded-full bg-amber-500/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-amber-300">Hot Games</span>
-                  <h3 class="mt-4 text-lg font-extrabold text-white line-clamp-2">{{ $banner->title ?? 'Promo Spesial' }}</h3>
-                  @if(!empty($banner->subtitle))
-                    <p class="mt-2 text-sm text-slate-300 line-clamp-2">{{ $banner->subtitle }}</p>
-                  @endif
-                  <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/15">
-                    <span>Explore</span>
-                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
-                  </div>
+            @if($heroBanners->count() > 4)
+              @php
+                $heroLoopBanners = $heroBanners->concat($heroBanners);
+              @endphp
+              <div class="hero-banner-scroll rounded-[28px]">
+                <div class="hero-banner-track hero-banner-marquee py-1">
+                  @foreach($heroLoopBanners as $banner)
+                    <a href="{{ $banner->link_url ?: '#' }}" class="group relative flex-none w-[280px] sm:w-[310px] md:w-[340px] lg:w-[360px] overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/80 shadow-[0_25px_60px_rgba(3,8,32,0.35)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_32px_90px_rgba(3,8,32,0.45)] aspect-[4/5]">
+                      <img src="{{ $banner->image_url }}" alt="{{ $banner->title ?? 'Banner Promo' }}" class="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-105" />
+                      <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent"></div>
+                      <div class="absolute inset-x-0 bottom-0 p-5">
+                        <span class="inline-flex rounded-full bg-amber-500/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-amber-300">Hot Games</span>
+                        <h3 class="mt-4 text-lg font-extrabold text-white line-clamp-2">{{ $banner->title ?? 'Promo Spesial' }}</h3>
+                        @if(!empty($banner->subtitle))
+                          <p class="mt-2 text-sm text-slate-300 line-clamp-2">{{ $banner->subtitle }}</p>
+                        @endif
+                        <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/15">
+                          <span>Explore</span>
+                          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                        </div>
+                      </div>
+                    </a>
+                  @endforeach
                 </div>
-              </a>
-            @endforeach
+              </div>
+            @else
+              <div class="grid gap-4 lg:grid-cols-4">
+                @foreach($heroBanners as $banner)
+                  <a href="{{ $banner->link_url ?: '#' }}" class="group relative overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/80 shadow-[0_25px_60px_rgba(3,8,32,0.35)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_32px_90px_rgba(3,8,32,0.45)] aspect-[4/5]">
+                    <img src="{{ $banner->image_url }}" alt="{{ $banner->title ?? 'Banner Promo' }}" class="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-105" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent"></div>
+                    <div class="absolute inset-x-0 bottom-0 p-5">
+                      <span class="inline-flex rounded-full bg-amber-500/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-amber-300">Hot Games</span>
+                      <h3 class="mt-4 text-lg font-extrabold text-white line-clamp-2">{{ $banner->title ?? 'Promo Spesial' }}</h3>
+                      @if(!empty($banner->subtitle))
+                        <p class="mt-2 text-sm text-slate-300 line-clamp-2">{{ $banner->subtitle }}</p>
+                      @endif
+                      <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/15">
+                        <span>Explore</span>
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                      </div>
+                    </div>
+                  </a>
+                @endforeach
+              </div>
+            @endif
           @else
-            <div class="col-span-1 lg:col-span-4 rounded-[28px] border border-white/10 bg-slate-950/80 p-10 text-center">
+            <div class="rounded-[28px] border border-white/10 bg-slate-950/80 p-10 text-center">
               <p class="text-sm text-slate-400">Belum ada hero banner tersedia. Tambahkan banner hero dari panel admin.</p>
             </div>
           @endif
@@ -308,15 +408,20 @@
 {{-- CATEGORY NAVIGATION                                        --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="max-w-7xl mx-auto px-4 mb-10">
-  <div class="surface-panel rounded-xl p-4 shadow-sm border border-white/10">
-    <div class="flex items-center justify-between mb-3">
-      <h2 class="section-title mb-0">Kategori Produk</h2>
+  <div class="category-panel rounded-2xl p-5 sm:p-6 shadow-sm">
+    <div class="category-heading">
+      <div class="category-heading-title">
+        <div class="category-heading-badge">Browse cepat</div>
+        <h2 class="section-title mb-0">Kategori Produk</h2>
+        <p>Pilih kategori favoritmu untuk langsung masuk ke produk yang relevan.</p>
+      </div>
+      <div class="text-xs font-semibold text-slate-400 hidden sm:block">13 kategori utama</div>
     </div>
-    <div class="flex flex-wrap justify-center gap-6 items-center category-list">
+    <div class="flex flex-wrap justify-center gap-6 items-center category-list relative z-10">
       @php $catsToShow = $allCategories->isNotEmpty() ? $allCategories : $displayCategories; @endphp
       @foreach($catsToShow->take(13) as $cat)
         <a href="{{ route('categories.show', $cat->slug) }}" class="category-icon-wrapper block w-20 sm:w-24 text-center" aria-label="Kategori {{ $cat->name }}">
-          <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-surface-weak border border-white/6 flex items-center justify-center mb-2 category-icon category-animate">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-surface-weak border border-white/6 flex items-center justify-center mb-2 category-icon category-animate ring-1 ring-white/5 shadow-[0_10px_30px_rgba(2,6,23,0.18)]">
             @if(!empty($cat->image_url))
               <img src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="w-full h-full object-cover rounded-full">
             @else

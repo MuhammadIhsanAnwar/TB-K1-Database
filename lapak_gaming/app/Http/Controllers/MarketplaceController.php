@@ -51,13 +51,12 @@ class MarketplaceController extends Controller
             } else {
                 $bq = $bq->latest();
             }
-            $heroBanners = $bq->take(4)->get();
+            $heroBanners = $bq->get();
 
             if ($heroBanners->isEmpty()) {
                 $heroBanners = Banner::query()
                     ->active()
                     ->latest()
-                    ->take(4)
                     ->get();
             }
         }
@@ -274,15 +273,37 @@ class MarketplaceController extends Controller
 
     public function trending(Request $request): View
     {
-        $trendingProducts = Schema::hasTable('products')
-            ? Product::query()
-                ->active()
-                ->inStock()
-                ->with(['statistics', 'seller', 'category'])
-                ->orderByDesc('id')
-                ->paginate(12)
-            : collect();
-        
+        if (! Schema::hasTable('products')) {
+            $trendingProducts = collect();
+        } else {
+            // Prefer ranking by sold_count, then review_count, then rating_average
+            if (Schema::hasTable('product_statistics')) {
+                $trendingProducts = Product::query()
+                    ->select('products.*')
+                    ->leftJoin('product_statistics', 'products.id', '=', 'product_statistics.product_id')
+                    ->active()
+                    ->inStock()
+                    ->where(function ($q) {
+                        $q->where('product_statistics.sold_count', '>', 0)
+                          ->orWhere('product_statistics.review_count', '>', 0);
+                    })
+                    ->with(['statistics', 'seller', 'category'])
+                    ->orderByDesc('product_statistics.sold_count')
+                    ->orderByDesc('product_statistics.review_count')
+                    ->orderByDesc('product_statistics.rating_average')
+                    ->orderByDesc('products.updated_at')
+                    ->paginate(12);
+            } else {
+                // Fallback: most recently added products
+                $trendingProducts = Product::query()
+                    ->active()
+                    ->inStock()
+                    ->with(['statistics', 'seller', 'category'])
+                    ->orderByDesc('id')
+                    ->paginate(12);
+            }
+        }
+
         return view('marketplace.trending', [
             'products' => $trendingProducts,
         ]);
