@@ -105,45 +105,120 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    height: 200px;
+    height: 240px;
     margin-bottom: 1.5rem;
   }
   #hero-robot-head {
-    width: 80px;
-    height: 100px;
-    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.4));
-    border: 2px solid rgba(59, 130, 246, 0.5);
-    border-radius: 12px 12px 8px 8px;
+    width: 90px;
+    height: 110px;
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.4), rgba(37, 99, 235, 0.3));
+    border: 2px solid rgba(59, 130, 246, 0.6);
+    border-radius: 16px 16px 12px 12px;
     position: relative;
     display: flex;
+    flex-direction: column;
     align-items: center;
     justify-content: center;
     transition: transform 0.1s ease-out;
     perspective: 1000px;
+    box-shadow: 0 0 20px rgba(59, 130, 246, 0.3), inset 0 1px 2px rgba(255, 255, 255, 0.1);
+    overflow: hidden;
+  }
+  /* Antenna */
+  #hero-robot-head::before {
+    content: '';
+    position: absolute;
+    top: -12px;
+    left: 50%;
+    width: 3px;
+    height: 20px;
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.8), rgba(59, 130, 246, 0.3));
+    border-radius: 2px;
+    transform: translateX(-50%);
+    box-shadow: 0 0 8px rgba(59, 130, 246, 0.6);
+  }
+  /* Face plate detail */
+  #hero-robot-head::after {
+    content: '';
+    position: absolute;
+    inset: 2px;
+    border: 1px solid rgba(59, 130, 246, 0.2);
+    border-radius: 14px 14px 10px 10px;
+    pointer-events: none;
   }
   .robot-eyes {
     display: flex;
-    gap: 12px;
+    gap: 14px;
     align-items: center;
     justify-content: center;
+    margin-top: -8px;
+    z-index: 2;
   }
   .robot-eye {
-    width: 14px;
-    height: 14px;
+    width: 18px;
+    height: 18px;
     background: radial-gradient(circle at 30% 30%, #00ff88, #00cc66);
     border-radius: 50%;
-    box-shadow: 0 0 8px rgba(0, 255, 136, 0.6), inset -1px -1px 3px rgba(0, 0, 0, 0.3);
+    box-shadow: 0 0 12px rgba(0, 255, 136, 0.8), inset -2px -2px 4px rgba(0, 0, 0, 0.4);
     position: relative;
+    border: 1px solid rgba(0, 255, 136, 0.4);
   }
   .robot-pupil {
-    width: 6px;
-    height: 6px;
+    width: 7px;
+    height: 7px;
     background: #001a33;
     border-radius: 50%;
     position: absolute;
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.6);
+  }
+  /* Mouth / LED display */
+  .robot-mouth {
+    display: flex;
+    gap: 3px;
+    margin-top: 6px;
+    z-index: 2;
+  }
+  .robot-mouth span {
+    width: 4px;
+    height: 4px;
+    background: radial-gradient(circle at 30% 30%, #ff6600, #ff4400);
+    border-radius: 50%;
+    box-shadow: 0 0 6px rgba(255, 102, 0, 0.7);
+  }
+  /* Robot body */
+  .robot-body {
+    position: absolute;
+    bottom: -35px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 70px;
+    height: 30px;
+    background: linear-gradient(180deg, rgba(59, 130, 246, 0.2), rgba(37, 99, 235, 0.2));
+    border: 1.5px solid rgba(59, 130, 246, 0.4);
+    border-top: none;
+    border-radius: 0 0 12px 12px;
+    box-shadow: 0 0 12px rgba(59, 130, 246, 0.15);
+  }
+  .robot-body::before,
+  .robot-body::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    width: 12px;
+    height: 12px;
+    background: radial-gradient(circle at 30% 30%, #0066ff, #0044cc);
+    border-radius: 50%;
+    transform: translateY(-50%);
+    box-shadow: 0 0 8px rgba(0, 102, 255, 0.6);
+  }
+  .robot-body::before {
+    left: 8px;
+  }
+  .robot-body::after {
+    right: 8px;
   }
   .robot-text {
     display: flex;
@@ -159,19 +234,36 @@
   }
   @media (max-width: 768px) {
     #hero-robot-container {
-      height: 140px;
+      height: 180px;
     }
     #hero-robot-head {
-      width: 60px;
-      height: 70px;
+      width: 70px;
+      height: 85px;
+    }
+    #hero-robot-head::before {
+      height: 16px;
+      top: -10px;
     }
     .robot-eye {
-      width: 10px;
-      height: 10px;
+      width: 14px;
+      height: 14px;
     }
     .robot-pupil {
-      width: 4px;
-      height: 4px;
+      width: 5px;
+      height: 5px;
+    }
+    .robot-mouth span {
+      width: 3px;
+      height: 3px;
+    }
+    .robot-body {
+      width: 55px;
+      height: 24px;
+    }
+    .robot-body::before,
+    .robot-body::after {
+      width: 10px;
+      height: 10px;
     }
     .robot-text {
       font-size: 0.75rem;
@@ -179,10 +271,13 @@
     }
   }
 
-  /* Featured banners: single-row horizontal scroller (no duplication/marquee) */
-  .featured-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
-  .featured-scroll::-webkit-scrollbar { display: none; }
-  .animate-featured-scroll { display: flex; gap: 1rem; flex-wrap: nowrap; align-items: center; }
+  /* Featured banners: marquee animation */
+  @keyframes featuredScroll {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+  .featured-scroll { overflow: hidden; }
+  .animate-featured-scroll { display: inline-flex; gap: 1rem; flex-wrap: nowrap; animation: featuredScroll 20s linear infinite; }
   @keyframes authFloat {
     0%   { transform: translateY(0) scale(1);   opacity: 0; }
     15%  { opacity: var(--op, 0.18); }
@@ -230,7 +325,13 @@
                     <div class="robot-pupil"></div>
                   </div>
                 </div>
+                <div class="robot-mouth">
+                  <span></span>
+                  <span></span>
+                  <span></span>
+                </div>
               </div>
+              <div class="robot-body"></div>
             </div>
             {{-- Right Text --}}
             <div class="hidden lg:flex flex-col justify-center text-right space-y-2 flex-1">
@@ -240,17 +341,10 @@
               </div>
             </div>
           </div>
-          {{-- Main Header Text --}}
-          <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-            <div class="max-w-2xl">
-              <div class="section-kicker text-blue-300">Hero Banner</div>
-              <h2 class="mt-3 text-3xl font-black text-white md:text-4xl">Promo utama yang paling menonjol</h2>
-              <p class="mt-4 max-w-2xl text-sm text-slate-300">Temukan penawaran eksklusif, top up cepat, dan game populer dalam satu tampilan banner hero.</p>
-            </div>
-            <div class="flex flex-wrap gap-3">
-              <a href="{{ route('products.search', ['q'=>'top up game']) }}" class="inline-flex items-center justify-center rounded-2xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-400">Beli Sekarang</a>
-              <a href="{{ route('marketplace.trending') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">Lihat Trending</a>
-            </div>
+          {{-- Action Buttons --}}
+          <div class="flex flex-wrap gap-3 justify-center lg:justify-start">
+            <a href="{{ route('products.search', ['q'=>'top up game']) }}" class="inline-flex items-center justify-center rounded-2xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-400">Beli Sekarang</a>
+            <a href="{{ route('marketplace.trending') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">Lihat Trending</a>
           </div>
         </div>
 
@@ -388,15 +482,6 @@
 {{-- ================= FEATURED BANNERS (moved below products) ================ --}}
 @if(isset($featuredBanners) && $featuredBanners->count())
   <section class="max-w-7xl mx-auto px-4 mb-10">
-    <div class="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
-      <div>
-        <div class="section-kicker text-orange-300">Featured Banner</div>
-        <h2 class="mt-1 text-lg font-bold text-white">Banner promo pendamping</h2>
-      </div>
-      <span class="inline-flex items-center rounded-full border border-orange-400/20 bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-200 backdrop-blur">
-        3:1 marquee
-      </span>
-    </div>
     <div class="featured-stage rounded-2xl overflow-hidden p-3 md:p-4">
       <div class="featured-scroll overflow-hidden">
         <div class="flex gap-3 md:gap-4 animate-featured-scroll will-change-transform">
@@ -464,7 +549,14 @@
     function resetTimer() { clearInterval(timer); timer = setInterval(() => { goTo(index + 1); }, 4000); }
   })();
 
-  // Featured banners: no duplication — single horizontal row only
+  // Featured banners: duplicate items for continuous marquee animation
+  (function() {
+    const marquee = document.querySelector('.featured-scroll .animate-featured-scroll');
+    if (!marquee) return;
+    // Duplicate children to allow seamless loop
+    const clone = marquee.cloneNode(true);
+    marquee.parentNode.appendChild(clone);
+  })();
 
   // Interactive robot head that follows cursor
   (function() {
