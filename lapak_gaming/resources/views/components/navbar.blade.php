@@ -145,7 +145,7 @@
 </aside>
 
 {{-- ═══ DESKTOP NAVBAR ═══ --}}
-<header id="main-navbar" class="sticky top-0 z-40 shadow-sm w-full font-sans backdrop-blur-xl border-b border-white/10 {{ $isAdminRoute ? 'admin-navbar' : '' }}">
+<header id="main-navbar" class="sticky top-0 z-40 shadow-sm w-full font-sans backdrop-blur-xl border-b border-white/10 {{ ($isAdminRoute || $isAdminSettingsRoute) ? 'admin-navbar' : '' }}">
   
   {{-- 2. Main Bar (Blue) --}}
   <div class="navbar-container h-20 flex flex-col justify-center">
@@ -186,7 +186,7 @@
       @endif
 
       {{-- Right Icons (Auth, Chat, Cart) --}}
-      <div class="flex items-center gap-3 shrink-0 ml-auto md:ml-0">
+      <div class="flex items-center gap-3 shrink-0 ml-auto">
         
         @if($authUser)
           @if(! $isAdminRoute && ! $isAdminSettingsRoute)
@@ -281,18 +281,20 @@
                 <p class="text-xs text-slate-400 truncate">{{ $authUser->email }}</p>
               </div>
               
-              @if($isAdminRoute && $authUser->isAdmin())
-                @include('components.navbar-admin-links')
-              @else
-                <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Dashboard</a>
-                <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pesanan Saya</a>
-                <a href="{{ route('wallet.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Wallet</a>
-                @if($authUser->isSellerAccount())
-                  <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Dashboard Penjual</a>
+                @if(($isAdminRoute || $isAdminSettingsRoute) && $authUser->isAdmin())
+                  <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Panel Admin</a>
+                  <a href="{{ route('admin.contact-messages.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pesan Masuk</a>
+                  <a href="{{ route('admin.users.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Kelola Akun</a>
                 @else
-                  <a href="{{ route('seller.register.form') }}" class="block px-4 py-2 text-sm text-amber-400 font-medium hover:bg-amber-800/10">Daftar Jadi Penjual</a>
+                  <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Dashboard</a>
+                  <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pesanan Saya</a>
+                  <a href="{{ route('wallet.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Wallet</a>
+                  @if($authUser->isSellerAccount())
+                    <a href="{{ route('seller.dashboard') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Dashboard Penjual</a>
+                  @else
+                    <a href="{{ route('seller.register.form') }}" class="block px-4 py-2 text-sm text-amber-400 font-medium hover:bg-amber-800/10">Daftar Jadi Penjual</a>
+                  @endif
                 @endif
-              @endif
               {{-- Pengaturan Akun (visible to all authenticated users) --}}
               @if(Route::has('settings.account'))
                 <a href="{{ route('settings.account') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pengaturan Akun</a>

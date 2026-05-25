@@ -14,6 +14,7 @@
     <a href="{{ route('admin.orders.index') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Transaksi</a>
     <a href="{{ route('admin.banners.index') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Banner</a>
     <a href="{{ route('admin.notifications.index') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Notifikasi</a>
+    <a href="{{ route('admin.contact-messages.index') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Pesan Masuk</a>
     <a href="{{ route('admin.terminal.index') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Terminal</a>
     <a href="{{ route('admin.users.index', ['tab' => 'applications']) }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Pengajuan</a>
   </div>
