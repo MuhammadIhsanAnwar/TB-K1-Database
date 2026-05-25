@@ -263,7 +263,8 @@
 
                     </a>
 
-                    @if($order->buyer_id == auth()->id() && in_array($order->status, [\App\Models\Order::STATUS_COMPLETED, \App\Models\Order::STATUS_DELIVERED], true))
+                    @if($order->buyer_id == auth()->id() &&
+                    $order->status === \App\Models\Order::STATUS_COMPLETED)
                         <a href="{{ route('orders.receipt.pdf', $order->order_code) }}"
                            target="_blank"
                            rel="noopener noreferrer"
