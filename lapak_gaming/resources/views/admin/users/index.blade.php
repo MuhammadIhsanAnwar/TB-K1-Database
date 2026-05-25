@@ -337,7 +337,7 @@ a{
                 value="{{ $size }}"
                 {{ request('per_page', 50) == $size ? 'selected' : '' }}
             >
-                {{ $size }} Rows
+                {{ $size }} per halaman
             </option>
         @endforeach
     </select>
