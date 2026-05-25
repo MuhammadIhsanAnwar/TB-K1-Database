@@ -118,6 +118,30 @@
         
         <div class="flex items-center gap-3">
           <span class="text-sm surface-muted font-medium">Urutkan:</span>
+          <form method="GET">
+
+    <input type="hidden" name="q" value="{{ request('q') }}">
+    <input type="hidden" name="category" value="{{ request('category') }}">
+    <input type="hidden" name="sort" value="{{ request('sort') }}">
+    <input type="hidden" name="min_price" value="{{ request('min_price') }}">
+    <input type="hidden" name="max_price" value="{{ request('max_price') }}">
+
+    <select
+        name="per_page"
+        onchange="this.form.submit()"
+        class="input text-sm min-w-[140px]"
+    >
+        @foreach([50,100,300,500,1000] as $size)
+            <option
+                value="{{ $size }}"
+                {{ request('per_page', 50) == $size ? 'selected' : '' }}
+            >
+                {{ $size }} per halaman
+            </option>
+        @endforeach
+    </select>
+
+</form>
           <select onchange="window.location.href=this.value" class="input text-sm min-w-[180px]">
             @php $q = request()->except('sort'); @endphp
             <option value="{{ route('products.search', array_merge($q, ['sort' => 'popular'])) }}" {{ request('sort') === 'popular' ? 'selected' : '' }}>Paling Populer</option>
