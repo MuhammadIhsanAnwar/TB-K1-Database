@@ -282,11 +282,35 @@ return new class extends Migration
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
+
+        Schema::create('marketplace_notifications', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->string('title');
+            $table->text('body')->nullable();
+            $table->string('link')->nullable();
+            $table->string('type')->nullable();
+            $table->json('data')->nullable();
+            $table->timestamp('read_at')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('sessions', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users')->cascadeOnDelete();
+            $table->string('ip_address', 45)->nullable();
+            $table->text('user_agent')->nullable();
+            $table->longText('payload');
+            $table->unsignedInteger('last_activity');
+            $table->timestamps();
+        });
     }
 
     public function down(): void
     {
         Schema::dropIfExists('banners');
+        Schema::dropIfExists('marketplace_notifications');
+        Schema::dropIfExists('sessions');
         Schema::dropIfExists('seller_level_benefits');
         Schema::dropIfExists('carts');
         Schema::dropIfExists('comment_likes');

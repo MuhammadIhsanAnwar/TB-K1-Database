@@ -255,15 +255,9 @@ Route::prefix('verification')->name('verification.')->group(function () {
 Route::get('/account/reactivate', [SettingsController::class, 'reactivateForm'])->name('account.reactivate.form');
 Route::post('/account/reactivate', [SettingsController::class, 'reactivate'])->name('account.reactivate');
 
-// ─────────────────────────────────────────────────────────────────────────────
-// Setup & Migration (dev / first-run)
-// ─────────────────────────────────────────────────────────────────────────────
-
-Route::get('/setup', [SetupController::class, 'index'])->name('setup.index');
-Route::post('/setup/admin', [SetupController::class, 'storeAdmin'])->name('setup.storeAdmin');
-Route::get('/setup/migrate', [MigrationController::class, 'index'])->name('setup.migrate');
-Route::post('/setup/migrate/run', [MigrationController::class, 'run'])->name('setup.migrate.run');
-Route::get('/setup/migrate/status', [MigrationController::class, 'status'])->name('setup.migrate.status');
+// Setup & Migration routes removed to avoid redirecting users to first-run pages.
+// If you need them in development, wrap these routes with an environment check
+// (e.g. `if (app()->environment('local')) { ... }`) instead of exposing them publicly.
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Guest routes
