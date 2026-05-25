@@ -47,7 +47,24 @@ class ProductController extends Controller
             ->when($query, fn($q) => $q->where(function($q) use ($query) {
                 $q->where('name', 'like', "%$query%")->orWhere('description', 'like', "%$query%");
             }))
-            ->when($categorySlug, fn($q) => $q->whereHas('category', fn($c) => $c->where('slug', $categorySlug)))
+            ->when($categorySlug, function($q) use ($categorySlug) {
+                // support both slug and numeric id, include direct children categories
+                if (ctype_digit((string) $categorySlug)) {
+                    $id = (int) $categorySlug;
+                    $q->where(function($sub) use ($id) {
+                        $sub->where('category_id', $id)->orWhereHas('category', fn($c) => $c->where('parent_id', $id));
+                    });
+                } else {
+                    $cat = \App\Models\Category::where('slug', $categorySlug)->first();
+                    if ($cat) {
+                        $children = $cat->children()->pluck('id')->push($cat->id)->all();
+                        $q->whereIn('category_id', $children);
+                    } else {
+                        // fallback to matching slug on related category record
+                        $q->whereHas('category', fn($c) => $c->where('slug', $categorySlug));
+                    }
+                }
+            })
             ->when($minPrice, fn($q) => $q->where('price', '>=', $minPrice))
             ->when($maxPrice, fn($q) => $q->where('price', '<=', $maxPrice))
             ->when($sort === 'popular', fn($q) => $q->popular())

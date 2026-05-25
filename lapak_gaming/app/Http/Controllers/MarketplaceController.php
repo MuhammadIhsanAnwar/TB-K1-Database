@@ -98,7 +98,7 @@ class MarketplaceController extends Controller
                     'category' => $category,
                     'products' => Product::query()->active()->inStock()->where('category_id', $category->id)->with(['statistics', 'seller', 'category'])->take(12)->get(),
                 ];
-            })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->take(5)->values();
+            })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->take(8)->values();
         }
 
         $featuredBanners = collect();
