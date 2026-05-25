@@ -305,6 +305,14 @@ public function poll(Conversation $conversation)
             'message' => 'required|string'
         ]);
 
+        if ($message->created_at->diffInMinutes(now()) > 5) {
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Pesan hanya bisa diedit dalam 5 menit.'
+        ], 403);
+    }
+
         $message->update([
             'message' => $request->message,
             'edited_at' => now(),

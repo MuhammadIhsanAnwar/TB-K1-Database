@@ -701,8 +701,11 @@
     <div class="bubble-content group relative">
         
         {{-- Tombol Opsi (Hanya muncul jika pesan milik sendiri) --}}
-        @if($isMine)
-        <div class="message-actions" aria-label="Aksi pesan">
+        @if(
+            $isMine &&
+            $msg->created_at->diffInMinutes(now()) <= 5
+        )
+<div class="message-actions" aria-label="Aksi pesan">
             <button type="button" onclick="prepareEdit('{{ $msg->hash }}')" class="" title="Edit pesan" aria-label="Edit pesan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
             </button>
