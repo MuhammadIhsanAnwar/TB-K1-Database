@@ -16,59 +16,59 @@ use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
-    public function product(Request $request, Product $product): View|RedirectResponse
+    public function product(Request $request, Product $product): RedirectResponse
     {
-        $messages = [
-            'quantity.integer' => 'Jumlah harus berupa angka bulat.',
-            'quantity.min' => 'Jumlah produk minimal 1.',
-            'quantity.max' => 'Jumlah produk maksimal 99.',
-        ];
-
-        $data = $request->validate([
-            'buyer_note' => ['nullable', 'string', 'max:1000'],
-            'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
-        ], $messages);
-
         $product->load(['seller', 'category']);
+
         abort_unless($product->status === 'published', 404);
-        abort_unless(! empty($product->seller) && ! $product->seller->deactivated_at, 404);
+        abort_unless(!empty($product->seller) && !$product->seller->deactivated_at, 404);
 
         if ((int) $product->seller_id === (int) $request->user()->id) {
-            return redirect()->route('products.show', $product->slug)
+
+            return redirect()
+                ->route('products.show', $product->slug)
                 ->with('error', 'Anda tidak bisa checkout produk sendiri.');
         }
 
-        $quantity = (int) ($data['quantity'] ?? 1);
-
         if ((int) $product->stock < 1) {
-            return redirect()->route('products.show', $product->slug)
+
+            return redirect()
+                ->route('products.show', $product->slug)
                 ->with('error', 'Stok produk sedang kosong.');
         }
 
+        $quantity = (int) $request->input('quantity', 1);
+
         if ($quantity > (int) $product->stock) {
-            return redirect()->route('products.show', $product->slug)
-                ->with('error', 'Stok produk tidak mencukupi untuk jumlah yang dipilih.');
+
+            return redirect()
+                ->route('products.show', $product->slug)
+                ->with('error', 'Stok produk tidak mencukupi.');
         }
 
-        $subtotal = $quantity * (float) $product->price;
-        $feePercent = 5;
-        $feeAmount = round($subtotal * $feePercent / 100, 2);
-        $grandTotal = $subtotal + $feeAmount;
-        $wallet = Wallet::firstOrCreate(['user_id' => $request->user()->id]);
-        $wallet->loadMissing('balanceState');
-        $availableBalance = (float) ($wallet->balanceState?->available_balance ?? 0);
+        $cartItem = \App\Models\Cart::where('user_id', $request->user()->id)
+            ->where('product_id', $product->id)
+            ->first();
 
-        return view('orders.product-checkout', compact(
-            'product',
-            'quantity',
-            'subtotal',
-            'feePercent',
-            'feeAmount',
-            'grandTotal',
-            'availableBalance'
-        ));
+        if ($cartItem) {
+
+            $cartItem->update([
+                'quantity' => $quantity,
+                'selected' => true,
+            ]);
+
+        } else {
+
+            \App\Models\Cart::create([
+                'user_id' => $request->user()->id,
+                'product_id' => $product->id,
+                'quantity' => $quantity,
+                'selected' => true,
+            ]);
+        }
+
+        return redirect()->route('cart.checkout');
     }
-
     public function store(Request $request): RedirectResponse
     {
         $messages = [
