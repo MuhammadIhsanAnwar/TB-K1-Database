@@ -25,8 +25,8 @@
                 <h2 class="font-display text-lg font-bold text-white">Produk yang Dipesan</h2>
                 <div class="mt-5 flex flex-col gap-4 sm:flex-row">
                     <img src="{{ $product->image_url }}"
-                         alt="{{ $product->name }}"
-                         class="h-40 w-full rounded-xl object-cover sm:h-32 sm:w-44"
+                        alt="{{ $product->name }}"
+                        class="w-full rounded-xl object-cover aspect-[16/9] sm:w-44"
                          loading="lazy"
                          data-fallback="{{ asset('images/default-product.png') }}"
                          onerror="this.onerror=null;this.src=this.dataset.fallback;">

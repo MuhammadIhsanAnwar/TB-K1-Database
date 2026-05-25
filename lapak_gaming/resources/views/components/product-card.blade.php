@@ -18,7 +18,7 @@
   @endif
 
   {{-- Thumbnail --}}
-  <div class="relative w-full aspect-[4/3] overflow-hidden surface-weak">
+  <div class="relative w-full aspect-[16/9] overflow-hidden surface-weak">
     <img src="{{ $displayImage }}"
          alt="{{ $product->name }}"
          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"

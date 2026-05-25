@@ -58,7 +58,17 @@ class ProductController extends Controller
             ->with(['statistics', 'category', 'seller'])
             ->paginate(20)->withQueryString();
 
-        return view('products.search', compact('products', 'query'));
+        $categories = collect();
+        if (class_exists(Category::class)) {
+            $categories = Category::query()
+                ->active()
+                ->whereNull('parent_id')
+                ->ordered()
+                ->take(8)
+                ->get();
+        }
+
+        return view('products.search', compact('products', 'query', 'categories'));
     }
 
     public function byType(string $type)

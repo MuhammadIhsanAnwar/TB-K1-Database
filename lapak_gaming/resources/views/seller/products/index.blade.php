@@ -109,10 +109,10 @@ use Illuminate\Support\Str;
                     <div class="flex flex-col gap-5 md:flex-row md:items-center">
                         
                         {{-- Product Thumbnail --}}
-                        <div class="relative shrink-0 mx-auto md:mx-0">
+                        <div class="relative shrink-0 mx-auto md:mx-0 w-28 sm:w-32 aspect-[16/9]">
                             <img src="{{ $product->image_url }}"
                                  alt="Gambar {{ $product->name }}"
-                                 class="w-20 h-20 md:w-24 md:h-24 rounded-2xl object-cover bg-black/40 border border-white/5 group-hover:border-amber-500/40 transition-colors shadow-inner">
+                                 class="w-full h-full rounded-2xl object-cover bg-black/40 border border-white/5 group-hover:border-amber-500/40 transition-colors shadow-inner">
                         </div>
                         
                         {{-- Meta Details --}}

@@ -94,9 +94,9 @@ use Illuminate\Support\Str;
                                 </div>
 
                                 {{-- Gambar Produk --}}
-                                <div class="shrink-0 relative">
+                                <div class="shrink-0 relative w-28 sm:w-36 aspect-[16/9]">
                                     <img src="{{ $item->product->image_url }}"
-                                         class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover border border-slate-700 shadow-inner"
+                                         class="w-full h-full rounded-xl object-cover border border-slate-700 shadow-inner"
                                          onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name={{ urlencode($item->product->name) }}&background=1e293b&color=f59e0b&bold=true&size=128';">
                                 </div>
 

@@ -31,6 +31,17 @@ class MarketplaceController extends Controller
             $allCategories = $query->get();
         }
 
+        // Determine which categories should be displayed on homepage (only those that have products)
+        $displayCategories = collect();
+        if ($allCategories->isNotEmpty() && Schema::hasTable('products')) {
+            foreach ($allCategories as $cat) {
+                $has = Product::query()->active()->inStock()->where('category_id', $cat->id)->exists();
+                if ($has) {
+                    $displayCategories->push($cat);
+                }
+            }
+        }
+
         // 1. Hero Banners
         $heroBanners = collect();
         if (Schema::hasTable('banners')) {
@@ -60,9 +71,13 @@ class MarketplaceController extends Controller
             foreach($categoriesToFetch as $catName) {
                 $cat = Category::query()->active()->where('name', 'like', "%{$catName}%")->first();
                 if ($cat) {
+                    $products = Product::query()->active()->inStock()->where('category_id', $cat->id)->with(['statistics', 'seller', 'category'])->take(12)->get();
+                    if ($products->isEmpty()) {
+                        continue;
+                    }
                     $categorySections->push([
                         'category' => $cat,
-                        'products' => Product::query()->active()->inStock()->where('category_id', $cat->id)->with(['statistics', 'seller', 'category'])->take(12)->get()
+                        'products' => $products
                     ]);
                 }
             }
@@ -78,9 +93,22 @@ class MarketplaceController extends Controller
             })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->take(5)->values();
         }
 
+        $featuredBanners = collect();
+        if (Schema::hasTable('banners')) {
+            $fq = Banner::query()->active()->where('position', 'featured');
+            if (Schema::hasColumn('banners', 'sort_order')) {
+                $fq = $fq->orderByDesc('sort_order')->latest();
+            } else {
+                $fq = $fq->latest();
+            }
+            $featuredBanners = $fq->take(6)->get();
+        }
+
         return view('marketplace.home', [
             'allCategories' => $allCategories,
+            'displayCategories' => $displayCategories,
             'heroBanners' => $heroBanners,
+            'featuredBanners' => $featuredBanners,
             'featuredGameKeys' => $featuredGameKeys,
             'featuredRPGKeys' => $featuredRPGKeys,
             'categorySections' => $categorySections,

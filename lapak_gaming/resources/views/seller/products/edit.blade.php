@@ -168,9 +168,9 @@
                                         ? $imagePath
                                         : asset('storage/' . ltrim($imagePath, '/'));
                                 @endphp
-                                <div class="relative rounded-xl overflow-hidden group border border-white/5 bg-black/40 backdrop-blur-sm p-1" data-image-index="{{ $index }}">
+                                <div class="relative rounded-xl overflow-hidden group border border-white/5 bg-black/40 backdrop-blur-sm p-1 aspect-[16/9]" data-image-index="{{ $index }}">
                                     <img src="{{ $imageUrl }}" 
-                                         class="w-full h-24 object-cover rounded-lg" 
+                                         class="w-full h-full object-cover rounded-lg" 
                                          alt="Produk {{ $index + 1 }}" />
                                     <button type="button" 
                                             class="remove-image-btn absolute inset-1 bg-black/80 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"

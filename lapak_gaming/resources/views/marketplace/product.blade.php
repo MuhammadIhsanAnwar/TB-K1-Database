@@ -50,7 +50,7 @@
         
         {{-- Product Image --}}
         <div class="w-full md:w-5/12 shrink-0">
-          <div class="rounded-lg overflow-hidden border border-white/10 surface-weak aspect-square">
+          <div class="rounded-lg overflow-hidden border border-white/10 surface-weak aspect-[16/9]">
             <img src="{{ $displayImage }}" alt="{{ $productName }}" class="w-full h-full object-cover">
           </div>
         </div>

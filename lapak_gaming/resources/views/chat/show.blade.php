@@ -609,7 +609,9 @@
         {{-- Product Card Context --}}
         @if($product)
         <div class="product-context">
-            <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+            <div class="overflow-hidden rounded-xl aspect-[16/9] bg-black/40 border border-white/5">
+                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+            </div>
             <div class="product-info">
                 <h3>{{ $product->name }}</h3>
                 <p class="product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
@@ -663,7 +665,9 @@
 
         {{-- Cek Jika Gambar --}}
         @if($msg->image_url)
-            <img src="{{ $msg->image_url }}" class="max-w-xs rounded-lg mb-2 cursor-pointer" onclick="window.open(this.src)">
+            <div class="max-w-xs rounded-lg mb-2 overflow-hidden aspect-[16/9] cursor-pointer" onclick="window.open(this.querySelector('img').src)">
+                <img src="{{ $msg->image_url }}" class="w-full h-full object-cover">
+            </div>
         @endif
         
         <p class="message-text" id="text-{{ $msg->id }}">{{ $msg->message }}</p>
@@ -710,12 +714,12 @@
     </button>
 </div>
 {{-- Area Preview Sebelum Kirim --}}
-<div id="imagePreviewContainer" class="hidden mt-2 p-2 bg-slate-800 rounded-lg flex items-center gap-3">
+<div id="imagePreviewContainer" class="hidden mt-2 p-2 bg-slate-800 rounded-lg items-center gap-3">
     <img id="imagePreview" src="" class="h-12 w-12 object-cover rounded">
     <span class="text-xs text-gray-300 flex-1 truncate" id="fileName"></span>
     <button onclick="cancelImage()" class="text-red-400 text-xs">Batal</button>
 </div>
-            <div id="chatCropperModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+            <div id="chatCropperModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/90 backdrop-blur-md">
                 <div class="bg-[#111] border border-white/10 rounded-2xl max-w-xl w-full flex flex-col max-h-[85vh] shadow-2xl">
                     <div class="flex items-center justify-between border-b border-white/5 px-4 py-3">
                         <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
@@ -941,6 +945,7 @@ function previewImage(input) {
 
             cropperImg.src = e.target.result;
             modal.classList.remove('hidden');
+            modal.classList.add('flex');
 
             if (chatCropper) {
                 chatCropper.destroy();
@@ -974,6 +979,7 @@ function closeChatCropper() {
     const modal = document.getElementById('chatCropperModal');
     if (modal) {
         modal.classList.add('hidden');
+        modal.classList.remove('flex');
     }
     if (chatCropper) {
         chatCropper.destroy();
@@ -1063,6 +1069,7 @@ document.getElementById('saveChatCropperBtn')?.addEventListener('click', () => {
                     const savedPercent = Math.round((1 - finalFile.size / originalChatFile.size) * 100);
                     fileName.textContent = `${finalFile.name} (${savedPercent > 0 ? `Hemat ${savedPercent}%` : 'Optimized'}, ${(finalFile.size / 1024).toFixed(0)} KB)`;
                     container.classList.remove('hidden');
+                    container.classList.add('flex');
 
                     closeChatCropper();
                     updateSendButtonState();
@@ -1077,6 +1084,7 @@ function cancelImage() {
     const container = document.getElementById('imagePreviewContainer');
     if (container) {
         container.classList.add('hidden');
+        container.classList.remove('flex');
     }
     updateSendButtonState();
 }

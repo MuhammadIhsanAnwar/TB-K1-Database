@@ -47,7 +47,7 @@
                     <div class="p-5 space-y-5">
                         @foreach($cartItems as $item)
                             <div class="flex gap-4">
-                                <img src="{{ $item->product->image_url }}" class="w-16 h-16 rounded-lg object-cover border border-gray-100" alt="">
+                                <img src="{{ $item->product->image_url }}" class="w-24 sm:w-28 aspect-[16/9] rounded-lg object-cover border border-gray-100" alt="">
                                 <div class="flex-1">
                                     <p class="font-semibold text-gray-800 text-sm leading-tight mb-1">{{ $item->product->name }}</p>
                                     <div class="flex items-center gap-2 mb-2">

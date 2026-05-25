@@ -253,7 +253,9 @@
                     @forelse ($products->take(5) as $product)
                         <div class="flex items-center justify-between rounded-xl border border-white/5 surface-weak p-4 transition duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
                             <div class="flex items-center gap-3 min-w-0">
-                                <img src="{{ $product->image_url }}" class="w-9 h-9 rounded-lg object-cover bg-black/40 border border-white/5" alt="Thumbnail {{ $product->name }}">
+                                <div class="w-16 sm:w-20 aspect-[16/9] rounded-lg overflow-hidden bg-black/40 border border-white/5">
+                                    <img src="{{ $product->image_url }}" class="w-full h-full object-cover" alt="Thumbnail {{ $product->name }}">
+                                </div>
                                 <div class="min-w-0">
                                     <div class="font-semibold text-sm text-white truncate">{{ $product->name }}</div>
                                     <div class="text-[10px] text-slate-400 font-medium mt-0.5 uppercase tracking-wider flex items-center gap-1.5">

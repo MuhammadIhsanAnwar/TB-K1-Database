@@ -42,6 +42,8 @@
     background: var(--nav-cat-bg);
     color: var(--text);
   }
+  .admin-navbar { background: var(--surface); }
+  .admin-navbar .navbar-container { background: transparent; }
   /* Ensure links and icons inside the navbar inherit readable colors */
   #main-navbar a, #main-navbar button, #main-navbar .nav-link { color: inherit; }
   /* Mobile drawer should follow surface/background tokens */
@@ -63,7 +65,7 @@
 @endpush
 
 {{-- ═══ MOBILE SIDEBAR DRAWER ═══ --}}
-<aside id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col overflow-y-auto bg-[#0D1421] text-slate-200 transition-transform -translate-x-full">
+<aside id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col overflow-y-auto text-slate-200 transition-transform -translate-x-full {{ $isAdminRoute ? 'admin-navbar' : '' }}">
   <div class="flex items-center justify-between p-4 border-b border-white/6 navbar-top">
     <a href="{{ route('marketplace.home') }}" class="flex items-center gap-2.5">
       <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Logo" class="w-8 h-8 rounded-lg object-contain surface-weak">
@@ -101,40 +103,44 @@
   </div>
 
   <nav class="p-4 flex-1 space-y-4">
-    <div>
-      <ul class="space-y-1">
-        <li><a href="{{ route('marketplace.home') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium">Beranda</a></li>
-        <li><a href="{{ route('marketplace.browse') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium">Semua Produk</a></li>
-        <li><a href="{{ route('marketplace.trending') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium">Trending</a></li>
-      </ul>
-    </div>
-    
-    @auth
-    <div>
-      <p class="text-xs font-semibold surface-muted uppercase mb-2">Akun Saya</p>
-      <ul class="space-y-1">
-        @if($authUser?->isAdmin())
-          <li><a href="{{ route('admin.dashboard') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Panel Admin</a></li>
-          <li><a href="{{ route('admin.orders.index') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Transaksi</a></li>
-        @else
-          <li><a href="{{ route('dashboard') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Dashboard</a></li>
-          <li><a href="{{ route('orders.index') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Pesanan Saya</a></li>
-          <li><a href="{{ route('wallet.index') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Wallet</a></li>
-        @endif
-        <li>
-          <form method="POST" action="{{ route('logout') }}">
-            @csrf
-            <button type="submit" class="w-full flex items-center py-2 text-red-400 hover:text-red-200 text-sm text-left">Keluar</button>
-          </form>
-        </li>
-      </ul>
-    </div>
-    @endauth
+    @if($isAdminRoute && $authUser?->isAdmin())
+      @include('components.navbar-admin-links')
+    @else
+      <div>
+        <ul class="space-y-1">
+          <li><a href="{{ route('marketplace.home') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium">Beranda</a></li>
+          <li><a href="{{ route('marketplace.browse') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium">Semua Produk</a></li>
+          <li><a href="{{ route('marketplace.trending') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium">Trending</a></li>
+        </ul>
+      </div>
+      
+      @auth
+      <div>
+        <p class="text-xs font-semibold surface-muted uppercase mb-2">Akun Saya</p>
+        <ul class="space-y-1">
+          @if($authUser?->isAdmin())
+            <li><a href="{{ route('admin.dashboard') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Panel Admin</a></li>
+            <li><a href="{{ route('admin.orders.index') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Transaksi</a></li>
+          @else
+            <li><a href="{{ route('dashboard') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Dashboard</a></li>
+            <li><a href="{{ route('orders.index') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Pesanan Saya</a></li>
+            <li><a href="{{ route('wallet.index') }}" class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm">Wallet</a></li>
+          @endif
+          <li>
+            <form method="POST" action="{{ route('logout') }}">
+              @csrf
+              <button type="submit" class="w-full flex items-center py-2 text-red-400 hover:text-red-200 text-sm text-left">Keluar</button>
+            </form>
+          </li>
+        </ul>
+      </div>
+      @endauth
+    @endif
   </nav>
 </aside>
 
 {{-- ═══ DESKTOP NAVBAR ═══ --}}
-<header id="main-navbar" class="sticky top-0 z-40 shadow-sm w-full font-sans">
+<header id="main-navbar" class="sticky top-0 z-40 shadow-sm w-full font-sans {{ $isAdminRoute ? 'admin-navbar' : '' }}">
   
   {{-- 2. Main Bar (Blue) --}}
   <div class="navbar-container h-20 flex flex-col justify-center">
@@ -165,11 +171,11 @@
         </form>
         {{-- Trending Chips (Absolute positioned below search to not expand nav height) --}}
         <div class="absolute top-full left-0 mt-1.5 flex items-center gap-1.5 whitespace-nowrap overflow-hidden text-xs w-full">
-          <a href="{{ route('products.search', ['q'=>'cheap robux']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">cheap robux</a>
-          <a href="{{ route('products.search', ['q'=>'growtopia']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">growtopia</a>
-          <a href="{{ route('products.search', ['q'=>'genshin impact']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">genshin impact</a>
-          <a href="{{ route('products.search', ['q'=>'steam']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">steam</a>
-          <a href="{{ route('products.search', ['q'=>'mobile legends']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">mobile legends</a>
+          <a href="{{ route('products.search', ['q'=>'top up game']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">top up game</a>
+          <a href="{{ route('products.search', ['q'=>'akun game']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">akun game</a>
+          <a href="{{ route('products.search', ['q'=>'voucher game']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">voucher game</a>
+          <a href="{{ route('products.search', ['q'=>'game key']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">game key</a>
+          <a href="{{ route('products.search', ['q'=>'item game']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">item game</a>
         </div>
       </div>
       @endif
@@ -190,7 +196,7 @@
               <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
               <span id="notif-badge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
             </button>
-            <div id="notif-dropdown" class="hidden absolute right-0 top-full mt-2 w-80 bg-[#0D1421] rounded-lg shadow-xl border border-white/6 overflow-hidden text-left text-slate-200 z-50">
+            <div id="notif-dropdown" class="hidden absolute right-0 top-full mt-2 w-80 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left text-slate-200 z-50">
               <div class="px-4 py-3 border-b flex justify-between items-center bg-transparent">
                 <span class="font-bold text-sm text-slate-100">Notifikasi</span>
                 <a href="{{ route('notifications.index') }}" class="text-xs text-itemku-blue">Lihat semua</a>
@@ -218,7 +224,7 @@
                 <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
               @endif
             </button>
-            <div id="cart-dropdown" class="hidden absolute right-0 top-full mt-2 w-72 bg-[#0D1421] rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50">
+            <div id="cart-dropdown" class="hidden absolute right-0 top-full mt-2 w-72 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50">
               <div class="px-4 py-3 border-b flex justify-between items-center bg-transparent">
                 <span class="font-bold text-sm text-slate-100">Keranjang</span>
                 <a href="{{ route('cart.index') }}" class="text-xs text-itemku-blue">Lihat semua</a>
@@ -242,7 +248,15 @@
           </div>
           @endif
           @endif
-          
+
+          {{-- If on admin routes, show admin quick links instead of chat/cart --}}
+          @if($isAdminRoute && $authUser?->isAdmin())
+            <div class="hidden sm:flex items-center gap-2">
+              <a href="{{ route('admin.dashboard') }}" class="text-white px-3 py-2 rounded hover:surface-weak">Dashboard Admin</a>
+              <a href="{{ route('admin.users.index') }}" class="text-white px-3 py-2 rounded hover:surface-weak">Kelola Akun</a>
+              <a href="{{ route('admin.orders.index') }}" class="text-white px-3 py-2 rounded hover:surface-weak">Transaksi</a>
+            </div>
+          @endif
           <div class="h-6 w-px surface-weak mx-1 hidden sm:block"></div>
 
           {{-- User Avatar Dropdown --}}
@@ -252,17 +266,14 @@
               <span class="text-sm font-medium truncate max-w-[100px]">{{ $authUser?->name ?? 'User' }}</span>
               <svg class="w-3 h-3 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
-            <div id="user-dropdown" class="hidden absolute right-0 top-full mt-3 w-56 bg-[#0D1421] rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50 py-2">
+            <div id="user-dropdown" class="hidden absolute right-0 top-full mt-3 w-56 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50 py-2">
               <div class="px-4 py-2 border-b border-white/6 mb-1">
                 <p class="text-sm font-bold text-slate-100 truncate">{{ $authUser->name }}</p>
                 <p class="text-xs text-slate-400 truncate">{{ $authUser->email }}</p>
               </div>
               
-              @if($authUser->isAdmin())
-                <a href="{{ route('admin.dashboard') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Panel Admin</a>
-                <a href="{{ route('admin.users.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Kelola Akun</a>
-                <a href="{{ route('admin.orders.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Transaksi</a>
-                <a href="{{ route('admin.banners.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Banner</a>
+              @if($isAdminRoute && $authUser->isAdmin())
+                @include('components.navbar-admin-links')
               @else
                 <a href="{{ route('dashboard') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Dashboard</a>
                 <a href="{{ route('orders.index') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pesanan Saya</a>
@@ -301,8 +312,8 @@
       </div>
     </div>
   </div>
-
   {{-- 3. Category Bar (Dark Blue) --}}
+  @if(! $isAdminRoute)
   <div class="navbar-categories h-12 hidden lg:block border-t border-white/5 shadow-sm">
     <div class="max-w-7xl mx-auto px-4 h-full flex items-center gap-1">
       
@@ -313,7 +324,7 @@
           Kategori
         </button>
         {{-- Mega Menu (Hover to open) --}}
-            <div class="absolute left-0 top-full w-[800px] bg-[#0D1421] rounded-b-lg shadow-xl border border-white/6 hidden group-hover:flex z-50 min-h-[400px] max-h-[70vh] overflow-y-auto">
+            <div class="absolute left-0 top-full w-[800px] bg-surface-850 rounded-b-lg shadow-xl border border-white/6 hidden group-hover:flex z-50 min-h-[400px] max-h-[70vh] overflow-y-auto">
           <div class="w-64 bg-transparent border-r border-white/6 p-2 overflow-y-auto max-h-[70vh]">
             @if($navCategories->isNotEmpty())
               @foreach($navCategories as $cat)
@@ -365,6 +376,7 @@
 
     </div>
   </div>
+  @endif
 </header>
 
 @push('scripts')

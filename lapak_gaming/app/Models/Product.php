@@ -150,22 +150,26 @@ class Product extends Model {
         }
 
         if (Storage::disk('public_app_public')->exists($imagePath)) {
-            return asset('storage/' . $imagePath);
+            $base = rtrim(config('filesystems.disks.public_app_public.url', rtrim(config('app.url', ''), '/').'/storage/app/public'), '/');
+            return $base . '/' . ltrim($imagePath, '/');
         }
 
         if (Storage::disk('public')->exists($imagePath)) {
-            return asset('storage/' . $imagePath);
+            $base = rtrim(config('filesystems.disks.public.url', rtrim(config('app.url', ''), '/').'/storage'), '/');
+            return $base . '/' . ltrim($imagePath, '/');
         }
 
+        // Some deployments may store files directly under public/storage/app/public
         if (file_exists(public_path('storage/app/public/' . $imagePath))) {
-            return asset('storage/app/public/' . $imagePath);
+            return asset('storage/app/public/' . ltrim($imagePath, '/'));
         }
 
         if (file_exists(public_path($imagePath))) {
             return asset($imagePath);
         }
 
-        return asset('storage/' . $imagePath);
+        // Fallback to storage path (may still work if webserver is configured differently)
+        return asset('storage/' . ltrim($imagePath, '/'));
     }
 
     public function getFormattedPriceAttribute(): string {
