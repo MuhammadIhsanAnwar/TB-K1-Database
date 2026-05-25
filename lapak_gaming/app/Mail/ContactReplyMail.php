@@ -8,6 +8,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Facades\Config;
 
 class ContactReplyMail extends Mailable
 {
@@ -33,5 +34,22 @@ class ContactReplyMail extends Mailable
                 'appName' => config('app.name', 'Lapak Gaming'),
             ],
         );
+    }
+
+    /**
+     * Build the message and ensure `from` is set from config.
+     */
+    public function build(): Mailable
+    {
+        $fromAddress = Config::get('mail.from.address');
+        $fromName = Config::get('mail.from.name');
+
+        return $this->from($fromAddress, $fromName)
+                    ->subject($this->envelope()->subject)
+                    ->view('emails.contact-reply')
+                    ->with([
+                        'contactMessage' => $this->contactMessage,
+                        'appName' => config('app.name', 'Lapak Gaming'),
+                    ]);
     }
 }
