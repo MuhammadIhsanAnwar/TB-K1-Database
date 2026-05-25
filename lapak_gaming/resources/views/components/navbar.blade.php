@@ -70,7 +70,7 @@
 @endpush
 
 {{-- ═══ MOBILE SIDEBAR DRAWER ═══ --}}
-<aside id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col overflow-y-auto text-slate-200 transition-transform -translate-x-full backdrop-blur-xl {{ $isAdminRoute ? 'admin-navbar' : '' }}">
+<aside id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col overflow-y-auto text-slate-200 transition-transform -translate-x-full backdrop-blur-xl {{ ($isAdminRoute || $isAdminSettingsRoute) ? 'admin-navbar' : '' }}">
   <div class="flex items-center justify-between p-4 border-b border-white/6 navbar-top">
     <a href="{{ route('marketplace.home') }}" class="flex items-center gap-2.5">
       <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Logo" class="w-8 h-8 rounded-lg object-contain surface-weak">
@@ -100,15 +100,15 @@
 
   <div class="p-4 border-b border-white/6">
     <form action="{{ route('products.search') }}" method="GET">
-        <div class="relative">
-        <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 surface-muted" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input type="text" name="q" placeholder="Cari Game, Item..." class="w-full pl-9 pr-3 py-2 border-none rounded-lg text-sm text-slate-300" style="background:var(--input-bg); color:var(--text)" />
+      <div class="relative">
+        <svg class="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <input type="text" name="q" placeholder="Cari Game, Item..." class="w-full rounded-full border border-slate-700/80 bg-slate-950/90 pl-11 pr-4 py-2 text-sm text-slate-100 placeholder:text-slate-500 outline-none focus:border-cyan-400 focus:ring-2 focus:ring-cyan-500/20" />
       </div>
     </form>
   </div>
 
   <nav class="p-4 flex-1 space-y-4">
-    @if($isAdminRoute && $authUser?->isAdmin())
+    @if(($isAdminRoute || $isAdminSettingsRoute) && $authUser?->isAdmin())
       @include('components.navbar-admin-links')
     @else
       <div>
@@ -166,12 +166,12 @@
       @if(! $isAdminRoute && ! $isAdminSettingsRoute)
       <div class="hidden md:flex flex-1 flex-col relative">
         <form action="{{ route('products.search') }}" method="GET" class="w-full relative">
-          <div class="flex items-center surface-bg rounded w-full overflow-hidden p-0.5 border-2 border-transparent focus-within-border-accent transition-colors">
-            <div class="pl-3 surface-muted">
+          <div class="flex items-center gap-2 rounded-full border border-slate-700/90 bg-slate-950/90 px-3 py-2 shadow-sm shadow-slate-950/30 transition-all duration-200 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-500/15">
+            <div class="surface-muted shrink-0">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </div>
-            <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari Game, Top Up, Akun..." class="w-full border-none outline-none py-2 px-2 text-sm" style="color:var(--text)" />
-            <button type="submit" class="surface-panel hover:brightness-110 px-4 py-1.5 rounded text-sm font-semibold mr-0.5 whitespace-nowrap" style="color:var(--text)">
+            <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari Game, Top Up, Akun..." class="w-full bg-transparent border-none outline-none py-2 px-2 text-sm text-slate-100 placeholder:text-slate-500" />
+            <button type="submit" class="inline-flex h-10 min-w-[44px] items-center justify-center rounded-full bg-cyan-500/15 text-slate-100 hover:bg-cyan-500/30 transition">
               <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </button>
           </div>

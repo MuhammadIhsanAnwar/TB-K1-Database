@@ -3,12 +3,12 @@
 namespace App\Services\Pdf;
 
 use App\Models\Order;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
-use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class PdfDocumentService
 {
-    public function downloadOrdersReport(iterable $orders, string $filename = 'laporan-pesanan.pdf'): StreamedResponse
+    public function downloadOrdersReport(iterable $orders, string $filename = 'laporan-pesanan.pdf'): Response
     {
         return $this->downloadGeneratedPdf(
             $this->buildOrdersReport($orders),
@@ -16,7 +16,7 @@ class PdfDocumentService
         );
     }
 
-    public function downloadOrderReceipt(Order $order, string $filename): StreamedResponse
+    public function downloadOrderReceipt(Order $order, string $filename): Response
     {
         return $this->downloadGeneratedPdf(
             $this->buildOrderReceipt($order),
@@ -316,19 +316,20 @@ class PdfDocumentService
         }
     }
 
-    private function downloadGeneratedPdf(string $pdfContent, string $filename): StreamedResponse
+    private function downloadGeneratedPdf(string $pdfContent, string $filename)
     {
-        return response()->streamDownload(function () use ($pdfContent): void {
-            if (ob_get_length()) {
-                ob_end_clean();
-            }
+        if (ob_get_length()) {
+            ob_end_clean();
+        }
 
-            echo $pdfContent;
-        }, $filename, [
+        return response($pdfContent, 200, [
             'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
             'Content-Transfer-Encoding' => 'binary',
             'Cache-Control' => 'private, no-store, no-cache, must-revalidate',
             'Pragma' => 'no-cache',
+            'Expires' => '0',
+            'Content-Length' => (string) strlen($pdfContent),
         ]);
     }
 }

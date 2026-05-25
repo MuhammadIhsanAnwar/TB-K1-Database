@@ -127,53 +127,54 @@
   {{-- ═══════════════════════════════════════════════════════════ --}}
   {{-- HERO SECTION (BANNERS)                                     --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
-  <section class="surface-panel pb-6 pt-4">
-  <div class="max-w-7xl mx-auto px-4">
-    <div class="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
-      <div>
-        <div class="section-kicker text-blue-300">Hero Banner</div>
-        <h2 class="mt-1 text-xl font-bold text-white">Promo utama yang paling menonjol</h2>
-      </div>
-      <span class="inline-flex items-center rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-200 backdrop-blur">
-        4:5 spotlight
-      </span>
-    </div>
-    <div class="grid gap-4 items-start">
-      {{-- Main Banner Carousel (Hero 4:5) --}}
-      <div class="hero-stage rounded-2xl overflow-hidden relative aspect-[4/5] md:aspect-[16/9] md:max-h-[340px] lg:max-h-[380px]">
-        <div id="hero-slider" class="w-full h-full relative">
-          <div class="hero-track w-full h-full flex transition-transform duration-700">
-            @if(isset($heroBanners) && $heroBanners->count())
-              @foreach($heroBanners as $banner)
-                <a href="{{ $banner->link_url ?: '#' }}" class="hero-slide flex-none w-full h-full block">
-                  <img src="{{ $banner->image_url }}" class="w-full h-full object-cover" alt="{{ $banner->title ?? 'Promo' }}">
-                </a>
-              @endforeach
-            @else
-              <div class="hero-slide flex-none w-full h-full surface-panel flex items-center justify-center">
-                <div class="relative z-10 text-center px-6">
-                  <div class="section-kicker text-blue-300 mb-2">Hero Banner</div>
-                  <span class="text-white font-bold text-xl">Promo Utama</span>
+  <section class="relative overflow-hidden pb-8">
+    <div class="absolute inset-x-0 top-0 h-[380px] bg-gradient-to-b from-[#0f2a5b] via-[#09182e] to-transparent pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 pt-6">
+      <div class="rounded-[32px] border border-white/10 bg-[#081125]/95 p-6 shadow-[0_30px_90px_rgba(5,12,35,0.28)]">
+        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+          <div class="max-w-2xl">
+            <div class="section-kicker text-blue-300">Hero Banner</div>
+            <h2 class="mt-3 text-3xl font-black text-white md:text-4xl">Promo utama yang paling menonjol</h2>
+            <p class="mt-4 max-w-2xl text-sm text-slate-300">Temukan penawaran eksklusif, top up cepat, dan game populer dalam satu tampilan banner hero.</p>
+          </div>
+          <div class="flex flex-wrap gap-3">
+            <a href="{{ route('products.search', ['q'=>'top up game']) }}" class="inline-flex items-center justify-center rounded-2xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-400">Beli Sekarang</a>
+            <a href="{{ route('marketplace.trending') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">Lihat Trending</a>
+          </div>
+        </div>
+
+        <div class="mt-6 grid gap-4 lg:grid-cols-4">
+          @if(isset($heroBanners) && $heroBanners->count())
+            @foreach($heroBanners->take(4) as $banner)
+              <a href="{{ $banner->link_url ?: '#' }}" class="group relative overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/80 shadow-[0_25px_60px_rgba(3,8,32,0.35)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_32px_90px_rgba(3,8,32,0.45)]">
+                <img src="{{ $banner->image_url }}" alt="{{ $banner->title ?? 'Banner Promo' }}" class="h-72 w-full object-cover transition duration-500 group-hover:scale-105" />
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent"></div>
+                <div class="absolute inset-x-0 bottom-0 p-5">
+                  <span class="inline-flex rounded-full bg-amber-500/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-amber-300">Hot Games</span>
+                  <h3 class="mt-4 text-lg font-extrabold text-white line-clamp-2">{{ $banner->title ?? 'Promo Spesial' }}</h3>
+                  @if(!empty($banner->subtitle))
+                    <p class="mt-2 text-sm text-slate-300 line-clamp-2">{{ $banner->subtitle }}</p>
+                  @endif
+                  <div class="mt-4 inline-flex items-center gap-2 rounded-full border border-white/10 bg-white/10 px-4 py-2 text-sm font-semibold text-white transition hover:bg-white/15">
+                    <span>Explore</span>
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"/></svg>
+                  </div>
                 </div>
-              </div>
-            @endif
-          </div>
-          {{-- Controls --}}
-          <div class="absolute left-4 top-1/2 -translate-y-1/2">
-            <button id="hero-prev" class="p-2 bg-surface-950/50 text-white rounded border border-white/10">‹</button>
-          </div>
-          <div class="absolute right-4 top-1/2 -translate-y-1/2">
-            <button id="hero-next" class="p-2 bg-surface-950/50 text-white rounded border border-white/10">›</button>
-          </div>
+              </a>
+            @endforeach
+          @else
+            <div class="col-span-1 lg:col-span-4 rounded-[28px] border border-white/10 bg-slate-950/80 p-10 text-center">
+              <p class="text-sm text-slate-400">Belum ada hero banner tersedia. Tambahkan banner hero dari panel admin.</p>
+            </div>
+          @endif
         </div>
       </div>
     </div>
-  </div>
-</section>
+  </section>
 
-{{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- TRUST BADGES                                               --}}
-{{-- ═══════════════════════════════════════════════════════════ --}}
+  {{-- ═══════════════════════════════════════════════════════════ --}}
+  {{-- TRUST BADGES                                               --}}
+  {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="trust-badge-container py-3 shadow-md mb-8">
   <div class="max-w-7xl mx-auto px-4 flex justify-between items-center overflow-x-auto no-scrollbar gap-6">
     <div class="flex items-center gap-2 text-white whitespace-nowrap">

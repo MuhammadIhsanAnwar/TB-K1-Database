@@ -864,23 +864,38 @@
 
   {{-- Flash Messages --}}
   @if(session('success') || session('error') || session('warning'))
-  <div class="max-w-7xl mx-auto px-4 pt-4 animate-fade-up">
+  <div class="max-w-7xl mx-auto px-4 pt-4 animate-fade-up space-y-3">
     @if(session('success'))
-      <div class="flex items-center gap-3 bg-emerald-900/30 border border-emerald-700/40 text-emerald-300 px-4 py-3 rounded-xl text-sm mb-3">
-        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        {{ session('success') }}
+      <div class="flex items-start gap-3 rounded-3xl border border-emerald-400/15 bg-emerald-950/85 p-4 shadow-lg shadow-emerald-950/15 text-sm text-slate-100">
+        <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-emerald-500/15 text-emerald-200">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+          <p class="font-semibold text-white">Berhasil</p>
+          <p class="mt-1 text-slate-300">{{ session('success') }}</p>
+        </div>
       </div>
     @endif
     @if(session('error'))
-      <div class="flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm mb-3">
-        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        {{ session('error') }}
+      <div class="flex items-start gap-3 rounded-3xl border border-rose-500/15 bg-rose-950/85 p-4 shadow-lg shadow-rose-950/15 text-sm text-slate-100">
+        <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-500/15 text-rose-200">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+          <p class="font-semibold text-white">Terjadi kesalahan</p>
+          <p class="mt-1 text-slate-300">{{ session('error') }}</p>
+        </div>
       </div>
     @endif
     @if(session('warning'))
-      <div class="flex items-center gap-3 bg-amber-900/30 border border-amber-700/40 text-amber-300 px-4 py-3 rounded-xl text-sm mb-3">
-        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-        {{ session('warning') }}
+      <div class="flex items-start gap-3 rounded-3xl border border-amber-400/15 bg-amber-950/85 p-4 shadow-lg shadow-amber-950/15 text-sm text-slate-100">
+        <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-amber-500/15 text-amber-200">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <div>
+          <p class="font-semibold text-white">Peringatan</p>
+          <p class="mt-1 text-slate-300">{{ session('warning') }}</p>
+        </div>
       </div>
     @endif
   </div>
@@ -888,15 +903,21 @@
 
   {{-- Validation errors global --}}
   @if($errors->any())
-  <div class="max-w-7xl mx-auto px-4 pt-4">
-    <div class="bg-red-900/20 border border-red-700/30 rounded-xl px-4 py-3 mb-3">
-      <ul class="space-y-1">
-        @foreach($errors->all() as $error)
-          <li class="text-sm text-red-300 flex items-center gap-2">
-            <span class="w-1 h-1 rounded-full bg-red-400 shrink-0"></span>{{ $error }}
-          </li>
-        @endforeach
-      </ul>
+  <div class="max-w-7xl mx-auto px-4 pb-4 animate-fade-up">
+    <div class="rounded-3xl border border-rose-600/20 bg-rose-950/88 p-4 shadow-lg shadow-rose-950/20 text-sm text-slate-100">
+      <div class="flex items-start gap-3">
+        <div class="flex h-10 w-10 items-center justify-center rounded-2xl bg-rose-500/15 text-rose-200">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <div>
+          <p class="font-semibold text-white">Perbaiki data berikut</p>
+          <ul class="mt-3 list-disc list-inside space-y-1 text-slate-300">
+            @foreach($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
   @endif

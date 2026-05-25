@@ -6,34 +6,32 @@
 <footer class="surface-panel border-t border-white/10 mt-20 pt-16 pb-8">
   <div class="max-w-7xl mx-auto px-4">
 
-    {{-- Top section: footer brand only --}}
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
-      <div class="space-y-6">
-        <div class="flex items-center gap-4">
-          <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="w-14 h-14 object-contain rounded-2xl bg-slate-900/50 border border-white/10 p-2">
-          <div>
-            <h4 class="font-bold surface-text text-2xl">Lapak Gaming</h4>
-            <p class="text-sm surface-muted max-w-xl">Marketplace digital untuk top up game, akun, voucher, dan item game terpercaya dengan layanan cepat dan keamanan modern.</p>
-          </div>
+    {{-- Top section: footer brand and links --}}
+    <div class="space-y-10 mb-12">
+      <div class="flex items-center gap-4">
+        <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="w-14 h-14 object-contain rounded-2xl bg-slate-900/50 border border-white/10 p-2">
+        <div>
+          <h4 class="font-bold surface-text text-2xl">Lapak Gaming</h4>
+          <p class="text-sm surface-muted max-w-xl">Marketplace digital untuk top up game, akun, voucher, dan item game terpercaya dengan layanan cepat dan keamanan modern.</p>
         </div>
+      </div>
 
-        <div class="grid sm:grid-cols-2 gap-4">
-          <div>
-            <h5 class="font-semibold surface-text text-sm mb-3">Jelajahi</h5>
-            <ul class="space-y-3">
-              <li><a href="{{ route('marketplace.home') }}" class="text-sm surface-muted hover:text-itemku-blue transition-colors">Beranda</a></li>
-              <li><a href="{{ route('products.search') }}" class="text-sm surface-muted hover:text-itemku-blue transition-colors">Semua Produk</a></li>
-              <li><a href="{{ route('marketplace.trending') }}" class="text-sm surface-muted hover:text-itemku-blue transition-colors">Trending</a></li>
-            </ul>
-          </div>
-          <div>
-            <h5 class="font-semibold surface-text text-sm mb-3">Dukungan</h5>
-            <ul class="space-y-3">
-              <li><a href="{{ route('contact') }}" class="text-sm surface-muted hover:text-itemku-blue transition-colors">Hubungi Kami</a></li>
-              <li><a href="{{ route('terms') }}" class="text-sm surface-muted hover:text-itemku-blue transition-colors">Aturan Penggunaan</a></li>
-              <li><a href="{{ route('privacy') }}" class="text-sm surface-muted hover:text-itemku-blue transition-colors">Kebijakan Privasi</a></li>
-            </ul>
-          </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        <div>
+          <h5 class="font-semibold surface-text text-sm mb-3">Jelajahi</h5>
+          <ul class="space-y-3">
+            <li><a href="{{ route('marketplace.home') }}" class="text-sm surface-muted hover:text-itemku-blue transition-colors">Beranda</a></li>
+            <li><a href="{{ route('products.search') }}" class="text-sm surface-muted hover:text-itemku-blue transition-colors">Semua Produk</a></li>
+            <li><a href="{{ route('marketplace.trending') }}" class="text-sm surface-muted hover:text-itemku-blue transition-colors">Trending</a></li>
+          </ul>
+        </div>
+        <div>
+          <h5 class="font-semibold surface-text text-sm mb-3">Dukungan</h5>
+          <ul class="space-y-3">
+            <li><a href="{{ route('contact') }}" class="text-sm surface-muted hover:text-itemku-blue transition-colors">Hubungi Kami</a></li>
+            <li><a href="{{ route('terms') }}" class="text-sm surface-muted hover:text-itemku-blue transition-colors">Aturan Penggunaan</a></li>
+            <li><a href="{{ route('privacy') }}" class="text-sm surface-muted hover:text-itemku-blue transition-colors">Kebijakan Privasi</a></li>
+          </ul>
         </div>
       </div>
     </div>

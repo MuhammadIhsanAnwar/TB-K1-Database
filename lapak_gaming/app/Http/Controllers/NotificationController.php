@@ -36,9 +36,12 @@ class NotificationController extends Controller
 
     public function poll(Request $request): JsonResponse
     {
+        // Exclude chat-message notifications from the global preview
+        // because chat has its own inbox/badge logic.
         $notifications = MarketplaceNotification::query()
             ->with('broadcast')
             ->where('user_id', $request->user()->id)
+            ->where('type', '!=', 'chat-message')
             ->latest()
             ->take(10)
             ->get();

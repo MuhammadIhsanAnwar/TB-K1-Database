@@ -306,6 +306,55 @@
     text-align: left;
 }
 
+.message-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    opacity: 0.22;
+    transition: opacity .18s ease;
+    z-index: 2;
+}
+
+.bubble-content:hover .message-actions,
+.bubble-content:focus-within .message-actions {
+    opacity: 1;
+}
+
+.message-actions button {
+    width: 30px;
+    height: 30px;
+    border-radius: 9999px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    background: rgba(15, 23, 42, 0.85);
+    color: #cbd5e1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s ease, transform .15s ease, color .15s ease;
+}
+
+.message-actions button:hover {
+    background: rgba(56, 189, 248, 0.18);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.edited-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    font-size: 10px;
+    color: #e2e8f0;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 9999px;
+    padding: 2px 8px;
+    margin-left: 0.5rem;
+}
+
 .message-status {
     margin-left: 4px;
     display: inline-flex;
@@ -653,11 +702,11 @@
         
         {{-- Tombol Opsi (Hanya muncul jika pesan milik sendiri) --}}
         @if($isMine)
-        <div class="absolute -left-10 top-0 hidden group-hover:flex gap-1">
-            <button onclick="prepareEdit('{{ $msg->id }}')" class="p-1 text-gray-500 hover:text-blue-400">
+        <div class="message-actions" aria-label="Aksi pesan">
+            <button type="button" onclick="prepareEdit('{{ $msg->id }}')" class="" title="Edit pesan" aria-label="Edit pesan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
             </button>
-            <button onclick="confirmDelete('{{ $msg->id }}')" class="p-1 text-gray-500 hover:text-red-400">
+            <button type="button" onclick="confirmDelete('{{ $msg->id }}')" class="" title="Hapus pesan" aria-label="Hapus pesan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
             </button>
         </div>
@@ -676,6 +725,9 @@
     {{-- Meta data (waktu/status) --}}
     <div class="message-time {{ $isMine ? 'mine' : 'theirs' }}">
         <span>{{ $msg->created_at->format('H:i') }}</span>
+        @if($msg->edited_at)
+          <span class="edited-badge">Diedit</span>
+        @endif
     </div>
 </div>
                 @if($isMine)
@@ -775,6 +827,7 @@ const CONV_ID  = chatConfig.convId;
 const AUTH_ID  = chatConfig.authId;
 const SEND_URL = chatConfig.sendUrl;
 const POLL_URL = chatConfig.pollUrl;
+const MESSAGE_BASE_URL = `${window.location.origin}/chat/message`;
 
 const CSRF = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -788,6 +841,32 @@ const msgInput      = document.getElementById('msgInput');
 const sendBtn       = document.getElementById('sendBtn');
 const imgInput      = document.getElementById('imgInput');
 const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+async function parseJsonSafe(response) {
+    try {
+        return await response.json();
+    } catch {
+        return null;
+    }
+}
+
+function showToast(message, icon = 'info') {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon,
+            title: message,
+            showConfirmButton: false,
+            timer: 2800,
+            timerProgressBar: true,
+            background: '#0f172a',
+            color: '#f8fafc',
+        });
+    } else {
+        alert(message);
+    }
+}
 
 
 // ======================================================
@@ -1140,11 +1219,12 @@ async function updateMessage(id, newText) {
 
     try {
 
-        const res = await fetch(`/chat/message/${id}`, {
+        const res = await fetch(`${MESSAGE_BASE_URL}/${encodeURIComponent(id)}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': CSRF,
+                'X-HTTP-Method-Override': 'PATCH',
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
@@ -1152,15 +1232,25 @@ async function updateMessage(id, newText) {
             })
         });
 
-        if(!res.ok) throw new Error();
+        const data = await parseJsonSafe(res);
+
+        if (!res.ok) {
+            throw new Error(data?.error || data?.message || res.statusText || 'Gagal update pesan');
+        }
 
         document.getElementById(`text-${id}`).innerText = newText;
 
+        const timeMeta = document.querySelector(`[data-msg-id="${id}"] .message-time`);
+        if (timeMeta && !timeMeta.querySelector('.edited-badge')) {
+            timeMeta.insertAdjacentHTML('beforeend', '<span class="edited-badge">Diedit</span>');
+        }
+
         cancelEdit();
+        showToast('Pesan berhasil diperbarui.', 'success');
 
     } catch(e) {
 
-        alert('Gagal update pesan');
+        showToast(e.message || 'Gagal update pesan', 'error');
 
     }
 
@@ -1179,21 +1269,31 @@ async function confirmDelete(msgId) {
 
     try {
 
-        const res = await fetch(`/chat/message/${msgId}`, {
+        const res = await fetch(`${MESSAGE_BASE_URL}/${encodeURIComponent(msgId)}`, {
             method: 'DELETE',
             headers: {
+                'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': CSRF,
+                'X-HTTP-Method-Override': 'DELETE',
                 'Accept': 'application/json'
             }
         });
 
-        if(!res.ok) throw new Error();
+        const data = await parseJsonSafe(res);
 
-        el.remove();
+        if (!res.ok) {
+            throw new Error(data?.error || data?.message || res.statusText || 'Gagal menghapus pesan');
+        }
+
+        if (el) {
+            el.remove();
+        }
+
+        showToast('Pesan berhasil dihapus.', 'success');
 
     } catch(e) {
 
-        alert('Gagal menghapus pesan');
+        showToast(e.message || 'Gagal menghapus pesan', 'error');
 
     }
 
@@ -1435,7 +1535,7 @@ async function sendMessage() {
 
         console.error(e);
 
-        alert(e.message);
+        showToast(e.message || 'Gagal kirim pesan', 'error');
 
     } finally {
 

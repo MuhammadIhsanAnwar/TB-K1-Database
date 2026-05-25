@@ -252,14 +252,10 @@ public function poll(Conversation $conversation)
             'attachment_type' => $attachmentType,
         ]);
 
-        // Kirim Notifikasi Sistem ke Lawan Bicara
-        \App\Models\MarketplaceNotification::create([
-            'user_id' => $receiverId,
-            'title' => 'Pesan Baru dari ' . $user->name,
-            'body' => $messageText ?: ($attachmentType === 'image' ? '[Mengirim Foto]' : '[Mengirim Lampiran]'),
-            'link' => route('chat.show', $conversation->id),
-            'type' => 'chat-message',
-        ]);
+        // NOTE: Do not create global marketplace notifications for normal chat messages.
+        // Chat UI handles its own in-app badges and realtime events. Creating
+        // MarketplaceNotification for every chat message caused them to appear
+        // in the global notifications dropdown which is undesired.
 
         // Broadcast Realtime ke lawan bicara
         broadcast(new MessageSent($message))->toOthers();
@@ -342,13 +338,8 @@ public function poll(Conversation $conversation)
             'message'         => 'Halo, saya tertarik dengan produk: ' . $product->name,
         ]);
 
-        \App\Models\MarketplaceNotification::create([
-            'user_id' => $sellerId,
-            'title' => 'Pesan Baru dari ' . Auth::user()->name,
-            'body' => 'Halo, saya tertarik dengan produk: ' . $product->name,
-            'link' => route('chat.show', $conversation->id),
-            'type' => 'chat-message',
-        ]);
+        // Intentionally not creating MarketplaceNotification for product-initiated
+        // chat. Product chats should not appear in global notifications.
     }
 
     return redirect()->route('chat.show', $conversation->id);
