@@ -243,7 +243,7 @@
   }
     /* PREMIUM GLOW */
   .premium-glow {
-    position: relative
+    position: relative;
     overflow: hidden;
   }
 
@@ -429,8 +429,12 @@
         <h1 class="text-5xl md:text-6xl font-black tracking-tight leading-[1.05]">Temukan Item, Akun, dan Top-up Game Favoritmu</h1>
         <p class="text-slate-300 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">Marketplace terpercaya untuk pemain Indonesia — transaksi aman, pengiriman cepat, dan pilihan lengkap untuk semua platform. Temukan penawaran harian, game terbaru, dan seller terpercaya.</p>
         <div class="mt-6 flex justify-center">
-          <a href="https://lapakgaming.neoverse.my.id/browse/search" class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white transition hover:opacity-95">Lihat Semua Produk</a>
-          <div class="mt-10 flex flex-wrap justify-center gap-10">
+        <a href="https://lapakgaming.neoverse.my.id/browse/search"
+          class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white transition hover:opacity-95">
+            Lihat Semua Produk
+        </a>
+      </div>
+      <div class="mt-10 flex flex-wrap justify-center gap-10">
           <div class="text-center">
               <div class="text-3xl font-black text-cyan-300">10K+</div>
               <p class="text-slate-400 text-sm">Produk Digital</p>
@@ -762,26 +766,6 @@
 
   // Featured banners: auto-scroll animation retained (single-row, no duplication)
   /* FADE ANIMATION */
-    const fadeSections = document.querySelectorAll('section');
-
-    const observer = new IntersectionObserver((entries) => {
-
-      entries.forEach((entry) => {
-
-        if (entry.isIntersecting) {
-          entry.target.classList.add('show');
-        }
-
-      });
-
-    }, {
-      threshold: 0.1
-    });
-
-    fadeSections.forEach((section) => {
-      section.classList.add('fade-section');
-      observer.observe(section);
-    });
 
     /* PREMIUM NAVBAR */
     const navbar = document.getElementById('main-navbar');
