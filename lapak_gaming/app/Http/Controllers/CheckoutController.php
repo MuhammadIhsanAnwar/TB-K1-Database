@@ -83,11 +83,11 @@ class CheckoutController extends Controller
         $data = $request->validate([
             'product_id' => ['required', 'exists:products,id'],
             'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
-            'payment_method' => ['required', 'in:wallet'],
+            'payment_method' => ['required', 'in:balance'],
         ], $messages);
 
         $quantity = (int) ($data['quantity'] ?? 1);
-        $paymentMethod = 'wallet';
+        $paymentMethod = 'balance';
 
         $order = DB::transaction(function () use ($request, $quantity, $paymentMethod): Order {
             $product = Product::query()
@@ -143,6 +143,18 @@ class CheckoutController extends Controller
             ]);
 
             $product->decrement('stock', $quantity);
+
+            if (! $request->user()->deductBalance($grandTotal, "Pembayaran Order #{$order->invoice_number}", $order->id)) {
+                throw ValidationException::withMessages([
+                    'payment_method' => 'Saldo tidak mencukupi!',
+                ]);
+            }
+
+            $order->forceFill([
+                'status' => Order::STATUS_PAYMENT_UPLOADED,
+                'payment_method' => $paymentMethod,
+                'paid_at' => now(),
+            ])->save();
 
             $wallet = Wallet::firstOrCreate(['user_id' => $request->user()->id]);
             $balanceState = $wallet->balanceState()->firstOrCreate([], [

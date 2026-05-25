@@ -166,7 +166,7 @@
                                 @php
                                     $imageUrl = str_starts_with($imagePath, 'http')
                                         ? $imagePath
-                                        : asset('storage/' . ltrim($imagePath, '/'));
+                                        : asset('storage/app/public/' . ltrim(str_replace('foto_produk/', 'foto-produk/', $imagePath), '/'));
                                 @endphp
                                 <div class="relative rounded-xl overflow-hidden group border border-white/5 bg-black/40 backdrop-blur-sm p-1 aspect-[16/9]" data-image-index="{{ $index }}">
                                     <img src="{{ $imageUrl }}" 

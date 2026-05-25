@@ -18,7 +18,7 @@
     <form method="POST" action="{{ route('checkout.store') }}" class="grid gap-6 lg:grid-cols-[1fr_360px]">
         @csrf
         <input type="hidden" name="product_id" value="{{ $product->id }}">
-        <input type="hidden" name="payment_method" value="wallet">
+        <input type="hidden" name="payment_method" value="balance">
 
         <div class="space-y-6">
             <div class="card p-5 sm:p-6">

@@ -144,41 +144,49 @@ class Product extends Model {
         }
 
         $imagePath = ltrim($imagePath, '/');
+        $normalizedPath = str_replace('foto_produk/', 'foto-produk/', $imagePath);
 
-        if (str_starts_with($imagePath, 'storage/')) {
-            return asset($imagePath);
+        if (str_starts_with($normalizedPath, 'storage/app/public/')) {
+            return asset($normalizedPath);
         }
 
-        $candidatePaths = array_values(array_unique([
-            $imagePath,
-            str_replace('foto_produk/', 'foto-produk/', $imagePath),
-            str_replace('foto-produk/', 'foto_produk/', $imagePath),
-        ]));
-
-        foreach ($candidatePaths as $candidatePath) {
-            if (Storage::disk('public_app_public')->exists($candidatePath)) {
-                $disk = config('filesystems.disks.public_app_public', []);
-                $base = rtrim((string) ($disk['url'] ?? rtrim((string) config('app.url', ''), '/').'/storage/app/public'), '/');
-                return $base . '/' . ltrim($candidatePath, '/');
-            }
-
-            if (Storage::disk('public')->exists($candidatePath)) {
-                $disk = config('filesystems.disks.public', []);
-                $base = rtrim((string) ($disk['url'] ?? rtrim((string) config('app.url', ''), '/').'/storage'), '/');
-                return $base . '/' . ltrim($candidatePath, '/');
-            }
-
-            if (file_exists(public_path('storage/app/public/' . $candidatePath))) {
-                return asset('storage/app/public/' . ltrim($candidatePath, '/'));
-            }
-
-            if (file_exists(public_path($candidatePath))) {
-                return asset($candidatePath);
-            }
+        if (str_starts_with($normalizedPath, 'storage/')) {
+            return asset($normalizedPath);
         }
 
-        // Fallback to storage path (may still work if webserver is configured differently)
-        return asset('storage/' . ltrim($imagePath, '/'));
+        if (str_starts_with($normalizedPath, 'foto-produk/')) {
+            return asset('storage/app/public/' . $normalizedPath);
+        }
+
+        if (str_starts_with($normalizedPath, 'foto_produk/')) {
+            return asset('storage/app/public/' . str_replace('foto_produk/', 'foto-produk/', $normalizedPath));
+        }
+
+        if (str_starts_with($normalizedPath, 'public/storage/app/public/')) {
+            return asset(substr($normalizedPath, 7));
+        }
+
+        if (Storage::disk('public_app_public')->exists($normalizedPath)) {
+            return asset('storage/app/public/' . $normalizedPath);
+        }
+
+        if (Storage::disk('public')->exists($normalizedPath)) {
+            return asset('storage/' . $normalizedPath);
+        }
+
+        if (file_exists(public_path('storage/app/public/' . $normalizedPath))) {
+            return asset('storage/app/public/' . $normalizedPath);
+        }
+
+        if (file_exists(public_path('storage/' . $normalizedPath))) {
+            return asset('storage/' . $normalizedPath);
+        }
+
+        if (file_exists(public_path($normalizedPath))) {
+            return asset($normalizedPath);
+        }
+
+        return asset('storage/app/public/' . $normalizedPath);
     }
 
     public function getFormattedPriceAttribute(): string {
