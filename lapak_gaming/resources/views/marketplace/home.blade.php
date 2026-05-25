@@ -72,6 +72,32 @@
   #hero-slider { position: relative; }
   .hero-track { will-change: transform; }
   .hero-slide { min-width: 100%; }
+  .hero-stage {
+    background:
+      radial-gradient(circle at top left, rgba(59,130,246,0.18), transparent 38%),
+      linear-gradient(180deg, rgba(2,6,23,0.98), rgba(15,23,42,0.94));
+    box-shadow: 0 30px 80px rgba(2, 6, 23, 0.28);
+  }
+  .hero-stage::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, transparent 0%, rgba(2,6,23,0.18) 100%);
+    pointer-events: none;
+  }
+  .featured-stage {
+    background:
+      linear-gradient(135deg, rgba(2,6,23,0.95), rgba(30,41,59,0.92)),
+      radial-gradient(circle at top right, rgba(249,115,22,0.12), transparent 32%);
+    border: 1px solid rgba(255,255,255,0.08);
+    box-shadow: 0 16px 40px rgba(2, 6, 23, 0.18);
+  }
+  .section-kicker {
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    font-weight: 800;
+  }
 
   /* Featured banners marquee */
   @keyframes featuredScroll {
@@ -103,9 +129,18 @@
   {{-- ═══════════════════════════════════════════════════════════ --}}
   <section class="surface-panel pb-6 pt-4">
   <div class="max-w-7xl mx-auto px-4">
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
+      <div>
+        <div class="section-kicker text-blue-300">Hero Banner</div>
+        <h2 class="mt-1 text-xl font-bold text-white">Promo utama yang paling menonjol</h2>
+      </div>
+      <span class="inline-flex items-center rounded-full border border-blue-400/20 bg-blue-500/10 px-3 py-1 text-xs font-semibold text-blue-200 backdrop-blur">
+        4:5 spotlight
+      </span>
+    </div>
     <div class="grid gap-4 md:grid-cols-[7fr_3fr] items-start">
       {{-- Main Banner Carousel (Hero 4:5) --}}
-      <div class="rounded-xl overflow-hidden relative bg-surface-950 aspect-[4/5]">
+      <div class="hero-stage rounded-2xl overflow-hidden relative aspect-[4/5]">
         <div id="hero-slider" class="w-full h-full relative">
           <div class="hero-track w-full h-full flex transition-transform duration-700">
             @if(isset($heroBanners) && $heroBanners->count())
@@ -116,7 +151,10 @@
               @endforeach
             @else
               <div class="hero-slide flex-none w-full h-full surface-panel flex items-center justify-center">
-                <span class="text-itemku-blue font-bold text-xl">Promo Utama</span>
+                <div class="relative z-10 text-center px-6">
+                  <div class="section-kicker text-blue-300 mb-2">Hero Banner</div>
+                  <span class="text-white font-bold text-xl">Promo Utama</span>
+                </div>
               </div>
             @endif
           </div>
@@ -134,13 +172,13 @@
       <div class="hidden md:grid gap-4">
         @if(isset($heroBanners) && $heroBanners->count() > 1)
           @foreach($heroBanners->skip(1)->take(2) as $banner)
-          <a href="{{ $banner->link_url ?: '#' }}" class="rounded-xl overflow-hidden block aspect-[4/5]">
+          <a href="{{ $banner->link_url ?: '#' }}" class="hero-stage rounded-2xl overflow-hidden block relative aspect-[4/5]">
             <img src="{{ $banner->image_url }}" class="w-full h-full object-cover" alt="Promo {{ $loop->iteration }}">
           </a>
           @endforeach
         @else
-          <div class="rounded-xl surface-panel flex items-center justify-center aspect-[4/5]">Promo 2</div>
-          <div class="rounded-xl surface-panel flex items-center justify-center aspect-[4/5]">Promo 3</div>
+          <div class="hero-stage rounded-2xl flex items-center justify-center aspect-[4/5]">Promo 2</div>
+          <div class="hero-stage rounded-2xl flex items-center justify-center aspect-[4/5]">Promo 3</div>
         @endif
       </div>
     </div>
@@ -252,11 +290,20 @@
 {{-- ================= FEATURED BANNERS (moved below products) ================ --}}
 @if(isset($featuredBanners) && $featuredBanners->count())
   <section class="max-w-7xl mx-auto px-4 mb-10">
-    <div class="rounded-xl overflow-hidden">
+    <div class="mb-3 flex flex-wrap items-center justify-between gap-3 px-1">
+      <div>
+        <div class="section-kicker text-orange-300">Featured Banner</div>
+        <h2 class="mt-1 text-lg font-bold text-white">Banner promo pendamping</h2>
+      </div>
+      <span class="inline-flex items-center rounded-full border border-orange-400/20 bg-orange-500/10 px-3 py-1 text-xs font-semibold text-orange-200 backdrop-blur">
+        3:1 marquee
+      </span>
+    </div>
+    <div class="featured-stage rounded-2xl overflow-hidden p-4 md:p-5">
       <div class="featured-scroll overflow-hidden">
         <div class="flex gap-4 animate-featured-scroll will-change-transform">
           @foreach($featuredBanners as $fb)
-            <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-[360px] rounded-lg overflow-hidden block aspect-[3/1]">
+            <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-[360px] rounded-xl overflow-hidden block aspect-[3/1] border border-white/10 shadow-lg shadow-black/20">
               <img src="{{ $fb->image_url }}" class="w-full h-full object-cover" alt="{{ $fb->title ?? 'Featured' }}">
             </a>
           @endforeach
