@@ -106,13 +106,6 @@ public function show(Request $request, Conversation $conversation)
             ->latest('last_message_at')
             ->get();
     }
-    Message::where('conversation_id', $conversation->id)
-    ->where('receiver_id', auth()->id())
-    ->where('is_read', false)
-    ->update([
-        'is_read' => true,
-        'read_at' => now(),
-    ]);
     
     $messages = $conversation->messages()
     ->with('sender')
