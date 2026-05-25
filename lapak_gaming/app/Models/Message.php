@@ -5,12 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Str;
 
 class Message extends Model
 {
     use HasFactory;
 
     protected $fillable = [
+        'hash',
         'conversation_id',
         'order_id',
         'product_id',
@@ -43,6 +45,12 @@ class Message extends Model
     {
         parent::boot();
 
+        static::creating(function (self $message): void {
+            if (empty($message->hash)) {
+                $message->hash = 'msg_' . Str::lower(Str::random(20));
+            }
+        });
+
         // Otomatis update percakapan induk saat ada pesan baru
         static::created(function ($message) {
             $conversation = $message->conversation;
@@ -69,6 +77,11 @@ class Message extends Model
     public function conversation()
     {
         return $this->belongsTo(Conversation::class);
+    }
+
+    public function getRouteKeyName(): string
+    {
+        return 'hash';
     }
 
     public function sender()
@@ -114,7 +127,8 @@ class Message extends Model
         $isHidden = $this->isHiddenFor($authId);
 
         return [
-            'id'               => $this->id,
+            'id'               => $this->hash,
+            'db_id'            => $this->id,
             'conversation_id'  => $this->conversation_id,
             'sender_id'        => $this->sender_id,
             'sender_name'      => $this->sender?->name ?? 'User',

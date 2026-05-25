@@ -175,7 +175,7 @@ public function poll(Conversation $conversation)
             ->get();
 
         return response()->json(
-            $conversations->map(fn($c) => $c->toSummary($user->id))
+            $conversations->map(fn (Conversation $conversation) => $conversation->toSummary($user->id))
         );
     }
 
