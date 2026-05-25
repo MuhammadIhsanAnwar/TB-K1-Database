@@ -31,23 +31,28 @@
 <style>
   /* Use theme variables defined in layouts/app.blade.php for consistency */
   .navbar-container {
-    background: var(--nav-main-bg);
+    background: rgba(2, 6, 23, 0.96);
     color: var(--text);
+    backdrop-filter: blur(18px);
   }
   .navbar-top {
-    background: var(--nav-top-bg);
+    background: rgba(15, 23, 42, 0.98);
     color: var(--text);
   }
   .navbar-categories {
-    background: var(--nav-cat-bg);
+    background: rgba(2, 6, 23, 0.94);
     color: var(--text);
   }
-  .admin-navbar { background: var(--surface); }
-  .admin-navbar .navbar-container { background: transparent; }
+  .admin-navbar {
+    background: rgba(2, 6, 23, 0.98);
+  }
+  .admin-navbar .navbar-container {
+    background: rgba(2, 6, 23, 0.96);
+  }
   /* Ensure links and icons inside the navbar inherit readable colors */
   #main-navbar a, #main-navbar button, #main-navbar .nav-link { color: inherit; }
   /* Mobile drawer should follow surface/background tokens */
-  #mobile-drawer { background: var(--surface); color: var(--text); }
+  #mobile-drawer { background: rgba(2, 6, 23, 0.98); color: var(--text); }
   .navbar-container .surface-weak { background: rgba(255,255,255,0.02); }
   /* Small utility tokens to keep legacy classnames working */
   .text-itemku-blue { color: var(--primary) !important; }
@@ -65,7 +70,7 @@
 @endpush
 
 {{-- ═══ MOBILE SIDEBAR DRAWER ═══ --}}
-<aside id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col overflow-y-auto text-slate-200 transition-transform -translate-x-full {{ $isAdminRoute ? 'admin-navbar' : '' }}">
+<aside id="mobile-drawer" class="fixed top-0 left-0 h-full w-72 z-50 flex flex-col overflow-y-auto text-slate-200 transition-transform -translate-x-full backdrop-blur-xl {{ $isAdminRoute ? 'admin-navbar' : '' }}">
   <div class="flex items-center justify-between p-4 border-b border-white/6 navbar-top">
     <a href="{{ route('marketplace.home') }}" class="flex items-center gap-2.5">
       <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Logo" class="w-8 h-8 rounded-lg object-contain surface-weak">
@@ -140,7 +145,7 @@
 </aside>
 
 {{-- ═══ DESKTOP NAVBAR ═══ --}}
-<header id="main-navbar" class="sticky top-0 z-40 shadow-sm w-full font-sans {{ $isAdminRoute ? 'admin-navbar' : '' }}">
+<header id="main-navbar" class="sticky top-0 z-40 shadow-sm w-full font-sans backdrop-blur-xl border-b border-white/10 {{ $isAdminRoute ? 'admin-navbar' : '' }}">
   
   {{-- 2. Main Bar (Blue) --}}
   <div class="navbar-container h-20 flex flex-col justify-center">

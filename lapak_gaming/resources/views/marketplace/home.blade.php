@@ -103,9 +103,9 @@
   {{-- ═══════════════════════════════════════════════════════════ --}}
   <section class="surface-panel pb-6 pt-4">
   <div class="max-w-7xl mx-auto px-4">
-    <div class="flex gap-4 h-64 md:h-80 lg:h-96">
-      {{-- Main Banner Carousel (Left 70%) --}}
-      <div class="flex-1 rounded-xl overflow-hidden relative bg-surface-950">
+    <div class="grid gap-4 md:grid-cols-[7fr_3fr] items-start">
+      {{-- Main Banner Carousel (Hero 4:5) --}}
+      <div class="rounded-xl overflow-hidden relative bg-surface-950 aspect-[4/5]">
         <div id="hero-slider" class="w-full h-full relative">
           <div class="hero-track w-full h-full flex transition-transform duration-700">
             @if(isset($heroBanners) && $heroBanners->count())
@@ -130,17 +130,17 @@
         </div>
       </div>
 
-      {{-- Side Banners (Right 30%, 2 rows) --}}
-      <div class="hidden md:flex w-1/3 flex-col gap-4">
+      {{-- Side Banners (Hero 4:5) --}}
+      <div class="hidden md:grid gap-4">
         @if(isset($heroBanners) && $heroBanners->count() > 1)
           @foreach($heroBanners->skip(1)->take(2) as $banner)
-          <a href="{{ $banner->link_url ?: '#' }}" class="flex-1 rounded-xl overflow-hidden block">
+          <a href="{{ $banner->link_url ?: '#' }}" class="rounded-xl overflow-hidden block aspect-[4/5]">
             <img src="{{ $banner->image_url }}" class="w-full h-full object-cover" alt="Promo {{ $loop->iteration }}">
           </a>
           @endforeach
         @else
-          <div class="flex-1 rounded-xl surface-panel flex items-center justify-center">Promo 2</div>
-          <div class="flex-1 rounded-xl surface-panel flex items-center justify-center">Promo 3</div>
+          <div class="rounded-xl surface-panel flex items-center justify-center aspect-[4/5]">Promo 2</div>
+          <div class="rounded-xl surface-panel flex items-center justify-center aspect-[4/5]">Promo 3</div>
         @endif
       </div>
     </div>
@@ -256,8 +256,8 @@
       <div class="featured-scroll overflow-hidden">
         <div class="flex gap-4 animate-featured-scroll will-change-transform">
           @foreach($featuredBanners as $fb)
-            <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-72 rounded-lg overflow-hidden block">
-              <img src="{{ $fb->image_url }}" class="w-full h-40 object-cover" alt="{{ $fb->title ?? 'Featured' }}">
+            <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-[360px] rounded-lg overflow-hidden block aspect-[3/1]">
+              <img src="{{ $fb->image_url }}" class="w-full h-full object-cover" alt="{{ $fb->title ?? 'Featured' }}">
             </a>
           @endforeach
         </div>
