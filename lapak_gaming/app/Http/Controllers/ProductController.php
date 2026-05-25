@@ -5,6 +5,7 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\ProductStatistic;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class ProductController extends Controller
 {
@@ -24,7 +25,7 @@ class ProductController extends Controller
             ->take(6)->get();
 
         $userOrder = null;
-        if (auth()->check()) {
+        if (Auth::check()) {
             $userOrder = \App\Models\Order::where('buyer_id', auth()->id())
                 ->whereHas('items', fn($q) => $q->where('product_id', $product->id))
                 ->latest()
@@ -42,6 +43,11 @@ class ProductController extends Controller
         $minPrice = $request->input('min_price');
         $maxPrice = $request->input('max_price');
         $categorySlug = $request->input('category');
+        $perPage = (int) $request->input('per_page', 50);
+
+        if (!in_array($perPage, [50,100,300,500,1000])) {
+            $perPage = 50;
+        }
 
         $products = Product::active()->inStock()
             ->when($query, fn($q) => $q->where(function($q) use ($query) {
@@ -72,7 +78,7 @@ class ProductController extends Controller
             ->when($sort === 'price_asc', fn($q) => $q->orderBy('price'))
             ->when($sort === 'price_desc', fn($q) => $q->orderByDesc('price'))
             ->with(['statistics', 'category', 'seller'])
-            ->paginate(20)->withQueryString();
+            ->paginate($perPage)->withQueryString();
 
         $categories = collect();
         if (class_exists(Category::class)) {
@@ -89,6 +95,11 @@ class ProductController extends Controller
 
     public function byType(string $type)
     {
+        $perPage = (int) request()->input('per_page', 50);
+        if (!in_array($perPage, [50, 100, 300, 500, 1000])) {
+            $perPage = 50;
+        }
+
         $products = Product::query()
             ->active()
             ->where(function ($query) use ($type) {
@@ -99,8 +110,8 @@ class ProductController extends Controller
                             ->orWhere('name', 'LIKE', "%{$type}%");
                       });
             })
-                        ->with(['statistics', 'category', 'seller'])
-            ->paginate(20);
+            ->with(['statistics', 'category', 'seller'])
+            ->paginate($perPage)->withQueryString();
 
         return view('products.by-type', compact('products', 'type'));
     }
@@ -114,6 +125,10 @@ class ProductController extends Controller
         $sort = $request->input('sort', 'popular');
         $minPrice = $request->input('min_price');
         $maxPrice = $request->input('max_price');
+        $perPage = (int) $request->input('per_page', 50);
+        if (!in_array($perPage, [50, 100, 300, 500, 1000])) {
+            $perPage = 50;
+        }
 
         $products = Product::active()->inStock()
             ->whereIn('category_id', $childrenIds)
@@ -125,7 +140,7 @@ class ProductController extends Controller
             ->when($sort === 'price_asc', fn($q) => $q->orderBy('price'))
             ->when($sort === 'price_desc', fn($q) => $q->orderByDesc('price'))
             ->with(['statistics', 'category', 'seller'])
-            ->paginate(20)->withQueryString();
+            ->paginate($perPage)->withQueryString();
 
         return view('products.category', compact('category', 'products'));
     }
