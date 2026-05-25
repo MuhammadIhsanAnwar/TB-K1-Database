@@ -7,7 +7,8 @@
   /** @var \App\Models\User|null $authUser */
   $authUser = Auth::user();
   $navCategories = isset($categories) ? $categories : collect();
-  $isAdminRoute = request()->routeIs('admin.*');
+  // Consider settings.* as admin-style routes when the user is an admin
+  $isAdminRoute = request()->routeIs('admin.*') || ($authUser?->isAdmin() && request()->routeIs('settings.*'));
   $isAdminSettingsRoute = $authUser?->isAdmin() && request()->routeIs('settings.*');
   $cartItems = collect();
   $cartCount = 0;

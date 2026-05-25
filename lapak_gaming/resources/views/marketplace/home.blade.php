@@ -105,6 +105,7 @@
     100% { transform: translateX(-50%); }
   }
   .animate-featured-scroll { display: inline-flex; }
+  .featured-scroll .animate-featured-scroll { flex-wrap: nowrap; }
   .featured-scroll .animate-featured-scroll { animation: featuredScroll 18s linear infinite; }
   @keyframes authFloat {
     0%   { transform: translateY(0) scale(1);   opacity: 0; }
@@ -146,8 +147,8 @@
         <div class="mt-6 grid gap-4 lg:grid-cols-4">
           @if(isset($heroBanners) && $heroBanners->count())
             @foreach($heroBanners->take(4) as $banner)
-              <a href="{{ $banner->link_url ?: '#' }}" class="group relative overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/80 shadow-[0_25px_60px_rgba(3,8,32,0.35)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_32px_90px_rgba(3,8,32,0.45)]">
-                <img src="{{ $banner->image_url }}" alt="{{ $banner->title ?? 'Banner Promo' }}" class="h-72 w-full object-cover transition duration-500 group-hover:scale-105" />
+              <a href="{{ $banner->link_url ?: '#' }}" class="group relative overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/80 shadow-[0_25px_60px_rgba(3,8,32,0.35)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_32px_90px_rgba(3,8,32,0.45)] aspect-[4/5]">
+                <img src="{{ $banner->image_url }}" alt="{{ $banner->title ?? 'Banner Promo' }}" class="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-105" />
                 <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent"></div>
                 <div class="absolute inset-x-0 bottom-0 p-5">
                   <span class="inline-flex rounded-full bg-amber-500/15 px-3 py-1 text-[11px] font-bold uppercase tracking-[0.24em] text-amber-300">Hot Games</span>
@@ -290,7 +291,7 @@
       <div class="featured-scroll overflow-hidden">
         <div class="flex gap-3 md:gap-4 animate-featured-scroll will-change-transform">
           @foreach($featuredBanners as $fb)
-            <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-[360px] md:w-[480px] rounded-xl overflow-hidden block aspect-[16/9] border border-white/10 shadow-lg shadow-black/20">
+            <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-[360px] md:w-[480px] rounded-xl overflow-hidden block aspect-[3/1] border border-white/10 shadow-lg shadow-black/20">
               <img src="{{ $fb->image_url }}" class="w-full h-full object-cover" alt="{{ $fb->title ?? 'Featured' }}">
             </a>
           @endforeach
