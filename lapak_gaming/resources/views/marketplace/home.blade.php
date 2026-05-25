@@ -449,7 +449,6 @@
   {{-- HERO SECTION (BANNERS)                                     --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
   <section class="relative overflow-visible pb-6">
-    <div class="absolute inset-x-0 top-0 h-[120px] bg-gradient-to-b from-[#0f2a5b] via-[#09182e] to-transparent pointer-events-none z-0"></div>
     <div class="max-w-7xl mx-auto px-4 pt-3">
       <div class="relative z-20 rounded-[32px] bg-[#081125]/95 p-6 shadow-[0_30px_90px_rgba(5,12,35,0.28),0_0_0_1px_rgba(255,255,255,0.03)]
         {{-- Header with interactive robot --}}
