@@ -216,53 +216,80 @@ public function poll(Conversation $conversation)
     /**
      * Kirim Pesan Baru
      */
-    public function sendMessage(Request $request)
+    public function sendMessage(Request $request, Conversation $conversation)
     {
         $request->validate([
-            'conversation_id' => 'required|exists:conversations,id',
-            'message'         => 'nullable|string',
-            'attachment'      => 'nullable|file|max:5120', // Max 5MB
+            'message'    => 'nullable|string',
+            'attachment' => 'nullable|file|max:5120',
         ]);
 
         $messageText = trim($request->input('message', ''));
-        if ($messageText === '' && ! $request->hasFile('attachment')) {
-            return response()->json(['message' => 'Pesan atau foto harus diisi.'], 422);
+
+        if ($messageText === '' && !$request->hasFile('attachment')) {
+            return response()->json([
+                'message' => 'Pesan atau foto harus diisi.'
+            ], 422);
         }
 
-        $conversation = Conversation::findOrFail($request->conversation_id);
         $user = Auth::user();
-        $receiverId = ($user->id === $conversation->buyer_id) ? $conversation->seller_id : $conversation->buyer_id;
 
-        // Handle Attachment jika ada
+        // Proteksi participant
+        if (
+            $user->id !== $conversation->buyer_id &&
+            $user->id !== $conversation->seller_id
+        ) {
+            return response()->json([
+                'message' => 'Unauthorized'
+            ], 403);
+        }
+
+        $receiverId = $user->id === $conversation->buyer_id
+            ? $conversation->seller_id
+            : $conversation->buyer_id;
+
         $attachmentPath = null;
         $attachmentType = null;
+
         if ($request->hasFile('attachment')) {
+
             $file = $request->file('attachment');
-            $attachmentPath = $file->store('chat_attachments', 'public_app_public');
-            $attachmentType = explode('/', $file->getMimeType())[0]; // image, video, application
+
+            $attachmentPath = $file->store(
+                'chat_attachments',
+                'public'
+            );
+
+            $attachmentType = explode(
+                '/',
+                $file->getMimeType()
+            )[0];
         }
 
         $message = Message::create([
-            'conversation_id' => $conversation->id,
-            'sender_id'       => $user->id,
-            'receiver_id'     => $receiverId,
-            'sender_role'     => $user->role ?? 'user',
-            'message'         => $messageText,
-            'attachment_path' => $attachmentPath,
-            'attachment_type' => $attachmentType,
-        ]);
+        'conversation_id' => $conversation->id,
+        'sender_id'       => $user->id,
+        'receiver_id'     => $receiverId,
+        'message'         => $messageText,
+        'attachment_path' => $attachmentPath,
+        'attachment_type' => $attachmentType,
+    ]);
 
-        // NOTE: Do not create global marketplace notifications for normal chat messages.
-        // Chat UI handles its own in-app badges and realtime events. Creating
-        // MarketplaceNotification for every chat message caused them to appear
-        // in the global notifications dropdown which is undesired.
+    $conversation->update([
+        'last_message_at' => now(),
+        'last_message'    => $messageText ?: '[Lampiran]'
+    ]);
 
-        // Broadcast Realtime ke lawan bicara
-        broadcast(new MessageSent($message))->toOthers();
+    // NOTE: Do not create global marketplace notifications for normal chat messages.
+    // Chat UI handles its own in-app badges and realtime events. Creating
+    // MarketplaceNotification for every chat message caused them to appear
+    // in the global notifications dropdown which is undesired.
 
-        return response()->json($message->toChat($user->id));
+    broadcast(new MessageSent($message))->toOthers();
+
+    return response()->json(
+        $message->toChat($user->id)
+    );
     }
-
     /**
      * Fitur WhatsApp: Edit Pesan
      */
