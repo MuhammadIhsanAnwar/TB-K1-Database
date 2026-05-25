@@ -1065,49 +1065,49 @@
       }
     }
 
-    async function loadChatBadge() {
+//     async function loadChatBadge() {
 
-    const badge = document.getElementById('chat-badge');
+//     const badge = document.getElementById('chat-badge');
 
-    if (!badge) return;
+//     if (!badge) return;
 
-    try {
+//     try {
 
-        const response = await fetch(window.chatInboxUrl, {
-            method: 'GET',
-            headers: {
-                'X-Requested-With': 'XMLHttpRequest',
-                'Accept': 'application/json'
-            }
-        });
+//         const response = await fetch(window.chatInboxUrl, {
+//             method: 'GET',
+//             headers: {
+//                 'X-Requested-With': 'XMLHttpRequest',
+//                 'Accept': 'application/json'
+//             }
+//         });
 
-        if (!response.ok) {
-            throw new Error('Failed to load chat badge');
-        }
+//         if (!response.ok) {
+//             throw new Error('Failed to load chat badge');
+//         }
 
-        const data = await response.json();
+//         const data = await response.json();
 
-        const unread = Number(data.total_unread) || 0;
+//         const unread = Number(data.total_unread) || 0;
 
-        if (unread > 0) {
+//         if (unread > 0) {
 
-            badge.textContent = unread > 99
-                ? '99+'
-                : unread;
+//             badge.textContent = unread > 99
+//                 ? '99+'
+//                 : unread;
 
-            badge.classList.remove('hidden');
+//             badge.classList.remove('hidden');
 
-        } else {
+//         } else {
 
-            badge.classList.add('hidden');
-        }
+//             badge.classList.add('hidden');
+//         }
 
-    } catch (error) {
+//     } catch (error) {
 
-        // no-op
+//         // no-op
 
-    }
-}
+//     }
+// }
       const badge = document.getElementById('chat-badge');
       if (!badge) return;
 
@@ -1222,13 +1222,13 @@
 
   loadNotificationPreview();
   loadChatBadge();
-  setInterval(loadChatBadge, 10000);
-  document.addEventListener('visibilitychange', () => {
-      if (!document.hidden) {
-          loadChatBadge();
-      }
-  });
-});
+//   setInterval(loadChatBadge, 10000);
+//   document.addEventListener('visibilitychange', () => {
+//       if (!document.hidden) {
+//           loadChatBadge();
+//       }
+//   });
+// });
 
 document.addEventListener('DOMContentLoaded', () => {
     const preloader = document.getElementById('page-preloader');
