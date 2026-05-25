@@ -278,16 +278,16 @@
 
                 <a href="{{ route('chat.show', ['conversation' => $conv->id, 'role' => 'buyer']) }}"
                 class="conv-item"
-                data-name="{{ strtolower($partner?->name ?? '') }}">
+                data-name="{{ strtolower($partner?->store_name ?? $partner?->name ?? '') }}">
 
-                    <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($partner?->name ?? 'Seller') }}"
+                    <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($partner?->store_name ?? $partner?->name ?? 'Seller') }}"
                         class="conv-avatar">
 
                     <div class="conv-content">
 
                         <div class="conv-header">
                             <span class="conv-name">
-                                {{ $partner?->name ?? 'Seller' }}
+                                {{ $partner?->store_name ?? $partner?->name ?? 'Seller' }}
                             </span>
 
                             <span class="conv-time">
@@ -340,7 +340,7 @@
 
                 <a href="{{ route('chat.show', ['conversation' => $conv->id, 'role' => 'seller']) }}"
                 class="conv-item"
-                data-name="{{ strtolower($partner?->name ?? '') }}">
+                data-name="{{ strtolower($partner?->store_name ?? $partner?->name ?? '') }}"
 
                     <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($partner?->name ?? 'Buyer') }}"
                         class="conv-avatar">
