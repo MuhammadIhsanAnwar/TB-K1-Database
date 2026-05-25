@@ -66,6 +66,23 @@
                 </div>
 
                 {{-- Payment Method --}}
+                {{-- Catatan Pesanan --}}
+                <div class="surface-panel border border-gray-200 rounded-xl overflow-hidden shadow-sm">
+                    <div class="bg-gray-50 border-b border-gray-200 px-5 py-3">
+                        <h2 class="font-bold text-gray-800 text-sm">
+                            Catatan Pesanan
+                        </h2>
+                    </div>
+
+                    <div class="p-5">
+                        <textarea
+                            name="buyer_note"
+                            rows="4"
+                            placeholder="Contoh: Kirim cepat bang, login via Google, dll."
+                            class="input resize-none"
+                        >{{ old('buyer_note') }}</textarea>
+                    </div>
+                </div>
                 <div class="surface-panel border border-gray-200 rounded-xl overflow-hidden shadow-sm">
                     <div class="bg-gray-50 border-b border-gray-200 px-5 py-3">
                         <h2 class="font-bold text-gray-800 text-sm">Metode Pembayaran</h2>

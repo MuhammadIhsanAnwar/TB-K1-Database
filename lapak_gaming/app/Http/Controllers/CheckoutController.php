@@ -25,6 +25,7 @@ class CheckoutController extends Controller
         ];
 
         $data = $request->validate([
+            'buyer_note' => ['nullable', 'string', 'max:1000'],
             'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
         ], $messages);
 
@@ -114,6 +115,7 @@ class CheckoutController extends Controller
             $grandTotal = $subtotal + $feeAmount;
 
             $order = Order::create([
+                'delivery_notes' => $request->buyer_note,
                 'buyer_id' => $request->user()->id,
                 'seller_id' => $product->seller_id,
                 'invoice_number' => 'INV-'.now()->format('YmdHis').'-'.str_pad((string) random_int(1, 9999), 4, '0', STR_PAD_LEFT),
