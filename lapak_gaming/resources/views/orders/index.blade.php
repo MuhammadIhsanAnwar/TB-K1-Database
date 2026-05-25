@@ -57,7 +57,6 @@
                 \App\Models\Order::STATUS_PENDING_PAYMENT => 'Menunggu Pembayaran',
                 \App\Models\Order::STATUS_PAYMENT_UPLOADED => 'Pembayaran Dikirim',
                 \App\Models\Order::STATUS_PROCESSING => 'Diproses',
-                \App\Models\Order::STATUS_DELIVERED => 'Sudah Dikirim',
                 \App\Models\Order::STATUS_COMPLETED => 'Selesai',
                 \App\Models\Order::STATUS_CANCELLED => 'Dibatalkan',
             ];
@@ -155,7 +154,6 @@
                             Lihat Detail
                         </a>
 
-                        @if($order->buyer_id == auth()->id() && in_array($order->status, [\App\Models\Order::STATUS_COMPLETED, \App\Models\Order::STATUS_DELIVERED], true))
                             <a href="{{ route('orders.receipt.pdf', $order->order_code) }}"
                                target="_blank"
                                rel="noopener noreferrer"
