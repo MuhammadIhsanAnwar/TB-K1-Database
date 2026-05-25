@@ -140,7 +140,7 @@
     </div>
     <div class="grid gap-4 items-start">
       {{-- Main Banner Carousel (Hero 4:5) --}}
-      <div class="hero-stage rounded-2xl overflow-hidden relative aspect-[4/5]">
+      <div class="hero-stage rounded-2xl overflow-hidden relative aspect-[4/5] md:aspect-[16/9]">
         <div id="hero-slider" class="w-full h-full relative">
           <div class="hero-track w-full h-full flex transition-transform duration-700">
             @if(isset($heroBanners) && $heroBanners->count())
@@ -289,7 +289,7 @@
       <div class="featured-scroll overflow-hidden">
         <div class="flex gap-4 animate-featured-scroll will-change-transform">
           @foreach($featuredBanners as $fb)
-            <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-[360px] rounded-xl overflow-hidden block aspect-[3/1] border border-white/10 shadow-lg shadow-black/20">
+            <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-[420px] md:w-[520px] rounded-xl overflow-hidden block aspect-[16/9] border border-white/10 shadow-lg shadow-black/20">
               <img src="{{ $fb->image_url }}" class="w-full h-full object-cover" alt="{{ $fb->title ?? 'Featured' }}">
             </a>
           @endforeach
