@@ -304,6 +304,26 @@ return new class extends Migration
             $table->unsignedInteger('last_activity');
             $table->timestamps();
         });
+
+        Schema::create('verification_logs', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('admin_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('action');
+            $table->text('notes')->nullable();
+            $table->timestamps();
+        });
+
+        Schema::create('notification_broadcasts', function (Blueprint $table) {
+            $table->id();
+            $table->string('title');
+            $table->text('body')->nullable();
+            $table->string('link')->nullable();
+            $table->timestamp('starts_at')->nullable();
+            $table->timestamp('ends_at')->nullable();
+            $table->boolean('is_active')->default(true);
+            $table->timestamps();
+        });
     }
 
     public function down(): void
@@ -311,6 +331,8 @@ return new class extends Migration
         Schema::dropIfExists('banners');
         Schema::dropIfExists('marketplace_notifications');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('verification_logs');
+        Schema::dropIfExists('notification_broadcasts');
         Schema::dropIfExists('seller_level_benefits');
         Schema::dropIfExists('carts');
         Schema::dropIfExists('comment_likes');
