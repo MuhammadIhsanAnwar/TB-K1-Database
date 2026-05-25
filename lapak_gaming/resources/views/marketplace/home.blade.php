@@ -53,7 +53,7 @@
       radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 28%),
       radial-gradient(circle at top right, rgba(249,115,22,0.10), transparent 24%),
       linear-gradient(180deg, rgba(8,17,37,0.82), rgba(8,17,37,0.56));
-    border: 1px solid rgba(255,255,255,0.08);
+    border: 1px solid rgba(255,255,255,0.03);
     box-shadow: 0 20px 50px rgba(2,6,23,0.24);
   }
   .category-panel::before {
@@ -700,8 +700,7 @@
       <div class="featured-scroll overflow-hidden">
         <div class="flex gap-3 md:gap-4 animate-featured-scroll will-change-transform">
           @foreach($featuredBanners as $fb)
-            <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-[360px] md:w-[480px] rounded-xl overflow-hidden block aspect-[3/1] border border-white/10 shadow-lg shadow-black/20">
-              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
+            <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-[360px] md:w-[480px] rounded-xl overflow-hidden block aspect-[3/1] border border-white/10 shadow-md">
               <img src="{{ $fb->image_url }}" class="w-full h-full object-cover" alt="{{ $fb->title ?? 'Featured' }}">
             </a>
           @endforeach
@@ -765,7 +764,6 @@
   })();
 
   // Featured banners: auto-scroll animation retained (single-row, no duplication)
-  /* FADE ANIMATION */
 
     /* PREMIUM NAVBAR */
     const navbar = document.getElementById('main-navbar');
