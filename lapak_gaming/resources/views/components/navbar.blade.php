@@ -258,11 +258,13 @@
           @if($isAdminRoute && $authUser?->isAdmin())
             <div class="hidden xl:flex items-center gap-2 flex-wrap max-w-[58vw] justify-end">
               <a href="{{ route('admin.dashboard') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Dashboard</a>
+              <a href="{{ route('admin.contact-messages.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Pesan Masuk</a>
               <a href="{{ route('admin.users.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Kelola Akun</a>
               <a href="{{ route('admin.verification.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Verifikasi</a>
               <a href="{{ route('admin.orders.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Transaksi</a>
               <a href="{{ route('admin.banners.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Banner</a>
               <a href="{{ route('admin.notifications.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Notifikasi</a>
+              <a href="{{ route('artisan.terminal.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Artisan</a>
               <a href="{{ route('admin.terminal.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Terminal</a>
             </div>
           @endif
