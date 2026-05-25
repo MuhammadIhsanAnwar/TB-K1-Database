@@ -203,7 +203,7 @@
               <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
               <span id="notif-badge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
             </button>
-            <div id="notif-dropdown" data-notifications-url="{{ route('notifications.poll') }}" data-notifications-read-base-url="{{ route('notifications.index') }}" data-notifications-read-all-url="{{ route('notifications.read-all') }}" class="hidden absolute right-0 top-full mt-2 w-80 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left text-slate-200 z-50">
+            <div id="notif-dropdown" data-notifications-url="{{ route('notifications.poll') }}" data-notifications-read-base-url="{{ route('notifications.index') }}" data-notifications-read-all-url="{{ route('notifications.read-all') }}" class="dropdown-panel absolute right-0 top-full mt-2 w-80 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left text-slate-200 z-50">
               <div class="px-4 py-3 border-b flex justify-between items-center bg-transparent">
                 <span class="font-bold text-sm text-slate-100">Notifikasi</span>
                 <a href="{{ route('notifications.index') }}" class="text-xs text-itemku-blue">Lihat semua</a>
@@ -231,7 +231,7 @@
                 <span class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
               @endif
             </button>
-            <div id="cart-dropdown" class="hidden absolute right-0 top-full mt-2 w-72 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50">
+            <div id="cart-dropdown" class="dropdown-panel absolute right-0 top-full mt-2 w-72 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50">
               <div class="px-4 py-3 border-b flex justify-between items-center bg-transparent">
                 <span class="font-bold text-sm text-slate-100">Keranjang</span>
                 <a href="{{ route('cart.index') }}" class="text-xs text-itemku-blue">Lihat semua</a>
@@ -278,7 +278,7 @@
               <span class="text-sm font-medium truncate max-w-[100px]">{{ $authUser?->name ?? 'User' }}</span>
               <svg class="w-3 h-3 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </button>
-            <div id="user-dropdown" class="hidden absolute right-0 top-full mt-3 w-56 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50 py-2">
+            <div id="user-dropdown" class="dropdown-panel absolute right-0 top-full mt-3 w-56 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50 py-2">
               <div class="px-4 py-2 border-b border-white/6 mb-1">
                 <p class="text-sm font-bold text-slate-100 truncate">{{ $authUser->name }}</p>
                 <p class="text-xs text-slate-400 truncate">{{ $authUser->email }}</p>

@@ -835,6 +835,22 @@
   window.chatInboxUrl = <?php echo json_encode(route('chat.inbox.poll')); ?>;
 </script>
 
+@if(request()->routeIs('home') || request()->routeIs('marketplace.home'))
+  <div id="page-preloader" class="fixed inset-0 z-[2000] flex items-center justify-center bg-slate-950/95 backdrop-blur-xl transition-opacity duration-500">
+    <div class="max-w-xs w-full p-8 rounded-[32px] border border-white/10 bg-slate-950/95 shadow-[0_0_60px_rgba(56,189,248,0.24)] text-center">
+      <div class="mx-auto mb-6 w-24 h-24 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-white/10 flex items-center justify-center shadow-glow">
+        <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="w-16 h-16 object-contain" />
+      </div>
+      <div class="text-xl font-bold text-white mb-2">Lapak Gaming</div>
+      <p class="text-sm surface-muted mb-6">Sedang memuat konten terbaik untuk kamu.</p>
+      <div class="h-2 rounded-full bg-slate-800 overflow-hidden">
+        <div id="page-preloader-bar" class="h-full w-0 bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-500 transition-all duration-300"></div>
+      </div>
+      <div id="page-preloader-status" class="mt-4 text-xs uppercase tracking-[0.22em] text-slate-400">Memuat halaman...</div>
+    </div>
+  </div>
+@endif
+
 <div id="gaming-bg"></div>
 
   {{-- Ambient top glow --}}
@@ -1152,14 +1168,25 @@
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    const preloader = document.getElementById('page-preloader');
+    const preloaderBar = document.getElementById('page-preloader-bar');
+    const preloaderText = document.getElementById('page-preloader-status');
 
-    const bg = document.getElementById('gaming-bg');
+    if (preloader && preloaderBar && preloaderText) {
+      let progress = 0;
+      const tick = setInterval(() => {
+        progress = Math.min(98, progress + Math.random() * 12 + 6);
+        preloaderBar.style.width = `${progress}%`;
+      }, 250);
 
-    const types = [
-        'line',
-        'square',
-        'plus'
-    ];
+      setTimeout(() => {
+        clearInterval(tick);
+        preloaderBar.style.width = '100%';
+        preloaderText.textContent = 'Selesai memuat, selamat datang!';
+        preloader.style.opacity = '0';
+        setTimeout(() => preloader.remove(), 400);
+      }, 3000);
+    }
 
     for(let i = 0; i < 8; i++){
 
