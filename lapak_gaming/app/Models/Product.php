@@ -150,12 +150,12 @@ class Product extends Model {
         }
 
         if (Storage::disk('public_app_public')->exists($imagePath)) {
-            $base = rtrim(config('filesystems.disks.public_app_public.url', rtrim(config('app.url', ''), '/').'/storage/app/public'), '/');
+            $base = rtrim((string) config('filesystems.disks.public_app_public.url', rtrim((string) config('app.url', ''), '/').'/storage/app/public'), '/');
             return $base . '/' . ltrim($imagePath, '/');
         }
 
         if (Storage::disk('public')->exists($imagePath)) {
-            $base = rtrim(config('filesystems.disks.public.url', rtrim(config('app.url', ''), '/').'/storage'), '/');
+            $base = rtrim((string) config('filesystems.disks.public.url', rtrim((string) config('app.url', ''), '/').'/storage'), '/');
             return $base . '/' . ltrim($imagePath, '/');
         }
 
