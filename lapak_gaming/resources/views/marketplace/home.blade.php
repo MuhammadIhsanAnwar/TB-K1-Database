@@ -53,7 +53,7 @@
       radial-gradient(circle at top left, rgba(59,130,246,0.14), transparent 28%),
       radial-gradient(circle at top right, rgba(249,115,22,0.10), transparent 24%),
       linear-gradient(180deg, rgba(8,17,37,0.82), rgba(8,17,37,0.56));
-    border: 1px solid rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
     box-shadow: 0 20px 50px rgba(2,6,23,0.24);
   }
   .category-panel::before {
@@ -216,6 +216,7 @@
     background:
       linear-gradient(135deg, rgba(2,6,23,0.95), rgba(30,41,59,0.92)),
       radial-gradient(circle at top right, rgba(249,115,22,0.12), transparent 32%);
+    border: 1px solid rgba(255,255,255,0.08);
     box-shadow: 0 16px 40px rgba(2, 6, 23, 0.18);
   }
   .section-kicker {
@@ -409,7 +410,7 @@
   {{-- A short, engaging intro to welcome users and highlight value --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
   <section class="max-w-7xl mx-auto px-4 py-6">
-    <div class="intro-card rounded-2xl p-6 shadow-lg">
+    <div class="intro-card rounded-2xl border border-white/6 p-6 shadow-lg">
       <div class="intro-shimmer" aria-hidden="true"></div>
       <div class="text-center relative z-10">
         <div class="section-kicker text-amber-300 mb-2">Selamat Datang di Lapak Gaming</div>
@@ -538,7 +539,7 @@
   {{-- ═══════════════════════════════════════════════════════════ --}}
   {{-- TRUST BADGES                                               --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="trust-badge-container py-3 mb-8">
+<section class="trust-badge-container py-3 shadow-md mb-8">
   <div class="max-w-7xl mx-auto px-4 flex justify-between items-center overflow-x-auto no-scrollbar gap-6">
     <div class="flex items-center gap-2 text-white whitespace-nowrap">
       <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
