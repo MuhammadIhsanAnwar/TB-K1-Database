@@ -22,14 +22,26 @@ class MarketplaceController extends Controller
             return redirect()->route('admin.dashboard');
         }
 
-        $allCategories = Schema::hasTable('categories')
-            ? Category::query()->active()->whereNull('parent_id')->with(['children' => fn ($query) => $query->active()->ordered()])->orderBy('sort_order')->get()
-            : collect();
+        $allCategories = collect();
+        if (Schema::hasTable('categories')) {
+            $query = Category::query()->active()->whereNull('parent_id')->with(['children' => fn ($query) => $query->active()->ordered()]);
+            if (Schema::hasColumn('categories', 'sort_order')) {
+                $query = $query->orderBy('sort_order');
+            }
+            $allCategories = $query->get();
+        }
 
         // 1. Hero Banners
-        $heroBanners = Schema::hasTable('banners')
-            ? Banner::query()->active()->where('position', 'hero')->orderByDesc('sort_order')->latest()->take(4)->get()
-            : collect();
+        $heroBanners = collect();
+        if (Schema::hasTable('banners')) {
+            $bq = Banner::query()->active()->where('position', 'hero');
+            if (Schema::hasColumn('banners', 'sort_order')) {
+                $bq = $bq->orderByDesc('sort_order')->latest();
+            } else {
+                $bq = $bq->latest();
+            }
+            $heroBanners = $bq->take(4)->get();
+        }
 
         // 2. Featured Game Keys ("Unlock the Simulation")
         $featuredGameKeys = Schema::hasTable('products')
@@ -77,9 +89,15 @@ class MarketplaceController extends Controller
 
     public function categories(): View
     {
-        $categories = Schema::hasTable('categories')
-            ? Category::query()->active()->whereNull('parent_id')->with(['children' => fn ($query) => $query->active()->ordered()])->orderBy('sort_order')->get()
-            : collect();
+        if (Schema::hasTable('categories')) {
+            $catQuery = Category::query()->active()->whereNull('parent_id')->with(['children' => fn ($query) => $query->active()->ordered()]);
+            if (Schema::hasColumn('categories', 'sort_order')) {
+                $catQuery = $catQuery->orderBy('sort_order');
+            }
+            $categories = $catQuery->get();
+        } else {
+            $categories = collect();
+        }
 
         return view('marketplace.categories', [
             'categories' => $categories,
