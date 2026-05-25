@@ -30,6 +30,10 @@ class AdminController extends Controller
         $q = trim((string) $request->query('q', ''));
         $sort = $request->query('sort', 'created_at');
         $direction = strtolower($request->query('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
+        $perPage = (int) $request->query('per_page', 50);
+        if (!in_array($perPage, [50,100,300,500,1000])) {
+            $perPage = 50;
+        }
 
         $allowedSorts = ['created_at', 'name', 'email'];
         if (! in_array($sort, $allowedSorts, true)) {
@@ -47,7 +51,7 @@ class AdminController extends Controller
 
         $regularUsers = (clone $regularUsersQuery)
             ->orderBy($sort, $direction)
-            ->paginate(15, ['*'], 'users_page')
+            ->paginate($perPage, ['*'], 'users_page')
             ->appends(array_merge($baseAppends, ['tab' => 'users']));
 
         $sellersQuery = User::query()
@@ -59,7 +63,7 @@ class AdminController extends Controller
 
         $sellers = (clone $sellersQuery)
             ->orderBy($sort, $direction)
-            ->paginate(15, ['*'], 'sellers_page')
+            ->paginate($perPage, ['*'], 'sellers_page')
             ->appends(array_merge($baseAppends, ['tab' => 'sellers']));
 
         $applicationsQuery = User::query()
@@ -71,7 +75,7 @@ class AdminController extends Controller
 
         $applications = (clone $applicationsQuery)
             ->orderBy($sort, $direction)
-            ->paginate(15, ['*'], 'apps_page')
+            ->paginate($perPage, ['*'], 'apps_page')
             ->appends(array_merge($baseAppends, ['tab' => 'applications']));
 
         $pendingVerificationsQuery = User::query()
@@ -83,7 +87,7 @@ class AdminController extends Controller
 
         $pendingVerifications = (clone $pendingVerificationsQuery)
             ->orderBy($sort, $direction)
-            ->paginate(15, ['*'], 'pending_page')
+            ->paginate($perPage, ['*'], 'pending_page')
             ->appends(array_merge($baseAppends, ['tab' => 'pending_verification']));
 
         $counts = [
