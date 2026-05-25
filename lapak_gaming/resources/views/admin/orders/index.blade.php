@@ -111,12 +111,6 @@
                 </option>
             @endforeach
 
-            <option
-                value="all"
-                {{ request('per_page') == 'all' ? 'selected' : '' }}
-            >
-                All
-            </option>
         </select>
     </form>
 

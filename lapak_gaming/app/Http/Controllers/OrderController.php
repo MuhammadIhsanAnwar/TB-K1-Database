@@ -47,22 +47,15 @@ class OrderController extends Controller {
             }
         }
 
-        if ($perPage === 'all') {
+        $perPage = (int) request('per_page', 50);
 
-            $orders = $ordersQuery
-                ->paginate(
-                    $ordersQuery->count() > 0
-                        ? $ordersQuery->count()
-                        : 1
-                )
-                ->withQueryString();
-
-        } else {
-
-            $orders = $ordersQuery
-                ->paginate((int) $perPage)
-                ->withQueryString();
+        if (!in_array($perPage, [50,100,300,500,1000])) {
+            $perPage = 50;
         }
+
+        $orders = $ordersQuery
+            ->paginate($perPage)
+            ->withQueryString();
         $statusCounts = collect($allowedStatuses)
             ->filter(fn ($itemStatus) => $itemStatus !== 'all')
             ->mapWithKeys(fn ($itemStatus) => [$itemStatus => (clone $baseQuery)->where('status', $itemStatus)->count()]);
