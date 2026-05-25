@@ -241,6 +241,158 @@
     85%  { opacity: var(--op, 0.18); }
     100% { transform: translateY(-120px) scale(0.6); opacity: 0; }
   }
+    /* PREMIUM GLOW */
+  .premium-glow {
+    position: relative
+    overflow: hidden;
+  }
+
+  .premium-glow::before {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      135deg,
+      rgba(14,165,233,.5),
+      rgba(59,130,246,.15),
+      rgba(249,115,22,.35)
+    );
+    -webkit-mask:
+      linear-gradient(#fff 0 0) content-box,
+      linear-gradient(#fff 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  /* PRODUCT CARD */
+  .product-card {
+    backdrop-filter: blur(12px);
+    background:
+      linear-gradient(
+        180deg,
+        rgba(15,23,42,.96),
+        rgba(2,6,23,.98)
+      );
+  }
+
+  .product-card:hover {
+    transform: translateY(-8px);
+    box-shadow:
+      0 25px 70px rgba(14,165,233,.16),
+      0 10px 35px rgba(0,0,0,.45);
+  }
+
+  /* IMAGE OVERLAY */
+  .product-card img {
+    transition:
+      transform .6s cubic-bezier(.2,.8,.2,1),
+      filter .3s;
+  }
+
+  .product-card:hover img {
+    transform: scale(1.08);
+    filter: brightness(1.08);
+  }
+
+  /* HERO LIGHT */
+  .hero-light {
+    position: absolute;
+    width: 500px;
+    height: 500px;
+    border-radius: 999px;
+    filter: blur(120px);
+    opacity: .16;
+    pointer-events: none;
+  }
+
+  .hero-light.blue {
+    background: #0ea5e9;
+  }
+
+  .hero-light.orange {
+    background: #f97316;
+  }
+
+  /* CATEGORY HOVER */
+  .category-icon-wrapper:hover .category-icon {
+    transform: translateY(-5px) scale(1.06);
+    box-shadow:
+      0 18px 40px rgba(14,165,233,.18);
+  }
+
+  /* BUTTON PREMIUM */
+  .btn-premium {
+    background:
+      linear-gradient(
+        135deg,
+        #0ea5e9,
+        #2563eb
+      );
+
+    box-shadow:
+      0 12px 30px rgba(14,165,233,.28);
+
+    transition:
+      transform .25s,
+      box-shadow .25s;
+  }
+
+  .btn-premium:hover {
+    transform: translateY(-2px);
+    box-shadow:
+      0 20px 45px rgba(14,165,233,.35);
+  }
+
+  /* SCROLLBAR */
+  ::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(148,163,184,.35);
+    border-radius: 999px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  /* SECTION FADE */
+  .fade-section {
+    opacity: 0;
+    transform: translateY(30px);
+    transition:
+      opacity .8s ease,
+      transform .8s ease;
+  }
+
+  .fade-section.show {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* FLOATING ANIMATION */
+  .float-soft {
+    animation: floatSoft 5s ease-in-out infinite;
+  }
+
+  @keyframes floatSoft {
+    0% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-8px);
+    }
+
+    100% {
+      transform: translateY(0);
+    }
+  }
 </style>
 @endpush
 
@@ -578,5 +730,84 @@
   })();
 
   // Featured banners: auto-scroll animation retained (single-row, no duplication)
+  /* FADE ANIMATION */
+    const fadeSections = document.querySelectorAll('section');
+
+    const observer = new IntersectionObserver((entries) => {
+
+      entries.forEach((entry) => {
+
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+        }
+
+      });
+
+    }, {
+      threshold: 0.1
+    });
+
+    fadeSections.forEach((section) => {
+      section.classList.add('fade-section');
+      observer.observe(section);
+    });
+
+    /* PREMIUM NAVBAR */
+    const navbar = document.getElementById('main-navbar');
+
+    window.addEventListener('scroll', () => {
+
+      if (window.scrollY > 10) {
+
+        navbar.style.background =
+          'rgba(2,6,23,.78)';
+
+        navbar.style.backdropFilter =
+          'blur(26px)';
+
+        navbar.style.boxShadow =
+          '0 10px 35px rgba(0,0,0,.35)';
+
+      } else {
+
+        navbar.style.background = '';
+        navbar.style.boxShadow = '';
+
+      }
+
+    });
+
+    /* CARD MAGNET EFFECT */
+    document.querySelectorAll('.product-card').forEach((card) => {
+
+      card.addEventListener('mousemove', (e) => {
+
+        const rect = card.getBoundingClientRect();
+
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+
+        const rotateY =
+          ((x / rect.width) - 0.5) * 6;
+
+        const rotateX =
+          ((y / rect.height) - 0.5) * -6;
+
+        card.style.transform =
+          `
+          perspective(1000px)
+          rotateX(${rotateX}deg)
+          rotateY(${rotateY}deg)
+          translateY(-8px)
+          `;
+      });
+
+      card.addEventListener('mouseleave', () => {
+
+        card.style.transform =
+          'perspective(1000px) rotateX(0) rotateY(0)';
+      });
+
+    });
 </script>
 @endpush
