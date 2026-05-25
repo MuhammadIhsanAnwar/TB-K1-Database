@@ -157,6 +157,20 @@
     #main-navbar .h-20 { height: 56px; }
     #main-navbar .font-display { font-size: 1rem; }
   }
+
+  .mask-gradient-right {
+  scroll-behavior: smooth;
+  padding-bottom: 2px;
+  }
+
+  .no-scrollbar::-webkit-scrollbar {
+  display: none;
+  }
+
+  .no-scrollbar {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
 </style>
 @endpush
 
@@ -268,12 +282,29 @@
           </div>
         </form>
         {{-- Trending Chips (Absolute positioned below search to not expand nav height) --}}
-        <div class="absolute top-full left-0 mt-1.5 flex items-center gap-1.5 whitespace-nowrap overflow-hidden text-xs w-full">
-          <a href="{{ route('products.search', ['q'=>'top up game']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">top up game</a>
-          <a href="{{ route('products.search', ['q'=>'akun game']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">akun game</a>
-          <a href="{{ route('products.search', ['q'=>'voucher game']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">voucher game</a>
-          <a href="{{ route('products.search', ['q'=>'game key']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">game key</a>
-          <a href="{{ route('products.search', ['q'=>'item game']) }}" class="px-2 py-0.5 rounded surface-weak text-white/90 hover:brightness-105 transition-colors">item game</a>
+          <a href="{{ route('products.search', ['q'=>'top up game']) }}"
+          class="nav-modern-link flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-white/85 hover:text-white hover:bg-cyan-500/10 transition-all duration-300 whitespace-nowrap">
+            <span class="px-2 py-0.5 rounded-full bg-cyan-500/10 text-cyan-300 text-[10px] font-bold">
+                HOT
+            </span>
+            Top Up Game
+        </a>
+          <a href="{{ route('products.search', ['q'=>'akun game']) }}"
+          class="nav-modern-link px-4 py-2 rounded-xl text-sm font-medium text-white/85 hover:text-white hover:bg-white/[0.05] transition-all duration-300 whitespace-nowrap">
+            Akun Game
+        </a>
+          <a href="{{ route('products.search', ['q'=>'voucher game']) }}"
+          class="nav-modern-link px-4 py-2 rounded-xl text-sm font-medium text-white/85 hover:text-white hover:bg-white/[0.05] transition-all duration-300 whitespace-nowrap">
+            Voucher Game
+        </a>
+          <a href="{{ route('products.search', ['q'=>'game key']) }}"
+          class="nav-modern-link px-4 py-2 rounded-xl text-sm font-medium text-white/85 hover:text-white hover:bg-white/[0.05] transition-all duration-300 whitespace-nowrap">
+            Game Key
+        </a>
+          <a href="{{ route('products.search', ['q'=>'item game']) }}"
+          class="nav-modern-link px-4 py-2 rounded-xl text-sm font-medium text-white/85 hover:text-white hover:bg-white/[0.05] transition-all duration-300 whitespace-nowrap">
+            Item Game
+        </a>
         </div>
       </div>
       @endif
@@ -478,7 +509,7 @@
           Beranda
       </a>
       <div class="flex-1 overflow-x-auto no-scrollbar mask-gradient-right">
-        <div class="flex items-center gap-1 min-w-max">
+        <div class="flex items-center gap-2 min-w-max">
           <a href="{{ route('products.search', ['category'=>'roblox']) }}" class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap" hover:surface-weak rounded transition-colors whitespace-nowrap">Roblox Games</a>
           <a href="{{ route('products.search', ['category'=>'growtopia']) }}" class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap" hover:surface-weak rounded transition-colors whitespace-nowrap">Growtopia</a>
           <a href="{{ route('products.search', ['category'=>'genshin-impact']) }}" class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap" hover:surface-weak rounded transition-colors whitespace-nowrap">Genshin Impact</a>
