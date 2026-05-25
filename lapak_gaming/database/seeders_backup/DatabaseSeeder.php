@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder {
             UsersTableSeeder::class,
             BuyerSeeder::class,
             ProfilesTableSeeder::class,
-            ProductSeederFromExcel::class,
+            ProductsTableSeeder::class,
         ]);
 
         if (app()->environment(['local', 'testing'])) {

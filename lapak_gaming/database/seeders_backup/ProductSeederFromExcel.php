@@ -7,6 +7,8 @@ use App\Models\Product;
 use App\Models\Category;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Str;
 
 class ProductSeederFromExcel extends Seeder
 {
@@ -49,8 +51,7 @@ class ProductSeederFromExcel extends Seeder
 
                 // Bersihkan harga (hapus "Rp" dan karakter non-angka)
                 $price = $this->parsePrice($data['harga']);
-                $soldCount = $this->parseSoldCount($data['jumlah_terjual']);
-                $type = $this->guessProductType($category);
+
                 $slug = $this->generateSlug($data['nama_produk']) . '-' . ($index + 1);
 
                 Product::updateOrCreate(
@@ -60,11 +61,11 @@ class ProductSeederFromExcel extends Seeder
                         'category_id' => $category->id,
                         'name' => $data['nama_produk'],
                         'slug' => $slug,
-                        'description' => $data['deskripsi'] ?: "Terjual {$soldCount} kali. Deskripsi singkat untuk {$data['nama_produk']}",
+                        'description' => $data['deskripsi'] ?: ('Deskripsi singkat untuk ' . $data['nama_produk']),
                         'price' => $price,
                         'sale_price' => null,
-                        'stock' => max(10, $soldCount + 20),
-                        'type' => $type,
+                        'stock' => 10,
+                        'type' => 'item',
                         'file_path' => $data['foto_produk'] ?? null,
                         'delivery_content' => null,
                         'is_auto_delivery' => true,
@@ -142,20 +143,6 @@ class ProductSeederFromExcel extends Seeder
 
         $cleaned = str_replace([' ', '.'], '', trim($count));
         return (int) $cleaned;
-    }
-
-    private function guessProductType($category): string
-    {
-        $parent = $category->parent_id ? Category::find($category->parent_id) : null;
-        $slug = $parent?->slug ?? $category->slug;
-
-        return match ($slug) {
-            'top-up-game' => 'topup',
-            'voucher' => 'voucher',
-            'game-key' => 'gamekey',
-            'akun' => 'akun',
-            default => 'item',
-        };
     }
 
     /**

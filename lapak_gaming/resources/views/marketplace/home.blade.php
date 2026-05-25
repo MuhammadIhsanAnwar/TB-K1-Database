@@ -53,15 +53,43 @@
   .trust-badge-container {
     background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
   }
+
+  .auth-radial {
+    background: radial-gradient(ellipse 70% 55% at 50% -5%,
+      rgba(37,99,235,0.22) 0%,
+      rgba(249,115,22,0.06) 60%,
+      transparent 100%);
+  }
+  .auth-particle {
+    position: absolute;
+    border-radius: 50%;
+    pointer-events: none;
+    animation: authFloat var(--dur, 6s) ease-in-out infinite var(--delay, 0s);
+    opacity: 0;
+    animation-fill-mode: both;
+  }
+  @keyframes authFloat {
+    0%   { transform: translateY(0) scale(1);   opacity: 0; }
+    15%  { opacity: var(--op, 0.18); }
+    85%  { opacity: var(--op, 0.18); }
+    100% { transform: translateY(-120px) scale(0.6); opacity: 0; }
+  }
 </style>
 @endpush
 
 @section('content')
+<div class="relative min-h-screen overflow-hidden">
+  <div class="auth-radial absolute inset-0 pointer-events-none"></div>
+  <div class="auth-particle w-1.5 h-1.5 bg-brand-500 absolute" style="left:12%; top:82%; --dur:7s; --delay:0s; --op:0.25;"></div>
+  <div class="auth-particle w-2 h-2 bg-accent-400 absolute" style="left:78%; top:86%; --dur:9s; --delay:1.5s; --op:0.2;"></div>
+  <div class="auth-particle w-1 h-1 bg-brand-400 absolute" style="left:45%; top:90%; --dur:8s; --delay:3s; --op:0.22;"></div>
+  <div class="auth-particle w-2 h-2 bg-brand-600 absolute" style="left:63%; top:74%; --dur:11s; --delay:0.8s; --op:0.15;"></div>
+  <div class="auth-particle w-1 h-1 bg-accent-500 absolute" style="left:28%; top:88%; --dur:6.5s; --delay:2.2s; --op:0.2;"></div>
 
-{{-- ═══════════════════════════════════════════════════════════ --}}
-{{-- HERO SECTION (BANNERS)                                     --}}
-{{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="surface-panel pb-6 pt-4">
+  {{-- ═══════════════════════════════════════════════════════════ --}}
+  {{-- HERO SECTION (BANNERS)                                     --}}
+  {{-- ═══════════════════════════════════════════════════════════ --}}
+  <section class="surface-panel pb-6 pt-4">
   <div class="max-w-7xl mx-auto px-4">
     <div class="flex gap-4 h-64 md:h-80 lg:h-96">
       {{-- Main Banner Carousel (Left 70%) --}}
@@ -194,6 +222,7 @@
   </section>
   @endforeach
 @endif
+</div>
 
 @endsection
 
