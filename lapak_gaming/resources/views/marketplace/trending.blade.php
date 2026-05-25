@@ -7,10 +7,10 @@
             
             {{-- Header Halaman --}}
             <div class="mb-8">
-                <h1 class="text-3xl md:text-4xl font-bold mb-2 bg-gradient-to-r from-blue-400 to-orange-400 bg-clip-text text-transparent">
-                    🔥 Sedang <span class="text-cyan-400">Trending</span>
+                <h1 class="text-3xl md:text-4xl font-bold mb-2 bg-clip-text text-transparent" style="background-image: linear-gradient(90deg,var(--primary),var(--accent));">
+                    🔥 Sedang <span class="text-accent">Trending</span>
                 </h1>
-                <p class="text-gray-400 text-sm md:text-base">Item paling panas dan banyak diburu gamers saat ini!</p>
+                <p class="surface-muted text-sm md:text-base">Item paling panas dan banyak diburu gamers saat ini!</p>
             </div>
 
             {{-- Area Produk --}}
@@ -30,9 +30,9 @@
                 </div>
             @else
                 {{-- Tampilan jika produk kosong --}}
-                <div class="col-span-full text-center text-gray-400 py-20 bg-gray-900 rounded-3xl border border-gray-800">
+                <div class="col-span-full text-center surface-muted py-20 bg-surface-weak rounded-3xl border border-white/10">
                     <div class="text-5xl mb-4">👻</div>
-                    <h2 class="text-xl font-bold text-white mb-2">Belum ada item yang trending</h2>
+                    <h2 class="text-xl font-bold surface-text mb-2">Belum ada item yang trending</h2>
                     <p class="text-sm">Ayo mulai transaksi biar item favoritmu masuk ke sini!</p>
                 </div>
             @endif

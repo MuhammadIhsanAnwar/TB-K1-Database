@@ -12,17 +12,17 @@
 @section('content')
 <div class="max-w-7xl mx-auto px-4 py-10">
   <div class="mb-6">
-    <nav class="flex items-center gap-2 text-xs text-slate-500">
-      <a href="{{ route('marketplace.home') }}" class="hover:text-slate-300 transition-colors">Beranda</a>
+    <nav class="flex items-center gap-2 text-xs surface-muted">
+      <a href="{{ route('marketplace.home') }}" class="transition-colors hover:surface-text">Beranda</a>
       <span>/</span>
-      <span class="text-slate-300">Profil Toko</span>
+      <span class="surface-muted">Profil Toko</span>
     </nav>
   </div>
 
   <div class="grid lg:grid-cols-[320px_1fr] gap-8 items-start">
     <aside class="card p-6 sticky top-24 space-y-5">
       <div class="flex items-center gap-4">
-        <div class="w-20 h-20 rounded-3xl overflow-hidden bg-slate-900 border border-slate-800 flex items-center justify-center">
+        <div class="w-20 h-20 rounded-3xl overflow-hidden bg-surface-weak border border-white/10 flex items-center justify-center">
           @if($storePhoto)
             <img src="{{ $storePhoto }}" alt="{{ $storeName }}" class="w-full h-full object-cover">
           @else
@@ -30,27 +30,27 @@
           @endif
         </div>
         <div>
-          <div class="text-xs text-slate-500 uppercase tracking-wider">Profil Toko</div>
-          <h1 class="text-2xl font-bold text-white">{{ $storeName }}</h1>
-          <p class="text-sm text-slate-400">{{ $productsCount }} produk dijual</p>
+          <div class="text-xs surface-muted uppercase tracking-wider">Profil Toko</div>
+          <h1 class="text-2xl font-bold surface-text">{{ $storeName }}</h1>
+          <p class="text-sm surface-muted">{{ $productsCount }} produk dijual</p>
         </div>
       </div>
 
       @if($storeBio)
         <div>
-          <h2 class="text-sm font-semibold text-white mb-2">Tentang Toko</h2>
-          <p class="text-sm leading-relaxed text-slate-400">{{ $storeBio }}</p>
+          <h2 class="text-sm font-semibold surface-text mb-2">Tentang Toko</h2>
+          <p class="text-sm leading-relaxed surface-muted">{{ $storeBio }}</p>
         </div>
       @endif
 
       <div class="grid grid-cols-2 gap-3">
-        <div class="rounded-2xl p-4 bg-slate-950 border border-slate-800">
-          <div class="text-[10px] uppercase tracking-wider text-slate-500">Produk</div>
-          <div class="mt-1 text-lg font-bold text-white">{{ $productsCount }}</div>
+        <div class="rounded-2xl p-4 bg-surface-weak border border-white/10">
+          <div class="text-[10px] uppercase tracking-wider surface-muted">Produk</div>
+          <div class="mt-1 text-lg font-bold surface-text">{{ $productsCount }}</div>
         </div>
-        <div class="rounded-2xl p-4 bg-slate-950 border border-slate-800">
-          <div class="text-[10px] uppercase tracking-wider text-slate-500">Toko</div>
-          <div class="mt-1 text-lg font-bold text-white">Aktif</div>
+        <div class="rounded-2xl p-4 bg-surface-weak border border-white/10">
+          <div class="text-[10px] uppercase tracking-wider surface-muted">Toko</div>
+          <div class="mt-1 text-lg font-bold surface-text">Aktif</div>
         </div>
       </div>
     </aside>
@@ -58,11 +58,11 @@
     <section class="space-y-6">
       <div class="flex items-end justify-between gap-4 flex-wrap">
         <div>
-          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-cyan-400/15 bg-cyan-400/5 text-cyan-300 text-xs font-bold tracking-wide mb-3">
+          <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-white/10 bg-surface-weak text-primary text-xs font-bold tracking-wide mb-3">
             Produk dari toko ini
           </div>
-          <h2 class="text-3xl md:text-4xl font-black text-white">{{ $storeName }}</h2>
-          <p class="mt-2 text-slate-400">Semua produk aktif yang dijual oleh toko ini.</p>
+          <h2 class="text-3xl md:text-4xl font-black surface-text">{{ $storeName }}</h2>
+          <p class="mt-2 surface-muted">Semua produk aktif yang dijual oleh toko ini.</p>
         </div>
       </div>
 

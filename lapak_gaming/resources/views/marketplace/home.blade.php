@@ -3,9 +3,8 @@
 
 @push('styles')
 <style>
-  body {
-    background-color: #f5f5f5; /* itemku light background */
-  }
+  /* Keep page background controlled by layout theme variables for consistency */
+  /* Remove hard-coded body background to match other pages' theme */
   .banner-track {
     scrollbar-width: none;
     -ms-overflow-style: none;
@@ -22,6 +21,29 @@
   .category-icon-wrapper:hover {
     transform: translateY(-5px);
   }
+  .category-icon { transition: transform .25s ease, box-shadow .25s ease; }
+  .category-icon .icon { width: 100%; height: 100%; display: inline-block; border-radius: 9999px; }
+  .category-icon:hover { transform: translateY(-6px) scale(1.04); box-shadow: 0 8px 20px rgba(2,6,23,0.45); }
+  @keyframes floaty {
+    0% { transform: translateY(0); }
+    50% { transform: translateY(-6px); }
+    100% { transform: translateY(0); }
+  }
+  .category-animate { animation: floaty 6s ease-in-out infinite; }
+  /* Staggered delays for up to 13 icons */
+  .category-list a:nth-child(1) .category-animate { animation-delay: 0s; }
+  .category-list a:nth-child(2) .category-animate { animation-delay: 0.08s; }
+  .category-list a:nth-child(3) .category-animate { animation-delay: 0.16s; }
+  .category-list a:nth-child(4) .category-animate { animation-delay: 0.24s; }
+  .category-list a:nth-child(5) .category-animate { animation-delay: 0.32s; }
+  .category-list a:nth-child(6) .category-animate { animation-delay: 0.40s; }
+  .category-list a:nth-child(7) .category-animate { animation-delay: 0.48s; }
+  .category-list a:nth-child(8) .category-animate { animation-delay: 0.56s; }
+  .category-list a:nth-child(9) .category-animate { animation-delay: 0.64s; }
+  .category-list a:nth-child(10) .category-animate { animation-delay: 0.72s; }
+  .category-list a:nth-child(11) .category-animate { animation-delay: 0.80s; }
+  .category-list a:nth-child(12) .category-animate { animation-delay: 0.88s; }
+  .category-list a:nth-child(13) .category-animate { animation-delay: 0.96s; }
   .section-title {
     color: #333;
     font-size: 1.25rem;
@@ -29,7 +51,7 @@
     margin-bottom: 1rem;
   }
   .trust-badge-container {
-    background: linear-gradient(90deg, #1e4aa3 0%, #307FE2 100%);
+    background: linear-gradient(90deg, var(--primary) 0%, var(--accent) 100%);
   }
 </style>
 @endpush
@@ -97,19 +119,19 @@
 {{-- CATEGORY NAVIGATION                                        --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="max-w-7xl mx-auto px-4 mb-10">
-  <div class="surface-panel rounded-xl p-4 shadow-sm border border-gray-100">
-    <div class="grid grid-cols-4 md:grid-cols-8 gap-4 justify-items-center text-center">
-      @foreach($allCategories->take(8) as $cat)
-      <a href="{{ route('categories.show', $cat->slug) }}" class="category-icon-wrapper block w-full">
-        <div class="w-12 h-12 md:w-14 md:h-14 mx-auto rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center mb-2 overflow-hidden">
-          @if($cat->image)
-            <img src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="w-full h-full object-cover">
-          @else
-            <span class="text-2xl">{{ $cat->icon ?? '🎮' }}</span>
-          @endif
-        </div>
-        <span class="text-xs font-semibold text-gray-700 leading-tight block">{{ $cat->name }}</span>
-      </a>
+  <div class="surface-panel rounded-xl p-4 shadow-sm border border-white/10">
+    <div class="flex flex-wrap justify-center gap-6 items-center category-list">
+      @foreach($allCategories->take(13) as $cat)
+        <a href="{{ route('categories.show', $cat->slug) }}" class="category-icon-wrapper block w-20 sm:w-24 text-center" aria-label="Kategori {{ $cat->name }}">
+          <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-surface-weak border border-white/6 flex items-center justify-center mb-2 category-icon category-animate">
+            @if(!empty($cat->image_url))
+              <img src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="w-full h-full object-cover rounded-full">
+            @else
+              <span class="text-2xl">{{ $cat->icon ?? '🎮' }}</span>
+            @endif
+          </div>
+          <span class="text-xs font-semibold surface-muted leading-tight block truncate max-w-[80px]">{{ $cat->name }}</span>
+        </a>
       @endforeach
     </div>
   </div>

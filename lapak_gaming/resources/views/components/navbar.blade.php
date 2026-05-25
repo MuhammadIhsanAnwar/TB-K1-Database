@@ -29,14 +29,35 @@
 
 @push('styles')
 <style>
+  /* Use theme variables defined in layouts/app.blade.php for consistency */
   .navbar-container {
-    background-color: var(--color-primary);
+    background: var(--nav-main-bg);
+    color: var(--text);
   }
   .navbar-top {
-    background-color: var(--color-bg-dark);
+    background: var(--nav-top-bg);
+    color: var(--text);
   }
   .navbar-categories {
-    background-color: var(--color-primary-dark);
+    background: var(--nav-cat-bg);
+    color: var(--text);
+  }
+  /* Ensure links and icons inside the navbar inherit readable colors */
+  #main-navbar a, #main-navbar button, #main-navbar .nav-link { color: inherit; }
+  /* Mobile drawer should follow surface/background tokens */
+  #mobile-drawer { background: var(--surface); color: var(--text); }
+  .navbar-container .surface-weak { background: rgba(255,255,255,0.02); }
+  /* Small utility tokens to keep legacy classnames working */
+  .text-itemku-blue { color: var(--primary) !important; }
+  .border-itemku-blue { border-color: var(--primary) !important; }
+  .bg-itemku-yellow { background: var(--accent) !important; }
+  .focus-within-border-accent:focus-within { border-color: var(--accent) !important; }
+
+  /* Responsive navbar tweaks */
+  @media (max-width: 640px) {
+    #main-navbar .navbar-container { height: 56px; }
+    #main-navbar .h-20 { height: 56px; }
+    #main-navbar .font-display { font-size: 1rem; }
   }
 </style>
 @endpush
@@ -65,16 +86,16 @@
   </div>
   @else
   <div class="p-4 border-b border-white/6 flex gap-2">
-    <a href="{{ route('login') }}" class="flex-1 text-center py-2 px-3 rounded-lg border border-itemku-blue text-itemku-blue text-sm font-semibold hover:brightness-105">Masuk</a>
-    <a href="{{ route('register') }}" class="flex-1 text-center py-2 px-3 rounded-lg bg-itemku-yellow text-white text-sm font-semibold hover:bg-yellow-600">Daftar</a>
+    <a href="{{ route('login') }}" class="flex-1 btn-ghost text-sm font-semibold text-center">Masuk</a>
+    <a href="{{ route('register') }}" class="flex-1 btn-accent text-sm font-semibold text-center">Daftar</a>
   </div>
   @endauth
 
   <div class="p-4 border-b border-white/6">
     <form action="{{ route('products.search') }}" method="GET">
-      <div class="relative">
+        <div class="relative">
         <svg class="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        <input type="text" name="q" placeholder="Cari Game, Item..." class="w-full pl-9 pr-3 py-2 bg-[#0E1420] border-none rounded-lg text-sm text-slate-300 focus:ring-1 focus:ring-itemku-blue" />
+        <input type="text" name="q" placeholder="Cari Game, Item..." class="w-full pl-9 pr-3 py-2 border-none rounded-lg text-sm text-slate-300" style="background:var(--input-bg); color:var(--text)" />
       </div>
     </form>
   </div>
@@ -157,7 +178,7 @@
       @if(! $isAdminRoute && ! $isAdminSettingsRoute)
       <div class="hidden md:flex flex-1 flex-col relative">
         <form action="{{ route('products.search') }}" method="GET" class="w-full relative">
-          <div class="flex items-center surface-bg rounded w-full overflow-hidden p-0.5 border-2 border-transparent focus-within:border-itemku-yellow transition-colors">
+          <div class="flex items-center surface-bg rounded w-full overflow-hidden p-0.5 border-2 border-transparent focus-within-border-accent transition-colors">
             <div class="pl-3 surface-muted">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </div>
@@ -274,6 +295,13 @@
                   <a href="{{ route('seller.register.form') }}" class="block px-4 py-2 text-sm text-amber-600 font-medium hover:bg-amber-50">Daftar Jadi Penjual</a>
                 @endif
               @endif
+              {{-- Pengaturan Akun (visible to all authenticated users) --}}
+              @if(Route::has('settings.account'))
+                <a href="{{ route('settings.account') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pengaturan Akun</a>
+              @else
+                <a href="{{ url('/settings/account') }}" class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pengaturan Akun</a>
+              @endif
+
               <div class="border-t border-gray-100 mt-1 pt-1">
                 <form method="POST" action="{{ route('logout') }}">
                   @csrf
@@ -289,7 +317,7 @@
             <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
           </a>
           <a href="{{ route('login') }}" class="hidden sm:block text-white text-sm font-semibold hover:opacity-80 transition-opacity">Masuk</a>
-          <a href="{{ route('register') }}" class="bg-itemku-yellow text-white text-sm font-semibold px-4 py-1.5 rounded hover:bg-yellow-600 transition-colors">Daftar</a>
+          <a href="{{ route('register') }}" class="btn-accent">Daftar</a>
         @endif
 
       </div>
@@ -307,19 +335,19 @@
           Kategori
         </button>
         {{-- Mega Menu (Hover to open) --}}
-            <div class="absolute left-0 top-full w-[800px] bg-[#0D1421] rounded-b-lg shadow-xl border border-white/6 hidden group-hover:flex z-50 min-h-[400px]">
-          <div class="w-64 bg-transparent border-r border-white/6 p-2 overflow-y-auto max-h-[600px]">
+            <div class="absolute left-0 top-full w-[800px] bg-[#0D1421] rounded-b-lg shadow-xl border border-white/6 hidden group-hover:flex z-50 min-h-[400px] max-h-[70vh] overflow-y-auto">
+          <div class="w-64 bg-transparent border-r border-white/6 p-2 overflow-y-auto max-h-[70vh]">
             @if($navCategories->isNotEmpty())
-              @foreach($navCategories->take(15) as $cat)
+              @foreach($navCategories as $cat)
                 <a href="{{ route('categories.show', $cat->slug) }}" class="flex items-center gap-3 px-3 py-2 text-sm text-slate-200 hover:surface-weak hover:text-itemku-blue hover:font-medium rounded-lg transition-colors">
                   <img src="{{ $cat->image_url }}" alt="" class="w-6 h-6 object-cover rounded bg-slate-800">
-                  {{ $cat->name }}
+                  <span class="whitespace-normal">{{ $cat->name }}</span>
                 </a>
               @endforeach
               <a href="{{ route('categories.index') }}" class="block text-center mt-2 py-2 text-sm font-semibold text-itemku-blue hover:underline">Semua Kategori</a>
             @endif
           </div>
-          <div class="flex-1 p-6">
+          <div class="flex-1 p-6 overflow-y-auto max-h-[70vh]">
             <h3 class="font-bold text-slate-100 text-lg mb-4">Temukan Produk Digital Terbaik</h3>
             <div class="grid grid-cols-2 gap-4">
               <a href="{{ route('products.search', ['category'=>'game-top-up']) }}" class="block p-4 border border-white/6 rounded-lg hover:border-itemku-blue hover:shadow-md transition-all">

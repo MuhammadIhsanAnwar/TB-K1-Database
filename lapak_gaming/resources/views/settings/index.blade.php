@@ -1,7 +1,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="relative overflow-x-hidden bg-[#050816] px-4 pb-24 pt-32">
+<div class="relative overflow-x-hidden bg-surface px-4 pb-24 pt-32">
 
     {{-- BACKGROUND GLOBAL --}}
     <div class="fixed inset-0 -z-50 overflow-hidden">
@@ -26,7 +26,7 @@
 
             {{-- SIDEBAR --}}
             <aside
-                class="reveal-up sticky top-28 h-fit rounded-[34px] border border-white/10 bg-[#0B1220]/85 p-6 backdrop-blur-2xl shadow-[0_0_60px_rgba(37,99,235,0.08)]">
+                class="reveal-up sticky top-28 h-fit rounded-[34px] border border-white/10 surface-weak p-6 backdrop-blur-2xl shadow-[0_0_60px_rgba(37,99,235,0.08)]">
 
                 <div
                     class="absolute inset-0 rounded-[34px] bg-[radial-gradient(circle_at_top_right,rgba(37,99,235,0.15),transparent_40%)]">
@@ -38,18 +38,18 @@
                     <div class="text-center">
 
                         <div
-                            class="mx-auto flex h-28 w-28 overflow-hidden rounded-full border border-blue-500/20 bg-[#111827] shadow-[0_0_40px_rgba(37,99,235,0.25)]">
+                            class="mx-auto flex h-28 w-28 overflow-hidden rounded-full border border-blue-500/20 bg-surface-weak shadow-[0_0_40px_rgba(37,99,235,0.25)]">
 
                             <img src="{{ $user->avatar_url }}"
                                 alt="{{ $user->name }}"
                                 class="h-full w-full object-cover">
                         </div>
 
-                        <h2 class="mt-5 text-xl font-black text-white">
+                        <h2 class="mt-5 text-xl font-black surface-text">
                             {{ $user->name }}
                         </h2>
 
-                        <p class="mt-2 text-sm text-slate-400">
+                        <p class="mt-2 text-sm surface-muted">
                             {{ $user->email }}
                         </p>
 
@@ -147,11 +147,11 @@
                             PROFILE SETTINGS
                         </div>
 
-                        <h1 class="mt-5 text-4xl font-black text-white">
+                        <h1 class="mt-5 text-4xl font-black surface-text">
                             Edit Profil
                         </h1>
 
-                        <p class="mt-3 text-sm leading-relaxed text-slate-400">
+                        <p class="mt-3 text-sm leading-relaxed surface-muted">
                             Kelola informasi profil akun Anda dengan tampilan modern dan futuristik.
                         </p>
 
@@ -226,18 +226,18 @@
                                     id="gender"
                                     class="input-style">
 
-                                    <option value="" class="bg-[#111827] text-white">
+                                    <option value="" class="bg-surface-weak surface-text">
                                         Pilih
                                     </option>
 
                                     <option value="male"
-                                        class="bg-[#111827] text-white"
+                                        class="bg-surface-weak surface-text"
                                         @selected(old('gender', $profile?->gender) === 'male')>
                                         Laki-laki
                                     </option>
 
                                     <option value="female"
-                                        class="bg-[#111827] text-white"
+                                        class="bg-surface-weak surface-text"
                                         @selected(old('gender', $profile?->gender) === 'female')>
                                         Perempuan
                                     </option>
@@ -271,7 +271,7 @@
                 {{-- ACCOUNT --}}
                 @elseif ($selectedTab === 'account')
 
-                    <h1 class="mb-8 text-4xl font-black text-white">
+                    <h1 class="mb-8 text-4xl font-black surface-text">
                         Pengaturan Akun
                     </h1>
 
@@ -279,18 +279,18 @@
 
                         <section class="card-box">
 
-                            <h2 class="text-xl font-bold text-white">
+                            <h2 class="text-xl font-bold surface-text">
                                 Informasi Akun
                             </h2>
 
-                            <dl class="mt-6 space-y-5 text-sm text-slate-300">
+                            <dl class="mt-6 space-y-5 text-sm surface-muted">
 
                                 <div>
-                                    <dt class="text-slate-500">
+                                    <dt class="surface-muted">
                                         Email
                                     </dt>
 
-                                    <dd class="mt-1 text-white">
+                                    <dd class="mt-1 surface-text">
                                         {{ $user->email }}
                                     </dd>
                                 </div>
@@ -311,11 +311,11 @@
 
                         <section class="card-box border-amber-500/10 bg-amber-500/[0.03]">
 
-                            <h2 class="text-xl font-bold text-white">
+                            <h2 class="text-xl font-bold surface-text">
                                 Nonaktifkan Akun
                             </h2>
 
-                            <p class="mt-4 text-sm text-slate-400">
+                            <p class="mt-4 text-sm surface-muted">
                                 Kode verifikasi akan dikirim ke email sebelum akun dinonaktifkan. Setelah berhasil, Anda akan otomatis logout.
                             </p>
 
@@ -353,11 +353,11 @@
 
                         <section class="card-box border-rose-500/10 bg-rose-500/[0.03]">
 
-                            <h2 class="text-xl font-bold text-white">
+                            <h2 class="text-xl font-bold surface-text">
                                 Hapus Akun
                             </h2>
 
-                            <p class="mt-4 text-sm text-slate-400">
+                            <p class="mt-4 text-sm surface-muted">
                                 Sistem akan mengirimkan kode verifikasi sebelum akun dihapus permanen.
                             </p>
 
@@ -374,7 +374,7 @@
                 {{-- PASSWORD --}}
                 @elseif ($selectedTab === 'password')
 
-                    <h1 class="mb-8 text-4xl font-black text-white">
+                    <h1 class="mb-8 text-4xl font-black surface-text">
                         Ubah Password
                     </h1>
 
@@ -388,11 +388,11 @@
 
                         <section class="card-box">
 
-                            <h2 class="text-xl font-bold text-white">
+                            <h2 class="text-xl font-bold surface-text">
                                 Kirim Kode Verifikasi
                             </h2>
 
-                            <p class="mt-4 text-sm text-slate-400">
+                            <p class="mt-4 text-sm surface-muted">
                                 Kode akan dikirim langsung ke email akun Anda.
                             </p>
 
@@ -413,7 +413,7 @@
 
                         <section class="card-box">
 
-                            <h2 class="text-xl font-bold text-white">
+                            <h2 class="text-xl font-bold surface-text">
                                 Password Baru
                             </h2>
 
@@ -460,11 +460,11 @@
                             TWO STEP VERIFICATION
                         </div>
 
-                        <h1 class="mt-5 text-4xl font-black text-white">
+                        <h1 class="mt-5 text-4xl font-black surface-text">
                             Verifikasi 2 Langkah
                         </h1>
 
-                        <p class="mt-3 text-sm leading-relaxed text-slate-400">
+                        <p class="mt-3 text-sm leading-relaxed surface-muted">
                             Aktifkan perlindungan tambahan untuk login akun Anda. Anda dapat memilih Email atau Google Authenticator.
                         </p>
 
@@ -481,11 +481,11 @@
                         <section class="card-box">
                             <div class="flex items-start justify-between gap-4 flex-wrap">
                                 <div>
-                                    <h2 class="text-xl font-bold text-white">Status Verifikasi 2 Langkah</h2>
-                                    <p class="mt-3 text-sm text-slate-400">Gunakan satu atau lebih metode berikut sesuai kebutuhan Anda.</p>
+                                    <h2 class="text-xl font-bold surface-text">Status Verifikasi 2 Langkah</h2>
+                                    <p class="mt-3 text-sm surface-muted">Gunakan satu atau lebih metode berikut sesuai kebutuhan Anda.</p>
                                 </div>
 
-                                <label class="inline-flex items-center gap-3 rounded-2xl border border-white/10 surface-weak px-4 py-3 text-sm text-slate-200">
+                                <label class="inline-flex items-center gap-3 rounded-2xl border border-white/10 surface-weak px-4 py-3 text-sm surface-muted">
                                     <input type="checkbox" name="two_factor_enabled" value="1" @checked(old('two_factor_enabled', $user->two_factor_enabled))>
                                     Aktifkan verifikasi 2 langkah
                                 </label>
@@ -493,29 +493,29 @@
                         </section>
 
                         <section class="card-box">
-                            <h2 class="text-xl font-bold text-white">Pilih Metode</h2>
+                            <h2 class="text-xl font-bold surface-text">Pilih Metode</h2>
 
                             <div class="mt-6 grid gap-4 lg:grid-cols-3">
-                                <label class="rounded-3xl border border-white/10 surface-weak p-5 text-sm text-slate-200">
+                                <label class="rounded-3xl border border-white/10 surface-weak p-5 text-sm surface-muted">
                                     <div class="flex items-center gap-3">
                                         <input type="checkbox" name="two_factor_methods[]" value="email" @checked(in_array('email', old('two_factor_methods', $twoFactorMethods ?? []), true))>
-                                        <span class="font-semibold text-white">Email</span>
+                                        <span class="font-semibold surface-text">Email</span>
                                     </div>
-                                    <p class="mt-3 text-slate-400">Kode akan dikirim ke alamat email akun Anda.</p>
+                                    <p class="mt-3 surface-muted">Kode akan dikirim ke alamat email akun Anda.</p>
                                 </label>
 
-                                <label class="rounded-3xl border border-white/10 surface-weak p-5 text-sm text-slate-200">
+                                <label class="rounded-3xl border border-white/10 surface-weak p-5 text-sm surface-muted">
                                     <div class="flex items-center gap-3">
                                         <input type="checkbox" name="two_factor_methods[]" value="google" @checked(in_array('google', old('two_factor_methods', $twoFactorMethods ?? []), true))>
-                                        <span class="font-semibold text-white">Google Authenticator</span>
+                                        <span class="font-semibold surface-text">Google Authenticator</span>
                                     </div>
-                                    <p class="mt-3 text-slate-400">Gunakan kode dari aplikasi authenticator.</p>
+                                    <p class="mt-3 surface-muted">Gunakan kode dari aplikasi authenticator.</p>
                                 </label>
                             </div>
                         </section>
 
                         <section class="card-box">
-                            <h2 class="text-xl font-bold text-white">Google Authenticator</h2>
+                            <h2 class="text-xl font-bold surface-text">Google Authenticator</h2>
 
                             @if($pendingTwoFactorSetup ?? false)
                                 <div class="mt-6 grid gap-6 lg:grid-cols-[220px_minmax(0,1fr)] lg:items-center">
@@ -526,7 +526,7 @@
                                     @endif
 
                                     <div>
-                                        <p class="text-sm text-slate-400">Scan QR code di bawah dengan Google Authenticator, lalu masukkan kode 6 digit untuk mengaktifkan dan menyimpan pengaturan.</p>
+                                        <p class="text-sm surface-muted">Scan QR code di bawah dengan Google Authenticator, lalu masukkan kode 6 digit untuk mengaktifkan dan menyimpan pengaturan.</p>
                                         <div class="mt-4 rounded-2xl border border-cyan-500/20 bg-cyan-500/10 p-4 font-mono text-sm text-cyan-100 break-all">
                                             {{ $googleSecret }}
                                         </div>
@@ -549,28 +549,28 @@
                                     </button>
                                 </div>
 
-                                <p class="mt-4 text-xs text-slate-500">Pengaturan belum disimpan permanen sampai kode Authenticator valid.</p>
+                                <p class="mt-4 text-xs surface-muted">Pengaturan belum disimpan permanen sampai kode Authenticator valid.</p>
 
                             @elseif(in_array('google', old('two_factor_methods', $twoFactorMethods ?? []), true) && $user->two_factor_confirmed_at)
                                 <div class="mt-6 rounded-3xl border border-emerald-500/20 bg-emerald-500/10 p-6">
-                                    <p class="text-sm text-white font-semibold">Google Authenticator sudah terkonfirmasi.</p>
-                                    <p class="mt-2 text-slate-400">QR dan secret tidak ditampilkan setelah konfigurasi berhasil. Anda dapat menggunakan Google Authenticator untuk login.</p>
+                                    <p class="text-sm surface-text font-semibold">Google Authenticator sudah terkonfirmasi.</p>
+                                    <p class="mt-2 surface-muted">QR dan secret tidak ditampilkan setelah konfigurasi berhasil. Anda dapat menggunakan Google Authenticator untuk login.</p>
                                 </div>
                             @else
-                                <p class="mt-4 text-sm text-slate-400">Secret Google Authenticator akan dibuat otomatis saat Anda mengaktifkan metode ini.</p>
+                                <p class="mt-4 text-sm surface-muted">Secret Google Authenticator akan dibuat otomatis saat Anda mengaktifkan metode ini.</p>
                             @endif
                         </section>
 
                         <section class="card-box">
-                            <h2 class="text-xl font-bold text-white">Informasi Pendukung</h2>
-                            <div class="mt-4 grid gap-4 lg:grid-cols-2 text-sm text-slate-300">
+                            <h2 class="text-xl font-bold surface-text">Informasi Pendukung</h2>
+                            <div class="mt-4 grid gap-4 lg:grid-cols-2 text-sm surface-muted">
                                 <div class="rounded-2xl border border-white/10 surface-weak p-4">
-                                    <div class="text-slate-500">Email Terdaftar</div>
-                                    <div class="mt-1 text-white">{{ $user->email }}</div>
+                                    <div class="surface-muted">Email Terdaftar</div>
+                                    <div class="mt-1 surface-text">{{ $user->email }}</div>
                                 </div>
                                 <div class="rounded-2xl border border-white/10 surface-weak p-4">
-                                    <div class="text-slate-500">Nomor Telepon</div>
-                                    <div class="mt-1 text-white">{{ $user->phone ?? 'Belum diisi' }}</div>
+                                    <div class="surface-muted">Nomor Telepon</div>
+                                    <div class="mt-1 surface-text">{{ $user->phone ?? 'Belum diisi' }}</div>
                                 </div>
                             </div>
                         </section>
@@ -592,11 +592,11 @@
                             SELLER VERIFICATION
                         </div>
 
-                        <h1 class="mt-5 text-4xl font-black text-white">
+                        <h1 class="mt-5 text-4xl font-black surface-text">
                             Pengajuan Seller Dalam Proses
                         </h1>
 
-                        <p class="mt-3 text-sm leading-relaxed text-slate-400">
+                        <p class="mt-3 text-sm leading-relaxed surface-muted">
                             Terima kasih telah mendaftar sebagai seller. Kami sedang meninjau pengajuan Anda dan akan memberitahu hasil verifikasi segera.
                         </p>
 
@@ -628,11 +628,11 @@
                             SELLER REJECTED
                         </div>
 
-                        <h1 class="mt-5 text-4xl font-black text-white">
+                        <h1 class="mt-5 text-4xl font-black surface-text">
                             Pengajuan Seller Ditolak
                         </h1>
 
-                        <p class="mt-3 text-sm leading-relaxed text-slate-400">
+                        <p class="mt-3 text-sm leading-relaxed surface-muted">
                             Maaf, pengajuan seller Anda tidak disetujui. Silakan pelajari alasan penolakan di bawah dan coba lagi dengan informasi yang lebih lengkap.
                         </p>
 
@@ -669,11 +669,11 @@
                             SELLER ACCESS
                         </div>
 
-                        <h1 class="mt-5 text-4xl font-black text-white">
+                        <h1 class="mt-5 text-4xl font-black surface-text">
                             Daftar Jadi Seller
                         </h1>
 
-                        <p class="mt-3 text-sm leading-relaxed text-slate-400">
+                        <p class="mt-3 text-sm leading-relaxed surface-muted">
                             Mulai membuka toko digital dan jual item gaming Anda sekarang juga.
                         </p>
 
@@ -694,11 +694,11 @@
                                         ✓ Seller Aktif
                                     </div>
 
-                                    <h2 class="mt-5 text-3xl font-black text-white">
+                                    <h2 class="mt-5 text-3xl font-black surface-text">
                                         Akun Seller Sudah Aktif
                                     </h2>
 
-                                    <p class="mt-4 text-sm leading-relaxed text-slate-400">
+                                    <p class="mt-4 text-sm leading-relaxed surface-muted">
                                         Anda sudah dapat menjual produk dan menerima transaksi.
                                     </p>
 
@@ -710,11 +710,11 @@
                                         SELLER REGISTRATION
                                     </div>
 
-                                    <h2 class="mt-5 text-3xl font-black text-white">
+                                    <h2 class="mt-5 text-3xl font-black surface-text">
                                         Mulai Jadi Seller
                                     </h2>
 
-                                    <p class="mt-4 text-sm leading-relaxed text-slate-400">
+                                    <p class="mt-4 text-sm leading-relaxed surface-muted">
                                         Ajukan akun seller dan mulai bisnis digital gaming Anda.
                                     </p>
 

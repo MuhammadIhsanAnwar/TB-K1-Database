@@ -16,10 +16,9 @@
 
 @push('styles')
 <style>
-  body { background-color: #f5f5f5; }
   .tab-btn.active {
-    border-bottom: 2px solid #1e4aa3;
-    color: #1e4aa3;
+    border-bottom: 2px solid var(--primary);
+    color: var(--primary);
     font-weight: 600;
   }
 </style>
@@ -29,16 +28,16 @@
 <div class="max-w-7xl mx-auto px-4 py-8" id="product-page" data-base-price="{{ data_get($product, 'price', 0) }}">
 
   {{-- Breadcrumb --}}
-  <nav class="flex items-center gap-2 text-xs text-gray-500 mb-6">
-    <a href="{{ route('marketplace.home') }}" class="hover:text-itemku-blue transition-colors">Beranda</a>
+  <nav class="flex items-center gap-2 text-xs surface-muted mb-6">
+    <a href="{{ route('marketplace.home') }}" class="hover:brightness-150 transition-colors">Beranda</a>
     <span>/</span>
     @if($productCategory)
-      <a href="{{ route('categories.show', $productCategory->slug) }}" class="hover:text-itemku-blue transition-colors">{{ $productCategory->name }}</a>
+      <a href="{{ route('categories.show', $productCategory->slug) }}" class="hover:brightness-150 transition-colors">{{ $productCategory->name }}</a>
     @else
       <span>Produk</span>
     @endif
     <span>/</span>
-    <span class="text-gray-800 font-semibold truncate max-w-xs">{{ $productName }}</span>
+    <span class="surface-text font-semibold truncate max-w-xs">{{ $productName }}</span>
   </nav>
 
   <div class="grid lg:grid-cols-[1fr_360px] gap-6">
@@ -47,28 +46,28 @@
     <div class="space-y-6">
 
       {{-- Main Product Card --}}
-      <div class="surface-panel rounded-xl shadow-sm border border-gray-200 p-5 md:p-6 flex flex-col md:flex-row gap-6">
+      <div class="surface-panel rounded-xl shadow-sm border border-white/10 p-5 md:p-6 flex flex-col md:flex-row gap-6">
         
         {{-- Product Image --}}
         <div class="w-full md:w-5/12 shrink-0">
-          <div class="rounded-lg overflow-hidden border border-gray-100 bg-gray-50 aspect-square">
+          <div class="rounded-lg overflow-hidden border border-white/10 surface-weak aspect-square">
             <img src="{{ $displayImage }}" alt="{{ $productName }}" class="w-full h-full object-cover">
           </div>
         </div>
 
         {{-- Product Basic Info --}}
         <div class="w-full md:w-7/12 flex flex-col">
-          <h1 class="text-2xl font-bold text-gray-800 leading-snug mb-3">
+          <h1 class="text-2xl font-bold surface-text leading-snug mb-3">
             {{ $productName }}
           </h1>
 
-          <div class="flex flex-wrap items-center gap-4 text-sm text-gray-600 mb-6 pb-4 border-b border-gray-100">
+          <div class="flex flex-wrap items-center gap-4 text-sm surface-muted mb-6 pb-4 border-b border-white/10">
             <div class="flex items-center gap-1">
               <svg class="w-4 h-4 text-yellow-400" viewBox="0 0 20 20" fill="currentColor">
                 <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
               </svg>
-              <span class="font-bold text-gray-800">{{ number_format($productRating, 1) }}</span>
-              <span class="text-gray-500">({{ data_get($product, 'review_count', 0) }} ulasan)</span>
+              <span class="font-bold surface-text">{{ number_format($productRating, 1) }}</span>
+              <span class="surface-muted">({{ data_get($product, 'review_count', 0) }} ulasan)</span>
             </div>
             <div class="flex items-center gap-1.5">
               <span>{{ number_format(data_get($product, 'sold_count', 0)) }} terjual</span>
@@ -77,11 +76,11 @@
 
           {{-- Safety badges --}}
           <div class="grid grid-cols-2 gap-3 mb-6">
-            <div class="flex items-center gap-2 text-xs text-green-600 bg-green-50 px-3 py-2 rounded-lg border border-green-100">
+            <div class="flex items-center gap-2 text-xs text-emerald-400 surface-weak px-3 py-2 rounded-lg border border-emerald-500/20">
               <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
               <span>Transaksi Aman</span>
             </div>
-            <div class="flex items-center gap-2 text-xs text-blue-600 bg-blue-50 px-3 py-2 rounded-lg border border-blue-100">
+            <div class="flex items-center gap-2 text-xs text-sky-400 surface-weak px-3 py-2 rounded-lg border border-sky-500/20">
               <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
               <span>Proses Cepat</span>
             </div>
@@ -89,14 +88,14 @@
 
           {{-- Seller mini card --}}
           @if($productSeller)
-          <div class="mt-auto bg-gray-50 rounded-xl p-4 border border-gray-100 flex items-center justify-between">
+          <div class="mt-auto surface-weak rounded-xl p-4 border border-white/10 flex items-center justify-between">
             <div class="flex items-center gap-3">
-              <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm" style="background:linear-gradient(135deg,#1e4aa3,#307FE2);">
+              <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white text-sm" style="background:linear-gradient(135deg,var(--primary),#3b82f6);">
                 {{ strtoupper(substr($storeName, 0, 2)) }}
               </div>
               <div>
-                <div class="font-bold text-gray-800 text-sm">{{ $storeName }}</div>
-                <div class="text-xs text-gray-500">Aktif {{ $productSeller->updated_at?->diffForHumans() ?? 'baru-baru ini' }}</div>
+                <div class="font-bold surface-text text-sm">{{ $storeName }}</div>
+                <div class="text-xs surface-muted">Aktif {{ $productSeller->updated_at?->diffForHumans() ?? 'baru-baru ini' }}</div>
               </div>
             </div>
             <a href="{{ route('marketplace.store', $productSeller) }}" class="text-xs font-semibold text-itemku-blue hover:underline">

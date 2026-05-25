@@ -9,10 +9,10 @@
 <section class="max-w-7xl mx-auto px-4 py-12">
     <div class="flex flex-col gap-4 md:flex-row md:items-center md:justify-between mb-8">
         <div>
-            <h1 class="text-3xl font-bold text-white">{{ $label }}</h1>
-            <p class="text-sm text-gray-400 mt-2">Menampilkan produk {{ strtolower($label) }} terpopuler.</p>
+            <h1 class="text-3xl font-bold surface-text">{{ $label }}</h1>
+                <p class="text-sm surface-muted mt-2">Menampilkan produk {{ strtolower($label) }} terpopuler.</p>
         </div>
-        <a href="{{ route('products.search') }}" class="inline-flex items-center gap-2 rounded-xl border border-gray-800 bg-gray-900 px-5 py-3 text-white hover:border-violet-600 hover:text-violet-100 transition">
+        <a href="{{ route('products.search') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/10 bg-surface-weak px-5 py-3 surface-text hover:border-primary hover:text-primary transition">
             Lihat Semua Produk
         </a>
     </div>
@@ -21,7 +21,7 @@
         @forelse($products as $product)
             @include('components.product-card', ['product' => $product])
         @empty
-            <div class="col-span-full rounded-3xl border border-gray-800 bg-gray-900 p-12 text-center text-gray-400">
+            <div class="col-span-full rounded-3xl border border-white/10 bg-surface-weak p-12 text-center surface-muted">
                 Belum ada produk {{ strtolower($label) }} tersedia.
             </div>
         @endforelse

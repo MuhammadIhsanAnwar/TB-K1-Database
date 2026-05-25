@@ -1,23 +1,23 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="min-h-screen bg-gray-950 py-12 px-4">
+<div class="min-h-screen bg-surface py-12 px-4">
     <div class="max-w-6xl mx-auto">
         <div class="text-center mb-12">
-            <h1 class="text-4xl font-bold text-white mb-4">Upgrade to {{ config('app.name') }} Pro</h1>
-            <p class="text-gray-400 text-lg">Unlock premium features and exclusive benefits</p>
+            <h1 class="text-4xl font-bold surface-text mb-4">Upgrade to {{ config('app.name') }} Pro</h1>
+            <p class="surface-muted text-lg">Unlock premium features and exclusive benefits</p>
         </div>
 
         {{-- Pricing Plans --}}
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
             {{-- Basic Plan --}}
-            <div class="bg-gray-900 rounded-xl p-8 border border-gray-800 hover:border-gray-700 transition-all">
-                <h2 class="text-xl font-bold text-white mb-2">Basic</h2>
-                <p class="text-gray-400 text-sm mb-6">Perfect for getting started</p>
+            <div class="surface-panel rounded-xl p-8 border border-white/10 hover:border-white/20 transition-all">
+                <h2 class="text-xl font-bold surface-text mb-2">Basic</h2>
+                <p class="surface-muted text-sm mb-6">Perfect for getting started</p>
                 <div class="mb-6">
-                    <span class="text-4xl font-bold text-white">Free</span>
+                    <span class="text-4xl font-bold surface-text">Free</span>
                 </div>
-                <ul class="space-y-3 mb-8 text-sm text-gray-300">
+                <ul class="space-y-3 mb-8 text-sm surface-muted">
                     <li class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                         Browse products
@@ -31,23 +31,23 @@
                         <span class="line-through">Premium features</span>
                     </li>
                 </ul>
-                <button disabled class="w-full bg-gray-800 text-gray-400 py-2 px-4 rounded-lg font-medium cursor-not-allowed">
+                <button disabled class="w-full rounded-lg bg-surface-weak text-surface-muted py-2 px-4 font-medium cursor-not-allowed">
                     Current Plan
                 </button>
             </div>
 
             {{-- Pro Plan (Highlighted) --}}
-            <div class="bg-gradient-to-br from-purple-900 to-purple-800 rounded-xl p-8 border border-purple-600 relative transform md:scale-105 shadow-2xl">
-                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-purple-500 text-white px-4 py-1 rounded-full text-xs font-semibold">
+            <div class="rounded-xl p-8 border border-white/10 relative transform md:scale-105 shadow-2xl" style="background: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);">
+                <div class="absolute -top-4 left-1/2 -translate-x-1/2 bg-primary text-white px-4 py-1 rounded-full text-xs font-semibold">
                     MOST POPULAR
                 </div>
                 <h2 class="text-xl font-bold text-white mb-2">Pro</h2>
-                <p class="text-purple-200 text-sm mb-6">For power users and sellers</p>
+                <p class="text-white/80 text-sm mb-6">For power users and sellers</p>
                 <div class="mb-6">
                     <span class="text-4xl font-bold text-white">$9.99</span>
-                    <span class="text-purple-200 text-sm ml-2">per month</span>
+                    <span class="text-white/80 text-sm ml-2">per month</span>
                 </div>
-                <ul class="space-y-3 mb-8 text-sm text-purple-100">
+                <ul class="space-y-3 mb-8 text-sm text-white/85">
                     <li class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-green-300" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                         All Basic features
@@ -67,20 +67,20 @@
                 </ul>
                 <form action="{{ route('subscription.store') }}" method="POST">
                     @csrf
-                    <button type="submit" class="w-full bg-purple-500 hover:bg-purple-600 text-white py-2 px-4 rounded-lg font-medium transition-colors">
+                    <button type="submit" class="btn-accent w-full">
                         Upgrade Now
                     </button>
                 </form>
             </div>
 
             {{-- Enterprise Plan --}}
-            <div class="bg-gray-900 rounded-xl p-8 border border-gray-800 hover:border-gray-700 transition-all">
-                <h2 class="text-xl font-bold text-white mb-2">Enterprise</h2>
-                <p class="text-gray-400 text-sm mb-6">For large-scale operations</p>
+            <div class="surface-panel rounded-xl p-8 border border-white/10 hover:border-white/20 transition-all">
+                <h2 class="text-xl font-bold surface-text mb-2">Enterprise</h2>
+                <p class="surface-muted text-sm mb-6">For large-scale operations</p>
                 <div class="mb-6">
-                    <span class="text-4xl font-bold text-white">Custom</span>
+                    <span class="text-4xl font-bold surface-text">Custom</span>
                 </div>
-                <ul class="space-y-3 mb-8 text-sm text-gray-300">
+                <ul class="space-y-3 mb-8 text-sm surface-muted">
                     <li class="flex items-center gap-2">
                         <svg class="w-4 h-4 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                         All Pro features
@@ -98,15 +98,15 @@
                         API access
                     </li>
                 </ul>
-                <a href="mailto:sales@lapakgaming.com" class="w-full bg-gray-800 hover:bg-gray-700 text-white py-2 px-4 rounded-lg font-medium transition-colors text-center block">
+                <a href="mailto:sales@lapakgaming.com" class="btn-ghost w-full">
                     Contact Sales
                 </a>
             </div>
         </div>
 
         {{-- Benefits Section --}}
-        <div class="bg-gray-900 rounded-xl p-12 border border-gray-800">
-            <h2 class="text-2xl font-bold text-white mb-8">Why Upgrade?</h2>
+        <div class="surface-panel rounded-xl p-12 border border-white/10">
+            <h2 class="text-2xl font-bold surface-text mb-8">Why Upgrade?</h2>
             <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                 <div class="flex gap-4">
                     <div class="flex-shrink-0">
@@ -115,8 +115,8 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-white">Increased Visibility</h3>
-                        <p class="text-gray-400 text-sm mt-2">Get featured in search results and recommendations to reach more customers.</p>
+                        <h3 class="text-lg font-semibold surface-text">Increased Visibility</h3>
+                        <p class="surface-muted text-sm mt-2">Get featured in search results and recommendations to reach more customers.</p>
                     </div>
                 </div>
                 <div class="flex gap-4">
@@ -126,8 +126,8 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-white">Analytics & Insights</h3>
-                        <p class="text-gray-400 text-sm mt-2">Track sales, customer behavior, and market trends with detailed analytics.</p>
+                        <h3 class="text-lg font-semibold surface-text">Analytics & Insights</h3>
+                        <p class="surface-muted text-sm mt-2">Track sales, customer behavior, and market trends with detailed analytics.</p>
                     </div>
                 </div>
                 <div class="flex gap-4">
@@ -137,8 +137,8 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-white">Priority Support</h3>
-                        <p class="text-gray-400 text-sm mt-2">Get faster responses and dedicated support from our team.</p>
+                        <h3 class="text-lg font-semibold surface-text">Priority Support</h3>
+                        <p class="surface-muted text-sm mt-2">Get faster responses and dedicated support from our team.</p>
                     </div>
                 </div>
                 <div class="flex gap-4">
@@ -148,8 +148,8 @@
                         </div>
                     </div>
                     <div>
-                        <h3 class="text-lg font-semibold text-white">Higher Profit Margins</h3>
-                        <p class="text-gray-400 text-sm mt-2">Reduced commission rates for Pro members selling products.</p>
+                        <h3 class="text-lg font-semibold surface-text">Higher Profit Margins</h3>
+                        <p class="surface-muted text-sm mt-2">Reduced commission rates for Pro members selling products.</p>
                     </div>
                 </div>
             </div>

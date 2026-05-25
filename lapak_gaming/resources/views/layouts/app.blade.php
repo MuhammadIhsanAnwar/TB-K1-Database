@@ -270,6 +270,8 @@
       border-color: rgba(37,99,235,0.35);
       box-shadow: 0 8px 24px rgba(0,0,0,0.35);
     }
+    /* make product title highlight with primary color on hover */
+    .product-card:hover h3 { color: var(--primary); }
 
     /* ── Buttons ────────────────────────────────────────────────── */
     .btn-primary {
@@ -420,6 +422,7 @@
       font-family:'Oxanium',sans-serif; text-transform:uppercase;
     }
     .ribbon-blue { background:linear-gradient(135deg,#2563eb,#1d4ed8); }
+    .ribbon-accent { background: linear-gradient(135deg,#f97316,#ea580c); }
 
     /* ── Toggle ─────────────────────────────────────────────────── */
     .toggle-switch { width:40px;height:22px;background:#1E2D45;border-radius:99px;position:relative;cursor:pointer;transition:background 0.25s; }
@@ -432,6 +435,16 @@
     .status-active    { background:rgba(16,185,129,0.12);color:#34d399;border:1px solid rgba(16,185,129,0.25); }
     .status-completed { background:rgba(37,99,235,0.12);color:#60a5fa;border:1px solid rgba(37,99,235,0.25); }
     .status-cancelled { background:rgba(239,68,68,0.12);color:#f87171;border:1px solid rgba(239,68,68,0.25); }
+
+    /* Legacy itemku utility classes for backward compatibility */
+    .text-itemku-blue { color: var(--primary) !important; }
+    .bg-itemku-blue { background: var(--primary) !important; color: white !important; }
+    .bg-itemku-yellow { background: var(--accent) !important; color: white !important; }
+    .border-itemku-blue { border-color: var(--primary) !important; }
+    /* Tailwind-like focus utility names include colons in markup; escape in selector */
+    .focus\:border-itemku-blue:focus, .focus\:border-itemku-blue:focus-within { border-color: var(--primary) !important; }
+    .focus\:ring-itemku-blue:focus, .focus\:ring-itemku-blue:focus-within { box-shadow: 0 0 0 4px rgba(37,99,235,0.12) !important; }
+    .hover\:text-itemku-blue:hover { color: var(--primary) !important; }
 
     /* ── Page load animation ────────────────────────────────────── */
     .animate-delay-1 { animation-delay:0.05s; }
@@ -819,7 +832,7 @@
 <body class="page-bg text-slate-200 min-h-screen">
 
 <script>
-  window.chatInboxUrl = '{!! route('chat.inbox.poll') !!}';
+  window.chatInboxUrl = <?php echo json_encode(route('chat.inbox.poll')); ?>;
 </script>
 
 <div id="gaming-bg"></div>

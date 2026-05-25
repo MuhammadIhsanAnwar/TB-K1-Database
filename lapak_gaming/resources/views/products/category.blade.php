@@ -3,7 +3,7 @@
 
 @push('styles')
 <style>
-  body { background-color: #f5f5f5; }
+  /* Page background controlled by layout theme tokens */
 </style>
 @endpush
 
@@ -38,7 +38,7 @@
             <h4 class="text-xs font-semibold text-gray-500 uppercase mb-3">Tipe Produk</h4>
             <div class="space-y-2">
               @foreach(['topup' => 'Top Up', 'key' => 'Game Key', 'account' => 'Akun', 'item' => 'Item'] as $val => $label)
-              <label class="flex items-center gap-2 text-sm text-gray-700 cursor-pointer">
+              <label class="flex items-center gap-2 text-sm surface-text cursor-pointer">
                 <input type="radio" name="type" value="{{ $val }}" onchange="this.form.submit()" {{ request('type') === $val ? 'checked' : '' }} class="text-itemku-blue focus:ring-itemku-blue">
                 {{ $label }}
               </label>
@@ -48,18 +48,18 @@
 
           {{-- Price Range Filter --}}
           <div class="mb-6">
-            <h4 class="text-xs font-semibold text-gray-500 uppercase mb-3">Harga</h4>
+            <h4 class="text-xs font-semibold surface-muted uppercase mb-3">Harga</h4>
             <div class="flex items-center gap-2 mb-3">
-              <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="Min" class="w-full text-sm border border-gray-300 rounded px-2 py-1.5 focus:border-itemku-blue focus:ring-1 focus:ring-itemku-blue outline-none">
-              <span class="text-gray-400">-</span>
-              <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Max" class="w-full text-sm border border-gray-300 rounded px-2 py-1.5 focus:border-itemku-blue focus:ring-1 focus:ring-itemku-blue outline-none">
+              <input type="number" name="min_price" value="{{ request('min_price') }}" placeholder="Min" class="input text-sm">
+              <span class="surface-muted">-</span>
+              <input type="number" name="max_price" value="{{ request('max_price') }}" placeholder="Max" class="input text-sm">
             </div>
-            <button type="submit" class="w-full py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 text-sm font-semibold rounded transition-colors">Terapkan Harga</button>
+            <button type="submit" class="w-full py-2 surface-weak hover:brightness-110 surface-text text-sm font-semibold rounded transition-colors">Terapkan Harga</button>
           </div>
           
           {{-- Reset Filter --}}
           @if(request('type') || request('min_price') || request('max_price'))
-            <a href="{{ route('categories.show', $category->slug) }}" class="block w-full text-center py-2 text-red-500 hover:bg-red-50 text-sm font-semibold rounded transition-colors">Hapus Filter</a>
+            <a href="{{ route('categories.show', $category->slug) }}" class="block w-full text-center py-2 text-red-400 hover:brightness-110 text-sm font-semibold rounded transition-colors">Hapus Filter</a>
           @endif
         </form>
       </div>
@@ -80,14 +80,14 @@
       </div>
 
       {{-- Toolbar (Sort & Count) --}}
-      <div class="flex flex-col sm:flex-row sm:items-center justify-between surface-panel rounded-xl border border-gray-200 p-3 mb-6 shadow-sm gap-4">
-        <div class="text-sm text-gray-500">
-          Menampilkan <span class="font-bold text-gray-800">{{ $products->firstItem() ?? 0 }}</span> - <span class="font-bold text-gray-800">{{ $products->lastItem() ?? 0 }}</span> dari <span class="font-bold text-gray-800">{{ $products->total() }}</span> produk
+      <div class="flex flex-col sm:flex-row sm:items-center justify-between surface-panel rounded-xl border border-white/10 p-3 mb-6 shadow-sm gap-4">
+        <div class="text-sm surface-muted">
+          Menampilkan <span class="font-bold surface-text">{{ $products->firstItem() ?? 0 }}</span> - <span class="font-bold surface-text">{{ $products->lastItem() ?? 0 }}</span> dari <span class="font-bold surface-text">{{ $products->total() }}</span> produk
         </div>
         
         <div class="flex items-center gap-3">
-          <span class="text-sm text-gray-500 font-medium">Urutkan:</span>
-          <select onchange="window.location.href=this.value" class="text-sm border border-gray-300 rounded-lg px-3 py-1.5 focus:border-itemku-blue focus:ring-1 focus:ring-itemku-blue outline-none text-gray-700 surface-bg">
+          <span class="text-sm surface-muted font-medium">Urutkan:</span>
+          <select onchange="window.location.href=this.value" class="input text-sm">
             @php $q = request()->except('sort'); @endphp
             <option value="{{ route('categories.show', array_merge(['category' => $category->slug, 'sort' => 'popular'], $q)) }}" {{ request('sort') === 'popular' ? 'selected' : '' }}>Paling Populer</option>
             <option value="{{ route('categories.show', array_merge(['category' => $category->slug, 'sort' => 'rating'], $q)) }}" {{ request('sort') === 'rating' ? 'selected' : '' }}>Rating Tertinggi</option>
