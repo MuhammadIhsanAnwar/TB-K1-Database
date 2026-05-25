@@ -1,6 +1,11 @@
 @extends('layouts.app')
 @section('title', \App\Support\MarketplaceCategoryCatalog::labelForType($type) . ' — Lapak Geming')
 
+@php
+    $productsPaginator = is_object($products) && method_exists($products, 'links') ? $products : null;
+    $productsList = $productsPaginator ? $productsPaginator->getCollection() : collect($products);
+@endphp
+
 @section('content')
 @php
     $label = \App\Support\MarketplaceCategoryCatalog::labelForType($type);
@@ -18,7 +23,7 @@
     </div>
 
     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
-        @forelse($products as $product)
+        @forelse($productsList as $product)
             @include('components.product-card', ['product' => $product])
         @empty
             <div class="col-span-full rounded-3xl border border-white/10 bg-surface-weak p-12 text-center surface-muted">
@@ -28,7 +33,9 @@
     </div>
 
     <div class="mt-8">
-        {{ $products->withQueryString()->links() }}
+        @if($productsPaginator)
+            {{ $productsPaginator->withQueryString()->links() }}
+        @endif
     </div>
 </section>
 @endsection

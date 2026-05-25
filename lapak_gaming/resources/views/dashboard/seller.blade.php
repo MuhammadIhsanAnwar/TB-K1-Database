@@ -140,6 +140,10 @@
         @endif
 
         @if(empty($storeDeactivated))
+            @php
+                $sellerProducts = collect($products);
+                $sellerOrders = collect($orders);
+            @endphp
         {{-- ── STATS CARDS GRID (TRANSPARENT) ────────────────────── --}}
         <div class="reveal reveal-delay-1 grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
             {{-- Card 1: Saldo --}}
@@ -160,7 +164,7 @@
                 <div class="space-y-1">
                     <div class="text-xs font-bold uppercase tracking-wider text-slate-400">Katalog Produk Aktif</div>
                     <div class="text-3xl font-extrabold text-white tracking-tight">
-                        {{ $products->where('status', 'published')->count() }} <span class="text-xs font-medium text-slate-400">Item</span>
+                        {{ $sellerProducts->where('status', 'published')->count() }} <span class="text-xs font-medium text-slate-400">Item</span>
                     </div>
                 </div>
                 <div class="w-11 h-11 rounded-xl bg-blue-500/10 flex items-center justify-center text-blue-400 group-hover:scale-110 transition-transform">
@@ -250,7 +254,7 @@
                 </div>
                 
                 <div class="space-y-3">
-                    @forelse ($products->take(5) as $product)
+                    @forelse ($sellerProducts->take(5) as $product)
                         <div class="flex items-center justify-between rounded-xl border border-white/5 surface-weak p-4 transition duration-300 hover:-translate-y-1 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
                             <div class="flex items-center gap-3 min-w-0">
                                 <div class="w-16 sm:w-20 aspect-[16/9] rounded-lg overflow-hidden bg-black/40 border border-white/5">

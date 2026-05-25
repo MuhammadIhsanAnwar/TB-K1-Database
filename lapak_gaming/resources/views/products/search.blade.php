@@ -7,6 +7,11 @@
 </style>
 @endpush
 
+@php
+    $productsPaginator = is_object($products) && method_exists($products, 'links') ? $products : null;
+    $productsList = $productsPaginator ? $productsPaginator->getCollection() : collect($products);
+@endphp
+
 @section('content')
 <section class="max-w-7xl mx-auto px-4 py-8">
   
@@ -89,7 +94,7 @@
             Semua Produk
           @endif
         </h1>
-        <p class="surface-muted text-sm">Ditemukan {{ $products->total() }} produk yang sesuai.</p>
+        <p class="surface-muted text-sm">Ditemukan {{ $productsPaginator?->total() ?? $productsList->count() }} produk yang sesuai.</p>
         @if(request()->hasAny(['category', 'type', 'min_price', 'max_price']))
           <div class="mt-4 flex flex-wrap gap-2 text-xs">
             @if(request('category'))
@@ -108,7 +113,7 @@
       {{-- Toolbar (Sort) --}}
       <div class="flex flex-col sm:flex-row sm:items-center justify-between surface-panel rounded-2xl border border-white/10 p-4 mb-6 shadow-sm gap-4">
         <div class="text-sm surface-muted">
-          Menampilkan <span class="font-bold surface-text">{{ $products->firstItem() ?? 0 }}</span> - <span class="font-bold surface-text">{{ $products->lastItem() ?? 0 }}</span> dari <span class="font-bold surface-text">{{ $products->total() }}</span> produk
+          Menampilkan <span class="font-bold surface-text">{{ $productsPaginator?->firstItem() ?? 0 }}</span> - <span class="font-bold surface-text">{{ $productsPaginator?->lastItem() ?? 0 }}</span> dari <span class="font-bold surface-text">{{ $productsPaginator?->total() ?? $productsList->count() }}</span> produk
         </div>
         
         <div class="flex items-center gap-3">
@@ -125,7 +130,7 @@
 
       {{-- Product Grid --}}
       <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        @forelse($products as $product)
+        @forelse($productsList as $product)
           @include('components.product-card', ['product' => $product])
         @empty
           <div class="col-span-full py-16 flex flex-col items-center justify-center text-center surface-panel rounded-xl border border-white/10 shadow-sm">
@@ -138,8 +143,8 @@
 
       {{-- Pagination --}}
       <div class="mt-8">
-        @if(method_exists($products, 'links'))
-          {{ $products->withQueryString()->links() }}
+        @if($productsPaginator)
+          {{ $productsPaginator->withQueryString()->links() }}
         @endif
       </div>
 

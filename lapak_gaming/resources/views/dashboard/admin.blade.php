@@ -238,7 +238,10 @@
                     </svg>
                 </div>
             </div>
-            <p class="text-2xl font-black text-white">{{ number_format($products) }}</p>
+            @php
+                $productsCount = is_array($products) ? count($products) : (int) $products;
+            @endphp
+            <p class="text-2xl font-black text-white">{{ number_format($productsCount) }}</p>
             <p class="mt-1 text-[11px] text-slate-600">Listing tersedia</p>
         </div>
 

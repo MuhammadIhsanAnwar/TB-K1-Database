@@ -1,6 +1,11 @@
 @extends('layouts.app')
 @section('title', 'Sedang Trending - Lapak Gaming')
 
+@php
+    $trendingProductsPaginator = is_object($products) && method_exists($products, 'links') ? $products : null;
+    $trendingProductsList = $trendingProductsPaginator ? $trendingProductsPaginator->getCollection() : collect($products);
+@endphp
+
 @section('content')
     <section class="py-10">
         <div class="max-w-7xl mx-auto px-4">
@@ -14,10 +19,10 @@
             </div>
 
             {{-- Area Produk --}}
-            @if($products->count() > 0)
+            @if($trendingProductsList->count() > 0)
                 {{-- Grid mengikuti halaman utama: 2 kolom di HP, 3 di Tablet, 6 di Desktop --}}
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
-                @foreach($products as $product)
+                @foreach($trendingProductsList as $product)
                 <div class="reveal-card reveal-delay-{{ ($loop->index % 6) + 1 }}">
                     @include('components.product-card', ['product' => $product])
                 </div>
@@ -26,7 +31,9 @@
 
                 {{-- Pagination (Tombol Next/Prev Halaman) --}}
                 <div class="mt-14 flex justify-center pagination-wrapper">
-                    {{ $products->links() }}
+                    @if($trendingProductsPaginator)
+                        {{ $trendingProductsPaginator->links() }}
+                    @endif
                 </div>
             @else
                 {{-- Tampilan jika produk kosong --}}

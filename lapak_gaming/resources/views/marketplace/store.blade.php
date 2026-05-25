@@ -5,6 +5,8 @@
   $storePhoto = data_get($seller, 'shop_photo_url');
   $storeBio = data_get($seller, 'shop_description') ?: data_get($seller, 'bio');
   $productsCount = data_get($seller, 'products_count', 0);
+  $storeProductsPaginator = is_object($products) && method_exists($products, 'links') ? $products : null;
+  $storeProductsList = $storeProductsPaginator ? $storeProductsPaginator->getCollection() : collect($products);
 @endphp
 
 @section('title', $storeName . ' — Profil Toko')
@@ -66,15 +68,17 @@
         </div>
       </div>
 
-      @if($products->count())
+      @if($storeProductsList->count())
         <div class="grid grid-cols-2 sm:grid-cols-3 xl:grid-cols-4 gap-4">
-          @foreach($products as $product)
+          @foreach($storeProductsList as $product)
             @include('components.product-card', ['product' => $product])
           @endforeach
         </div>
 
         <div class="mt-8">
-          {{ $products->links() }}
+          @if($storeProductsPaginator)
+            {{ $storeProductsPaginator->links() }}
+          @endif
         </div>
       @else
         <div class="card p-8 text-center">
