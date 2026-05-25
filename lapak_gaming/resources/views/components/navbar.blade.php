@@ -32,10 +32,100 @@
 <style>
   /* Use theme variables defined in layouts/app.blade.php for consistency */
   .navbar-container {
-    background: rgba(2, 6, 23, 0.72);
-    backdrop-filter: blur(24px);
-    border-bottom: 1px solid rgba(255,255,255,.06);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(2,6,23,.92),
+      rgba(2,6,23,.78)
+    );
+
+  backdrop-filter: blur(22px);
+
+  border-bottom:
+    1px solid rgba(255,255,255,.06);
+
+  box-shadow:
+    0 10px 40px rgba(0,0,0,.25);
   }
+  /* NAV LINK */
+.nav-modern-link {
+  position: relative;
+  transition:
+    all .25s ease;
+}
+
+.nav-modern-link:hover {
+  color: white;
+  transform: translateY(-1px);
+}
+
+.nav-modern-link::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -6px;
+  width: 0;
+  height: 2px;
+  border-radius: 999px;
+  background: #06b6d4;
+  transition: width .25s ease;
+}
+
+.nav-modern-link:hover::after {
+  width: 100%;
+}
+
+/* ICON BUTTON */
+.nav-icon-btn {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 14px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  background:
+    rgba(255,255,255,.03);
+
+  border:
+    1px solid rgba(255,255,255,.05);
+
+  transition:
+    all .25s ease;
+}
+
+.nav-icon-btn:hover {
+  background:
+    rgba(6,182,212,.12);
+
+  border-color:
+    rgba(6,182,212,.28);
+
+  transform:
+    translateY(-2px);
+
+  box-shadow:
+    0 12px 30px rgba(6,182,212,.18);
+}
+
+/* DROPDOWN */
+.dropdown-panel {
+  backdrop-filter: blur(20px);
+
+  background:
+    rgba(15,23,42,.96);
+
+  border:
+    1px solid rgba(255,255,255,.06);
+
+  box-shadow:
+    0 30px 60px rgba(0,0,0,.45);
+
+  border-radius:
+    22px;
+}
   .navbar-top {
     background: rgba(15, 23, 42, 0.98);
     color: var(--text);
@@ -167,7 +257,7 @@
       @if(! $isAdminRoute && ! $isAdminSettingsRoute)
       <div class="hidden md:flex flex-1 flex-col relative">
         <form action="{{ route('products.search') }}" method="GET" class="w-full relative">
-          <div class="flex items-center gap-2 rounded-full border border-slate-700/90 bg-slate-950/90 px-3 py-2 shadow-sm shadow-slate-950/30 transition-all duration-200 focus-within:border-cyan-400 focus-within:ring-2 focus-within:ring-cyan-500/15">
+          <div class="flex items-center gap-2 rounded-2xl border border-white/5 bg-[#020817]/90 px-4 py-2.5 shadow-[0_10px_35px_rgba(0,0,0,.25)] transition-all duration-300 focus-within:border-cyan-400/40 focus-within:shadow-[0_0_30px_rgba(6,182,212,.15)]">
             <div class="surface-muted shrink-0">
               <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
             </div>
@@ -200,7 +290,7 @@
           
           {{-- Notifications --}}
           <div class="relative">
-            <button onclick="toggleDropdown('notif-dropdown'); loadNotificationPreview();" class="text-white opacity-90 hover:opacity-100 p-1">
+            <button onclick="toggleDropdown('notif-dropdown'); loadNotificationPreview();" class="nav-icon-btn text-white/90">
               <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
               <span id="notif-badge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
             </button>
@@ -274,7 +364,7 @@
 
           {{-- User Avatar Dropdown --}}
           <div class="relative hidden sm:block">
-            <button onclick="toggleDropdown('user-dropdown')" class="flex items-center gap-2 text-white">
+            <button onclick="toggleDropdown('user-dropdown')" class="flex items-center gap-2 rounded-2xl border border-white/5 bg-white/[0.03] px-3 py-2 text-white hover:bg-white/[0.06] transition-all duration-300">
               <img src="{{ $authUser?->avatar_url ?? $avatarFallback }}" class="w-7 h-7 rounded-full object-cover border border-white/20" alt="Avatar">
               <span class="text-sm font-medium truncate max-w-[100px]">{{ $authUser?->name ?? 'User' }}</span>
               <svg class="w-3 h-3 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
@@ -378,14 +468,23 @@
       <div class="h-5 w-px bg-slate-200/20 mx-2"></div>
 
       {{-- Horizontal Links --}}
+            <a href="{{ route('marketplace.home') }}"
+        class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white/90 hover:text-white hover:bg-cyan-500/10 transition-all duration-300">
+          
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                    d="M3 10l9-7 9 7v9a2 2 0 01-2 2h-4a2 2 0 01-2-2V13H9v6a2 2 0 01-2 2H3z"/>
+          </svg>
+          Beranda
+      </a>
       <div class="flex-1 overflow-x-auto no-scrollbar mask-gradient-right">
         <div class="flex items-center gap-1 min-w-max">
-          <a href="{{ route('products.search', ['category'=>'roblox']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Roblox Games</a>
-          <a href="{{ route('products.search', ['category'=>'growtopia']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Growtopia</a>
-          <a href="{{ route('products.search', ['category'=>'genshin-impact']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Genshin Impact</a>
-          <a href="{{ route('products.search', ['category'=>'dota-2']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Dota 2 Item</a>
-          <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Game Key</a>
-          <a href="{{ route('products.search', ['category'=>'mobile-legends']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Mobile Legend Account</a>
+          <a href="{{ route('products.search', ['category'=>'roblox']) }}" class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap" hover:surface-weak rounded transition-colors whitespace-nowrap">Roblox Games</a>
+          <a href="{{ route('products.search', ['category'=>'growtopia']) }}" class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap" hover:surface-weak rounded transition-colors whitespace-nowrap">Growtopia</a>
+          <a href="{{ route('products.search', ['category'=>'genshin-impact']) }}" class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap" hover:surface-weak rounded transition-colors whitespace-nowrap">Genshin Impact</a>
+          <a href="{{ route('products.search', ['category'=>'dota-2']) }}" class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap" hover:surface-weak rounded transition-colors whitespace-nowrap">Dota 2 Item</a>
+          <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap" hover:surface-weak rounded transition-colors whitespace-nowrap">Game Key</a>
+          <a href="{{ route('products.search', ['category'=>'mobile-legends']) }}" class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap" hover:surface-weak rounded transition-colors whitespace-nowrap">Mobile Legend Account</a>
         </div>
       </div>
 
@@ -430,5 +529,26 @@
   }
 
   document.addEventListener('DOMContentLoaded', initTheme);
+
+    const navbar = document.getElementById('main-navbar');
+
+  window.addEventListener('scroll', () => {
+
+    if (window.scrollY > 12) {
+
+      navbar.style.backdropFilter =
+        'blur(28px)';
+
+      navbar.style.boxShadow =
+        '0 14px 45px rgba(0,0,0,.38)';
+
+    } else {
+
+      navbar.style.boxShadow =
+        '';
+
+    }
+
+  });
 </script>
 @endpush
