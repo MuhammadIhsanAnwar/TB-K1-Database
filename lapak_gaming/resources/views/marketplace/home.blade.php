@@ -138,7 +138,7 @@
         4:5 spotlight
       </span>
     </div>
-    <div class="grid gap-4 md:grid-cols-[7fr_3fr] items-start">
+    <div class="grid gap-4 items-start">
       {{-- Main Banner Carousel (Hero 4:5) --}}
       <div class="hero-stage rounded-2xl overflow-hidden relative aspect-[4/5]">
         <div id="hero-slider" class="w-full h-full relative">
@@ -166,20 +166,6 @@
             <button id="hero-next" class="p-2 bg-surface-950/50 text-white rounded border border-white/10">›</button>
           </div>
         </div>
-      </div>
-
-      {{-- Side Banners (Hero 4:5) --}}
-      <div class="hidden md:grid gap-4">
-        @if(isset($heroBanners) && $heroBanners->count() > 1)
-          @foreach($heroBanners->skip(1)->take(2) as $banner)
-          <a href="{{ $banner->link_url ?: '#' }}" class="hero-stage rounded-2xl overflow-hidden block relative aspect-[4/5]">
-            <img src="{{ $banner->image_url }}" class="w-full h-full object-cover" alt="Promo {{ $loop->iteration }}">
-          </a>
-          @endforeach
-        @else
-          <div class="hero-stage rounded-2xl flex items-center justify-center aspect-[4/5]">Promo 2</div>
-          <div class="hero-stage rounded-2xl flex items-center justify-center aspect-[4/5]">Promo 3</div>
-        @endif
       </div>
     </div>
   </div>
