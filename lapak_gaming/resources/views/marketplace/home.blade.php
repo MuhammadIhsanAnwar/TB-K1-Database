@@ -92,6 +92,29 @@
     opacity: 0;
     animation-fill-mode: both;
   }
+  /* Introduction card with subtle animated gradient + sparkles */
+  .intro-card {
+    position: relative;
+    overflow: hidden;
+    background: linear-gradient(135deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    border-radius: 18px;
+  }
+  .intro-shimmer {
+    position: absolute;
+    inset: -40% -40% auto -40%;
+    height: 220%;
+    background: linear-gradient(90deg, rgba(255,255,255,0.02) 0%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.02) 100%);
+    transform: rotate(12deg);
+    animation: shimmer 6s linear infinite;
+    mix-blend-mode: overlay;
+    pointer-events: none;
+  }
+  @keyframes shimmer { from { transform: translateX(-30%) rotate(12deg);} to { transform: translateX(30%) rotate(12deg);} }
+  .intro-sparkle {
+    position: absolute; width: 8px; height: 8px; border-radius: 50%; background: radial-gradient(circle at 30% 30%, #fff, #ffd700 60%); opacity: .9; pointer-events: none;
+    animation: sparkle 3.6s ease-in-out infinite;
+  }
+  @keyframes sparkle { 0%{transform:translateY(0) scale(.8); opacity:.2}50%{transform:translateY(-10px) scale(1.1); opacity:1}100%{transform:translateY(0) scale(.9); opacity:.2} }
   /* Hero slider styles */
   #hero-slider { position: relative; }
   .hero-track { will-change: transform; }
@@ -142,7 +165,7 @@
 @endpush
 
 @section('content')
-<div class="relative min-h-screen overflow-hidden">
+<div class="relative overflow-hidden">
   <div class="auth-radial absolute inset-0 pointer-events-none"></div>
   <div class="auth-particle w-1.5 h-1.5 bg-brand-500 absolute" style="left:12%; top:82%; --dur:7s; --delay:0s; --op:0.25;"></div>
   <div class="auth-particle w-2 h-2 bg-accent-400 absolute" style="left:78%; top:86%; --dur:9s; --delay:1.5s; --op:0.2;"></div>
@@ -154,26 +177,29 @@
   {{-- INTRODUCTION (Above Hero)                                   --}}
   {{-- A short, engaging intro to welcome users and highlight value --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
-  <section class="max-w-7xl mx-auto px-4 py-8">
-    <div class="rounded-2xl bg-gradient-to-r from-[#071028]/70 to-[#07102f]/60 border border-white/6 p-8 shadow-lg">
-      <div class="text-center">
-        <div class="section-kicker text-orange-300 mb-2">Selamat Datang di Lapak Gaming</div>
+  <section class="max-w-7xl mx-auto px-4 py-6">
+    <div class="intro-card rounded-2xl border border-white/6 p-6 shadow-lg">
+      <div class="intro-shimmer" aria-hidden="true"></div>
+      <div class="text-center relative z-10">
+        <div class="section-kicker text-amber-300 mb-2">Selamat Datang di Lapak Gaming</div>
         <h1 class="text-3xl md:text-4xl font-extrabold text-white leading-tight">Temukan Item, Akun, dan Top-up Game Favoritmu</h1>
-        <p class="mt-3 text-slate-300 max-w-2xl mx-auto">Marketplace terpercaya untuk pemain Indonesia — transaksi aman, pengiriman cepat, dan pilihan lengkap untuk semua platform. Mulai jelajahi sekarang dan dapatkan penawaran terbaik hari ini.</p>
-        <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
-          <a href="{{ route('products.search', ['q' => 'top up game']) }}" class="inline-flex items-center justify-center rounded-2xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-400">Jelajahi Top Up</a>
-          <a href="{{ route('marketplace.trending') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">Lihat Trending</a>
+        <p class="mt-3 text-slate-300 max-w-2xl mx-auto">Marketplace terpercaya untuk pemain Indonesia — transaksi aman, pengiriman cepat, dan pilihan lengkap untuk semua platform. Temukan penawaran harian, game terbaru, dan seller terpercaya.</p>
+        <div class="mt-6 flex justify-center">
+          <a href="https://lapakgaming.neoverse.my.id/browse/search" class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white transition hover:opacity-95">Lihat Semua Produk</a>
         </div>
       </div>
+      <div class="intro-sparkle" style="left:8%; top:28%; animation-delay:0s"></div>
+      <div class="intro-sparkle" style="left:22%; top:64%; background:radial-gradient(circle at 30% 30%, #fff, #ffd4a3 60%); animation-delay:0.8s"></div>
+      <div class="intro-sparkle" style="left:76%; top:36%; background:radial-gradient(circle at 30% 30%, #fff, #c7f1ff 60%); animation-delay:1.4s"></div>
     </div>
   </section>
 
   {{-- ═══════════════════════════════════════════════════════════ --}}
   {{-- HERO SECTION (BANNERS)                                     --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
-  <section class="relative overflow-hidden pb-8">
-    <div class="absolute inset-x-0 top-0 h-[380px] bg-gradient-to-b from-[#0f2a5b] via-[#09182e] to-transparent pointer-events-none"></div>
-    <div class="max-w-7xl mx-auto px-4 pt-6">
+  <section class="relative overflow-hidden pb-6">
+    <div class="absolute inset-x-0 top-0 h-[220px] bg-gradient-to-b from-[#0f2a5b] via-[#09182e] to-transparent pointer-events-none"></div>
+    <div class="max-w-7xl mx-auto px-4 pt-3">
       <div class="rounded-[32px] border border-white/10 bg-[#081125]/95 p-6 shadow-[0_30px_90px_rgba(5,12,35,0.28)]">
         {{-- Header with interactive robot --}}
         <div class="flex flex-col gap-6">
@@ -256,6 +282,9 @@
 {{-- ═══════════════════════════════════════════════════════════ --}}
 <section class="max-w-7xl mx-auto px-4 mb-10">
   <div class="surface-panel rounded-xl p-4 shadow-sm border border-white/10">
+    <div class="flex items-center justify-between mb-3">
+      <h2 class="section-title mb-0">Kategori Produk</h2>
+    </div>
     <div class="flex flex-wrap justify-center gap-6 items-center category-list">
       @php $catsToShow = $allCategories->isNotEmpty() ? $allCategories : $displayCategories; @endphp
       @foreach($catsToShow->take(13) as $cat)
