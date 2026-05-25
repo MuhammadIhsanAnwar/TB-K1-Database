@@ -8,7 +8,7 @@
     $rating = $product->rating_average ?? $product->rating ?? 0;
 @endphp
 
-<a href="{{ route('products.show', $product) }}" class="product-card group flex flex-col rounded-[26px] overflow-hidden transition-all duration-300 relative h-full border border-white/5 bg-gradient-to-b from-[#0b1730] to-[#08101f] hover:border-cyan-400/40 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(14,165,233,0.18)]">
+<a href="{{ route('products.show', $product) }}" class="product-card premium-glow group relative flex flex-col overflow-hidden rounded-[28px] border border-white/[0.04] bg-[#08111f]/95 backdrop-blur-xl transition-all duration-500 hover:-translate-y-3 hover:border-cyan-400/30 hover:shadow-[0_35px_90px_rgba(14,165,233,.22)]">
 
   {{-- Top/Platform Ribbon --}}
   @if(($product->category?->slug ?? '') === 'top-up-game')
@@ -61,7 +61,7 @@
       </div>
     </div>
   </div>
-      <div class="mt-3 flex gap-2">
+      <div class="mt-3 flex gap-2 opacity-0 translate-y-3 transition-all duration-300 group-hover:opacity-100 group-hover:translate-y-0">
         <button class="flex-1 rounded-xl bg-cyan-500/15 border border-cyan-400/20 py-2 text-xs font-bold text-cyan-200 transition hover:bg-cyan-500/25">
             Beli Sekarang
         </button>

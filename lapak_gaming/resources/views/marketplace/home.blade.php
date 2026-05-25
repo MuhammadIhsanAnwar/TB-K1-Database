@@ -393,6 +393,18 @@
       transform: translateY(0);
     }
   }
+  .reveal-item {
+  opacity: 0;
+  transform: translateY(40px);
+  transition:
+    opacity .9s ease,
+    transform .9s ease;
+  }
+
+  .reveal-item.active {
+    opacity: 1;
+    transform: translateY(0);
+  }
 </style>
 @endpush
 
@@ -409,15 +421,32 @@
   {{-- INTRODUCTION (Above Hero)                                   --}}
   {{-- A short, engaging intro to welcome users and highlight value --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
-  <section class="max-w-7xl mx-auto px-4 py-6">
+  <section class="reveal-item max-w-7xl mx-auto px-4 py-6">
     <div class="intro-card rounded-2xl border border-white/6 p-6 shadow-lg">
       <div class="intro-shimmer" aria-hidden="true"></div>
       <div class="text-center relative z-10">
         <div class="section-kicker text-amber-300 mb-2">Selamat Datang di Lapak Gaming</div>
-        <h1 class="text-3xl md:text-4xl font-extrabold text-white leading-tight">Temukan Item, Akun, dan Top-up Game Favoritmu</h1>
-        <p class="mt-3 text-slate-300 max-w-2xl mx-auto">Marketplace terpercaya untuk pemain Indonesia — transaksi aman, pengiriman cepat, dan pilihan lengkap untuk semua platform. Temukan penawaran harian, game terbaru, dan seller terpercaya.</p>
+        <h1 class="text-5xl md:text-6xl font-black tracking-tight leading-[1.05]">Temukan Item, Akun, dan Top-up Game Favoritmu</h1>
+        <p class="text-slate-300 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">Marketplace terpercaya untuk pemain Indonesia — transaksi aman, pengiriman cepat, dan pilihan lengkap untuk semua platform. Temukan penawaran harian, game terbaru, dan seller terpercaya.</p>
         <div class="mt-6 flex justify-center">
           <a href="https://lapakgaming.neoverse.my.id/browse/search" class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white transition hover:opacity-95">Lihat Semua Produk</a>
+          <div class="mt-10 flex flex-wrap justify-center gap-10">
+          <div class="text-center">
+              <div class="text-3xl font-black text-cyan-300">10K+</div>
+              <p class="text-slate-400 text-sm">Produk Digital</p>
+          </div>
+
+          <div class="text-center">
+              <div class="text-3xl font-black text-emerald-300">99.9%</div>
+              <p class="text-slate-400 text-sm">Transaksi Aman</p>
+          </div>
+
+          <div class="text-center">
+              <div class="text-3xl font-black text-orange-300">24/7</div>
+              <p class="text-slate-400 text-sm">Fast Support</p>
+          </div>
+
+      </div>
         </div>
       </div>
       <div class="intro-sparkle sm" style="left:6%; top:20%; animation-delay:0s; background:radial-gradient(circle at 30% 30%, #fff, #ffea9a 60%);"></div>
@@ -448,9 +477,11 @@
   {{-- ═══════════════════════════════════════════════════════════ --}}
   {{-- HERO SECTION (BANNERS)                                     --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
-  <section class="relative overflow-visible pb-6">
+  <section class="reveal-item relative overflow-visible pb-6">
     <div class="max-w-7xl mx-auto px-4 pt-3">
-      <div class="relative z-20 rounded-[32px] bg-[#081125]/95 p-6 shadow-[0_30px_90px_rgba(5,12,35,0.28),0_0_0_1px_rgba(255,255,255,0.03)]
+      <div class="absolute -top-24 -left-20 w-[420px] h-[420px] rounded-full bg-cyan-500/20 blur-[120px] pointer-events-none"></div>
+<div class="absolute -bottom-32 -right-20 w-[420px] h-[420px] rounded-full bg-orange-500/10 blur-[120px] pointer-events-none"></div>
+      <div class="relative z-20 rounded-[32px] bg-[#081125]/95 p-6 shadow-[0_30px_90px_rgba(5,12,35,0.28),0_0_0_1px_rgba(255,255,255,0.03)]">
         {{-- Header with interactive robot --}}
         <div class="flex flex-col gap-6">
           {{-- Left & Right text with Robot in center --}}
@@ -538,7 +569,7 @@
   {{-- ═══════════════════════════════════════════════════════════ --}}
   {{-- TRUST BADGES                                               --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="trust-badge-container py-3 shadow-md mb-8">
+<section class="reveal-item trust-badge-container py-3 shadow-md mb-8">
   <div class="max-w-7xl mx-auto px-4 flex justify-between items-center overflow-x-auto no-scrollbar gap-6">
     <div class="flex items-center gap-2 text-white whitespace-nowrap">
       <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
@@ -558,7 +589,7 @@
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- CATEGORY NAVIGATION                                        --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="max-w-7xl mx-auto px-4 mb-10">
+<section class="reveal-item max-w-7xl mx-auto px-4 mb-10">
   <div class="category-panel rounded-2xl p-5 sm:p-6 shadow-sm">
     <div class="category-heading">
       <div class="category-heading-title">
@@ -590,7 +621,7 @@
 {{-- FEATURED SECTION: UNLOCK THE SIMULATION (GAME KEYS)        --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 @if(isset($featuredGameKeys) && $featuredGameKeys->count() > 0)
-<section class="max-w-7xl mx-auto px-4 mb-10">
+<section class="reveal-item max-w-7xl mx-auto px-4 mb-10">
   <div class="flex items-center justify-between mb-4">
     <h2 class="section-title mb-0">🔑 Unlock the Simulation (Game Keys)</h2>
     <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="text-sm font-semibold text-itemku-blue hover:underline">Lihat Semua</a>
@@ -607,7 +638,7 @@
 {{-- FEATURED SECTION: UNLOCK EPIC RPG WORLDS                   --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 @if(isset($featuredRPGKeys) && $featuredRPGKeys->count() > 0)
-<section class="max-w-7xl mx-auto px-4 mb-10">
+<section class="reveal-item max-w-7xl mx-auto px-4 mb-10">
   <div class="flex items-center justify-between mb-4">
     <h2 class="section-title mb-0">⚔️ Unlock Epic RPG Worlds</h2>
     <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="text-sm font-semibold text-itemku-blue hover:underline">Lihat Semua</a>
@@ -625,7 +656,7 @@
 {{-- ═══════════════════════════════════════════════════════════ --}}
 @if(isset($categorySections) && $categorySections->count() > 0)
   @foreach($categorySections as $section)
-  <section class="max-w-7xl mx-auto px-4 mb-10">
+  <section class="reveal-item max-w-7xl mx-auto px-4 mb-10">
     <div class="flex items-center justify-between mb-4">
       <h2 class="section-title mb-0">{{ $section['category']->name }} Pilihan</h2>
       <a href="{{ route('categories.show', $section['category']->slug) }}" class="text-sm font-semibold text-itemku-blue hover:underline">Lihat Semua</a>
@@ -647,7 +678,7 @@
 
 {{-- ================= FEATURED BANNERS (moved below products) ================ --}}
 @if((!isset($categorySections) || $categorySections->isEmpty()) && isset($homepageProducts) && $homepageProducts->count())
-  <section class="max-w-7xl mx-auto px-4 mb-10">
+  <section class="reveal-item max-w-7xl mx-auto px-4 mb-10">
     <div class="flex items-center justify-between mb-4">
       <h2 class="section-title mb-0">Produk Terbaru & Rekomendasi</h2>
       <a href="{{ route('products.search') }}" class="text-sm font-semibold text-itemku-blue hover:underline">Lihat Semua</a>
@@ -660,12 +691,13 @@
   </section>
 @endif
 @if(isset($featuredBanners) && $featuredBanners->count())
-  <section class="max-w-7xl mx-auto px-4 mb-10">
+  <section class="reveal-item max-w-7xl mx-auto px-4 mb-10">
     <div class="featured-stage rounded-2xl overflow-hidden p-3 md:p-4">
       <div class="featured-scroll overflow-hidden">
         <div class="flex gap-3 md:gap-4 animate-featured-scroll will-change-transform">
           @foreach($featuredBanners as $fb)
             <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-[360px] md:w-[480px] rounded-xl overflow-hidden block aspect-[3/1] border border-white/10 shadow-lg shadow-black/20">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent"></div>
               <img src="{{ $fb->image_url }}" class="w-full h-full object-cover" alt="{{ $fb->title ?? 'Featured' }}">
             </a>
           @endforeach
@@ -807,6 +839,27 @@
           'perspective(1000px) rotateX(0) rotateY(0)';
       });
 
+    });
+    const revealItems = document.querySelectorAll('.reveal-item');
+
+    const revealObserver = new IntersectionObserver((entries) => {
+
+      entries.forEach((entry) => {
+
+        if (entry.isIntersecting) {
+
+          entry.target.classList.add('active');
+
+        }
+
+      });
+
+    }, {
+      threshold: 0.12
+    });
+
+    revealItems.forEach((item) => {
+      revealObserver.observe(item);
     });
 </script>
 @endpush
