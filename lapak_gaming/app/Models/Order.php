@@ -13,7 +13,6 @@ class Order extends Model {
     public const STATUS_PENDING_PAYMENT = 'pending_payment';
     public const STATUS_PAYMENT_UPLOADED = 'payment_uploaded';
     public const STATUS_PROCESSING = 'processing';
-    public const STATUS_DELIVERED = 'delivered';
     public const STATUS_COMPLETED = 'completed';
     public const STATUS_DISPUTED = 'disputed';
     public const STATUS_CANCELLED = 'cancelled';
@@ -106,7 +105,6 @@ class Order extends Model {
             self::STATUS_PENDING_PAYMENT => 'Menunggu Pembayaran',
             self::STATUS_PAYMENT_UPLOADED => 'Pembayaran Dikirim',
             self::STATUS_PROCESSING => 'Diproses',
-            self::STATUS_DELIVERED => 'Sudah Dikirim',
             self::STATUS_COMPLETED => 'Selesai',
             self::STATUS_DISPUTED => 'Sengketa',
             self::STATUS_CANCELLED => 'Dibatalkan',
@@ -120,7 +118,6 @@ class Order extends Model {
             self::STATUS_PENDING_PAYMENT => 'yellow',
             self::STATUS_PAYMENT_UPLOADED => 'blue',
             self::STATUS_PROCESSING => 'indigo',
-            self::STATUS_DELIVERED => 'sky',
             self::STATUS_COMPLETED => 'green',
             self::STATUS_DISPUTED => 'orange',
             self::STATUS_CANCELLED => 'red',

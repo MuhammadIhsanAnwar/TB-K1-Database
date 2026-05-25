@@ -1066,6 +1066,48 @@
     }
 
     async function loadChatBadge() {
+
+    const badge = document.getElementById('chat-badge');
+
+    if (!badge) return;
+
+    try {
+
+        const response = await fetch(window.chatInboxUrl, {
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            throw new Error('Failed to load chat badge');
+        }
+
+        const data = await response.json();
+
+        const unread = Number(data.total_unread) || 0;
+
+        if (unread > 0) {
+
+            badge.textContent = unread > 99
+                ? '99+'
+                : unread;
+
+            badge.classList.remove('hidden');
+
+        } else {
+
+            badge.classList.add('hidden');
+        }
+
+    } catch (error) {
+
+        // no-op
+
+    }
+}
       const badge = document.getElementById('chat-badge');
       if (!badge) return;
 
