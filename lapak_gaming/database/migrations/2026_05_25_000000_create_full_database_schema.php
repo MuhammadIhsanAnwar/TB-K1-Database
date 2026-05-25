@@ -370,10 +370,31 @@ return new class extends Migration
             $table->timestamps();
             $table->index(['conversation_id', 'sender_id']);
         });
+
+        Schema::create('contact_messages', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('name');
+            $table->string('email');
+            $table->string('subject');
+            $table->string('category')->default('general');
+            $table->text('message');
+            $table->text('admin_reply')->nullable();
+            $table->foreignId('replied_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('replied_at')->nullable();
+            $table->timestamp('read_at')->nullable();
+            $table->string('status')->default('new');
+            $table->json('metadata')->nullable();
+            $table->timestamps();
+
+            $table->index(['status', 'created_at']);
+            $table->index(['email', 'status']);
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('contact_messages');
         Schema::dropIfExists('banners');
         Schema::dropIfExists('marketplace_notifications');
         Schema::dropIfExists('sessions');

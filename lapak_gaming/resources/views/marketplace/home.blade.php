@@ -140,7 +140,7 @@
     </div>
     <div class="grid gap-4 items-start">
       {{-- Main Banner Carousel (Hero 4:5) --}}
-      <div class="hero-stage rounded-2xl overflow-hidden relative aspect-[4/5] md:aspect-[21/9] md:min-h-[420px] lg:min-h-[500px]">
+      <div class="hero-stage rounded-2xl overflow-hidden relative aspect-[4/5] md:aspect-[16/9] md:max-h-[340px] lg:max-h-[380px]">
         <div id="hero-slider" class="w-full h-full relative">
           <div class="hero-track w-full h-full flex transition-transform duration-700">
             @if(isset($heroBanners) && $heroBanners->count())
@@ -285,11 +285,11 @@
         3:1 marquee
       </span>
     </div>
-    <div class="featured-stage rounded-2xl overflow-hidden p-4 md:p-5">
+    <div class="featured-stage rounded-2xl overflow-hidden p-3 md:p-4">
       <div class="featured-scroll overflow-hidden">
-        <div class="flex gap-4 animate-featured-scroll will-change-transform">
+        <div class="flex gap-3 md:gap-4 animate-featured-scroll will-change-transform">
           @foreach($featuredBanners as $fb)
-            <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-[520px] md:w-[680px] rounded-xl overflow-hidden block aspect-[21/9] border border-white/10 shadow-lg shadow-black/20">
+            <a href="{{ $fb->link_url ?: '#' }}" class="flex-none w-[360px] md:w-[480px] rounded-xl overflow-hidden block aspect-[16/9] border border-white/10 shadow-lg shadow-black/20">
               <img src="{{ $fb->image_url }}" class="w-full h-full object-cover" alt="{{ $fb->title ?? 'Featured' }}">
             </a>
           @endforeach

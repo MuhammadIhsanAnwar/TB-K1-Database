@@ -205,7 +205,23 @@
                     Kirim Pesan Langsung
                 </h2>
 
-                <form action="#" method="POST" class="space-y-5 relative z-10">
+                @if(session('success'))
+                    <div class="mb-6 rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm text-emerald-200">
+                        {{ session('success') }}
+                    </div>
+                @endif
+
+                @if($errors->any())
+                    <div class="mb-6 rounded-2xl border border-rose-500/20 bg-rose-500/10 px-4 py-3 text-sm text-rose-200">
+                        <ul class="space-y-1 list-disc pl-5">
+                            @foreach($errors->all() as $error)
+                                <li>{{ $error }}</li>
+                            @endforeach
+                        </ul>
+                    </div>
+                @endif
+
+                <form action="{{ route('contact.store') }}" method="POST" class="space-y-5 relative z-10">
                     @csrf
 
                     <div class="grid md:grid-cols-2 gap-5">
@@ -216,6 +232,8 @@
                             </label>
 
                             <input type="text"
+                                name="name"
+                                value="{{ old('name', auth()->user()->name ?? '') }}"
                                 placeholder="John Doe"
                                 class="w-full bg-gray-900 border border-gray-800 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all hover:border-gray-700">
                         </div>
@@ -226,6 +244,8 @@
                             </label>
 
                             <input type="email"
+                                name="email"
+                                value="{{ old('email', auth()->user()->email ?? '') }}"
                                 placeholder="john@example.com"
                                 class="w-full bg-gray-900 border border-gray-800 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all hover:border-gray-700">
                         </div>
@@ -236,13 +256,13 @@
                             Kategori Kendala
                         </label>
 
-                        <select class="w-full bg-gray-900 border border-gray-800 text-slate-300 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all hover:border-gray-700 appearance-none cursor-pointer">
+                        <select name="category" class="w-full bg-gray-900 border border-gray-800 text-slate-300 text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all hover:border-gray-700 appearance-none cursor-pointer">
 
-                            <option>Pilih Kategori</option>
-                            <option>Top Up & Pembayaran</option>
-                            <option>Akun Tertahan / Banned</option>
-                            <option>Laporan Penipuan (Fraud)</option>
-                            <option>Pertanyaan Umum</option>
+                            <option value="general" @selected(old('category', 'general') === 'general')>Pilih Kategori</option>
+                            <option value="payment" @selected(old('category') === 'payment')>Top Up & Pembayaran</option>
+                            <option value="account" @selected(old('category') === 'account')>Akun Tertahan / Banned</option>
+                            <option value="fraud" @selected(old('category') === 'fraud')>Laporan Penipuan (Fraud)</option>
+                            <option value="general" @selected(old('category') === 'general')>Pertanyaan Umum</option>
                         </select>
                     </div>
 
@@ -251,31 +271,18 @@
                             Detail Pesan
                         </label>
 
-                        <textarea rows="5"
-                            placeholder="Jelaskan detail kendala Anda secara lengkap..."
-                            class="w-full bg-gray-900 border border-gray-800 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all hover:border-gray-700 resize-none"></textarea>
+                        <textarea name="message" rows="5" placeholder="Jelaskan detail kendala Anda secara lengkap..." class="w-full bg-gray-900 border border-gray-800 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all hover:border-gray-700 resize-none">{{ old('message') }}</textarea>
+                    </div>
+                    <div class="group">
+                        <label class="block text-sm font-medium text-slate-400 mb-2 group-focus-within:text-blue-400 transition-colors">Topik Pesan</label>
+                        <input type="text" name="subject" value="{{ old('subject') }}" placeholder="Contoh: Kendala pembayaran top up" class="w-full bg-gray-900 border border-gray-800 text-white text-sm rounded-xl px-4 py-3.5 focus:outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all hover:border-gray-700">
                     </div>
 
-                    <button type="button"
-                        onclick="alert('Pesan dummy terkirim! Form ini masih dalam tahap desain.')"
-                        class="w-full relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-blue-600 rounded-xl hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 focus:ring-offset-gray-900 overflow-hidden group/btn mt-4">
+                    <button type="submit" class="w-full relative inline-flex items-center justify-center px-8 py-4 font-bold text-white transition-all duration-300 bg-blue-600 rounded-xl hover:bg-blue-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600 focus:ring-offset-gray-900 overflow-hidden group/btn mt-4">
 
                         <span class="absolute w-0 h-0 transition-all duration-500 ease-out bg-white rounded-full group-hover/btn:w-56 group-hover/btn:h-56 opacity-10"></span>
 
-                        <span class="relative flex items-center gap-2">
-                            Kirim Pesan Sekarang
-
-                            <svg class="w-4 h-4 group-hover/btn:translate-x-1 group-hover/btn:-translate-y-1 transition-transform"
-                                fill="none"
-                                viewBox="0 0 24 24"
-                                stroke="currentColor">
-
-                                <path stroke-linecap="round"
-                                    stroke-linejoin="round"
-                                    stroke-width="2"
-                                    d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                            </svg>
-                        </span>
+                        <span class="relative flex items-center gap-2">Kirim Pesan Sekarang</span>
                     </button>
                 </form>
             </div>

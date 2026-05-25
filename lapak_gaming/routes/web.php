@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\MarketplaceController;
 use App\Http\Controllers\NotificationController;
@@ -200,6 +201,9 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
         Route::get('/banners', [AdminController::class, 'banners'])->name('banners.index');
         Route::post('/banners', [AdminController::class, 'storeBanner'])->name('banners.store');
         Route::delete('/banners/{banner}', [AdminController::class, 'destroyBanner'])->name('banners.destroy');
+        Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
+        Route::get('/contact-messages/{contactMessage}', [ContactMessageController::class, 'show'])->name('contact-messages.show');
+        Route::post('/contact-messages/{contactMessage}/reply', [ContactMessageController::class, 'reply'])->name('contact-messages.reply');
         Route::get('/notifications', [AdminController::class, 'notifications'])->name('notifications.index');
         Route::post('/notifications', [AdminController::class, 'sendNotification'])->name('notifications.send');
         Route::get('/orders', [AdminController::class, 'orders'])->name('orders.index');
@@ -297,6 +301,7 @@ Route::post('/email/verification-notification/guest', 'App\\Http\\Controllers\\V
 // ─────────────────────────────────────────────────────────────────────────────
 
 Route::get('/hubungi-kami', [PageController::class, 'contact'])->name('contact');
+Route::post('/hubungi-kami', [ContactMessageController::class, 'store'])->name('contact.store');
 Route::get('/aturan-penggunaan', [PageController::class, 'terms'])->name('terms');
 Route::get('/kebijakan-privasi', [PageController::class, 'privacy'])->name('privacy');
 Route::get('/kebijakan-pengembalian-dana', [PageController::class, 'refund'])->name('refund');

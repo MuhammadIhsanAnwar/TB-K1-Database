@@ -256,10 +256,14 @@
 
           {{-- If on admin routes, show admin quick links instead of chat/cart --}}
           @if($isAdminRoute && $authUser?->isAdmin())
-            <div class="hidden sm:flex items-center gap-2">
-              <a href="{{ route('admin.dashboard') }}" class="text-white px-3 py-2 rounded hover:surface-weak">Dashboard Admin</a>
-              <a href="{{ route('admin.users.index') }}" class="text-white px-3 py-2 rounded hover:surface-weak">Kelola Akun</a>
-              <a href="{{ route('admin.orders.index') }}" class="text-white px-3 py-2 rounded hover:surface-weak">Transaksi</a>
+            <div class="hidden xl:flex items-center gap-2 flex-wrap max-w-[58vw] justify-end">
+              <a href="{{ route('admin.dashboard') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Dashboard</a>
+              <a href="{{ route('admin.users.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Kelola Akun</a>
+              <a href="{{ route('admin.verification.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Verifikasi</a>
+              <a href="{{ route('admin.orders.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Transaksi</a>
+              <a href="{{ route('admin.banners.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Banner</a>
+              <a href="{{ route('admin.notifications.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Notifikasi</a>
+              <a href="{{ route('admin.terminal.index') }}" class="rounded-full border border-white/10 bg-white/5 px-3 py-2 text-sm font-semibold text-white transition hover:bg-white/10">Terminal</a>
             </div>
           @endif
           <div class="h-6 w-px surface-weak mx-1 hidden sm:block"></div>

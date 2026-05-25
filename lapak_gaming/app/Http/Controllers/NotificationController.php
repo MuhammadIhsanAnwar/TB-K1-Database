@@ -44,7 +44,7 @@ class NotificationController extends Controller
             ->get();
 
         return response()->json([
-            'unread_count' => $notifications->where('is_read', false)->count(),
+            'unread_count' => $notifications->whereNull('read_at')->count(),
             'items' => $notifications,
         ]);
     }
@@ -60,7 +60,6 @@ class NotificationController extends Controller
         }
 
         $notification->forceFill([
-            'is_read' => true,
             'read_at' => now(),
         ])->save();
 
@@ -75,9 +74,8 @@ class NotificationController extends Controller
     {
         MarketplaceNotification::query()
             ->where('user_id', $request->user()->id)
-            ->where('is_read', false)
+            ->whereNull('read_at')
             ->update([
-                'is_read' => true,
                 'read_at' => now(),
             ]);
 
