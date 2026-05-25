@@ -20,7 +20,6 @@ class OrderController extends Controller {
             Order::STATUS_PENDING_PAYMENT,
             Order::STATUS_PAYMENT_UPLOADED,
             Order::STATUS_PROCESSING,
-            Order::STATUS_DELIVERED,
             Order::STATUS_COMPLETED,
             Order::STATUS_CANCELLED,
         ];
