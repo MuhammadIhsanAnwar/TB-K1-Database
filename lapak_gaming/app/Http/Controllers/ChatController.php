@@ -234,14 +234,14 @@ public function poll(Conversation $conversation)
         $user = Auth::user();
 
         // Proteksi participant
-        if (
-            $user->id !== $conversation->buyer_id &&
-            $user->id !== $conversation->seller_id
-        ) {
-            return response()->json([
-                'message' => 'Unauthorized'
-            ], 403);
-        }
+        // if (
+        //     $user->id !== $conversation->buyer_id &&
+        //     $user->id !== $conversation->seller_id
+        // ) {
+        //     return response()->json([
+        //         'message' => 'Unauthorized'
+        //     ], 403);
+        // }
 
         $receiverId = $user->id === $conversation->buyer_id
             ? $conversation->seller_id
