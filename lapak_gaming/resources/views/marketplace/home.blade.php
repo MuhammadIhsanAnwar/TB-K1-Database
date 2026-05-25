@@ -99,14 +99,90 @@
     font-weight: 800;
   }
 
-  /* Featured banners marquee */
-  @keyframes featuredScroll {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
+  /* Interactive Robot Element */
+  #hero-robot-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 200px;
+    margin-bottom: 1.5rem;
   }
-  .animate-featured-scroll { display: inline-flex; }
-  .featured-scroll .animate-featured-scroll { flex-wrap: nowrap; }
-  .featured-scroll .animate-featured-scroll { animation: featuredScroll 18s linear infinite; }
+  #hero-robot-head {
+    width: 80px;
+    height: 100px;
+    background: linear-gradient(135deg, rgba(59, 130, 246, 0.3), rgba(37, 99, 235, 0.4));
+    border: 2px solid rgba(59, 130, 246, 0.5);
+    border-radius: 12px 12px 8px 8px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.1s ease-out;
+    perspective: 1000px;
+  }
+  .robot-eyes {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    justify-content: center;
+  }
+  .robot-eye {
+    width: 14px;
+    height: 14px;
+    background: radial-gradient(circle at 30% 30%, #00ff88, #00cc66);
+    border-radius: 50%;
+    box-shadow: 0 0 8px rgba(0, 255, 136, 0.6), inset -1px -1px 3px rgba(0, 0, 0, 0.3);
+    position: relative;
+  }
+  .robot-pupil {
+    width: 6px;
+    height: 6px;
+    background: #001a33;
+    border-radius: 50%;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+  }
+  .robot-text {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: rgba(59, 130, 246, 0.7);
+    min-width: 80px;
+    text-align: center;
+    line-height: 1.3;
+  }
+  @media (max-width: 768px) {
+    #hero-robot-container {
+      height: 140px;
+    }
+    #hero-robot-head {
+      width: 60px;
+      height: 70px;
+    }
+    .robot-eye {
+      width: 10px;
+      height: 10px;
+    }
+    .robot-pupil {
+      width: 4px;
+      height: 4px;
+    }
+    .robot-text {
+      font-size: 0.75rem;
+      min-width: 60px;
+    }
+  }
+
+  /* Featured banners: single-row horizontal scroller (no duplication/marquee) */
+  .featured-scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+  .featured-scroll::-webkit-scrollbar { display: none; }
+  .animate-featured-scroll { display: flex; gap: 1rem; flex-wrap: nowrap; align-items: center; }
   @keyframes authFloat {
     0%   { transform: translateY(0) scale(1);   opacity: 0; }
     15%  { opacity: var(--op, 0.18); }
@@ -132,15 +208,49 @@
     <div class="absolute inset-x-0 top-0 h-[380px] bg-gradient-to-b from-[#0f2a5b] via-[#09182e] to-transparent pointer-events-none"></div>
     <div class="max-w-7xl mx-auto px-4 pt-6">
       <div class="rounded-[32px] border border-white/10 bg-[#081125]/95 p-6 shadow-[0_30px_90px_rgba(5,12,35,0.28)]">
-        <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
-          <div class="max-w-2xl">
-            <div class="section-kicker text-blue-300">Hero Banner</div>
-            <h2 class="mt-3 text-3xl font-black text-white md:text-4xl">Promo utama yang paling menonjol</h2>
-            <p class="mt-4 max-w-2xl text-sm text-slate-300">Temukan penawaran eksklusif, top up cepat, dan game populer dalam satu tampilan banner hero.</p>
+        {{-- Header with interactive robot --}}
+        <div class="flex flex-col gap-6">
+          {{-- Left & Right text with Robot in center --}}
+          <div class="flex flex-col lg:flex-row items-center justify-between gap-4">
+            {{-- Left Text --}}
+            <div class="hidden lg:flex flex-col justify-center text-left space-y-2 flex-1">
+              <div class="robot-text">
+                <span class="text-blue-300 font-bold">⚡ Lightning</span>
+                <span class="text-slate-400 text-xs">Fast Delivery</span>
+              </div>
+            </div>
+            {{-- Robot Container --}}
+            <div id="hero-robot-container" class="flex-none">
+              <div id="hero-robot-head">
+                <div class="robot-eyes">
+                  <div class="robot-eye">
+                    <div class="robot-pupil"></div>
+                  </div>
+                  <div class="robot-eye">
+                    <div class="robot-pupil"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            {{-- Right Text --}}
+            <div class="hidden lg:flex flex-col justify-center text-right space-y-2 flex-1">
+              <div class="robot-text">
+                <span class="text-blue-300 font-bold">🔒 Secure</span>
+                <span class="text-slate-400 text-xs">100% Safe</span>
+              </div>
+            </div>
           </div>
-          <div class="flex flex-wrap gap-3">
-            <a href="{{ route('products.search', ['q'=>'top up game']) }}" class="inline-flex items-center justify-center rounded-2xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-400">Beli Sekarang</a>
-            <a href="{{ route('marketplace.trending') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">Lihat Trending</a>
+          {{-- Main Header Text --}}
+          <div class="flex flex-col gap-4 lg:flex-row lg:items-end lg:justify-between">
+            <div class="max-w-2xl">
+              <div class="section-kicker text-blue-300">Hero Banner</div>
+              <h2 class="mt-3 text-3xl font-black text-white md:text-4xl">Promo utama yang paling menonjol</h2>
+              <p class="mt-4 max-w-2xl text-sm text-slate-300">Temukan penawaran eksklusif, top up cepat, dan game populer dalam satu tampilan banner hero.</p>
+            </div>
+            <div class="flex flex-wrap gap-3">
+              <a href="{{ route('products.search', ['q'=>'top up game']) }}" class="inline-flex items-center justify-center rounded-2xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-400">Beli Sekarang</a>
+              <a href="{{ route('marketplace.trending') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">Lihat Trending</a>
+            </div>
           </div>
         </div>
 
@@ -354,13 +464,53 @@
     function resetTimer() { clearInterval(timer); timer = setInterval(() => { goTo(index + 1); }, 4000); }
   })();
 
-  // Duplicate featured items for continuous marquee if needed
+  // Featured banners: no duplication — single horizontal row only
+
+  // Interactive robot head that follows cursor
   (function() {
-    const marquee = document.querySelector('.featured-scroll .animate-featured-scroll');
-    if (!marquee) return;
-    // Duplicate children to allow seamless loop
-    const clone = marquee.cloneNode(true);
-    marquee.parentNode.appendChild(clone);
+    const robotContainer = document.getElementById('hero-robot-container');
+    const robotHead = document.getElementById('hero-robot-head');
+    const pupils = document.querySelectorAll('.robot-pupil');
+    
+    if (!robotContainer || !robotHead || pupils.length === 0) return;
+
+    document.addEventListener('mousemove', (e) => {
+      const containerRect = robotContainer.getBoundingClientRect();
+      const containerCenterX = containerRect.left + containerRect.width / 2;
+      const containerCenterY = containerRect.top + containerRect.height / 2;
+      
+      const mouseX = e.clientX;
+      const mouseY = e.clientY;
+      
+      // Calculate angle from container center to mouse
+      const angle = Math.atan2(mouseY - containerCenterY, mouseX - containerCenterX);
+      const distance = Math.hypot(mouseX - containerCenterX, mouseY - containerCenterY);
+      
+      // Clamp rotation for subtle effect
+      const maxRotation = 25;
+      const rotation = Math.max(-maxRotation, Math.min(maxRotation, (mouseX - containerCenterX) * 0.02));
+      
+      // Update robot head rotation
+      robotHead.style.transform = `perspective(600px) rotateY(${rotation}deg)`;
+      
+      // Update pupils to look at cursor
+      pupils.forEach(pupil => {
+        const pupilRadius = 3;
+        const maxDistance = 4;
+        const pupilX = Math.cos(angle) * Math.min(maxDistance, Math.max(0, distance * 0.001));
+        const pupilY = Math.sin(angle) * Math.min(maxDistance, Math.max(0, distance * 0.001));
+        
+        pupil.style.transform = `translate(calc(-50% + ${pupilX}px), calc(-50% + ${pupilY}px))`;
+      });
+    });
+    
+    // Reset on mouse leave
+    document.addEventListener('mouseleave', () => {
+      robotHead.style.transform = 'perspective(600px) rotateY(0deg)';
+      pupils.forEach(pupil => {
+        pupil.style.transform = 'translate(-50%, -50%)';
+      });
+    });
   })();
 </script>
 @endpush
