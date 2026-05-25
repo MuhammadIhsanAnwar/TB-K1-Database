@@ -19,6 +19,7 @@ class DatabaseSeeder extends Seeder {
             BuyerSeeder::class,
             ProfilesTableSeeder::class,
             ProductSeederFromExcel::class,
+            AdminUserSeeder::class,
         ]);
 
         if (app()->environment(['local', 'testing'])) {
@@ -26,24 +27,6 @@ class DatabaseSeeder extends Seeder {
                 ProductViewsAndReviewsSeeder::class,
                 ComprehensiveReviewsSeeder::class,
             ]);
-        }
-
-        // Admin (only create if not exists)
-        $admin = User::firstOrCreate(
-            ['email' => 'administrator@lapakgaming.neoverse.my.id'],
-            [
-                'name' => 'Admin Lapak Gaming',
-                'password' => Hash::make('password123'),
-                'role' => 'admin',
-                'status' => 'active',
-                'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode('Admin Lapak Gaming') . '&background=111827&color=ffffff&bold=true&rounded=true',
-            ]
-        );
-
-        if (! $admin->avatar) {
-            $admin->forceFill([
-                'avatar' => 'https://ui-avatars.com/api/?name=' . urlencode($admin->name) . '&background=111827&color=ffffff&bold=true&rounded=true',
-            ])->save();
         }
 
         // Demo Seller (only create if not exists)
