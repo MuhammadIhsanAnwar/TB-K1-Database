@@ -200,6 +200,8 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
         // Banners, Notifications, Orders, Terminal tetap sama seperti sebelumnya...
         Route::get('/banners', [AdminController::class, 'banners'])->name('banners.index');
         Route::post('/banners', [AdminController::class, 'storeBanner'])->name('banners.store');
+        Route::get('/banners/{banner}/edit', [AdminController::class, 'editBanner'])->name('banners.edit');
+        Route::put('/banners/{banner}', [AdminController::class, 'updateBanner'])->name('banners.update');
         Route::delete('/banners/{banner}', [AdminController::class, 'destroyBanner'])->name('banners.destroy');
         Route::get('/contact-messages', [ContactMessageController::class, 'index'])->name('contact-messages.index');
         Route::get('/contact-messages/{contactMessage}', [ContactMessageController::class, 'show'])->name('contact-messages.show');

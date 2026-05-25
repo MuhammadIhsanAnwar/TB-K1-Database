@@ -115,6 +115,14 @@
     animation: sparkle 3.6s ease-in-out infinite;
   }
   @keyframes sparkle { 0%{transform:translateY(0) scale(.8); opacity:.2}50%{transform:translateY(-10px) scale(1.1); opacity:1}100%{transform:translateY(0) scale(.9); opacity:.2} }
+  .intro-sparkle { filter: drop-shadow(0 6px 10px rgba(255,200,60,0.06)); }
+  .intro-sparkle.sm { width:6px; height:6px; }
+  .intro-sparkle.md { width:9px; height:9px; }
+  .intro-sparkle.lg { width:12px; height:12px; }
+  .intro-star-svg { position: absolute; right:6%; top:6%; width:120px; height:120px; opacity:0.98; pointer-events:none; transform-origin:center; animation: spinSlow 18s linear infinite; z-index:15; }
+  @keyframes spinSlow { from { transform: rotate(0deg) translateZ(0); } to { transform: rotate(360deg) translateZ(0); } }
+  .intro-shape-pulse { transform-origin:center; animation: pulse 3.2s ease-in-out infinite; }
+  @keyframes pulse { 0%{transform:scale(.96); opacity:.85}50%{transform:scale(1.06); opacity:1}100%{transform:scale(.96); opacity:.85} }
   /* Hero slider styles */
   #hero-slider { position: relative; }
   .hero-track { will-change: transform; }
@@ -188,9 +196,28 @@
           <a href="https://lapakgaming.neoverse.my.id/browse/search" class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white transition hover:opacity-95">Lihat Semua Produk</a>
         </div>
       </div>
-      <div class="intro-sparkle" style="left:8%; top:28%; animation-delay:0s"></div>
-      <div class="intro-sparkle" style="left:22%; top:64%; background:radial-gradient(circle at 30% 30%, #fff, #ffd4a3 60%); animation-delay:0.8s"></div>
-      <div class="intro-sparkle" style="left:76%; top:36%; background:radial-gradient(circle at 30% 30%, #fff, #c7f1ff 60%); animation-delay:1.4s"></div>
+      <div class="intro-sparkle sm" style="left:6%; top:20%; animation-delay:0s; background:radial-gradient(circle at 30% 30%, #fff, #ffea9a 60%);"></div>
+      <div class="intro-sparkle md" style="left:12%; top:62%; animation-delay:0.4s; background:radial-gradient(circle at 30% 30%, #fff, #ffd4a3 60%);"></div>
+      <div class="intro-sparkle lg" style="left:22%; top:42%; animation-delay:0.8s; background:radial-gradient(circle at 30% 30%, #fff, #ffd4a3 60%);"></div>
+      <div class="intro-sparkle md" style="left:36%; top:18%; animation-delay:1.2s; background:radial-gradient(circle at 30% 30%, #fff, #c7f1ff 60%);"></div>
+      <div class="intro-sparkle sm" style="left:48%; top:72%; animation-delay:1.6s; background:radial-gradient(circle at 30% 30%, #fff, #ffd4a3 60%);"></div>
+      <div class="intro-sparkle lg" style="left:62%; top:28%; animation-delay:2s; background:radial-gradient(circle at 30% 30%, #fff, #c7f1ff 60%);"></div>
+      <div class="intro-sparkle md" style="left:82%; top:68%; animation-delay:2.4s; background:radial-gradient(circle at 30% 30%, #fff, #ffd4a3 60%);"></div>
+      <svg class="intro-star-svg" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <g fill="none" stroke="rgba(255,255,255,0.06)" stroke-width="0">
+          <circle cx="60" cy="60" r="56" fill="url(#g1)" opacity="0.06"></circle>
+        </g>
+        <defs>
+          <radialGradient id="g1" cx="30%" cy="30%">
+            <stop offset="0%" stop-color="#fff" stop-opacity="0.14" />
+            <stop offset="100%" stop-color="#fff" stop-opacity="0" />
+          </radialGradient>
+        </defs>
+        <g class="intro-shape-pulse" fill="#fff" opacity="0.9">
+          <polygon points="60,14 66,44 98,44 71,60 80,90 60,72 40,90 49,60 22,44 54,44" fill="#fff" opacity="0.08" />
+          <polygon points="60,26 64,48 86,48 66,60 74,82 60,68 46,82 54,60 34,48 56,48" fill="#ffd580" opacity="0.12" />
+        </g>
+      </svg>
     </div>
   </section>
 
