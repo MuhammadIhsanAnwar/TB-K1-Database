@@ -48,6 +48,9 @@ return new class extends Migration
             $table->timestamp('two_factor_confirmed_at')->nullable();
             $table->string('remember_token')->nullable();
             $table->timestamp('last_login_at')->nullable();
+            $table->string('last_login_ip', 45)->nullable();
+            $table->text('last_login_user_agent')->nullable();
+            $table->string('last_login_device_hash', 128)->nullable();
             $table->timestamps();
         });
 
