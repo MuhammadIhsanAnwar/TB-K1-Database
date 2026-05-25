@@ -85,6 +85,7 @@ class CheckoutController extends Controller
             'product_id' => ['required', 'exists:products,id'],
             'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
             'payment_method' => ['required', 'in:balance'],
+            'buyer_note' => ['nullable', 'string', 'max:1000'],
         ], $messages);
 
         $quantity = (int) ($data['quantity'] ?? 1);
