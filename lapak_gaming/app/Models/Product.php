@@ -149,23 +149,32 @@ class Product extends Model {
             return asset($imagePath);
         }
 
-        if (Storage::disk('public_app_public')->exists($imagePath)) {
-            $base = rtrim((string) config('filesystems.disks.public_app_public.url', rtrim((string) config('app.url', ''), '/').'/storage/app/public'), '/');
-            return $base . '/' . ltrim($imagePath, '/');
-        }
+        $candidatePaths = array_values(array_unique([
+            $imagePath,
+            str_replace('foto_produk/', 'foto-produk/', $imagePath),
+            str_replace('foto-produk/', 'foto_produk/', $imagePath),
+        ]));
 
-        if (Storage::disk('public')->exists($imagePath)) {
-            $base = rtrim((string) config('filesystems.disks.public.url', rtrim((string) config('app.url', ''), '/').'/storage'), '/');
-            return $base . '/' . ltrim($imagePath, '/');
-        }
+        foreach ($candidatePaths as $candidatePath) {
+            if (Storage::disk('public_app_public')->exists($candidatePath)) {
+                $disk = config('filesystems.disks.public_app_public', []);
+                $base = rtrim((string) ($disk['url'] ?? rtrim((string) config('app.url', ''), '/').'/storage/app/public'), '/');
+                return $base . '/' . ltrim($candidatePath, '/');
+            }
 
-        // Some deployments may store files directly under public/storage/app/public
-        if (file_exists(public_path('storage/app/public/' . $imagePath))) {
-            return asset('storage/app/public/' . ltrim($imagePath, '/'));
-        }
+            if (Storage::disk('public')->exists($candidatePath)) {
+                $disk = config('filesystems.disks.public', []);
+                $base = rtrim((string) ($disk['url'] ?? rtrim((string) config('app.url', ''), '/').'/storage'), '/');
+                return $base . '/' . ltrim($candidatePath, '/');
+            }
 
-        if (file_exists(public_path($imagePath))) {
-            return asset($imagePath);
+            if (file_exists(public_path('storage/app/public/' . $candidatePath))) {
+                return asset('storage/app/public/' . ltrim($candidatePath, '/'));
+            }
+
+            if (file_exists(public_path($candidatePath))) {
+                return asset($candidatePath);
+            }
         }
 
         // Fallback to storage path (may still work if webserver is configured differently)

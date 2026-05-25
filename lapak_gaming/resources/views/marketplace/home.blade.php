@@ -173,8 +173,8 @@
 <section class="max-w-7xl mx-auto px-4 mb-10">
   <div class="surface-panel rounded-xl p-4 shadow-sm border border-white/10">
     <div class="flex flex-wrap justify-center gap-6 items-center category-list">
-      @php $catsToShow = $displayCategories->isNotEmpty() ? $displayCategories : $allCategories; @endphp
-      @foreach($catsToShow->take(8) as $cat)
+      @php $catsToShow = $allCategories->isNotEmpty() ? $allCategories : $displayCategories; @endphp
+      @foreach($catsToShow->take(13) as $cat)
         <a href="{{ route('categories.show', $cat->slug) }}" class="category-icon-wrapper block w-20 sm:w-24 text-center" aria-label="Kategori {{ $cat->name }}">
           <div class="w-16 h-16 sm:w-20 sm:h-20 mx-auto rounded-full bg-surface-weak border border-white/6 flex items-center justify-center mb-2 category-icon category-animate">
             @if(!empty($cat->image_url))

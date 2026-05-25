@@ -52,6 +52,14 @@ class MarketplaceController extends Controller
                 $bq = $bq->latest();
             }
             $heroBanners = $bq->take(4)->get();
+
+            if ($heroBanners->isEmpty()) {
+                $heroBanners = Banner::query()
+                    ->active()
+                    ->latest()
+                    ->take(4)
+                    ->get();
+            }
         }
 
         // 2. Featured Game Keys ("Unlock the Simulation")
