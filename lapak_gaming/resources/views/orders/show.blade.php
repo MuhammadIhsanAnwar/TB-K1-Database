@@ -184,6 +184,22 @@
 
                 </div>
 
+                @if($order->delivery_notes)
+
+                <div class="mt-8 rounded-[26px] border border-white/5 surface-weak p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
+
+                    <div class="text-sm text-slate-400">
+                        Catatan Pesanan
+                    </div>
+
+                    <div class="mt-3 text-base leading-relaxed text-white">
+                        {{ $order->delivery_notes }}
+                    </div>
+
+                </div>
+
+                @endif
+
                 {{-- PAYMENT INFO --}}
                 <div class="mt-8 grid gap-5 md:grid-cols-2">
 
