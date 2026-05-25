@@ -32,9 +32,9 @@
 <style>
   /* Use theme variables defined in layouts/app.blade.php for consistency */
   .navbar-container {
-    background: rgba(2, 6, 23, 0.96);
-    color: var(--text);
-    backdrop-filter: blur(18px);
+    background: rgba(2, 6, 23, 0.72);
+    backdrop-filter: blur(24px);
+    border-bottom: 1px solid rgba(255,255,255,.06);
   }
   .navbar-top {
     background: rgba(15, 23, 42, 0.98);

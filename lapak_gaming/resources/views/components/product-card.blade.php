@@ -8,7 +8,7 @@
     $rating = $product->rating_average ?? $product->rating ?? 0;
 @endphp
 
-<a href="{{ route('products.show', $product) }}" class="product-card group flex flex-col rounded-xl overflow-hidden transition-all duration-300 relative h-full">
+<a href="{{ route('products.show', $product) }}" class="product-card group flex flex-col rounded-[26px] overflow-hidden transition-all duration-300 relative h-full border border-white/5 bg-gradient-to-b from-[#0b1730] to-[#08101f] hover:border-cyan-400/40 hover:-translate-y-2 hover:shadow-[0_20px_60px_rgba(14,165,233,0.18)]">
 
   {{-- Top/Platform Ribbon --}}
   @if(($product->category?->slug ?? '') === 'top-up-game')
@@ -19,6 +19,7 @@
 
   {{-- Thumbnail --}}
   <div class="relative w-full aspect-[16/9] overflow-hidden surface-weak">
+    <div class="absolute inset-0 bg-gradient-to-t from-[#020617] via-transparent to-transparent z-[1]"></div>
     <img src="{{ $displayImage }}"
          alt="{{ $product->name }}"
          class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
@@ -36,7 +37,7 @@
   {{-- Product Info --}}
   <div class="flex flex-col flex-1 p-3">
     <div class="text-[10px] surface-muted font-semibold mb-1 truncate">
-      {{ $product->category->name ?? 'Produk' }} • {{ $product->seller->name ?? 'Toko' }}
+      {{ $product->category->name ?? 'Produk' }} • {{ $product->seller->store_name ?? $product->seller->name ?? 'Toko' }}
     </div>
     
     <h3 class="text-sm font-semibold surface-text line-clamp-2 leading-snug mb-2 flex-1 transition-colors" style="transition:color .2s">
@@ -44,7 +45,7 @@
     </h3>
     
     <div class="mt-auto">
-      <div class="font-bold text-base mb-1.5 price-text">
+      <div class="font-extrabold text-lg mb-2 text-cyan-300 tracking-tight">
         Rp {{ number_format((float) ($product->price ?? 0), 0, ',', '.') }}
       </div>
       
@@ -60,4 +61,13 @@
       </div>
     </div>
   </div>
+      <div class="mt-3 flex gap-2">
+        <button class="flex-1 rounded-xl bg-cyan-500/15 border border-cyan-400/20 py-2 text-xs font-bold text-cyan-200 transition hover:bg-cyan-500/25">
+            Beli Sekarang
+        </button>
+
+        <button class="rounded-xl border border-white/10 px-3 text-white/80 hover:bg-white/5">
+            +
+        </button>
+    </div>
 </a>
