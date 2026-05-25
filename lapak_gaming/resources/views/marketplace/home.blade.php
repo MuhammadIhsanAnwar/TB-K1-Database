@@ -151,6 +151,24 @@
   <div class="auth-particle w-1 h-1 bg-accent-500 absolute" style="left:28%; top:88%; --dur:6.5s; --delay:2.2s; --op:0.2;"></div>
 
   {{-- ═══════════════════════════════════════════════════════════ --}}
+  {{-- INTRODUCTION (Above Hero)                                   --}}
+  {{-- A short, engaging intro to welcome users and highlight value --}}
+  {{-- ═══════════════════════════════════════════════════════════ --}}
+  <section class="max-w-7xl mx-auto px-4 py-8">
+    <div class="rounded-2xl bg-gradient-to-r from-[#071028]/70 to-[#07102f]/60 border border-white/6 p-8 shadow-lg">
+      <div class="text-center">
+        <div class="section-kicker text-orange-300 mb-2">Selamat Datang di Lapak Gaming</div>
+        <h1 class="text-3xl md:text-4xl font-extrabold text-white leading-tight">Temukan Item, Akun, dan Top-up Game Favoritmu</h1>
+        <p class="mt-3 text-slate-300 max-w-2xl mx-auto">Marketplace terpercaya untuk pemain Indonesia — transaksi aman, pengiriman cepat, dan pilihan lengkap untuk semua platform. Mulai jelajahi sekarang dan dapatkan penawaran terbaik hari ini.</p>
+        <div class="mt-6 flex flex-wrap items-center justify-center gap-3">
+          <a href="{{ route('products.search', ['q' => 'top up game']) }}" class="inline-flex items-center justify-center rounded-2xl bg-blue-500 px-5 py-3 text-sm font-semibold text-white transition hover:bg-blue-400">Jelajahi Top Up</a>
+          <a href="{{ route('marketplace.trending') }}" class="inline-flex items-center justify-center rounded-2xl border border-white/10 bg-white/5 px-5 py-3 text-sm font-semibold text-slate-100 transition hover:bg-white/10">Lihat Trending</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  {{-- ═══════════════════════════════════════════════════════════ --}}
   {{-- HERO SECTION (BANNERS)                                     --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
   <section class="relative overflow-hidden pb-8">
