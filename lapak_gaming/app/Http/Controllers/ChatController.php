@@ -295,16 +295,25 @@ public function poll(Conversation $conversation)
      */
     public function editMessage(Request $request, Message $message)
     {
-        if ($message->sender_id !== Auth::id()) return response()->json(['error' => 'Forbidden'], 403);
+        if ((int) $message->sender_id !== (int) Auth::id()) {
+            return response()->json([
+                'error' => 'Forbidden'
+            ], 403);
+        }
 
-        $request->validate(['message' => 'required|string']);
+        $request->validate([
+            'message' => 'required|string'
+        ]);
 
         $message->update([
             'message' => $request->message,
             'edited_at' => now(),
         ]);
 
-        return response()->json(['success' => true, 'message' => $message->toChat(Auth::id())]);
+        return response()->json([
+            'success' => true,
+            'message' => $message->toChat(Auth::id())
+        ]);
     }
 
     /**
@@ -312,17 +321,18 @@ public function poll(Conversation $conversation)
      */
     public function deleteMessage(Request $request, Message $message)
     {
-        if (Auth::id() !== $message->sender_id && Auth::id() !== $message->receiver_id) {
+        if ((int) Auth::id() !== (int) $message->sender_id &&
+        (int) Auth::id() !== (int) $message->receiver_id) {
             return response()->json(['error' => 'Forbidden'], 403);
         }
 
         $type = $request->input('type'); // 'me' atau 'everyone'
 
         if ($type === 'everyone') {
-            if ($message->sender_id !== Auth::id()) return response()->json(['error' => 'Forbidden'], 403);
+            if ((int) $message->sender_id !== (int) Auth::id()) return response()->json(['error' => 'Forbidden'], 403);
             $message->update(['deleted_for_everyone_at' => now()]);
         } else {
-            if ($message->sender_id === Auth::id()) {
+            if ((int) $message->sender_id === (int) Auth::id()) {
                 $message->update(['deleted_for_sender_at' => now()]);
             } else {
                 $message->update(['deleted_for_receiver_at' => now()]);
