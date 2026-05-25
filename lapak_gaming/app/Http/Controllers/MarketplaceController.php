@@ -112,6 +112,12 @@ class MarketplaceController extends Controller
             $featuredBanners = $fq->take(6)->get();
         }
 
+        // Fallback homepage products (show when categorySections are empty)
+        $homepageProducts = collect();
+        if (Schema::hasTable('products')) {
+            $homepageProducts = Product::query()->active()->inStock()->with(['statistics', 'seller', 'category'])->inRandomOrder()->take(12)->get();
+        }
+
         return view('marketplace.home', [
             'allCategories' => $allCategories,
             'displayCategories' => $displayCategories,
@@ -120,6 +126,7 @@ class MarketplaceController extends Controller
             'featuredGameKeys' => $featuredGameKeys,
             'featuredRPGKeys' => $featuredRPGKeys,
             'categorySections' => $categorySections,
+            'homepageProducts' => $homepageProducts,
         ]);
     }
 

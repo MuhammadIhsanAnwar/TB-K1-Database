@@ -316,6 +316,19 @@
 </div>
 
 {{-- ================= FEATURED BANNERS (moved below products) ================ --}}
+@if((!isset($categorySections) || $categorySections->isEmpty()) && isset($homepageProducts) && $homepageProducts->count())
+  <section class="max-w-7xl mx-auto px-4 mb-10">
+    <div class="flex items-center justify-between mb-4">
+      <h2 class="section-title mb-0">Produk Terbaru & Rekomendasi</h2>
+      <a href="{{ route('products.search') }}" class="text-sm font-semibold text-itemku-blue hover:underline">Lihat Semua</a>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+      @foreach($homepageProducts as $p)
+        @include('components.product-card', ['product' => $p])
+      @endforeach
+    </div>
+  </section>
+@endif
 @if(isset($featuredBanners) && $featuredBanners->count())
   <section class="max-w-7xl mx-auto px-4 mb-10">
     <div class="featured-stage rounded-2xl overflow-hidden p-3 md:p-4">
