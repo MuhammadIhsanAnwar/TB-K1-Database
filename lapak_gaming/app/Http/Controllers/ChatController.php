@@ -84,6 +84,8 @@ public function show(Request $request, Conversation $conversation)
 
     $role = $request->get('role', 'buyer');
 
+    $conversation->markReadFor($user->id);
+
     if ($role === 'seller') {
 
         $sidebarConversations = Conversation::with([
@@ -106,14 +108,6 @@ public function show(Request $request, Conversation $conversation)
             ->latest('last_message_at')
             ->get();
     }
-    Message::where('conversation_id', $conversation->id)
-    ->where('receiver_id', auth()->id())
-    ->where('is_read', false)
-    ->update([
-        'is_read' => true,
-        'read_at' => now(),
-    ]);
-    
     $messages = $conversation->messages()
     ->with('sender')
     ->whereNull('deleted_for_everyone_at')
@@ -262,8 +256,8 @@ public function poll(Conversation $conversation)
             $file = $request->file('attachment');
 
             $attachmentPath = $file->store(
-                'chat_attachments',
-                'public'
+                'foto-chat',
+                'public_app_public'
             );
 
             $attachmentType = explode(

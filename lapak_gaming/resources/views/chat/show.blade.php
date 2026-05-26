@@ -601,8 +601,8 @@
             @php
                 // 🔥 PERBAIKAN 1: Paksa panggil nama lawan bicara berdasarkan Role (bukan ID) agar tidak muncul nama sendiri 2x
                 $p2     = $role === 'seller' ? $conv->buyer : $conv->seller;
-                $unread = $conv->unreadFor($user->id);
                 $active = $conv->id === $conversation->id;
+                $unread = $active ? 0 : $conv->unreadFor($user->id);
             @endphp
             <a href="{{ route('chat.show', [
                     'conversation' => $conv->id,

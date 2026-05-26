@@ -65,6 +65,18 @@
                     <div class="mt-2 text-xs text-slate-500">Saldo tersedia Rp {{ number_format($availableBalance, 0, ',', '.') }}</div>
                 </div>
             </div>
+
+            <div class="card p-5 sm:p-6">
+                <h2 class="font-display text-lg font-bold text-white">Catatan Pesanan</h2>
+                <p class="mt-2 text-sm text-slate-400">Opsional, gunakan untuk instruksi tambahan ke seller.</p>
+                <textarea
+                    name="buyer_note"
+                    rows="4"
+                    maxlength="1000"
+                    placeholder="Contoh: Kirim cepat, bantu panduan aktivasi, dsb."
+                    class="input mt-4 resize-none"
+                >{{ old('buyer_note') }}</textarea>
+            </div>
         </div>
 
         <aside class="card-glow-border h-fit p-6 lg:sticky lg:top-20">

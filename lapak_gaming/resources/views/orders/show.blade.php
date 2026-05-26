@@ -170,6 +170,12 @@
                                     <div class="mt-1 text-sm text-slate-400">
                                         Jumlah: {{ $item->quantity }}
                                     </div>
+
+                                    @if($order->delivery_notes)
+                                        <div class="mt-2 rounded-xl border border-blue-500/20 bg-blue-500/10 px-3 py-2 text-xs leading-relaxed text-blue-200">
+                                            Catatan: {{ $order->delivery_notes }}
+                                        </div>
+                                    @endif
                                 </div>
 
                                 <div class="text-lg font-black text-white">
@@ -261,7 +267,7 @@
                                     @csrf
                                     <button type="submit"
                                         class="w-full rounded-[26px] border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-base font-bold text-emerald-300 transition duration-300 hover:-translate-y-1 hover:bg-emerald-500/20 hover:shadow-[0_0_25px_rgba(16,185,129,0.15)]">
-                                        Tandai Sudah Dikirim
+                                        Tandai Selesai
                                     </button>
                                 </form>
                             @endif

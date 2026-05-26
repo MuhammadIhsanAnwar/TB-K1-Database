@@ -173,9 +173,14 @@ class OrderController extends Controller {
         $messages = [
             'payment_method.required' => 'Metode pembayaran wajib dipilih.',
             'payment_method.in' => 'Metode pembayaran tidak valid.',
+            'buyer_note.string' => 'Catatan pesanan harus berupa teks.',
+            'buyer_note.max' => 'Catatan pesanan maksimal 1000 karakter.',
         ];
 
-        $request->validate(['payment_method' => 'required|in:balance'], $messages);
+        $validated = $request->validate([
+            'payment_method' => 'required|in:balance',
+            'buyer_note' => 'nullable|string|max:1000',
+        ], $messages);
 
         $cartItems = Cart::where('user_id', Auth::id())->where('is_selected', true)->with('product')->get();
         if ($cartItems->isEmpty()) {
@@ -209,6 +214,7 @@ class OrderController extends Controller {
                 'invoice_number' => 'INV-' . strtoupper(Str::random(10)),
                 'status'         => Order::STATUS_PENDING_PAYMENT,
                 'payment_method' => $request->payment_method,
+                'delivery_notes' => $validated['buyer_note'] ?? null,
             ];
 
             if ($sellerIds->count() === 1) {

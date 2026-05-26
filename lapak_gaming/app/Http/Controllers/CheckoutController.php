@@ -246,12 +246,13 @@ class CheckoutController extends Controller
     public function deliver(Request $request, Order $order): RedirectResponse
     {
         abort_unless($order->seller_id === $request->user()->id, 403);
-        abort_unless($order->status === Order::STATUS_PROCESSING, 422, 'Order harus berstatus diproses sebelum ditandai sudah dikirim.');
+        abort_unless($order->status === Order::STATUS_PROCESSING, 422, 'Order harus berstatus diproses sebelum diselesaikan.');
 
         $order->forceFill([
-            'status' => 'delivered',
+            'status' => Order::STATUS_COMPLETED,
+            'completed_at' => now(),
         ])->save();
 
-        return back()->with('success', 'Pesanan berhasil ditandai sudah dikirim.');
+        return back()->with('success', 'Pesanan berhasil diselesaikan.');
     }
 }
