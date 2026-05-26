@@ -616,22 +616,26 @@
             Lihat Semua Produk
         </a>
       </div>
-      <div class="mt-10 flex flex-wrap justify-center gap-10">
-          <div class="text-center">
-              <div class="text-3xl font-black text-cyan-300">10K+</div>
-              <p class="text-slate-400 text-sm">Produk Digital</p>
+      <div class="mt-10 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+          <div class="text-center rounded-3xl border border-white/10 bg-slate-950/70 px-6 py-5 shadow-[0_12px_32px_rgba(0,0,0,0.22)]">
+              <div class="text-3xl font-black text-cyan-300 counter" data-target="{{ $activeAccountCount }}">0</div>
+              <p class="text-slate-400 text-sm mt-2">Akun Aktif</p>
           </div>
 
-          <div class="text-center">
-              <div class="text-3xl font-black text-emerald-300">99.9%</div>
-              <p class="text-slate-400 text-sm">Transaksi Aman</p>
+          <div class="text-center rounded-3xl border border-white/10 bg-slate-950/70 px-6 py-5 shadow-[0_12px_32px_rgba(0,0,0,0.22)]">
+              <div class="text-3xl font-black text-emerald-300 counter" data-target="{{ $activeProductCount }}">0</div>
+              <p class="text-slate-400 text-sm mt-2">Produk Aktif</p>
           </div>
 
-          <div class="text-center">
-              <div class="text-3xl font-black text-orange-300">24/7</div>
-              <p class="text-slate-400 text-sm">Fast Support</p>
+          <div class="text-center rounded-3xl border border-white/10 bg-slate-950/70 px-6 py-5 shadow-[0_12px_32px_rgba(0,0,0,0.22)]">
+              <div class="text-3xl font-black text-amber-300 counter" data-target="{{ $verifiedSellerCount }}">0</div>
+              <p class="text-slate-400 text-sm mt-2">Seller Terverifikasi</p>
           </div>
 
+          <div class="text-center rounded-3xl border border-white/10 bg-slate-950/70 px-6 py-5 shadow-[0_12px_32px_rgba(0,0,0,0.22)]">
+              <div class="text-3xl font-black text-indigo-300 counter" data-target="{{ $transactionCount }}">0</div>
+              <p class="text-slate-400 text-sm mt-2">Data Transaksi</p>
+          </div>
       </div>
         </div>
       </div>
@@ -973,6 +977,29 @@
     const y = (event.clientY / window.innerHeight - 0.5) * 12;
     homeBg.style.transform = `translate(${x}px, ${y}px)`;
   });
+
+  function animateCounters() {
+    document.querySelectorAll('.counter').forEach((counter) => {
+      const target = Number(counter.dataset.target) || 0;
+      const duration = 1400;
+      const step = Math.max(1, Math.round(target / (duration / 16)));
+      let value = 0;
+
+      const update = () => {
+        value += step;
+        if (value >= target) {
+          counter.textContent = target.toLocaleString('id-ID');
+        } else {
+          counter.textContent = value.toLocaleString('id-ID');
+          requestAnimationFrame(update);
+        }
+      };
+
+      requestAnimationFrame(update);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', animateCounters);
 
   // Featured banners: auto-scroll animation retained (single-row, no duplication)
 

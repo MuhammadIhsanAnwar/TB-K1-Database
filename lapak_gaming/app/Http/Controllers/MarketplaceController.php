@@ -117,9 +117,18 @@ class MarketplaceController extends Controller
             $homepageProducts = Product::query()->active()->inStock()->with(['statistics', 'seller', 'category'])->inRandomOrder()->take(12)->get();
         }
 
+        $activeAccountCount = Schema::hasTable('users') ? User::active()->count() : 0;
+        $activeProductCount = Schema::hasTable('products') ? Product::query()->active()->inStock()->count() : 0;
+        $verifiedSellerCount = Schema::hasTable('sellers') ? Seller::verified()->count() : (Schema::hasTable('users') ? User::approvedSellers()->count() : 0);
+        $transactionCount = Schema::hasTable('orders') ? Order::query()->count() : 0;
+
         return view('marketplace.home', [
             'allCategories' => $allCategories,
             'displayCategories' => $displayCategories,
+            'activeAccountCount' => $activeAccountCount,
+            'activeProductCount' => $activeProductCount,
+            'verifiedSellerCount' => $verifiedSellerCount,
+            'transactionCount' => $transactionCount,
             'heroBanners' => $heroBanners,
             'featuredBanners' => $featuredBanners,
             'featuredGameKeys' => $featuredGameKeys,

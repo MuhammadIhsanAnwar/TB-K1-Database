@@ -182,6 +182,7 @@
         </tr>
       </thead>
       <tbody>
+        @forelse($messages as $msg)
           <tr class="border-t border-white/6 hover:bg-white/2">
             <td class="px-4 py-3 font-medium text-white">{{ $msg->name }}</td>
             <td class="px-4 py-3 text-slate-300">{{ $msg->email }}</td>
@@ -201,14 +202,14 @@
               <span class="contact-pill {{ $statusClass }}">{{ ucfirst($msg->status) }}</span>
             </td>
             <td class="px-4 py-3 text-slate-400">{{ $msg->created_at->diffForHumans() }}</td>
-            <td class="px-4 py-3">
+            <td class="px-4 py-3 flex flex-wrap gap-2">
               <a href="{{ route('admin.contact-messages.show', $msg->id) }}" class="contact-action px-3 py-2 text-xs font-bold text-white">
                 Lihat
               </a>
-            <a href="{{ route('admin.contact-messages.show', $msg->id) }}" class="text-itemku-blue">Lihat</a>
-          </td>
-        </tr>
+            </td>
+          </tr>
         @empty
+          <tr>
             <td colspan="7" class="px-4 py-6">
               <div class="contact-empty rounded-2xl py-14 text-center text-slate-500">
                 <div class="text-4xl mb-3">📭</div>
@@ -216,16 +217,14 @@
                 <p class="text-xs text-slate-600 mt-1">Pesan dari pengguna akan muncul di sini setelah mereka menghubungi tim admin.</p>
               </div>
             </td>
-          <td colspan="7" class="px-4 py-6 text-center text-slate-400">Belum ada pesan masuk.</td>
-        </tr>
+          </tr>
         @endforelse
       </tbody>
-        </div>
-      </div>
     </table>
-      <div class="pt-2">
-        {{ $messages->links() }}
-      </div>
+  </div>
+  <div class="pt-2">
+    {{ $messages->links() }}
+  </div>
   </div>
 </div>
 @endsection
