@@ -3,6 +3,160 @@
 
 @push('styles')
 <style>
+  .home-page {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .home-stage {
+    position: relative;
+    z-index: 1;
+  }
+
+  .home-bg {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+    z-index: 0;
+  }
+
+  .home-bg::before,
+  .home-bg::after {
+    content: '';
+    position: absolute;
+    inset: -10%;
+    pointer-events: none;
+  }
+
+  .home-bg::before {
+    background:
+      radial-gradient(circle at 20% 18%, rgba(59,130,246,0.20), transparent 28%),
+      radial-gradient(circle at 80% 10%, rgba(249,115,22,0.14), transparent 22%),
+      radial-gradient(circle at 55% 82%, rgba(16,185,129,0.10), transparent 24%);
+    animation: ambientDrift 26s ease-in-out infinite alternate;
+  }
+
+  .home-bg::after {
+    background-image:
+      linear-gradient(rgba(96,165,250,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(96,165,250,0.06) 1px, transparent 1px);
+    background-size: 56px 56px;
+    mask-image: linear-gradient(180deg, rgba(0,0,0,0.9), transparent 96%);
+    animation: gridDrift 24s linear infinite;
+    opacity: 0.45;
+  }
+
+  .home-vignette {
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(circle at center, transparent 50%, rgba(2,6,23,0.28) 100%);
+  }
+
+  .home-orb {
+    position: absolute;
+    border-radius: 999px;
+    filter: blur(90px);
+    opacity: 0.55;
+    transform: translate3d(0, 0, 0);
+  }
+
+  .home-orb-blue {
+    width: 34rem;
+    height: 34rem;
+    left: -10rem;
+    top: 2rem;
+    background: rgba(37,99,235,0.18);
+    animation: orbFloat 18s ease-in-out infinite alternate;
+  }
+
+  .home-orb-orange {
+    width: 28rem;
+    height: 28rem;
+    right: -8rem;
+    top: 16rem;
+    background: rgba(249,115,22,0.14);
+    animation: orbFloat 22s ease-in-out infinite alternate-reverse;
+  }
+
+  .home-particles {
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+  }
+
+  .home-particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 999px;
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(96,165,250,0.35) 60%, transparent 72%);
+    box-shadow: 0 0 18px rgba(96,165,250,0.25);
+    opacity: 0.45;
+    animation: particleRise var(--dur, 14s) linear infinite;
+  }
+
+  .home-particle.is-accent {
+    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,0.95), rgba(249,115,22,0.35) 60%, transparent 72%);
+    box-shadow: 0 0 18px rgba(249,115,22,0.25);
+  }
+
+  @keyframes particleRise {
+    0% { transform: translate3d(0, 12vh, 0) scale(0.85); opacity: 0; }
+    10% { opacity: var(--opacity, 0.45); }
+    90% { opacity: var(--opacity, 0.45); }
+    100% { transform: translate3d(calc(var(--drift, 1) * 18px), -120vh, 0) scale(1.05); opacity: 0; }
+  }
+
+  @keyframes ambientDrift {
+    from { transform: translate3d(-1%, -1%, 0) scale(1); }
+    to { transform: translate3d(1.5%, 1%, 0) scale(1.04); }
+  }
+
+  @keyframes gridDrift {
+    from { transform: translate3d(0, 0, 0); }
+    to { transform: translate3d(48px, 48px, 0); }
+  }
+
+  @keyframes orbFloat {
+    0% { transform: translate3d(0, 0, 0) scale(1); }
+    50% { transform: translate3d(18px, -20px, 0) scale(1.06); }
+    100% { transform: translate3d(-8px, 14px, 0) scale(0.98); }
+  }
+
+  .home-surface {
+    background: linear-gradient(145deg, rgba(8,17,37,0.92), rgba(8,17,37,0.70));
+    border: 1px solid rgba(255,255,255,0.05);
+    box-shadow: 0 24px 65px rgba(2,6,23,0.28);
+    backdrop-filter: blur(18px);
+  }
+
+  .home-card {
+    transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+  }
+
+  .home-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(96,165,250,0.2);
+    box-shadow: 0 26px 65px rgba(2,6,23,0.35);
+  }
+
+  .home-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    border-radius: 999px;
+    padding: 0.45rem 0.8rem;
+    border: 1px solid rgba(255,255,255,0.08);
+    background: rgba(255,255,255,0.04);
+    color: #dbeafe;
+    backdrop-filter: blur(10px);
+  }
+
+  .home-hero-title {
+    text-wrap: balance;
+  }
+
   /* Keep page background controlled by layout theme variables for consistency */
   /* Remove hard-coded body background to match other pages' theme */
   .banner-track {
@@ -300,6 +454,14 @@
     filter: brightness(1.08);
   }
 
+  .product-card .product-card-overlay {
+    transition: opacity 0.25s ease, background 0.25s ease;
+  }
+
+  .product-card:hover .product-card-overlay {
+    background: linear-gradient(180deg, rgba(2,6,23,0.18), rgba(2,6,23,0.72));
+  }
+
   /* HERO LIGHT */
   .hero-light {
     position: absolute;
@@ -408,32 +570,49 @@
     opacity: 1;
     transform: translateY(0);
   }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-bg::before,
+    .home-bg::after,
+    .home-orb,
+    .home-particle,
+    .intro-shimmer,
+    .intro-sparkle,
+    .intro-star-svg,
+    .category-animate,
+    .hero-banner-marquee,
+    .animate-featured-scroll,
+    .product-card img {
+      animation: none !important;
+      transition: none !important;
+    }
+  }
 </style>
 @endpush
 
 @section('content')
-<div class="relative overflow-visible">
-  <div class="auth-radial absolute inset-0 pointer-events-none"></div>
-  <div class="auth-particle w-1.5 h-1.5 bg-brand-500 absolute" style="left:12%; top:82%; --dur:7s; --delay:0s; --op:0.25;"></div>
-  <div class="auth-particle w-2 h-2 bg-accent-400 absolute" style="left:78%; top:86%; --dur:9s; --delay:1.5s; --op:0.2;"></div>
-  <div class="auth-particle w-1 h-1 bg-brand-400 absolute" style="left:45%; top:90%; --dur:8s; --delay:3s; --op:0.22;"></div>
-  <div class="auth-particle w-2 h-2 bg-brand-600 absolute" style="left:63%; top:74%; --dur:11s; --delay:0.8s; --op:0.15;"></div>
-  <div class="auth-particle w-1 h-1 bg-accent-500 absolute" style="left:28%; top:88%; --dur:6.5s; --delay:2.2s; --op:0.2;"></div>
+<div class="home-page relative overflow-visible">
+  <div class="home-bg" aria-hidden="true">
+    <div class="home-orb home-orb-blue"></div>
+    <div class="home-orb home-orb-orange"></div>
+    <div class="home-particles" data-home-particles></div>
+    <div class="home-vignette"></div>
+  </div>
 
   {{-- ═══════════════════════════════════════════════════════════ --}}
   {{-- INTRODUCTION (Above Hero)                                   --}}
   {{-- A short, engaging intro to welcome users and highlight value --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
-  <section class="reveal-item max-w-7xl mx-auto px-4 py-6">
-    <div class="intro-card rounded-2xl border border-white/6 p-6 shadow-lg">
+  <section class="home-section reveal-item home-stage max-w-7xl mx-auto px-4 py-6">
+    <div class="intro-card home-surface rounded-2xl p-6 shadow-lg home-card">
       <div class="intro-shimmer" aria-hidden="true"></div>
       <div class="text-center relative z-10">
-        <div class="section-kicker text-amber-300 mb-2">Selamat Datang di Lapak Gaming</div>
-        <h1 class="text-5xl md:text-6xl font-black tracking-tight leading-[1.05]">Temukan Item, Akun, dan Top-up Game Favoritmu</h1>
+        <div class="section-kicker text-amber-300 mb-2 home-chip">Selamat Datang di Lapak Gaming</div>
+        <h1 class="home-hero-title text-5xl md:text-6xl font-black tracking-tight leading-[1.05]">Temukan Item, Akun, dan Top-up Game Favoritmu</h1>
         <p class="text-slate-300 text-lg md:text-xl leading-relaxed max-w-3xl mx-auto">Marketplace terpercaya untuk pemain Indonesia — transaksi aman, pengiriman cepat, dan pilihan lengkap untuk semua platform. Temukan penawaran harian, game terbaru, dan seller terpercaya.</p>
         <div class="mt-6 flex justify-center">
         <a href="https://lapakgaming.neoverse.my.id/browse/search"
-          class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white transition hover:opacity-95">
+          class="inline-flex items-center justify-center rounded-2xl bg-gradient-to-r from-blue-500 to-indigo-500 px-6 py-3 text-sm font-semibold text-white transition hover:opacity-95 shadow-[0_14px_28px_rgba(37,99,235,0.22)]">
             Lihat Semua Produk
         </a>
       </div>
@@ -484,7 +663,7 @@
   {{-- ═══════════════════════════════════════════════════════════ --}}
   {{-- HERO SECTION (BANNERS)                                     --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
-  <section class="reveal-item relative overflow-visible pb-6">
+  <section class="home-section reveal-item home-stage relative overflow-visible pb-6">
     <div class="max-w-7xl mx-auto px-4 pt-3">
       <div class="absolute -top-24 -left-20 w-[420px] h-[420px] rounded-full bg-cyan-500/20 blur-[120px] pointer-events-none"></div>
 <div class="absolute -bottom-32 -right-20 w-[420px] h-[420px] rounded-full bg-orange-500/10 blur-[120px] pointer-events-none"></div>
@@ -524,7 +703,7 @@
               <div class="hero-banner-scroll rounded-[28px]">
                 <div class="hero-banner-track hero-banner-marquee py-1">
                   @foreach($heroLoopBanners as $banner)
-                    <a href="{{ $banner->link_url ?: '#' }}" class="group relative flex-none w-[280px] sm:w-[310px] md:w-[340px] lg:w-[360px] overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/80 shadow-[0_25px_60px_rgba(3,8,32,0.35)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_32px_90px_rgba(3,8,32,0.45)] aspect-[4/5]">
+                    <a href="{{ $banner->link_url ?: '#' }}" class="group home-card relative flex-none w-[280px] sm:w-[310px] md:w-[340px] lg:w-[360px] overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/80 shadow-[0_25px_60px_rgba(3,8,32,0.35)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_32px_90px_rgba(3,8,32,0.45)] aspect-[4/5]">
                       <img src="{{ $banner->image_url }}" alt="{{ $banner->title ?? 'Banner Promo' }}" class="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-105" />
                       <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent"></div>
                       <div class="absolute inset-x-0 bottom-0 p-5">
@@ -545,7 +724,7 @@
             @else
               <div class="grid gap-4 lg:grid-cols-4">
                 @foreach($heroBanners as $banner)
-                  <a href="{{ $banner->link_url ?: '#' }}" class="group relative overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/80 shadow-[0_25px_60px_rgba(3,8,32,0.35)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_32px_90px_rgba(3,8,32,0.45)] aspect-[4/5]">
+                  <a href="{{ $banner->link_url ?: '#' }}" class="group home-card relative overflow-hidden rounded-[28px] border border-white/10 bg-slate-950/80 shadow-[0_25px_60px_rgba(3,8,32,0.35)] transition-transform duration-300 hover:-translate-y-1 hover:shadow-[0_32px_90px_rgba(3,8,32,0.45)] aspect-[4/5]">
                     <img src="{{ $banner->image_url }}" alt="{{ $banner->title ?? 'Banner Promo' }}" class="absolute inset-0 w-full h-full object-cover transition duration-500 group-hover:scale-105" />
                     <div class="absolute inset-0 bg-gradient-to-t from-slate-950/90 via-slate-950/40 to-transparent"></div>
                     <div class="absolute inset-x-0 bottom-0 p-5">
@@ -576,7 +755,7 @@
   {{-- ═══════════════════════════════════════════════════════════ --}}
   {{-- TRUST BADGES                                               --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="reveal-item trust-badge-container py-3 shadow-md mb-8">
+<section class="home-section reveal-item trust-badge-container py-3 shadow-md mb-8">
   <div class="max-w-7xl mx-auto px-4 flex justify-between items-center overflow-x-auto no-scrollbar gap-6">
     <div class="flex items-center gap-2 text-white whitespace-nowrap">
       <svg class="w-5 h-5 text-green-400" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
@@ -596,7 +775,7 @@
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- CATEGORY NAVIGATION                                        --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="reveal-item max-w-7xl mx-auto px-4 mb-10">
+<section class="home-section reveal-item home-stage max-w-7xl mx-auto px-4 mb-10">
   <div class="category-panel rounded-2xl p-5 sm:p-6 shadow-sm">
     <div class="category-heading">
       <div class="category-heading-title">
@@ -628,7 +807,7 @@
 {{-- FEATURED SECTION: UNLOCK THE SIMULATION (GAME KEYS)        --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 @if(isset($featuredGameKeys) && $featuredGameKeys->count() > 0)
-<section class="reveal-item max-w-7xl mx-auto px-4 mb-10">
+<section class="home-section reveal-item home-stage max-w-7xl mx-auto px-4 mb-10">
   <div class="flex items-center justify-between mb-4">
     <h2 class="section-title mb-0">🔑 Unlock the Simulation (Game Keys)</h2>
     <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="text-sm font-semibold text-itemku-blue hover:underline">Lihat Semua</a>
@@ -645,7 +824,7 @@
 {{-- FEATURED SECTION: UNLOCK EPIC RPG WORLDS                   --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
 @if(isset($featuredRPGKeys) && $featuredRPGKeys->count() > 0)
-<section class="reveal-item max-w-7xl mx-auto px-4 mb-10">
+<section class="home-section reveal-item home-stage max-w-7xl mx-auto px-4 mb-10">
   <div class="flex items-center justify-between mb-4">
     <h2 class="section-title mb-0">⚔️ Unlock Epic RPG Worlds</h2>
     <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="text-sm font-semibold text-itemku-blue hover:underline">Lihat Semua</a>
@@ -663,7 +842,7 @@
 {{-- ═══════════════════════════════════════════════════════════ --}}
 @if(isset($categorySections) && $categorySections->count() > 0)
   @foreach($categorySections as $section)
-  <section class="reveal-item max-w-7xl mx-auto px-4 mb-10">
+  <section class="home-section reveal-item home-stage max-w-7xl mx-auto px-4 mb-10">
     <div class="flex items-center justify-between mb-4">
       <h2 class="section-title mb-0">{{ $section['category']->name }} Pilihan</h2>
       <a href="{{ route('categories.show', $section['category']->slug) }}" class="text-sm font-semibold text-itemku-blue hover:underline">Lihat Semua</a>
@@ -765,6 +944,35 @@
 
     function resetTimer() { clearInterval(timer); timer = setInterval(() => { goTo(index + 1); }, 4000); }
   })();
+
+  const homeBg = document.querySelector('.home-bg');
+  const particleRoot = document.querySelector('[data-home-particles]');
+
+  if (particleRoot) {
+    const totalParticles = 26;
+    for (let i = 0; i < totalParticles; i += 1) {
+      const dot = document.createElement('span');
+      dot.className = 'home-particle';
+      const left = Math.random() * 100;
+      const top = Math.random() * 100;
+      const duration = 12 + Math.random() * 10;
+      const drift = (Math.random() * 2 - 1) * 1.1;
+      const opacity = 0.18 + Math.random() * 0.32;
+      dot.style.left = `${left}%`;
+      dot.style.top = `${top}%`;
+      dot.style.setProperty('--dur', `${duration}s`);
+      dot.style.setProperty('--drift', drift.toFixed(2));
+      dot.style.setProperty('--opacity', opacity.toFixed(2));
+      particleRoot.appendChild(dot);
+    }
+  }
+
+  window.addEventListener('mousemove', (event) => {
+    if (!homeBg) return;
+    const x = (event.clientX / window.innerWidth - 0.5) * 18;
+    const y = (event.clientY / window.innerHeight - 0.5) * 12;
+    homeBg.style.transform = `translate(${x}px, ${y}px)`;
+  });
 
   // Featured banners: auto-scroll animation retained (single-row, no duplication)
 

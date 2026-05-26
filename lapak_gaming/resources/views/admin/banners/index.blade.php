@@ -29,6 +29,35 @@
         pointer-events: none;
     }
 
+    .panel-card-glass::after {
+        content: '';
+        position: absolute;
+        inset: 1px;
+        border-radius: inherit;
+        border: 1px solid rgba(255, 255, 255, 0.04);
+        pointer-events: none;
+    }
+
+    .banner-form-shell {
+        box-shadow: 0 24px 70px rgba(0, 0, 0, 0.45);
+    }
+
+    .banner-form-shell:hover {
+        transform: translateY(-1px);
+    }
+
+    .banner-header-chip {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.5rem;
+        border-radius: 999px;
+        padding: 0.45rem 0.85rem;
+        border: 1px solid rgba(245, 158, 11, 0.18);
+        background: rgba(245, 158, 11, 0.08);
+        color: #fcd34d;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.05);
+    }
+
     .input-glass {
         background: rgba(5, 9, 16, 0.62) !important;
         border: 1px solid rgba(255, 255, 255, 0.08);
@@ -41,6 +70,12 @@
         border-color: rgba(245, 158, 11, 0.55) !important;
         box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12), 0 0 14px rgba(245, 158, 11, 0.18);
         transform: translateY(-1px);
+    }
+    .input-glass:hover {
+        border-color: rgba(96, 165, 250, 0.22);
+    }
+    .input-glass::placeholder {
+        color: #64748b;
     }
     .input-glass option {
         background: #0d1421;
@@ -63,6 +98,84 @@
         background-size: 5px 5px, 5px 5px, 100% 100%;
         background-repeat: no-repeat;
         cursor: pointer;
+    }
+
+    .form-help-text {
+        color: #94a3b8;
+        line-height: 1.65;
+    }
+
+    .banner-submit-btn,
+    .banner-secondary-btn,
+    .banner-danger-btn {
+        position: relative;
+        overflow: hidden;
+        transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease, background-color 0.2s ease;
+    }
+
+    .banner-submit-btn:hover,
+    .banner-secondary-btn:hover,
+    .banner-danger-btn:hover {
+        transform: translateY(-1px);
+    }
+
+    .banner-submit-btn {
+        box-shadow: 0 14px 26px rgba(245, 158, 11, 0.18);
+    }
+
+    .banner-secondary-btn {
+        background: rgba(255, 255, 255, 0.04);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .banner-danger-btn {
+        box-shadow: 0 12px 24px rgba(248, 113, 113, 0.16);
+    }
+
+    .banner-card {
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        background: linear-gradient(180deg, rgba(13, 20, 33, 0.96), rgba(8, 13, 24, 0.98));
+        box-shadow: 0 18px 42px rgba(0, 0, 0, 0.28);
+    }
+
+    .banner-card:hover {
+        border-color: rgba(255, 255, 255, 0.14);
+        box-shadow: 0 22px 48px rgba(0, 0, 0, 0.34);
+    }
+
+    .banner-card .banner-media {
+        background: radial-gradient(circle at top, rgba(96, 165, 250, 0.18), transparent 55%), #0b1320;
+    }
+
+    .banner-card .banner-meta {
+        border-top: 1px solid rgba(255, 255, 255, 0.06);
+        background: linear-gradient(180deg, transparent, rgba(255, 255, 255, 0.02));
+    }
+
+    .banner-empty-state {
+        position: relative;
+        overflow: hidden;
+    }
+
+    .banner-empty-state::before {
+        content: '';
+        position: absolute;
+        inset: auto 0 0 0;
+        height: 5px;
+        background: linear-gradient(90deg, transparent, rgba(245, 158, 11, 0.55), transparent);
+    }
+
+    .banner-empty-state .empty-badge {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 3.5rem;
+        height: 3.5rem;
+        margin: 0 auto;
+        border-radius: 999px;
+        background: rgba(245, 158, 11, 0.08);
+        border: 1px solid rgba(245, 158, 11, 0.16);
+        box-shadow: 0 0 0 6px rgba(245, 158, 11, 0.04);
     }
 
     /* ── Cyber Badge Overlays ────────────────────────────────── */
@@ -120,7 +233,7 @@
                 <p class="text-slate-400 text-sm mt-0.5">Atur baliho promo, event top-up, dan spanduk penawaran utama di halaman depan web.</p>
             </div>
             <a href="{{ route('admin.dashboard') }}"
-               class="inline-flex items-center gap-2 rounded-xl surface-weak hover:surface-weak border border-white/5 px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide self-start sm:self-auto">
+                    class="banner-secondary-btn inline-flex items-center gap-2 rounded-xl surface-weak hover:surface-weak px-4 py-2.5 text-xs font-bold text-slate-300 transition-all tracking-wide self-start sm:self-auto">
                 Dashboard
             </a>
         </div>
@@ -155,12 +268,13 @@
 
         {{-- ── FORM CONTROL: GENERATE NEW BANNER ─────────────────── --}}
           <form action="{{ route('admin.banners.store') }}" method="POST" enctype="multipart/form-data" 
-              class="panel-card-glass rounded-3xl p-6 grid gap-5 lg:grid-cols-2">
+              class="panel-card-glass banner-form-shell rounded-3xl p-6 grid gap-5 lg:grid-cols-2">
             @csrf
             
             <div class="lg:col-span-2 border-b border-white/5 pb-2">
                 <h2 class="text-sm font-bold text-white uppercase tracking-wider flex items-center gap-2">
-                    <span>➕</span> Daftarkan Material Promosi Baru
+                    <span class="banner-header-chip"><span>➕</span><span>Banner Baru</span></span>
+                    <span class="text-slate-500 font-medium normal-case tracking-normal">Daftarkan material promosi untuk halaman depan</span>
                 </h2>
             </div>
 
@@ -262,7 +376,7 @@
                     </div>
 
                     {{-- Campaign Meta Content --}}
-                    <div class="p-5 flex-1 flex flex-col justify-between space-y-4">
+                    <div class="banner-meta p-5 flex-1 flex flex-col justify-between space-y-4">
                         <div class="space-y-1 min-w-0">
                             <h2 class="text-base font-extrabold text-white tracking-tight truncate" title="{{ $banner->title }}">
                                 {{ $banner->title }}
@@ -274,7 +388,7 @@
 
                         {{-- Action Removal Block --}}
                                                                                 <div class="flex gap-2">
-                                                                                    <a href="{{ route('admin.banners.edit', $banner) }}" class="w-1/2 inline-flex items-center justify-center gap-1.5 rounded-xl border border-white/6 bg-white/5 px-3 py-2.5 text-xs font-bold text-white hover:bg-white/10 transition-all">
+                                                                                    <a href="{{ route('admin.banners.edit', $banner) }}" class="banner-secondary-btn w-1/2 inline-flex items-center justify-center gap-1.5 rounded-xl border border-white/6 bg-white/5 px-3 py-2.5 text-xs font-bold text-white hover:bg-white/10 transition-all">
                                                         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3z"/></svg>
                                                         Edit
                                                     </a>
@@ -283,7 +397,7 @@
                                                             @csrf
                                                             @method('DELETE')
                                                             <button type="submit" 
-                                                                            class="w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2.5 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
+                                                                            class="banner-danger-btn w-full inline-flex items-center justify-center gap-1.5 rounded-xl border border-rose-500/30 bg-rose-500/10 px-3 py-2.5 text-xs font-bold text-rose-400 hover:bg-rose-600 hover:text-white transition-all">
                                                                     <svg class="w-3.5 h-3.5 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                                             <path stroke-linecap="round" stroke-linejoin="round" d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
                                                                     </svg>
@@ -295,8 +409,8 @@
 
                 </article>
             @empty
-                <div class="md:col-span-2 lg:col-span-3 rounded-3xl panel-card-glass banner-empty py-16 text-center text-slate-500">
-                    <div class="text-4xl mb-3">🖼️</div>
+                <div class="md:col-span-2 lg:col-span-3 rounded-3xl panel-card-glass banner-empty banner-empty-state py-16 text-center text-slate-500">
+                    <div class="empty-badge text-2xl mb-3">🖼️</div>
                     <p class="font-bold text-slate-400">Belum ada material promosi aktif.</p>
                     <p class="text-xs text-slate-600 mt-1">Gunakan panel formulir di atas untuk mempublikasikan banner pertamamu lek.</p>
                 </div>

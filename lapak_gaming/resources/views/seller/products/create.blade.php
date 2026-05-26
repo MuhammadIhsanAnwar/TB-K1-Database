@@ -71,6 +71,23 @@
         background-size: 5px 5px, 5px 5px, 100% 100%;
         background-repeat: no-repeat;
         cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select.input-glass:hover {
+        border-color: rgba(96, 165, 250, 0.28);
+        transform: translateY(-1px);
+    }
+
+    select.input-glass:focus {
+        border-color: rgba(245, 158, 11, 0.55) !important;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12), 0 0 14px rgba(245, 158, 11, 0.18);
+        transform: translateY(-1px);
+    }
+
+    select.input-glass option:checked,
+    select.input-glass option:hover {
+        background: #132238;
     }
 
     /* Custom File Input Container */

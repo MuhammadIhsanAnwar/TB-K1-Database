@@ -13,10 +13,11 @@
 
   /* ── Info panel ── */
   .info-panel {
-    background: linear-gradient(145deg, #0D1421 0%, #0F1928 100%);
-    border: 1px solid rgba(37,99,235,0.2);
+    background: linear-gradient(145deg, rgba(13,20,33,0.96) 0%, rgba(15,25,40,0.96) 100%);
+    border: 1px solid rgba(37,99,235,0.22);
     border-radius: 20px;
     position: relative; overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.35);
   }
   .info-panel::before {
     content: '';
@@ -27,10 +28,11 @@
 
   /* ── Form panel ── */
   .form-panel {
-    background: linear-gradient(145deg, #0D1421 0%, #0A1120 100%);
+    background: linear-gradient(145deg, rgba(13,20,33,0.96) 0%, rgba(10,17,32,0.98) 100%);
     border: 1px solid rgba(37,99,235,0.18);
     border-radius: 20px;
     position: relative; overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.36);
   }
   .form-panel::before {
     content: '';
@@ -43,18 +45,21 @@
   .feature-item {
     display: flex; gap: 14px; align-items: flex-start;
     padding: 14px 16px; border-radius: 12px;
-    background: rgba(255,255,255,0.025);
-    border: 1px solid rgba(255,255,255,0.06);
-    transition: border-color 0.2s, background 0.2s;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.07);
+    backdrop-filter: blur(12px);
+    transition: transform 0.2s, border-color 0.2s, background 0.2s;
   }
   .feature-item:hover {
     background: rgba(37,99,235,0.05);
     border-color: rgba(37,99,235,0.2);
+    transform: translateY(-1px);
   }
   .feature-icon {
     width: 36px; height: 36px; border-radius: 10px;
     display: flex; align-items: center; justify-content: center;
     flex-shrink: 0;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.16);
   }
 
   /* ── Step badges ── */
@@ -98,26 +103,63 @@
 
   /* ── Photo preview ring ── */
   .photo-ring {
-    border: 2px solid #1E2D45;
+    border: 2px solid rgba(96,165,250,0.22);
     border-radius: 16px; overflow: hidden;
     width: 120px; height: 120px;
-    transition: border-color 0.3s;
-    background: #090E1A;
+    transition: border-color 0.3s, transform 0.2s, box-shadow 0.2s;
+    background: linear-gradient(145deg, #090E1A, #0D1421);
     position: relative;
   }
-  .photo-ring.has-photo { border-color: rgba(37,99,235,0.5); }
+  .photo-ring.has-photo { border-color: rgba(37,99,235,0.55); box-shadow: 0 0 0 3px rgba(37,99,235,0.08); }
+  .photo-ring:hover { transform: translateY(-1px); box-shadow: 0 16px 28px rgba(0,0,0,0.22); }
   .photo-ring img { width: 100%; height: 100%; object-fit: cover; }
 
   /* ── Upload zone ── */
   .upload-zone {
-    border: 1.5px dashed #1E2D45;
-    border-radius: 12px; padding: 14px;
+    border: 1.5px dashed rgba(96,165,250,0.18);
+    border-radius: 14px; padding: 14px;
     text-align: center; cursor: pointer;
-    transition: border-color 0.2s, background 0.2s;
+    background: rgba(9,14,26,0.65);
+    transition: border-color 0.2s, background 0.2s, transform 0.2s;
   }
   .upload-zone:hover, .upload-zone.drag-over {
     border-color: rgba(37,99,235,0.5);
-    background: rgba(37,99,235,0.04);
+    background: rgba(37,99,235,0.07);
+    transform: translateY(-1px);
+  }
+
+  .form-panel input[type="text"],
+  .form-panel input[type="email"],
+  .form-panel input[type="tel"],
+  .form-panel input[type="password"],
+  .form-panel input[type="date"],
+  .form-panel select {
+    background: rgba(9,14,26,0.88);
+    border: 1px solid rgba(96,165,250,0.14);
+    border-radius: 14px;
+    color: #f8fafc;
+    transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s;
+  }
+  .form-panel input[type="text"]:focus,
+  .form-panel input[type="email"]:focus,
+  .form-panel input[type="tel"]:focus,
+  .form-panel input[type="password"]:focus,
+  .form-panel input[type="date"]:focus,
+  .form-panel select:focus {
+    border-color: rgba(245,158,11,0.55);
+    box-shadow: 0 0 0 3px rgba(245,158,11,0.12), 0 0 14px rgba(245,158,11,0.12);
+    transform: translateY(-1px);
+  }
+
+  .form-panel input::placeholder {
+    color: #64748b;
+  }
+
+  .form-panel .input-icon-wrap .input-icon {
+    color: #64748b;
+  }
+  .form-panel .input-icon-wrap:focus-within .input-icon {
+    color: #60a5fa;
   }
 
   /* ── Input icon (shared with login) ── */
@@ -165,7 +207,7 @@
   }
   .btn-register:hover {
     background-position: 100% 0%;
-    box-shadow: 0 0 28px rgba(37,99,235,0.45), 0 4px 16px rgba(0,0,0,0.35);
+    box-shadow: 0 0 28px rgba(37,99,235,0.45), 0 8px 20px rgba(0,0,0,0.35);
     transform: translateY(-1px);
   }
   .btn-register:active { transform: scale(0.99); }
@@ -181,7 +223,7 @@
     transition: all 0.2s; cursor: pointer; text-decoration: none;
   }
   .btn-google-reg:hover {
-    border-color: rgba(37,99,235,0.45); background: #0D1421; color: white;
+    border-color: rgba(37,99,235,0.45); background: #0D1421; color: white; transform: translateY(-1px);
   }
 
   /* ── Auth divider ── */
@@ -345,21 +387,6 @@
           </div>
         </div>
 
-        {{-- Stats strip --}}
-        <div class="grid grid-cols-3 gap-3 mt-8 pt-6 border-t border-white/5">
-          <div class="text-center">
-            <p class="font-display text-xl font-bold text-white">50K+</p>
-            <p class="text-xs text-slate-500 mt-0.5">Member Aktif</p>
-          </div>
-          <div class="text-center border-x border-white/5">
-            <p class="font-display text-xl font-bold text-white">10K+</p>
-            <p class="text-xs text-slate-500 mt-0.5">Produk Game</p>
-          </div>
-          <div class="text-center">
-            <p class="font-display text-xl font-bold text-white">99%</p>
-            <p class="text-xs text-slate-500 mt-0.5">Transaksi Aman</p>
-          </div>
-        </div>
       </div>{{-- /info-panel --}}
 
       {{-- ── Right: Form Panel ── --}}
