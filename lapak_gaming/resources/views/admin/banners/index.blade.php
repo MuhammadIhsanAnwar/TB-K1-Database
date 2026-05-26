@@ -4,30 +4,65 @@
 
 @push('styles')
 <style>
-    /* ── True Glassmorphism Control Panel ─────────────────────── */
+    /* ── Ambient control panel ───────────────────────────────── */
     .dashboard-transparent {
-        background: transparent !important;
+        background:
+            radial-gradient(circle at top left, rgba(245, 158, 11, 0.10), transparent 26%),
+            radial-gradient(circle at bottom right, rgba(96, 165, 250, 0.08), transparent 24%),
+            linear-gradient(180deg, rgba(5, 9, 16, 0.82), rgba(5, 9, 16, 0.96));
     }
     
     .panel-card-glass {
-        background: rgba(10, 17, 30, 0.35) !important; /* Transparansi murni 35% */
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(145deg, rgba(13, 20, 33, 0.92), rgba(8, 13, 24, 0.92)) !important;
         backdrop-filter: blur(24px) saturate(160%);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 20px 55px rgba(0, 0, 0, 0.48);
+    }
+
+    .panel-card-glass::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(96, 165, 250, 0.08), transparent 45%, rgba(245, 158, 11, 0.06));
+        pointer-events: none;
     }
 
     .input-glass {
-        background: rgba(5, 9, 16, 0.45) !important;
+        background: rgba(5, 9, 16, 0.62) !important;
         border: 1px solid rgba(255, 255, 255, 0.08);
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 14px;
+        min-height: 48px;
+        color: #f8fafc;
+        transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s;
     }
     .input-glass:focus {
-        border-color: rgba(245, 158, 11, 0.5) !important;
-        box-shadow: 0 0 14px rgba(245, 158, 11, 0.15);
+        border-color: rgba(245, 158, 11, 0.55) !important;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12), 0 0 14px rgba(245, 158, 11, 0.18);
+        transform: translateY(-1px);
     }
     .input-glass option {
         background: #0d1421;
         color: #e2e8f0;
+    }
+
+    select.input-glass {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        padding-right: 2.75rem;
+        background-image:
+            linear-gradient(45deg, transparent 50%, #60a5fa 50%),
+            linear-gradient(135deg, #60a5fa 50%, transparent 50%),
+            linear-gradient(to right, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+        background-position:
+            calc(100% - 18px) calc(50% - 2px),
+            calc(100% - 13px) calc(50% - 2px),
+            0 0;
+        background-size: 5px 5px, 5px 5px, 100% 100%;
+        background-repeat: no-repeat;
+        cursor: pointer;
     }
 
     /* ── Cyber Badge Overlays ────────────────────────────────── */
@@ -36,11 +71,33 @@
         font-weight: 900 !important;
         letter-spacing: 0.05em;
         text-transform: uppercase;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.18);
     }
 
-    .pill-active { background: rgba(16, 185, 129, 0.2); border: 1px solid rgba(16, 185, 129, 0.4); color: #34d399; }
-    .pill-suspended { background: rgba(239, 68, 68, 0.2); border: 1px solid rgba(239, 68, 68, 0.4); color: #f87171; }
-    .pill-position { background: rgba(245, 158, 11, 0.2); border: 1px solid rgba(245, 158, 11, 0.4); color: #fbbf24; }
+    .pill-active { background: rgba(16, 185, 129, 0.18); border: 1px solid rgba(16, 185, 129, 0.35); color: #6ee7b7; }
+    .pill-suspended { background: rgba(239, 68, 68, 0.18); border: 1px solid rgba(239, 68, 68, 0.35); color: #fca5a5; }
+    .pill-position { background: rgba(245, 158, 11, 0.18); border: 1px solid rgba(245, 158, 11, 0.35); color: #fcd34d; }
+
+    .panel-card-glass:hover {
+        transform: translateY(-2px);
+        border-color: rgba(255, 255, 255, 0.12);
+    }
+
+    .panel-card-glass article,
+    .panel-card-glass > article {
+        transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .panel-card-glass article:hover,
+    .panel-card-glass > article:hover {
+        border-color: rgba(255, 255, 255, 0.12);
+        box-shadow: 0 18px 40px rgba(0, 0, 0, 0.25);
+    }
+
+    .banner-empty {
+        background: linear-gradient(145deg, rgba(13, 20, 33, 0.94), rgba(8, 13, 24, 0.94));
+        border: 1px dashed rgba(255, 255, 255, 0.10);
+    }
 </style>
 @endpush
 
@@ -97,7 +154,7 @@
         @endif
 
         {{-- ── FORM CONTROL: GENERATE NEW BANNER ─────────────────── --}}
-        <form action="{{ route('admin.banners.store') }}" method="POST" enctype="multipart/form-data" 
+          <form action="{{ route('admin.banners.store') }}" method="POST" enctype="multipart/form-data" 
               class="panel-card-glass rounded-3xl p-6 grid gap-5 lg:grid-cols-2">
             @csrf
             
@@ -110,8 +167,8 @@
             {{-- Title --}}
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Judul Banner <span class="text-amber-500">*</span></label>
-                <input name="title" type="text" 
-                       class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none @error('title') border-red-500/40 bg-red-500/5 @enderror" 
+                  <input name="title" type="text" 
+                      class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none @error('title') border-red-500/40 bg-red-500/5 @enderror" 
                        placeholder="Contoh: Mega Flash Sale Ramadhan" value="{{ old('title') }}" required>
                 @error('title')<p class="mt-1 text-[11px] text-red-400 font-medium">{{ $message }}</p>@enderror
             </div>
@@ -119,8 +176,8 @@
             {{-- Subtitle --}}
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Subjudul / Deskripsi Pendek</label>
-                <input name="subtitle" type="text" 
-                       class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none" 
+                  <input name="subtitle" type="text" 
+                      class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none" 
                        placeholder="Contoh: Diskon Top-up s.d 80% All Games" value="{{ old('subtitle') }}">
                 @error('subtitle')<p class="mt-1 text-[11px] text-red-400 font-medium">{{ $message }}</p>@enderror
             </div>
@@ -128,8 +185,8 @@
             {{-- File Image Upload --}}
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Unggah File Gambar</label>
-                <input name="image" type="file" accept="image/*" 
-                       class="w-full rounded-xl input-glass px-3 py-2 text-xs text-slate-400 outline-none file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:surface-weak file:text-white file:hover:surface-weak file:transition-colors @error('image') border-red-500/40 bg-red-500/5 @enderror">
+                  <input name="image" type="file" accept="image/*" 
+                      class="w-full rounded-xl input-glass px-3 py-2 text-xs text-slate-400 outline-none file:mr-3 file:py-1.5 file:px-3 file:rounded-lg file:border-0 file:text-xs file:font-bold file:surface-weak file:text-white file:hover:surface-weak file:transition-colors @error('image') border-red-500/40 bg-red-500/5 @enderror">
                 <p class="mt-1.5 text-[10px] text-slate-500 leading-relaxed">Format: JPG, PNG, WebP. Maks 5MB.<br>Rekomendasi rasio -> Hero: 4:5 portrait | Featured: 3:1 landscape.</p>
                 @error('image')<p class="mt-1 text-[11px] text-red-400 font-medium">{{ $message }}</p>@enderror
             </div>
@@ -137,8 +194,8 @@
             {{-- Image URL Alternative --}}
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">Atau Pasang URL Gambar Eksternal</label>
-                <input name="image_url" type="url" 
-                       class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none @error('image_url') border-red-500/40 bg-red-500/5 @enderror" 
+                  <input name="image_url" type="url" 
+                      class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none @error('image_url') border-red-500/40 bg-red-500/5 @enderror" 
                        placeholder="https://domain-hosting-gambar.com/foto.webp" value="{{ old('image_url') }}">
                 <p class="mt-1.5 text-[10px] text-slate-500 leading-relaxed">Gunakan opsi ini jika aset gambar di-host di luar server aplikasi (Bypass Upload).</p>
                 @error('image_url')<p class="mt-1 text-[11px] text-red-400 font-medium">{{ $message }}</p>@enderror
@@ -147,8 +204,8 @@
             {{-- Destination Link --}}
             <div>
                 <label class="block text-xs font-bold uppercase tracking-wider text-slate-400 mb-1.5">URL Link Tujuan (Redirect Target)</label>
-                <input name="link_url" type="url" 
-                       class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none @error('link_url') border-red-500/40 bg-red-500/5 @enderror" 
+                  <input name="link_url" type="url" 
+                      class="w-full rounded-xl input-glass px-4 py-3 text-sm text-white placeholder:text-slate-600 outline-none @error('link_url') border-red-500/40 bg-red-500/5 @enderror" 
                        placeholder="https://lapakgaming.neoverse.my.id/marketplace/trending" value="{{ old('link_url') }}">
                 @error('link_url')<p class="mt-1 text-[11px] text-red-400 font-medium">{{ $message }}</p>@enderror
             </div>
@@ -216,8 +273,8 @@
                         </div>
 
                         {{-- Action Removal Block --}}
-                                                <div class="flex gap-2">
-                                                    <a href="{{ route('admin.banners.edit', $banner) }}" class="w-1/2 inline-flex items-center justify-center gap-1.5 rounded-xl border border-white/6 bg-white/5 px-3 py-2.5 text-xs font-bold text-white hover:bg-white/10 transition-all">
+                                                                                <div class="flex gap-2">
+                                                                                    <a href="{{ route('admin.banners.edit', $banner) }}" class="w-1/2 inline-flex items-center justify-center gap-1.5 rounded-xl border border-white/6 bg-white/5 px-3 py-2.5 text-xs font-bold text-white hover:bg-white/10 transition-all">
                                                         <svg class="w-3.5 h-3.5" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15.232 5.232l3.536 3.536M9 11l6-6 3 3-6 6H9v-3z"/></svg>
                                                         Edit
                                                     </a>
@@ -238,7 +295,7 @@
 
                 </article>
             @empty
-                <div class="md:col-span-2 lg:col-span-3 rounded-3xl panel-card-glass py-16 text-center text-slate-500">
+                <div class="md:col-span-2 lg:col-span-3 rounded-3xl panel-card-glass banner-empty py-16 text-center text-slate-500">
                     <div class="text-4xl mb-3">🖼️</div>
                     <p class="font-bold text-slate-400">Belum ada material promosi aktif.</p>
                     <p class="text-xs text-slate-600 mt-1">Gunakan panel formulir di atas untuk mempublikasikan banner pertamamu lek.</p>

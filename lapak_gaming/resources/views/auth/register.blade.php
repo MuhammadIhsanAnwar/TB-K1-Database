@@ -213,6 +213,30 @@
     border: 2px solid white; border-top: none; border-left: none;
     transform: rotate(43deg);
   }
+
+  /* ── Select styling ── */
+  .select-wrap { position: relative; }
+  .select-wrap::after {
+    content: '';
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    width: 10px;
+    height: 10px;
+    border-right: 2px solid #60a5fa;
+    border-bottom: 2px solid #60a5fa;
+    transform: translateY(-70%) rotate(45deg);
+    pointer-events: none;
+    opacity: 0.85;
+  }
+  .register-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    padding-right: 2.75rem;
+    cursor: pointer;
+    background-image: linear-gradient(180deg, rgba(15, 23, 42, 0.02), rgba(15, 23, 42, 0));
+  }
 </style>
 @endpush
 
@@ -259,6 +283,7 @@
   class="inline-block bg-clip-text text-transparent"
   style="
     background-image: linear-gradient(135deg,#60a5fa,#fb923c);
+              background-clip: text;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;">
   Jutaan Gamer
@@ -408,12 +433,13 @@
               <div class="grid grid-cols-2 gap-4">
                 <div>
                   <label for="gender" class="block text-xs font-semibold text-slate-400 mb-1.5 tracking-wide">JENIS KELAMIN</label>
-                  <select id="gender" name="gender" class="{{ $inputClass }}" required>
-                    <option value="">Pilih...</option>
-                    <option value="male"   {{ old('gender') === 'male'   ? 'selected' : '' }}>Laki-laki</option>
-                    <option value="female" {{ old('gender') === 'female' ? 'selected' : '' }}>Perempuan</option>
-                    <option value="other"  {{ old('gender') === 'other'  ? 'selected' : '' }}>Lainnya</option>
-                  </select>
+                  <div class="select-wrap">
+                    <select id="gender" name="gender" class="{{ $inputClass }} register-select" required>
+                      <option value="">Pilih jenis kelamin</option>
+                      <option value="male" {{ old('gender') === 'male' ? 'selected' : '' }}>Laki-laki</option>
+                      <option value="female" {{ old('gender') === 'female' ? 'selected' : '' }}>Perempuan</option>
+                    </select>
+                  </div>
                   @error('gender')<p class="mt-1 text-xs text-red-400">{{ $message }}</p>@enderror
                 </div>
                 <div>
