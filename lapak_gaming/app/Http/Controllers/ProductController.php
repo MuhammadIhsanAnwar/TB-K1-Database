@@ -93,9 +93,9 @@ class ProductController extends Controller
         return view('products.search', compact('products', 'query', 'categories'));
     }
 
-    public function byType(string $type)
+    public function byType(Request $request, string $type)
     {
-        $perPage = (int) request()->input('per_page', 50);
+        $perPage = (int) $request->input('per_page', 50);
         if (!in_array($perPage, [50, 100, 300, 500, 1000])) {
             $perPage = 50;
         }

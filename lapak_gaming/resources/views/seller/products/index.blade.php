@@ -58,6 +58,10 @@ use Illuminate\Support\Str;
 @endpush
 
 @section('content')
+@php
+    $productsPaginator = is_object($products) && method_exists($products, 'links') ? $products : null;
+    $productsList = $productsPaginator ? $productsPaginator->getCollection() : collect($products);
+@endphp
 <div class="min-h-screen py-12 relative overflow-hidden dashboard-transparent">
     {{-- Ambient Light penambah kontras teks --}}
     <div class="absolute top-0 left-1/4 w-96 h-96 bg-amber-500/5 rounded-full blur-[150px] pointer-events-none"></div>
@@ -98,13 +102,13 @@ use Illuminate\Support\Str;
             </div>
             
             <div class="text-xs text-slate-500 font-medium bg-black/20 px-3 py-1.5 rounded-lg border border-white/5">
-                Total Koleksi: <span class="text-slate-300 font-bold">{{ $products->total() }} Item</span>
+                Total Koleksi: <span class="text-slate-300 font-bold">{{ $productsPaginator?->total() ?? $productsList->count() }} Item</span>
             </div>
         </div>
 
         {{-- ── PRODUCT LIST GRID (GLASS) ────────────────────────── --}}
         <div class="grid gap-4">
-            @forelse($products as $product)
+            @forelse($productsList as $product)
                 <div class="group rounded-3xl p-5 md:p-6 panel-card-glass">
                     <div class="flex flex-col gap-5 md:flex-row md:items-center">
                         
@@ -190,7 +194,9 @@ use Illuminate\Support\Str;
 
         {{-- Pagination --}}
         <div class="mt-6 flex justify-center">
-            {{ $products->links() }}
+            @if($productsPaginator)
+                {{ $productsPaginator->links() }}
+            @endif
         </div>
     </div>
 </div>

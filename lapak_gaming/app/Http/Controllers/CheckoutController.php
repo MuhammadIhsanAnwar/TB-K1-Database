@@ -249,7 +249,7 @@ class CheckoutController extends Controller
         abort_unless($order->status === Order::STATUS_PROCESSING, 422, 'Order harus berstatus diproses sebelum ditandai sudah dikirim.');
 
         $order->forceFill([
-            'status' => Order::STATUS_DELIVERED,
+            'status' => 'delivered',
         ])->save();
 
         return back()->with('success', 'Pesanan berhasil ditandai sudah dikirim.');
