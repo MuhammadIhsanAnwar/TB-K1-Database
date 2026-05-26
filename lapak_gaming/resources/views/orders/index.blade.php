@@ -160,7 +160,6 @@
                                class="inline-flex items-center justify-center rounded-2xl border border-emerald-500/20 bg-emerald-500/10 px-4 py-3 text-sm font-bold text-emerald-300 transition hover:bg-emerald-500/20">
                                 Unduh Kwitansi PDF
                             </a>
-                        @endif
                     </div>
 
                 </div>
