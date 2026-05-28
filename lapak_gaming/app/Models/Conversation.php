@@ -41,6 +41,11 @@ class Conversation extends Model
         return $this->hasMany(Message::class)->orderBy('created_at', 'asc');
     }
 
+    public function latestMessage()
+    {
+        return $this->hasOne(Message::class)->latestOfMany();
+    }
+
     public function buyer()
     {
         return $this->belongsTo(User::class, 'buyer_id');
@@ -131,6 +136,7 @@ public function order()
     public function getLatestMessageFor(int $userId): ?Message
     {
         return $this->messages()
+            ->reorder()
             ->where(function ($q) use ($userId) {
                 $q->where(function ($sub) use ($userId) {
                     $sub->where('sender_id', $userId)

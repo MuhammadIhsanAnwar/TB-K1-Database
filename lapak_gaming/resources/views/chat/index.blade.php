@@ -84,7 +84,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             <span class="font-bold text-gray-800 truncate text-sm">${c.partner_name}</span>
                             <span class="text-[10px] text-gray-400">${c.last_message_time || ''}</span>
                         </div>
-                        <p class="text-xs text-gray-500 truncate mt-0.5">${c.last_message || 'Belum ada pesan'}</p>
+                        <p class="text-xs text-gray-500 truncate mt-0.5">${(c.last_message_prefix || '') + (c.last_message || 'Belum ada pesan')}</p>
                     </div>
                     ${c.unread_count > 0 ? `<span class="bg-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-full font-bold">${c.unread_count}</span>` : ''}
                 </div>
@@ -208,14 +208,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
         try {
             // Hit API ke Server
-            await fetch('/chat/messages', {
+            await fetch(`/messages/${currentConversationId}/send`, {
                 method: 'POST',
                 headers: { 
                     'Content-Type': 'application/json',
                     'X-CSRF-TOKEN': '{{ csrf_token() }}'
                 },
                 body: JSON.stringify({
-                    conversation_id: currentConversationId,
                     message: msg
                 })
             });
