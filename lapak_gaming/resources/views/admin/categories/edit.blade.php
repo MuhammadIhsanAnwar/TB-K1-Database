@@ -83,8 +83,9 @@
 
                 {{-- Ikon --}}
                 <div>
-                    <label for="icon" class="mb-2 block text-sm font-bold text-slate-300">Ikon (Class CSS)</label>
-                    <input type="text" name="icon" id="icon" value="{{ old('icon', $category->icon) }}" class="input w-full font-mono text-sm" placeholder="Cth: fas fa-gamepad">
+                    <label for="icon" class="mb-2 block text-sm font-bold text-slate-300">Ikon (Link URL)</label>
+                    <input type="url" name="icon" id="icon" value="{{ old('icon', $category->icon) }}" class="input w-full font-mono text-sm" placeholder="Cth: https://example.com/icon.png">
+                    <p class="mt-1.5 text-xs text-slate-500">Masukkan link URL untuk gambar ikon kategori (opsional).</p>
                 </div>
 
                 {{-- Gambar --}}

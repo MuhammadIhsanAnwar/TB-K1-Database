@@ -71,7 +71,6 @@
             <table class="w-full text-left text-sm text-slate-300">
                 <thead class="bg-[#0f172a]/80 text-xs font-semibold uppercase tracking-wider text-slate-400">
                     <tr>
-                        <th scope="col" class="px-6 py-4">ID</th>
                         <th scope="col" class="px-6 py-4">Gambar/Ikon</th>
                         <th scope="col" class="px-6 py-4">Kategori</th>
                         <th scope="col" class="px-6 py-4">Tipe</th>
@@ -83,14 +82,11 @@
                 <tbody class="divide-y divide-blue-500/10">
                     @forelse($categories as $category)
                     <tr class="transition hover:bg-white/5">
-                        <td class="px-6 py-4 font-mono text-slate-500">#{{ $category->id }}</td>
                         <td class="px-6 py-4">
                             @if($category->image)
                                 <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="h-10 w-10 rounded-lg object-cover ring-1 ring-white/10" />
                             @elseif($category->icon)
-                                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-500/10 text-xl text-blue-400 ring-1 ring-blue-500/30">
-                                    <i class="{{ $category->icon }}"></i>
-                                </div>
+                                <img src="{{ $category->icon }}" alt="{{ $category->name }}" class="h-10 w-10 rounded-lg object-cover ring-1 ring-white/10" />
                             @else
                                 <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-slate-800 text-xs font-bold text-slate-500 ring-1 ring-white/10">
                                     N/A
@@ -137,7 +133,7 @@
                     </tr>
                     @empty
                     <tr>
-                        <td colspan="7" class="px-6 py-12 text-center">
+                        <td colspan="6" class="px-6 py-12 text-center">
                             <svg class="mx-auto h-12 w-12 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4" />
                             </svg>
