@@ -1558,6 +1558,8 @@ async function sendMessage() {
         }
 
         cancelImage();
+        
+        window.location.reload();
 
     } catch(e) {
 
