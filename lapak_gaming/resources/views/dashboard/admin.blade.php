@@ -270,6 +270,24 @@
     ═══════════════════════════════════════════════ --}}
     <div class="anim-fade-up anim-delay-2 grid gap-6 xl:grid-cols-4">
 
+        <a href="{{ route('admin.categories.index') }}"
+           class="quick-link reveal dashboard-card glass-card group rounded-[30px] border border-blue-500/20 bg-[#0B1220]/95 p-6 transition hover:border-orange-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-orange-500/5">
+            <div class="quick-link-icon mb-4 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-orange-500/10 text-orange-500">
+                <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
+            </div>
+            <div class="flex items-start justify-between">
+                <div>
+                    <h2 class="text-lg font-bold text-white">Kategori</h2>
+                    <p class="mt-1.5 text-sm leading-relaxed text-slate-400">Atur kategori dan subkategori untuk produk marketplace.</p>
+                </div>
+                <svg class="mt-0.5 h-4 w-4 shrink-0 text-slate-600 transition group-hover:translate-x-1 group-hover:text-orange-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7" />
+                </svg>
+            </div>
+        </a>
+
         <a href="{{ route('admin.users.index') }}"
            class="quick-link reveal dashboard-card glass-card group rounded-[30px]border border-blue-500/20 bg-[#0B1220]/95 p-6 transition hover:border-amber-500/40 hover:bg-slate-800/60 hover:shadow-xl hover:shadow-amber-500/5">
             <div class="quick-link-icon mb-4 inline-flex h-11 w-11 items-center justify-center rounded-[26px] bg-amber-500/10 text-amber-500">

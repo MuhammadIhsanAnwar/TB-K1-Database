@@ -213,6 +213,9 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
         Route::get('/orders/{order:order_code}', [AdminController::class, 'showOrder'])->name('orders.show');
         Route::get('/terminal', fn() => redirect()->route('artisan.terminal.index'))->name('terminal.index');
 
+        // Categories Management
+        Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['show']);
+
         // ─── Verification ─────────────────────────────────────────────────────
        // ─── Verification ─────────────────────────────────────────────────────
 Route::prefix('verification')->name('verification.')->group(function () {
