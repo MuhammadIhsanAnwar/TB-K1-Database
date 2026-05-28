@@ -13,19 +13,28 @@ class CategoryController extends Controller
     /**
      * Display a listing of the categories.
      */
+<?php
     public function index(Request $request)
     {
         $q = $request->query('q');
-        
+        $sort = $request->query('sort');
+
         $categoriesQuery = Category::with('parent')
             ->when($q, function ($query) use ($q) {
                 $query->where('name', 'like', "%{$q}%");
             })
-            ->orderBy('sort_order', 'asc');
+            ->when($sort === 'type', function ($query) {
+                // Sort main categories first, then subcategories, then by name
+                $query->orderByRaw('CASE WHEN parent_id IS NULL THEN 0 ELSE 1 END')
+                      ->orderBy('name');
+            }, function ($query) {
+                // Default ordering by name
+                $query->orderBy('name');
+            });
 
-        $categories = $categoriesQuery->paginate(20)->appends(['q' => $q]);
-        
-        return view('admin.categories.index', compact('categories', 'q'));
+        $categories = $categoriesQuery->paginate(20)->appends(['q' => $q, 'sort' => $sort]);
+
+        return view('admin.categories.index', compact('categories', 'q', 'sort'));
     }
 
     /**

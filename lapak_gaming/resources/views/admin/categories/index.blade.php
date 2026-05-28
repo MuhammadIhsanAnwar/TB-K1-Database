@@ -53,6 +53,13 @@
                     </div>
                     <input type="text" name="q" value="{{ $q }}" placeholder="Cari kategori..." class="input pl-10" />
                 </div>
+<div class="flex items-center mt-2">
+    <label for="sort" class="text-sm text-slate-300 mr-2">Urutkan:</label>
+    <select name="sort" id="sort" class="input w-48">
+        <option value="" {{ $sort == '' ? 'selected' : '' }}>Default</option>
+        <option value="type" {{ $sort == 'type' ? 'selected' : '' }}>Kategori Utama dulu</option>
+    </select>
+</div>
             </div>
             <button type="submit" class="btn-primary whitespace-nowrap">
                 Cari
