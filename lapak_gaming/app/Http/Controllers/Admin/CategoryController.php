@@ -17,24 +17,23 @@ class CategoryController extends Controller
     public function index(Request $request)
     {
         $q = $request->query('q');
-        $sort = $request->query('sort');
+        $group = $request->query('group');
 
         $categoriesQuery = Category::with('parent')
             ->when($q, function ($query) use ($q) {
                 $query->where('name', 'like', "%{$q}%");
             })
-            ->when($sort === 'type', function ($query) {
-                // Sort main categories first, then subcategories, then by name
-                $query->orderByRaw('CASE WHEN parent_id IS NULL THEN 0 ELSE 1 END')
-                      ->orderBy('name');
-            }, function ($query) {
-                // Default ordering by name
-                $query->orderBy('name');
-            });
+            ->when($group === 'main', function ($query) {
+                $query->whereNull('parent_id');
+            })
+            ->when($group === 'sub', function ($query) {
+                $query->whereNotNull('parent_id');
+            })
+            ->orderBy('name');
 
-        $categories = $categoriesQuery->paginate(20)->appends(['q' => $q, 'sort' => $sort]);
+        $categories = $categoriesQuery->paginate(20)->appends(['q' => $q, 'group' => $group]);
 
-        return view('admin.categories.index', compact('categories', 'q', 'sort'));
+        return view('admin.categories.index', compact('categories', 'q', 'group'));
     }
 
     /**
