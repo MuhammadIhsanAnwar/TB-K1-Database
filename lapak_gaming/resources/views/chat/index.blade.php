@@ -72,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // 1. Ambil daftar percakapan
     async function loadConversations() {
         try {
-            const res = await fetch('/chat/conversations');
+            const res = await fetch('/api/conversations');
             const data = await res.json();
             
             listEl.innerHTML = data.map(c => `
@@ -116,13 +116,13 @@ document.addEventListener('DOMContentLoaded', function() {
         
         try {
             // Ambil pesan dari API
-            const res = await fetch(`/chat/conversations/${id}/messages`);
+            const res = await fetch(`/messages/${id}/messages`);
             const data = await res.json();
             
             renderMessages(data.messages || data); // Sesuaikan jika response JSON bersarang
 
             // Trigger "Mark as Read" ke server
-            fetch(`/chat/conversations/${id}/read`, {
+            fetch(`/messages/${id}/read`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -150,7 +150,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     if (messageData.sender_id !== authId) {
                         appendMessage(messageData, false);
                         // Jika chat sedang terbuka, otomatis tandai terbaca lagi ke server
-                        fetch(`/chat/conversations/${id}/read`, {
+                        fetch(`/messages/${id}/read`, {
                             method: 'POST',
                             headers: {'X-CSRF-TOKEN': '{{ csrf_token() }}'}
                         });

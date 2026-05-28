@@ -90,8 +90,9 @@ class CheckoutController extends Controller
 
         $quantity = (int) ($data['quantity'] ?? 1);
         $paymentMethod = 'balance';
+        $buyerNote = $data['buyer_note'] ?? null;
 
-        $order = DB::transaction(function () use ($request, $quantity, $paymentMethod): Order {
+        $order = DB::transaction(function () use ($request, $quantity, $paymentMethod, $buyerNote): Order {
             $product = Product::query()
                 ->published()
                 ->whereHas('seller', fn ($seller) => $seller->whereNull('deactivated_at'))
@@ -116,7 +117,7 @@ class CheckoutController extends Controller
             $grandTotal = $subtotal + $feeAmount;
 
             $order = Order::create([
-                'delivery_notes' => $request->buyer_note,
+                'delivery_notes' => $buyerNote,
                 'buyer_id' => $request->user()->id,
                 'seller_id' => $product->seller_id,
                 'invoice_number' => 'INV-'.now()->format('YmdHis').'-'.str_pad((string) random_int(1, 9999), 4, '0', STR_PAD_LEFT),

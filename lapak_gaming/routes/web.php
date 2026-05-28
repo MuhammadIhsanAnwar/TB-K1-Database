@@ -244,10 +244,13 @@ Route::prefix('verification')->name('verification.')->group(function () {
 
     // ─── Chat (Modern) ───────────────────────────────────────────────────────
 
+    Route::get('/api/conversations', [ChatController::class, 'getConversations'])->name('api.conversations');
     Route::get('/messages', [ChatController::class, 'inbox'])->name('chat.inbox');
     Route::get('/messages/{conversation}', [ChatController::class, 'show'])->name('chat.show');
+    Route::get('/messages/{conversation}/messages', [ChatController::class, 'getMessages'])->name('chat.messages');
     Route::get('/chat/order/{order}', [ChatController::class, 'orderChat'])->name('chat.order');
     Route::post('/messages/{conversation}/send', [ChatController::class, 'sendMessage'])->name('chat.send');
+    Route::post('/messages/{conversation}/read', [ChatController::class, 'markAsRead'])->name('chat.mark-read');
     Route::get('/api/messages/{conversation}/poll', [ChatController::class, 'poll'])->name('chat.poll');
     Route::get('/api/messages/inbox/poll', [ChatController::class, 'pollInbox'])->name('chat.inbox.poll');
     Route::patch('/chat/message/{message}', [ChatController::class, 'editMessage'])->name('chat.message.edit');

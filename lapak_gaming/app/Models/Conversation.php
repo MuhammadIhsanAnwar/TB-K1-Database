@@ -128,6 +128,44 @@ public function order()
         return $this->last_message;
     }
 
+    public function getLatestMessageFor(int $userId): ?Message
+    {
+        return $this->messages()
+            ->where(function ($q) use ($userId) {
+                $q->where(function ($sub) use ($userId) {
+                    $sub->where('sender_id', $userId)
+                        ->whereNull('deleted_for_sender_at');
+                })->orWhere(function ($sub) use ($userId) {
+                    $sub->where('receiver_id', $userId)
+                        ->whereNull('deleted_for_receiver_at');
+                });
+            })
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
+            ->first();
+    }
+
+    public function getLatestMessagePreviewFor(int $userId): string
+    {
+        $msg = $this->getLatestMessageFor($userId);
+        if (!$msg) {
+            return '...';
+        }
+        if ($msg->deleted_for_everyone_at !== null) {
+            return 'Pesan ini telah dihapus';
+        }
+        if ($msg->attachment_path !== null) {
+            return '[Lampiran]';
+        }
+        return $msg->message;
+    }
+
+    public function getLatestMessageTimeFor(int $userId)
+    {
+        $msg = $this->getLatestMessageFor($userId);
+        return $msg ? $msg->created_at : $this->last_message_at;
+    }
+
     public function toSummary(int $authId): array
     {
         $partner = $this->getPartner($authId);
@@ -138,8 +176,8 @@ public function order()
             'partner_id'        => $partner?->id,
             'partner_name'      => $partner?->name ?? 'User',
             'partner_avatar'    => $partner?->avatar_url,
-            'last_message'      => $this->last_message,
-            'last_message_time' => $this->last_message_at?->diffForHumans(),
+            'last_message'      => $this->getLatestMessagePreviewFor($authId),
+            'last_message_time' => $this->getLatestMessageTimeFor($authId)?->diffForHumans(),
             'unread_count'      => $isBuyer ? $this->unread_buyer : $this->unread_seller,
             'is_typing'         => $this->isPartnerTyping($authId),
         ];

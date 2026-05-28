@@ -623,11 +623,14 @@
                                 ? ($p2?->store_name ?? $p2?->name ?? 'Toko')
                                 : ($p2?->name ?? 'Buyer')
                         }}</span>
-                        <span class="conv-time">{{ $conv->last_message_at?->format('H:i') }}</span>
+                        <span class="conv-time">{{ $conv->getLatestMessageTimeFor($user->id)?->format('H:i') }}</span>
                     </div>
                     <div class="flex justify-between items-center">
                         <span class="conv-preview">
-                            {{ $conv->last_message ? mb_substr($conv->last_message, 0, 30) : '...' }}
+                            @php
+                                $previewText = $conv->getLatestMessagePreviewFor($user->id);
+                            @endphp
+                            {{ $previewText ? mb_substr($previewText, 0, 30) : '...' }}
                         </span>
                         @if($unread > 0)
                         <span class="unread-badge">{{ $unread > 9 ? '9+' : $unread }}</span>

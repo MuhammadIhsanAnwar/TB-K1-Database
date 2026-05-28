@@ -291,7 +291,7 @@
                             </span>
 
                             <span class="conv-time">
-                                {{ $conv->last_message_at?->diffForHumans(null, true) }}
+                                {{ $conv->getLatestMessageTimeFor($user->id)?->diffForHumans(null, true) }}
                             </span>
                         </div>
 
@@ -301,7 +301,7 @@
 
                         <div class="flex justify-between items-center">
                             <span class="conv-preview {{ $unread > 0 ? 'unread' : '' }}">
-                                {{ Str::limit($conv->last_message, 45) }}
+                                {{ Str::limit($conv->getLatestMessagePreviewFor($user->id), 45) }}
                             </span>
 
                             @if($unread > 0)
@@ -340,7 +340,7 @@
 
                 <a href="{{ route('chat.show', ['conversation' => $conv->id, 'role' => 'seller']) }}"
                 class="conv-item"
-                data-name="{{ strtolower($partner?->store_name ?? $partner?->name ?? '') }}"
+                data-name="{{ strtolower($partner?->store_name ?? $partner?->name ?? '') }}">
 
                     <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($partner?->name ?? 'Buyer') }}"
                         class="conv-avatar">
@@ -353,7 +353,7 @@
                             </span>
 
                             <span class="conv-time">
-                                {{ $conv->last_message_at?->diffForHumans(null, true) }}
+                                {{ $conv->getLatestMessageTimeFor($user->id)?->diffForHumans(null, true) }}
                             </span>
                         </div>
 
@@ -363,7 +363,7 @@
 
                         <div class="flex justify-between items-center">
                             <span class="conv-preview {{ $unread > 0 ? 'unread' : '' }}">
-                                {{ Str::limit($conv->last_message, 45) }}
+                                {{ Str::limit($conv->getLatestMessagePreviewFor($user->id), 45) }}
                             </span>
 
                             @if($unread > 0)

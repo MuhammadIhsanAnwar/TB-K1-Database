@@ -142,6 +142,9 @@ public function poll(Conversation $conversation)
         return response()->json(['error' => 'Unauthorized'], 403);
     }
 
+    // Mark as read in real-time as user is active inside the chat room
+    $conversation->markReadFor(Auth::id());
+
     $messages = $conversation->messages()
     ->with('sender')
     ->whereNull('deleted_for_everyone_at')
@@ -166,6 +169,17 @@ public function poll(Conversation $conversation)
         )
     ]);
 }
+
+    public function pollInbox(Request $request)
+    {
+        $user = Auth::user();
+        if (!$user) {
+            return response()->json(['total_unread' => 0]);
+        }
+        $unread = Conversation::where('buyer_id', $user->id)->sum('unread_buyer')
+                + Conversation::where('seller_id', $user->id)->sum('unread_seller');
+        return response()->json(['total_unread' => (int) $unread]);
+    }
     public function getConversations()
     {
         $user = Auth::user();
@@ -390,5 +404,22 @@ public function poll(Conversation $conversation)
 
     return redirect()->route('chat.show', $conversation->id);
    }
+
+    /**
+     * Tandai percakapan sudah dibaca untuk user yang sedang login
+     */
+    public function markAsRead(Conversation $conversation)
+    {
+        if (Auth::id() !== $conversation->buyer_id && Auth::id() !== $conversation->seller_id) {
+            return response()->json(['error' => 'Unauthorized'], 403);
+        }
+
+        $conversation->markReadFor(Auth::id());
+
+        return response()->json([
+            'success' => true,
+            'unread_count' => $conversation->unreadFor(Auth::id())
+        ]);
+    }
 } 
 
