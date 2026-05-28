@@ -30,6 +30,10 @@ class AdminController extends Controller
         $q = trim((string) $request->query('q', ''));
         $sort = $request->query('sort', 'created_at');
         $direction = strtolower($request->query('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
+        $perPage = (int) $request->query('per_page', 50);
+        if (!in_array($perPage, [50,100,300,500,1000])) {
+            $perPage = 50;
+        }
 
         $allowedSorts = ['created_at', 'name', 'email'];
         if (! in_array($sort, $allowedSorts, true)) {
@@ -47,7 +51,7 @@ class AdminController extends Controller
 
         $regularUsers = (clone $regularUsersQuery)
             ->orderBy($sort, $direction)
-            ->paginate(15, ['*'], 'users_page')
+            ->paginate($perPage, ['*'], 'users_page')
             ->appends(array_merge($baseAppends, ['tab' => 'users']));
 
         $sellersQuery = User::query()
@@ -59,7 +63,7 @@ class AdminController extends Controller
 
         $sellers = (clone $sellersQuery)
             ->orderBy($sort, $direction)
-            ->paginate(15, ['*'], 'sellers_page')
+            ->paginate($perPage, ['*'], 'sellers_page')
             ->appends(array_merge($baseAppends, ['tab' => 'sellers']));
 
         $applicationsQuery = User::query()
@@ -71,7 +75,7 @@ class AdminController extends Controller
 
         $applications = (clone $applicationsQuery)
             ->orderBy($sort, $direction)
-            ->paginate(15, ['*'], 'apps_page')
+            ->paginate($perPage, ['*'], 'apps_page')
             ->appends(array_merge($baseAppends, ['tab' => 'applications']));
 
         $pendingVerificationsQuery = User::query()
@@ -83,7 +87,7 @@ class AdminController extends Controller
 
         $pendingVerifications = (clone $pendingVerificationsQuery)
             ->orderBy($sort, $direction)
-            ->paginate(15, ['*'], 'pending_page')
+            ->paginate($perPage, ['*'], 'pending_page')
             ->appends(array_merge($baseAppends, ['tab' => 'pending_verification']));
 
         $counts = [
@@ -266,6 +270,68 @@ class AdminController extends Controller
         return back()->with('success', 'Banner berhasil dihapus.');
     }
 
+    public function editBanner(Banner $banner): View
+    {
+        return view('admin.banners.edit', compact('banner'));
+    }
+
+    public function updateBanner(Request $request, Banner $banner): RedirectResponse
+    {
+        $messages = [
+            'title.required' => 'Judul banner wajib diisi.',
+            'title.string' => 'Judul harus berupa teks.',
+            'title.max' => 'Judul maksimal 255 karakter.',
+            'subtitle.string' => 'Subtitle harus berupa teks.',
+            'subtitle.max' => 'Subtitle maksimal 255 karakter.',
+            'image.image' => 'File harus berupa gambar.',
+            'image.mimes' => 'Format gambar harus JPEG, PNG, JPG, GIF, atau WebP.',
+            'image.max' => 'Ukuran gambar maksimal 5MB.',
+            'image_url.url' => 'URL gambar tidak valid.',
+            'image_url.max' => 'URL gambar maksimal 2048 karakter.',
+            'link_url.url' => 'Link URL tidak valid.',
+            'link_url.max' => 'Link URL maksimal 2048 karakter.',
+            'position.required' => 'Posisi banner wajib dipilih.',
+            'position.in' => 'Posisi banner tidak valid.',
+            'is_active.boolean' => 'Status aktif harus berupa boolean.',
+        ];
+
+        $data = $request->validate([
+            'title' => ['required', 'string', 'max:255'],
+            'subtitle' => ['nullable', 'string', 'max:255'],
+            'image' => ['nullable', 'image', 'mimes:jpeg,png,jpg,gif,webp', 'max:5120'],
+            'image_url' => ['nullable', 'url', 'max:2048'],
+            'link_url' => ['nullable', 'url', 'max:2048'],
+            'position' => ['required', 'in:hero,featured'],
+            'is_active' => ['nullable', 'boolean'],
+        ], $messages);
+
+        $imagePath = $banner->image_path;
+        $imageUrl = $data['image_url'] ?? $banner->image_url;
+
+        if ($request->hasFile('image')) {
+            // delete old file if exists
+            if ($banner->image_path) {
+                Storage::disk('public_app_public')->delete($banner->image_path);
+            }
+            $file = $request->file('image');
+            $filename = 'banner_' . time() . '.' . $file->getClientOriginalExtension();
+            $imagePath = $file->storeAs('banners', $filename, 'public_app_public');
+            $imageUrl = null;
+        }
+
+        $banner->forceFill([
+            'title' => $data['title'],
+            'subtitle' => $data['subtitle'] ?? null,
+            'image_url' => $imageUrl,
+            'image_path' => $imagePath,
+            'link_url' => $data['link_url'] ?? null,
+            'position' => $data['position'],
+            'is_active' => (bool) ($data['is_active'] ?? true),
+        ])->save();
+
+        return redirect()->route('admin.banners.index')->with('success', 'Banner berhasil diperbarui.');
+    }
+
     // ─── 4. NOTIFICATIONS & ORDERS ───────────────────────────────────────────
 
     public function notifications(Request $request): View
@@ -336,6 +402,15 @@ class AdminController extends Controller
         $q = trim((string) $request->query('q', ''));
         $sort = $request->query('sort', 'created_at');
         $direction = strtolower($request->query('direction', 'desc')) === 'asc' ? 'asc' : 'desc';
+        $perPage = $request->query('per_page', 50);
+
+        if ($perPage !== 'all') {
+            $perPage = (int) $perPage;
+
+            if (!in_array($perPage, [50, 100, 300, 500, 1000])) {
+                $perPage = 50;
+            }
+        }
 
         $allowedSorts = ['created_at', 'order_code', 'grand_total'];
         if (! in_array($sort, $allowedSorts, true)) {
@@ -360,7 +435,18 @@ class AdminController extends Controller
             $ordersQuery->orderBy($sort, $direction);
         }
 
-        $orders = $ordersQuery->paginate(20)->appends(array_filter(['q' => $q, 'sort' => $sort, 'direction' => $direction]));
+        $orders = $ordersQuery
+        ->paginate(
+            $perPage === 'all'
+                ? max($ordersQuery->count(), 1)
+                : $perPage
+        )
+        ->appends(array_filter([
+            'q' => $q,
+            'sort' => $sort,
+            'direction' => $direction,
+            'per_page' => $perPage
+        ]));
 
         return view('admin.orders.index', compact('orders', 'q', 'sort', 'direction'));
     }

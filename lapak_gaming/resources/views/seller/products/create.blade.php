@@ -5,27 +5,48 @@
 @push('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
 <style>
-    /* ── True Glassmorphism Design ────────────────────────────── */
+    /* ── Ambient shell ───────────────────────────────────────── */
     .dashboard-transparent {
-        background: transparent !important; /* Biar animasi latar belakang tembus pandang */
+        background:
+            radial-gradient(circle at top left, rgba(245, 158, 11, 0.10), transparent 28%),
+            radial-gradient(circle at top right, rgba(16, 185, 129, 0.08), transparent 24%),
+            linear-gradient(180deg, rgba(5, 9, 16, 0.82), rgba(5, 9, 16, 0.96));
     }
     
     .form-card-glass {
-        background: rgba(10, 17, 30, 0.35) !important;
+        position: relative;
+        overflow: hidden;
+        background: linear-gradient(145deg, rgba(13, 20, 33, 0.92), rgba(8, 13, 24, 0.92)) !important;
         backdrop-filter: blur(24px) saturate(160%);
-        border: 1px solid rgba(255, 255, 255, 0.06);
-        box-shadow: 0 12px 40px 0 rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(255, 255, 255, 0.08);
+        box-shadow: 0 20px 55px rgba(0, 0, 0, 0.48);
+    }
+
+    .form-card-glass::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(135deg, rgba(96, 165, 250, 0.08), transparent 45%, rgba(245, 158, 11, 0.06));
+        pointer-events: none;
     }
 
     .input-glass {
-        background: rgba(5, 9, 16, 0.45) !important;
+        background: rgba(5, 9, 16, 0.62) !important;
         border: 1px solid rgba(255, 255, 255, 0.08);
-        transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        border-radius: 14px;
+        min-height: 48px;
+        color: #f8fafc;
+        transition: border-color 0.25s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.25s cubic-bezier(0.4, 0, 0.2, 1), transform 0.2s;
+    }
+
+    .input-glass::placeholder {
+        color: #64748b;
     }
     
     .input-glass:focus {
-        border-color: rgba(245, 158, 11, 0.5) !important;
-        box-shadow: 0 0 14px rgba(245, 158, 11, 0.15);
+        border-color: rgba(245, 158, 11, 0.55) !important;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12), 0 0 14px rgba(245, 158, 11, 0.18);
+        transform: translateY(-1px);
     }
 
     /* Fix teks opsi select dropdown agar tidak ikut transparan di OS tertentu */
@@ -34,15 +55,85 @@
         color: #e2e8f0;
     }
 
+    select.input-glass {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        padding-right: 2.75rem;
+        background-image:
+            linear-gradient(45deg, transparent 50%, #60a5fa 50%),
+            linear-gradient(135deg, #60a5fa 50%, transparent 50%),
+            linear-gradient(to right, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+        background-position:
+            calc(100% - 18px) calc(50% - 2px),
+            calc(100% - 13px) calc(50% - 2px),
+            0 0;
+        background-size: 5px 5px, 5px 5px, 100% 100%;
+        background-repeat: no-repeat;
+        cursor: pointer;
+        transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select.input-glass:hover {
+        border-color: rgba(96, 165, 250, 0.28);
+        transform: translateY(-1px);
+    }
+
+    select.input-glass:focus {
+        border-color: rgba(245, 158, 11, 0.55) !important;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12), 0 0 14px rgba(245, 158, 11, 0.18);
+        transform: translateY(-1px);
+    }
+
+    select.input-glass option:checked,
+    select.input-glass option:hover {
+        background: #132238;
+    }
+
     /* Custom File Input Container */
     .file-input-wrapper {
-        border: 1px dashed rgba(255, 255, 255, 0.15);
-        background: rgba(255, 255, 255, 0.02);
+        border: 1px dashed rgba(255, 255, 255, 0.16);
+        background: rgba(255, 255, 255, 0.025);
+        border-radius: 14px;
         transition: all 0.2s ease;
     }
     .file-input-wrapper:hover {
-        border-color: rgba(245, 158, 11, 0.4);
-        background: rgba(245, 158, 11, 0.02);
+        border-color: rgba(245, 158, 11, 0.45);
+        background: rgba(245, 158, 11, 0.04);
+        transform: translateY(-1px);
+    }
+
+    .file-input-wrapper input[type="file"]::file-selector-button {
+        margin-right: 12px;
+        border: 0;
+        border-radius: 999px;
+        padding: 0.6rem 0.95rem;
+        background: linear-gradient(135deg, #f59e0b, #fb7185);
+        color: #0f172a;
+        font-weight: 800;
+        cursor: pointer;
+    }
+
+    #product-image-preview > div {
+        background: rgba(10, 17, 30, 0.82);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+        transition: transform 0.2s ease, border-color 0.2s ease;
+    }
+    #product-image-preview > div:hover {
+        transform: translateY(-2px);
+        border-color: rgba(245, 158, 11, 0.28);
+    }
+    #product-image-preview > div img {
+        border: 1px solid rgba(255,255,255,0.05);
+    }
+
+    #product-image-preview > div .absolute.top-2 {
+        box-shadow: 0 8px 18px rgba(16,185,129,0.2);
+    }
+
+    #product-image-preview > div .absolute.bottom-2 {
+        box-shadow: 0 8px 18px rgba(245,158,11,0.22);
     }
 </style>
 @endpush

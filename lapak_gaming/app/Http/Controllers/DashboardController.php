@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ContactMessage;
 use App\Models\MarketplaceNotification;
 use App\Models\Order;
 use App\Models\Product;
@@ -109,6 +110,7 @@ class DashboardController extends Controller
         $suspendedUsers = Schema::hasTable('users') ? User::query()->where('status', 'suspended')->count() : 0;
         $sellerRequests = Schema::hasTable('users') ? User::query()->where('seller_status', 'pending')->count() : 0;
         $pendingEmailVerifications = Schema::hasTable('users') ? User::query()->whereNull('email_verified_at')->count() : 0;
+        $unreadMessages = Schema::hasTable('contact_messages') ? ContactMessage::query()->where('status', 'new')->count() : 0;
 
         $chartLabels = collect();
         $chartTransactions = collect();
@@ -237,6 +239,7 @@ class DashboardController extends Controller
             'suspendedUsers' => $suspendedUsers,
             'sellerRequests' => $sellerRequests,
             'pendingEmailVerifications' => $pendingEmailVerifications,
+            'unreadMessages' => $unreadMessages,
             'products' => Schema::hasTable('products') ? Product::query()->count() : 0,
             'orders' => Schema::hasTable('orders') ? Order::query()->count() : 0,
             'chartLabels' => $chartLabels,

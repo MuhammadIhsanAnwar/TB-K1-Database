@@ -78,6 +78,29 @@ public function unreadFor(int $authId): int
         ? $this->unread_buyer
         : $this->unread_seller;
 }
+
+    public function markReadFor(int $authId): void
+    {
+        if ($this->buyer_id === $authId) {
+            $this->forceFill([
+                'unread_buyer' => 0,
+                'buyer_last_seen_at' => now(),
+            ])->save();
+        } elseif ($this->seller_id === $authId) {
+            $this->forceFill([
+                'unread_seller' => 0,
+                'seller_last_seen_at' => now(),
+            ])->save();
+        }
+
+        Message::where('conversation_id', $this->id)
+            ->where('receiver_id', $authId)
+            ->where('is_read', false)
+            ->update([
+                'is_read' => true,
+                'read_at' => now(),
+            ]);
+    }
     /**
      * Cek apakah lawan bicara sedang mengetik (berlaku selama 5 detik terakhir).
      */

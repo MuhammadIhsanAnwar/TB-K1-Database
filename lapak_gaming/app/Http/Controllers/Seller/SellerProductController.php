@@ -178,7 +178,7 @@ class SellerProductController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $imageFile) {
                 $filename = Str::uuid()->toString() . '.' . $imageFile->getClientOriginalExtension();
-                $stored = $imageFile->storeAs('foto_produk', $filename, 'public_app_public');
+                $stored = $imageFile->storeAs('foto-produk', $filename, 'public_app_public');
                 $imagePaths[] = $stored;
                 // attempt to compress image to save bandwidth (best-effort)
                 $this->compressImageOnDisk($stored);
@@ -189,7 +189,7 @@ class SellerProductController extends Controller
         if (empty($imagePaths) && $request->hasFile('image')) {
             $legacyImage = $request->file('image');
             $filename = Str::uuid()->toString() . '.' . $legacyImage->getClientOriginalExtension();
-            $stored = $legacyImage->storeAs('foto_produk', $filename, 'public_app_public');
+            $stored = $legacyImage->storeAs('foto-produk', $filename, 'public_app_public');
             $imagePaths[] = $stored;
             $this->compressImageOnDisk($stored);
         }
@@ -265,7 +265,9 @@ class SellerProductController extends Controller
 
             foreach ($removedIndices as $index) {
                 if (isset($imagePaths[$index])) {
-                    if (Storage::disk('public')->exists($imagePaths[$index])) {
+                    if (Storage::disk('public_app_public')->exists($imagePaths[$index])) {
+                        Storage::disk('public_app_public')->delete($imagePaths[$index]);
+                    } elseif (Storage::disk('public')->exists($imagePaths[$index])) {
                         Storage::disk('public')->delete($imagePaths[$index]);
                     } elseif (file_exists(public_path($imagePaths[$index]))) {
                         @unlink(public_path($imagePaths[$index]));
@@ -282,14 +284,14 @@ class SellerProductController extends Controller
         if ($request->hasFile('images')) {
             foreach ($request->file('images') as $imageFile) {
                 $filename = Str::uuid()->toString() . '.' . $imageFile->getClientOriginalExtension();
-                $stored = $imageFile->storeAs('foto_produk', $filename, 'public_app_public');
+                $stored = $imageFile->storeAs('foto-produk', $filename, 'public_app_public');
                 $imagePaths[] = $stored;
                 $this->compressImageOnDisk($stored);
             }
         } elseif ($request->hasFile('image')) {
             $legacyImage = $request->file('image');
             $filename = Str::uuid()->toString() . '.' . $legacyImage->getClientOriginalExtension();
-            $stored = $legacyImage->storeAs('foto_produk', $filename, 'public_app_public');
+            $stored = $legacyImage->storeAs('foto-produk', $filename, 'public_app_public');
             $imagePaths[] = $stored;
             $this->compressImageOnDisk($stored);
         }
@@ -331,7 +333,11 @@ class SellerProductController extends Controller
         }
 
         foreach ($produk->image_paths as $existingImage) {
-            Storage::disk('public')->delete($existingImage);
+            if (Storage::disk('public_app_public')->exists($existingImage)) {
+                Storage::disk('public_app_public')->delete($existingImage);
+            } else {
+                Storage::disk('public')->delete($existingImage);
+            }
         }
 
         $produk->delete();

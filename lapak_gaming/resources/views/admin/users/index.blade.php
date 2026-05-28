@@ -328,7 +328,20 @@ a{
           class="rounded-xl border border-white/5 bg-black/10 px-4 py-2 text-sm text-white outline-none" />
         <button type="submit" class="rounded-xl bg-amber-500 px-4 py-2 text-sm font-semibold text-slate-950">Cari</button>
         <a href="{{ route('admin.users.index') }}" class="rounded-xl border border-white/5 px-3 py-2 text-sm text-slate-300">Reset</a>
-      </form>
+            <select
+        name="per_page"
+        onchange="this.form.submit()"
+        class="rounded-xl border border-white/5 bg-black/10 px-4 py-2 text-sm text-white outline-none">
+        @foreach([50,100,300,500,1000] as $size)
+            <option
+                value="{{ $size }}"
+                {{ request('per_page', 50) == $size ? 'selected' : '' }}
+            >
+                {{ $size }} per halaman
+            </option>
+        @endforeach
+    </select>
+          </form>
     </div>
 
     {{-- ── ALERTS & NOTIFICATIONS ────────────────────────────── --}}

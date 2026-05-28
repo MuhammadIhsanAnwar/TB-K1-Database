@@ -326,7 +326,7 @@ class AuthController extends Controller
 
         $data = $request->validate([
             'name'          => ['required', 'string', 'max:255'],
-            'gender'        => ['required', 'in:male,female,other'],
+            'gender'        => ['required', 'in:male,female'],
             'birth_date'    => ['required', 'date', 'before:today'],
             'phone'         => ['required', 'string', 'max:20'],
             'profile_photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:5120'],
@@ -460,9 +460,9 @@ class AuthController extends Controller
         }
 
         if (! $user->email_verified_at) {
-            $sent = $user->sendEmailVerificationNotification();
-
-            if (! $sent) {
+            try {
+                $user->sendEmailVerificationNotification();
+            } catch (\Throwable $exception) {
                 return redirect()->route('login')->withErrors([
                     'email' => 'Verifikasi email gagal dikirim. Silakan hubungi administrator atau coba lagi nanti.',
                 ]);

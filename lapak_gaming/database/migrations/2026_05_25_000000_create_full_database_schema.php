@@ -286,7 +286,8 @@ return new class extends Migration
         Schema::create('marketplace_notifications', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
-            $table->string('title');
+            $table->unsignedBigInteger('broadcast_id')->nullable();
+            $table->string('title')->nullable();
             $table->text('body')->nullable();
             $table->string('link')->nullable();
             $table->string('type')->nullable();
@@ -305,6 +306,16 @@ return new class extends Migration
             $table->timestamps();
         });
 
+        Schema::create('jobs', function (Blueprint $table) {
+            $table->id();
+            $table->string('queue');
+            $table->longText('payload');
+            $table->unsignedTinyInteger('attempts')->default(0);
+            $table->unsignedInteger('reserved_at')->nullable();
+            $table->unsignedInteger('available_at');
+            $table->unsignedInteger('created_at');
+        });
+
         Schema::create('verification_logs', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained('users')->cascadeOnDelete();
@@ -319,20 +330,80 @@ return new class extends Migration
             $table->string('title');
             $table->text('body')->nullable();
             $table->string('link')->nullable();
+            $table->string('type')->nullable();
+            $table->json('metadata')->nullable();
             $table->timestamp('starts_at')->nullable();
             $table->timestamp('ends_at')->nullable();
             $table->boolean('is_active')->default(true);
             $table->timestamps();
         });
+
+        Schema::create('conversations', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('buyer_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('seller_id')->constrained('users')->cascadeOnDelete();
+            $table->unsignedInteger('unread_buyer')->default(0);
+            $table->unsignedInteger('unread_seller')->default(0);
+            $table->text('last_message')->nullable();
+            $table->string('subject')->nullable();
+            $table->timestamp('last_message_at')->nullable();
+            $table->string('status')->default('open');
+            $table->json('metadata')->nullable();
+            $table->timestamps();
+            $table->index(['buyer_id', 'seller_id']);
+        });
+
+        Schema::create('messages', function (Blueprint $table) {
+            $table->id();
+            $table->string('hash', 64)->unique();
+            $table->foreignId('conversation_id')->constrained('conversations')->cascadeOnDelete();
+            $table->foreignId('sender_id')->constrained('users')->cascadeOnDelete();
+            $table->foreignId('receiver_id')->constrained('users')->cascadeOnDelete();
+            $table->string('sender_role')->nullable();
+            $table->text('message');
+            $table->string('attachment_path')->nullable();
+            $table->string('attachment_type')->nullable();
+            $table->timestamp('deleted_for_everyone_at')->nullable();
+            $table->timestamp('deleted_for_sender_at')->nullable();
+            $table->timestamp('deleted_for_receiver_at')->nullable();
+            $table->timestamp('read_at')->nullable();
+            $table->json('metadata')->nullable();
+            $table->timestamps();
+            $table->index(['conversation_id', 'sender_id']);
+        });
+
+        Schema::create('contact_messages', function (Blueprint $table): void {
+            $table->id();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
+            $table->string('name');
+            $table->string('email');
+            $table->string('subject');
+            $table->string('category')->default('general');
+            $table->text('message');
+            $table->text('admin_reply')->nullable();
+            $table->foreignId('replied_by')->nullable()->constrained('users')->nullOnDelete();
+            $table->timestamp('replied_at')->nullable();
+            $table->timestamp('read_at')->nullable();
+            $table->string('status')->default('new');
+            $table->json('metadata')->nullable();
+            $table->timestamps();
+
+            $table->index(['status', 'created_at']);
+            $table->index(['email', 'status']);
+        });
     }
 
     public function down(): void
     {
+        Schema::dropIfExists('contact_messages');
         Schema::dropIfExists('banners');
         Schema::dropIfExists('marketplace_notifications');
         Schema::dropIfExists('sessions');
+        Schema::dropIfExists('jobs');
         Schema::dropIfExists('verification_logs');
         Schema::dropIfExists('notification_broadcasts');
+        Schema::dropIfExists('conversations');
+        Schema::dropIfExists('messages');
         Schema::dropIfExists('seller_level_benefits');
         Schema::dropIfExists('carts');
         Schema::dropIfExists('comment_likes');

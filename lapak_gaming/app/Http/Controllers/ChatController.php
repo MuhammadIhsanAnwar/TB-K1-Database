@@ -84,6 +84,8 @@ public function show(Request $request, Conversation $conversation)
 
     $role = $request->get('role', 'buyer');
 
+    $conversation->markReadFor($user->id);
+
     if ($role === 'seller') {
 
         $sidebarConversations = Conversation::with([
@@ -106,7 +108,6 @@ public function show(Request $request, Conversation $conversation)
             ->latest('last_message_at')
             ->get();
     }
-
     $messages = $conversation->messages()
     ->with('sender')
     ->whereNull('deleted_for_everyone_at')
@@ -175,7 +176,7 @@ public function poll(Conversation $conversation)
             ->get();
 
         return response()->json(
-            $conversations->map(fn($c) => $c->toSummary($user->id))
+            $conversations->map(fn (Conversation $conversation) => $conversation->toSummary($user->id))
         );
     }
 
@@ -216,72 +217,112 @@ public function poll(Conversation $conversation)
     /**
      * Kirim Pesan Baru
      */
-    public function sendMessage(Request $request)
+    public function sendMessage(Request $request, Conversation $conversation)
     {
         $request->validate([
-            'conversation_id' => 'required|exists:conversations,id',
-            'message'         => 'nullable|string',
-            'attachment'      => 'nullable|file|max:5120', // Max 5MB
+            'message'    => 'nullable|string',
+            'attachment' => 'nullable|file|max:5120',
         ]);
 
         $messageText = trim($request->input('message', ''));
-        if ($messageText === '' && ! $request->hasFile('attachment')) {
-            return response()->json(['message' => 'Pesan atau foto harus diisi.'], 422);
+
+        if ($messageText === '' && !$request->hasFile('attachment')) {
+            return response()->json([
+                'message' => 'Pesan atau foto harus diisi.'
+            ], 422);
         }
 
-        $conversation = Conversation::findOrFail($request->conversation_id);
         $user = Auth::user();
-        $receiverId = ($user->id === $conversation->buyer_id) ? $conversation->seller_id : $conversation->buyer_id;
 
-        // Handle Attachment jika ada
+        // Proteksi participant
+        // if (
+        //     $user->id !== $conversation->buyer_id &&
+        //     $user->id !== $conversation->seller_id
+        // ) {
+        //     return response()->json([
+        //         'message' => 'Unauthorized'
+        //     ], 403);
+        // }
+
+        $receiverId = $user->id === $conversation->buyer_id
+            ? $conversation->seller_id
+            : $conversation->buyer_id;
+
         $attachmentPath = null;
         $attachmentType = null;
+
         if ($request->hasFile('attachment')) {
+
             $file = $request->file('attachment');
-            $attachmentPath = $file->store('chat_attachments', 'public_app_public');
-            $attachmentType = explode('/', $file->getMimeType())[0]; // image, video, application
+
+            $attachmentPath = $file->store(
+                'foto-chat',
+                'public_app_public'
+            );
+
+            $attachmentType = explode(
+                '/',
+                $file->getMimeType()
+            )[0];
         }
 
         $message = Message::create([
-            'conversation_id' => $conversation->id,
-            'sender_id'       => $user->id,
-            'receiver_id'     => $receiverId,
-            'sender_role'     => $user->role ?? 'user',
-            'message'         => $messageText,
-            'attachment_path' => $attachmentPath,
-            'attachment_type' => $attachmentType,
-        ]);
+        'conversation_id' => $conversation->id,
+        'sender_id'       => $user->id,
+        'receiver_id'     => $receiverId,
+        'message'         => $messageText,
+        'attachment_path' => $attachmentPath,
+        'attachment_type' => $attachmentType,
+    ]);
 
-        // Kirim Notifikasi Sistem ke Lawan Bicara
-        \App\Models\MarketplaceNotification::create([
-            'user_id' => $receiverId,
-            'title' => 'Pesan Baru dari ' . $user->name,
-            'body' => $messageText ?: ($attachmentType === 'image' ? '[Mengirim Foto]' : '[Mengirim Lampiran]'),
-            'link' => route('chat.show', $conversation->id),
-            'type' => 'chat-message',
-        ]);
+    $conversation->update([
+        'last_message_at' => now(),
+        'last_message'    => $messageText ?: '[Lampiran]'
+    ]);
 
-        // Broadcast Realtime ke lawan bicara
-        broadcast(new MessageSent($message))->toOthers();
+    // NOTE: Do not create global marketplace notifications for normal chat messages.
+    // Chat UI handles its own in-app badges and realtime events. Creating
+    // MarketplaceNotification for every chat message caused them to appear
+    // in the global notifications dropdown which is undesired.
 
-        return response()->json($message->toChat($user->id));
+    broadcast(new MessageSent($message))->toOthers();
+
+    return response()->json(
+        $message->toChat($user->id)
+    );
     }
-
     /**
      * Fitur WhatsApp: Edit Pesan
      */
     public function editMessage(Request $request, Message $message)
     {
-        if ($message->sender_id !== Auth::id()) return response()->json(['error' => 'Forbidden'], 403);
+        if ((int) $message->sender_id !== (int) Auth::id()) {
+            return response()->json([
+                'error' => 'Forbidden'
+            ], 403);
+        }
 
-        $request->validate(['message' => 'required|string']);
+        $request->validate([
+            'message' => 'required|string'
+        ]);
+
+        if ($message->created_at->diffInMinutes(now()) > 5) {
+
+        return response()->json([
+            'success' => false,
+            'message' => 'Pesan hanya bisa diedit dalam 5 menit.'
+        ], 403);
+    }
 
         $message->update([
             'message' => $request->message,
             'edited_at' => now(),
         ]);
 
-        return response()->json(['success' => true, 'message' => $message->toChat(Auth::id())]);
+        return response()->json([
+            'success' => true,
+            'message' => $message->toChat(Auth::id())
+        ]);
     }
 
     /**
@@ -289,17 +330,18 @@ public function poll(Conversation $conversation)
      */
     public function deleteMessage(Request $request, Message $message)
     {
-        if (Auth::id() !== $message->sender_id && Auth::id() !== $message->receiver_id) {
+        if ((int) Auth::id() !== (int) $message->sender_id &&
+        (int) Auth::id() !== (int) $message->receiver_id) {
             return response()->json(['error' => 'Forbidden'], 403);
         }
 
         $type = $request->input('type'); // 'me' atau 'everyone'
 
         if ($type === 'everyone') {
-            if ($message->sender_id !== Auth::id()) return response()->json(['error' => 'Forbidden'], 403);
+            if ((int) $message->sender_id !== (int) Auth::id()) return response()->json(['error' => 'Forbidden'], 403);
             $message->update(['deleted_for_everyone_at' => now()]);
         } else {
-            if ($message->sender_id === Auth::id()) {
+            if ((int) $message->sender_id === (int) Auth::id()) {
                 $message->update(['deleted_for_sender_at' => now()]);
             } else {
                 $message->update(['deleted_for_receiver_at' => now()]);
@@ -342,13 +384,8 @@ public function poll(Conversation $conversation)
             'message'         => 'Halo, saya tertarik dengan produk: ' . $product->name,
         ]);
 
-        \App\Models\MarketplaceNotification::create([
-            'user_id' => $sellerId,
-            'title' => 'Pesan Baru dari ' . Auth::user()->name,
-            'body' => 'Halo, saya tertarik dengan produk: ' . $product->name,
-            'link' => route('chat.show', $conversation->id),
-            'type' => 'chat-message',
-        ]);
+        // Intentionally not creating MarketplaceNotification for product-initiated
+        // chat. Product chats should not appear in global notifications.
     }
 
     return redirect()->route('chat.show', $conversation->id);

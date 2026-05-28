@@ -1,6 +1,10 @@
 @extends('layouts.app')
 
-@section('title', 'Chat — ' . ($conversation->partner(auth()->id())?->name ?? 'Percakapan'))
+@section('title', 'Chat — ' . (
+    $role === 'buyer'
+        ? ($conversation->seller?->store_name ?? $conversation->seller?->name)
+        : ($conversation->buyer?->name)
+) ?? 'Percakapan')
 
 @push('styles')
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.1/cropper.min.css" />
@@ -306,6 +310,55 @@
     text-align: left;
 }
 
+.message-actions {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    display: flex;
+    gap: 6px;
+    opacity: 0.22;
+    transition: opacity .18s ease;
+    z-index: 2;
+}
+
+.bubble-content:hover .message-actions,
+.bubble-content:focus-within .message-actions {
+    opacity: 1;
+}
+
+.message-actions button {
+    width: 30px;
+    height: 30px;
+    border-radius: 9999px;
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    background: rgba(15, 23, 42, 0.85);
+    color: #cbd5e1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    transition: background .15s ease, transform .15s ease, color .15s ease;
+}
+
+.message-actions button:hover {
+    background: rgba(56, 189, 248, 0.18);
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.edited-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.25rem;
+    font-size: 10px;
+    color: #e2e8f0;
+    background: rgba(255,255,255,0.08);
+    border: 1px solid rgba(148, 163, 184, 0.16);
+    border-radius: 9999px;
+    padding: 2px 8px;
+    margin-left: 0.5rem;
+}
+
 .message-status {
     margin-left: 4px;
     display: inline-flex;
@@ -548,20 +601,28 @@
             @php
                 // 🔥 PERBAIKAN 1: Paksa panggil nama lawan bicara berdasarkan Role (bukan ID) agar tidak muncul nama sendiri 2x
                 $p2     = $role === 'seller' ? $conv->buyer : $conv->seller;
-                $unread = $conv->unreadFor($user->id);
                 $active = $conv->id === $conversation->id;
+                $unread = $active ? 0 : $conv->unreadFor($user->id);
             @endphp
             <a href="{{ route('chat.show', [
                     'conversation' => $conv->id,
                     'role' => $role
                 ]) }}"
                class="conv-item {{ $active ? 'active' : '' }}"
-               data-name="{{ strtolower($p2?->name ?? '') }}">
+               data-name="{{ strtolower(
+                    $role === 'buyer'
+                        ? ($p2?->store_name ?? $p2?->name ?? '')
+                        : ($p2?->name ?? '')
+                ) }}">
                 <img src="{{ $p2?->avatar_url ?? 'https://ui-avatars.com/api/?name=?' }}"
                      class="conv-avatar" alt="">
                 <div class="conv-content">
                     <div class="flex justify-between items-center">
-                        <span class="conv-name">{{ $p2?->name ?? '?' }}</span>
+                        <span class="conv-name">{{
+                            $role === 'buyer'
+                                ? ($p2?->store_name ?? $p2?->name ?? 'Toko')
+                                : ($p2?->name ?? 'Buyer')
+                        }}</span>
                         <span class="conv-time">{{ $conv->last_message_at?->format('H:i') }}</span>
                     </div>
                     <div class="flex justify-between items-center">
@@ -586,7 +647,13 @@
             <img src="{{ $partner?->avatar_url ?? 'https://ui-avatars.com/api/?name=?' }}"
                  class="chat-header-avatar" alt="{{ $partner?->name }}">
             <div class="chat-header-info">
-                <h2>{{ $partner?->name ?? 'Pengguna' }}</h2>
+                <h2>
+                    {{
+                        $role === 'buyer'
+                            ? ($partner?->store_name ?? $partner?->name ?? 'Toko')
+                            : ($partner?->name ?? 'Pengguna')
+                    }}
+                </h2>
                 <p class="text-xs text-blue-400 mt-1">
                     {{ $role === 'seller' ? 'Mode Seller' : 'Mode Buyer' }}
                 </p>
@@ -609,7 +676,9 @@
         {{-- Product Card Context --}}
         @if($product)
         <div class="product-context">
-            <img src="{{ $product->image_url }}" alt="{{ $product->name }}">
+            <div class="overflow-hidden rounded-xl aspect-[16/9] bg-black/40 border border-white/5">
+                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover">
+            </div>
             <div class="product-info">
                 <h3>{{ $product->name }}</h3>
                 <p class="product-price">Rp {{ number_format($product->price, 0, ',', '.') }}</p>
@@ -642,7 +711,7 @@
             @php $lastDate = $msgDate; @endphp
             @endif
 
-            <div class="message-item {{ $isMine ? 'mine' : 'theirs' }}" data-msg-id="{{ $msg->id }}">
+            <div class="message-item {{ $isMine ? 'mine' : 'theirs' }}" data-msg-id="{{ $msg->hash }}">
                 @if(!$isMine)
                 <img src="{{ $msg->sender?->avatar_url }}" class="message-avatar" alt="">
                 @endif
@@ -650,12 +719,15 @@
     <div class="bubble-content group relative">
         
         {{-- Tombol Opsi (Hanya muncul jika pesan milik sendiri) --}}
-        @if($isMine)
-        <div class="absolute -left-10 top-0 hidden group-hover:flex gap-1">
-            <button onclick="prepareEdit('{{ $msg->id }}')" class="p-1 text-gray-500 hover:text-blue-400">
+        @if(
+            $isMine &&
+            $msg->created_at->diffInMinutes(now()) <= 5
+        )
+<div class="message-actions" aria-label="Aksi pesan">
+            <button type="button" onclick="prepareEdit('{{ $msg->hash }}')" class="" title="Edit pesan" aria-label="Edit pesan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
             </button>
-            <button onclick="confirmDelete('{{ $msg->id }}')" class="p-1 text-gray-500 hover:text-red-400">
+            <button type="button" onclick="confirmDelete('{{ $msg->hash }}')" class="" title="Hapus pesan" aria-label="Hapus pesan">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
             </button>
         </div>
@@ -663,15 +735,20 @@
 
         {{-- Cek Jika Gambar --}}
         @if($msg->image_url)
-            <img src="{{ $msg->image_url }}" class="max-w-xs rounded-lg mb-2 cursor-pointer" onclick="window.open(this.src)">
+            <div class="max-w-xs rounded-lg mb-2 overflow-hidden aspect-[16/9] cursor-pointer" onclick="window.open(this.querySelector('img').src)">
+                <img src="{{ $msg->image_url }}" class="w-full h-full object-cover">
+            </div>
         @endif
         
-        <p class="message-text" id="text-{{ $msg->id }}">{{ $msg->message }}</p>
+        <p class="message-text" id="text-{{ $msg->hash }}">{{ $msg->message }}</p>
     </div>
     
     {{-- Meta data (waktu/status) --}}
     <div class="message-time {{ $isMine ? 'mine' : 'theirs' }}">
         <span>{{ $msg->created_at->format('H:i') }}</span>
+        @if($msg->edited_at)
+          <span class="edited-badge">Diedit</span>
+        @endif
     </div>
 </div>
                 @if($isMine)
@@ -710,12 +787,12 @@
     </button>
 </div>
 {{-- Area Preview Sebelum Kirim --}}
-<div id="imagePreviewContainer" class="hidden mt-2 p-2 bg-slate-800 rounded-lg flex items-center gap-3">
+<div id="imagePreviewContainer" class="hidden mt-2 p-2 bg-slate-800 rounded-lg items-center gap-3">
     <img id="imagePreview" src="" class="h-12 w-12 object-cover rounded">
     <span class="text-xs text-gray-300 flex-1 truncate" id="fileName"></span>
     <button onclick="cancelImage()" class="text-red-400 text-xs">Batal</button>
 </div>
-            <div id="chatCropperModal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 bg-black/90 backdrop-blur-md">
+            <div id="chatCropperModal" class="fixed inset-0 z-50 hidden items-center justify-center p-4 bg-black/90 backdrop-blur-md">
                 <div class="bg-[#111] border border-white/10 rounded-2xl max-w-xl w-full flex flex-col max-h-[85vh] shadow-2xl">
                     <div class="flex items-center justify-between border-b border-white/5 px-4 py-3">
                         <h3 class="text-xs font-bold text-white uppercase tracking-wider flex items-center gap-2">
@@ -771,6 +848,7 @@ const CONV_ID  = chatConfig.convId;
 const AUTH_ID  = chatConfig.authId;
 const SEND_URL = chatConfig.sendUrl;
 const POLL_URL = chatConfig.pollUrl;
+const MESSAGE_BASE_URL = `${window.location.origin}/chat/message`;
 
 const CSRF = document.querySelector('meta[name="csrf-token"]').content;
 
@@ -784,6 +862,32 @@ const msgInput      = document.getElementById('msgInput');
 const sendBtn       = document.getElementById('sendBtn');
 const imgInput      = document.getElementById('imgInput');
 const cancelEditBtn = document.getElementById('cancelEditBtn');
+
+async function parseJsonSafe(response) {
+    try {
+        return await response.json();
+    } catch {
+        return null;
+    }
+}
+
+function showToast(message, icon = 'info') {
+    if (typeof Swal !== 'undefined') {
+        Swal.fire({
+            toast: true,
+            position: 'top-end',
+            icon,
+            title: message,
+            showConfirmButton: false,
+            timer: 2800,
+            timerProgressBar: true,
+            background: '#0f172a',
+            color: '#f8fafc',
+        });
+    } else {
+        alert(message);
+    }
+}
 
 
 // ======================================================
@@ -941,6 +1045,7 @@ function previewImage(input) {
 
             cropperImg.src = e.target.result;
             modal.classList.remove('hidden');
+            modal.classList.add('flex');
 
             if (chatCropper) {
                 chatCropper.destroy();
@@ -974,6 +1079,7 @@ function closeChatCropper() {
     const modal = document.getElementById('chatCropperModal');
     if (modal) {
         modal.classList.add('hidden');
+        modal.classList.remove('flex');
     }
     if (chatCropper) {
         chatCropper.destroy();
@@ -1063,6 +1169,7 @@ document.getElementById('saveChatCropperBtn')?.addEventListener('click', () => {
                     const savedPercent = Math.round((1 - finalFile.size / originalChatFile.size) * 100);
                     fileName.textContent = `${finalFile.name} (${savedPercent > 0 ? `Hemat ${savedPercent}%` : 'Optimized'}, ${(finalFile.size / 1024).toFixed(0)} KB)`;
                     container.classList.remove('hidden');
+                    container.classList.add('flex');
 
                     closeChatCropper();
                     updateSendButtonState();
@@ -1077,6 +1184,7 @@ function cancelImage() {
     const container = document.getElementById('imagePreviewContainer');
     if (container) {
         container.classList.add('hidden');
+        container.classList.remove('flex');
     }
     updateSendButtonState();
 }
@@ -1132,11 +1240,14 @@ async function updateMessage(id, newText) {
 
     try {
 
-        const res = await fetch(`/chat/message/${id}`, {
+        const res = await fetch(`${MESSAGE_BASE_URL}/${encodeURIComponent(id)}`, {
             method: 'PATCH',
+            credentials: 'same-origin',
             headers: {
                 'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': CSRF,
+                'X-HTTP-Method-Override': 'PATCH',
+                'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json'
             },
             body: JSON.stringify({
@@ -1144,15 +1255,25 @@ async function updateMessage(id, newText) {
             })
         });
 
-        if(!res.ok) throw new Error();
+        const data = await parseJsonSafe(res);
+
+        if (!res.ok) {
+            throw new Error(data?.error || data?.message || res.statusText || 'Gagal update pesan');
+        }
 
         document.getElementById(`text-${id}`).innerText = newText;
 
+        const timeMeta = document.querySelector(`[data-msg-id="${id}"] .message-time`);
+        if (timeMeta && !timeMeta.querySelector('.edited-badge')) {
+            timeMeta.insertAdjacentHTML('beforeend', '<span class="edited-badge">Diedit</span>');
+        }
+
         cancelEdit();
+        showToast('Pesan berhasil diperbarui.', 'success');
 
     } catch(e) {
 
-        alert('Gagal update pesan');
+        showToast(e.message || 'Gagal update pesan', 'error');
 
     }
 
@@ -1171,21 +1292,33 @@ async function confirmDelete(msgId) {
 
     try {
 
-        const res = await fetch(`/chat/message/${msgId}`, {
+        const res = await fetch(`${MESSAGE_BASE_URL}/${encodeURIComponent(msgId)}`, {
             method: 'DELETE',
+            credentials: 'same-origin',
             headers: {
+                'Content-Type': 'application/json',
                 'X-CSRF-TOKEN': CSRF,
+                'X-HTTP-Method-Override': 'DELETE',
+                'X-Requested-With': 'XMLHttpRequest',
                 'Accept': 'application/json'
             }
         });
 
-        if(!res.ok) throw new Error();
+        const data = await parseJsonSafe(res);
 
-        el.remove();
+        if (!res.ok) {
+            throw new Error(data?.error || data?.message || res.statusText || 'Gagal menghapus pesan');
+        }
+
+        if (el) {
+            el.remove();
+        }
+
+        showToast('Pesan berhasil dihapus.', 'success');
 
     } catch(e) {
 
-        alert('Gagal menghapus pesan');
+        showToast(e.message || 'Gagal menghapus pesan', 'error');
 
     }
 
@@ -1409,7 +1542,7 @@ async function sendMessage() {
             throw new Error(data.message || 'Gagal kirim');
         }
 
-        lastId = Number(data.id);
+        lastId = Number(data.db_id || lastId);
 
         const tempEl = document.querySelector(
             `[data-msg-id="${tempId}"]`
@@ -1427,7 +1560,7 @@ async function sendMessage() {
 
         console.error(e);
 
-        alert(e.message);
+        showToast(e.message || 'Gagal kirim pesan', 'error');
 
     } finally {
 
@@ -1484,7 +1617,7 @@ async function pollMessages() {
             });
 
             lastId = Number(
-                data.messages[data.messages.length - 1].id
+                data.messages[data.messages.length - 1].db_id || lastId
             );
 
             refreshSidebar();

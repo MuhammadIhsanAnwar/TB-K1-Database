@@ -144,28 +144,49 @@ class Product extends Model {
         }
 
         $imagePath = ltrim($imagePath, '/');
+        $normalizedPath = str_replace('foto_produk/', 'foto-produk/', $imagePath);
 
-        if (str_starts_with($imagePath, 'storage/')) {
-            return asset($imagePath);
+        if (str_starts_with($normalizedPath, 'storage/app/public/')) {
+            return asset($normalizedPath);
         }
 
-        if (Storage::disk('public_app_public')->exists($imagePath)) {
-            return asset('storage/' . $imagePath);
+        if (str_starts_with($normalizedPath, 'storage/')) {
+            return asset($normalizedPath);
         }
 
-        if (Storage::disk('public')->exists($imagePath)) {
-            return asset('storage/' . $imagePath);
+        if (str_starts_with($normalizedPath, 'foto-produk/')) {
+            return asset('storage/app/public/' . $normalizedPath);
         }
 
-        if (file_exists(public_path('storage/app/public/' . $imagePath))) {
-            return asset('storage/app/public/' . $imagePath);
+        if (str_starts_with($normalizedPath, 'foto_produk/')) {
+            return asset('storage/app/public/' . str_replace('foto_produk/', 'foto-produk/', $normalizedPath));
         }
 
-        if (file_exists(public_path($imagePath))) {
-            return asset($imagePath);
+        if (str_starts_with($normalizedPath, 'public/storage/app/public/')) {
+            return asset(substr($normalizedPath, 7));
         }
 
-        return asset('storage/' . $imagePath);
+        if (Storage::disk('public_app_public')->exists($normalizedPath)) {
+            return asset('storage/app/public/' . $normalizedPath);
+        }
+
+        if (Storage::disk('public')->exists($normalizedPath)) {
+            return asset('storage/' . $normalizedPath);
+        }
+
+        if (file_exists(public_path('storage/app/public/' . $normalizedPath))) {
+            return asset('storage/app/public/' . $normalizedPath);
+        }
+
+        if (file_exists(public_path('storage/' . $normalizedPath))) {
+            return asset('storage/' . $normalizedPath);
+        }
+
+        if (file_exists(public_path($normalizedPath))) {
+            return asset($normalizedPath);
+        }
+
+        return asset('storage/app/public/' . $normalizedPath);
     }
 
     public function getFormattedPriceAttribute(): string {

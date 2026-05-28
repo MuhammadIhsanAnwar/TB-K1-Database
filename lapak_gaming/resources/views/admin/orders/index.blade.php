@@ -68,8 +68,9 @@
                     Dashboard
                 </a>
                     <a href="{{ route('admin.orders.report.pdf') }}"
-                             download="laporan-pesanan.pdf" rel="noopener noreferrer"
-                         class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 px-4 py-2.5 text-xs font-bold text-slate-950 transition-all shadow-md tracking-wide shadow-emerald-500/10">
+                       target="_blank"
+                       download="laporan-pesanan.pdf" rel="noopener noreferrer"
+                       class="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 px-4 py-2.5 text-xs font-bold text-slate-950 transition-all shadow-md tracking-wide shadow-emerald-500/10">
                     <svg class="w-4 h-4 stroke-[2.5]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M3 16.5v2.25A2.25 2.25 0 005.25 21h13.5A2.25 2.25 0 0021 18.75V16.5M16.5 12L12 16.5m0 0L7.5 12m4.5 4.5V3" />
                     </svg>
@@ -90,7 +91,34 @@
                         <button type="submit" class="rounded-xl bg-amber-500 px-3 py-2 text-sm font-semibold text-slate-950">Cari</button>
                         <a href="{{ route('admin.orders.index') }}" class="rounded-xl border border-white/5 px-3 py-2 text-sm text-slate-300">Reset</a>
                     </form>
-                    <span class="text-xs font-mono bg-black/20 text-slate-500 px-2 py-0.5 rounded border border-white/5 w-max">Total: {{ $orders->total() }} Records</span>
+                    <div class="flex items-center gap-3 flex-wrap">
+
+    <form method="GET" action="{{ route('admin.orders.index') }}">
+        <input type="hidden" name="q" value="{{ request('q') }}">
+        <input type="hidden" name="sort" value="{{ request('sort') }}">
+        <input type="hidden" name="direction" value="{{ request('direction') }}">
+
+        <select
+            name="per_page"
+            onchange="this.form.submit()"
+            class="rounded-xl border border-white/5 bg-black/20 px-3 py-2 text-xs text-white outline-none">
+            @foreach([50,100,300,500,1000] as $size)
+                <option
+                    value="{{ $size }}"
+                    {{ request('per_page', 50) == $size ? 'selected' : '' }}
+                >
+                    {{ $size }} per halaman
+                </option>
+            @endforeach
+
+        </select>
+    </form>
+
+    <span class="text-xs font-mono bg-black/20 text-slate-500 px-2 py-0.5 rounded border border-white/5 w-max">
+        Total: {{ $orders->total() }} Records
+    </span>
+
+</div>
                 </div>
             </div>
 

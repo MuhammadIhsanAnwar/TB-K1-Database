@@ -31,6 +31,17 @@ class MarketplaceController extends Controller
             $allCategories = $query->get();
         }
 
+        // Determine which categories should be displayed on homepage (only those that have products)
+        $displayCategories = collect();
+        if ($allCategories->isNotEmpty() && Schema::hasTable('products')) {
+            foreach ($allCategories as $cat) {
+                $has = Product::query()->active()->inStock()->where('category_id', $cat->id)->exists();
+                if ($has) {
+                    $displayCategories->push($cat);
+                }
+            }
+        }
+
         // 1. Hero Banners
         $heroBanners = collect();
         if (Schema::hasTable('banners')) {
@@ -40,7 +51,14 @@ class MarketplaceController extends Controller
             } else {
                 $bq = $bq->latest();
             }
-            $heroBanners = $bq->take(4)->get();
+            $heroBanners = $bq->get();
+
+            if ($heroBanners->isEmpty()) {
+                $heroBanners = Banner::query()
+                    ->active()
+                    ->latest()
+                    ->get();
+            }
         }
 
         // 2. Featured Game Keys ("Unlock the Simulation")
@@ -60,9 +78,13 @@ class MarketplaceController extends Controller
             foreach($categoriesToFetch as $catName) {
                 $cat = Category::query()->active()->where('name', 'like', "%{$catName}%")->first();
                 if ($cat) {
+                    $products = Product::query()->active()->inStock()->where('category_id', $cat->id)->with(['statistics', 'seller', 'category'])->take(12)->get();
+                    if ($products->isEmpty()) {
+                        continue;
+                    }
                     $categorySections->push([
                         'category' => $cat,
-                        'products' => Product::query()->active()->inStock()->where('category_id', $cat->id)->with(['statistics', 'seller', 'category'])->take(12)->get()
+                        'products' => $products
                     ]);
                 }
             }
@@ -75,15 +97,44 @@ class MarketplaceController extends Controller
                     'category' => $category,
                     'products' => Product::query()->active()->inStock()->where('category_id', $category->id)->with(['statistics', 'seller', 'category'])->take(12)->get(),
                 ];
-            })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->take(5)->values();
+            })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->take(8)->values();
         }
+
+        $featuredBanners = collect();
+        if (Schema::hasTable('banners')) {
+            $fq = Banner::query()->active()->where('position', 'featured');
+            if (Schema::hasColumn('banners', 'sort_order')) {
+                $fq = $fq->orderByDesc('sort_order')->latest();
+            } else {
+                $fq = $fq->latest();
+            }
+            $featuredBanners = $fq->take(6)->get();
+        }
+
+        // Fallback homepage products (show when categorySections are empty)
+        $homepageProducts = collect();
+        if (Schema::hasTable('products')) {
+            $homepageProducts = Product::query()->active()->inStock()->with(['statistics', 'seller', 'category'])->inRandomOrder()->take(12)->get();
+        }
+
+        $activeAccountCount = Schema::hasTable('users') ? User::active()->count() : 0;
+        $activeProductCount = Schema::hasTable('products') ? Product::query()->active()->inStock()->count() : 0;
+        $verifiedSellerCount = Schema::hasTable('sellers') ? Seller::verified()->count() : (Schema::hasTable('users') ? User::approvedSellers()->count() : 0);
+        $transactionCount = Schema::hasTable('orders') ? Order::query()->count() : 0;
 
         return view('marketplace.home', [
             'allCategories' => $allCategories,
+            'displayCategories' => $displayCategories,
+            'activeAccountCount' => $activeAccountCount,
+            'activeProductCount' => $activeProductCount,
+            'verifiedSellerCount' => $verifiedSellerCount,
+            'transactionCount' => $transactionCount,
             'heroBanners' => $heroBanners,
+            'featuredBanners' => $featuredBanners,
             'featuredGameKeys' => $featuredGameKeys,
             'featuredRPGKeys' => $featuredRPGKeys,
             'categorySections' => $categorySections,
+            'homepageProducts' => $homepageProducts,
         ]);
     }
 
@@ -231,15 +282,37 @@ class MarketplaceController extends Controller
 
     public function trending(Request $request): View
     {
-        $trendingProducts = Schema::hasTable('products')
-            ? Product::query()
-                ->active()
-                ->inStock()
-                ->with(['statistics', 'seller', 'category'])
-                ->orderByDesc('id')
-                ->paginate(12)
-            : collect();
-        
+        if (! Schema::hasTable('products')) {
+            $trendingProducts = collect();
+        } else {
+            // Prefer ranking by sold_count, then review_count, then rating_average
+            if (Schema::hasTable('product_statistics')) {
+                $trendingProducts = Product::query()
+                    ->select('products.*')
+                    ->leftJoin('product_statistics', 'products.id', '=', 'product_statistics.product_id')
+                    ->active()
+                    ->inStock()
+                    ->where(function ($q) {
+                        $q->where('product_statistics.sold_count', '>', 0)
+                          ->orWhere('product_statistics.review_count', '>', 0);
+                    })
+                    ->with(['statistics', 'seller', 'category'])
+                    ->orderByDesc('product_statistics.sold_count')
+                    ->orderByDesc('product_statistics.review_count')
+                    ->orderByDesc('product_statistics.rating_average')
+                    ->orderByDesc('products.updated_at')
+                    ->paginate(12);
+            } else {
+                // Fallback: most recently added products
+                $trendingProducts = Product::query()
+                    ->active()
+                    ->inStock()
+                    ->with(['statistics', 'seller', 'category'])
+                    ->orderByDesc('id')
+                    ->paginate(12);
+            }
+        }
+
         return view('marketplace.trending', [
             'products' => $trendingProducts,
         ]);

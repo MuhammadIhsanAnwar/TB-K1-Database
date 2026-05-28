@@ -1,4 +1,4 @@
-<header class="sticky top-0 z-40 border-b border-slate-200/70 surface-panel backdrop-blur-xl dark:border-slate-800 dark:bg-slate-950/80">
+<header class="sticky top-0 z-40 border-b border-white/10 bg-slate-950/95 backdrop-blur-xl shadow-sm dark:border-slate-800 dark:bg-slate-950/95">
     <div class="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
         <a href="{{ route('home') }}" class="flex items-center gap-3 font-extrabold tracking-tight text-slate-950 dark:text-white">
             <span class="flex h-10 w-10 items-center justify-center rounded-2xl bg-slate-950 text-sm text-white shadow-glow dark:bg-white dark:text-slate-950">LG</span>

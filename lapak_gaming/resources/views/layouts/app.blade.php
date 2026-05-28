@@ -218,6 +218,164 @@
       -webkit-backdrop-filter: blur(20px);
       border: 1px solid rgba(255,255,255,0.04);
     }
+
+    /* ── Global Alert System ─────────────────────────────────── */
+    .alert,
+    [role="alert"] {
+      position: relative;
+      overflow: hidden;
+      border-radius: 1.25rem;
+      padding: 1rem 1.1rem;
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 18px 40px rgba(0,0,0,0.22);
+      color: #e2e8f0;
+    }
+
+    .alert::before,
+    [role="alert"]::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(255,255,255,0.04), transparent 45%, rgba(255,255,255,0.02));
+      pointer-events: none;
+    }
+
+    .alert > *,
+    [role="alert"] > * {
+      position: relative;
+      z-index: 1;
+    }
+
+    .alert-success,
+    .alert.alert-success,
+    [role="alert"].alert-success {
+      border: 1px solid rgba(16,185,129,0.22);
+      background: linear-gradient(145deg, rgba(6,78,59,0.85), rgba(6,95,70,0.78));
+      box-shadow: 0 18px 40px rgba(6,95,70,0.16);
+    }
+
+    .alert-danger,
+    .alert-error,
+    .alert.alert-danger,
+    .alert.alert-error,
+    [role="alert"].alert-danger,
+    [role="alert"].alert-error {
+      border: 1px solid rgba(244,63,94,0.22);
+      background: linear-gradient(145deg, rgba(127,29,29,0.9), rgba(136,19,55,0.82));
+      box-shadow: 0 18px 40px rgba(136,19,55,0.16);
+    }
+
+    .alert-warning,
+    .alert.alert-warning,
+    [role="alert"].alert-warning {
+      border: 1px solid rgba(245,158,11,0.22);
+      background: linear-gradient(145deg, rgba(120,53,15,0.88), rgba(146,64,14,0.80));
+      box-shadow: 0 18px 40px rgba(146,64,14,0.16);
+    }
+
+    .alert-info,
+    .alert.alert-info,
+    [role="alert"].alert-info {
+      border: 1px solid rgba(96,165,250,0.22);
+      background: linear-gradient(145deg, rgba(30,41,59,0.88), rgba(15,23,42,0.82));
+      box-shadow: 0 18px 40px rgba(37,99,235,0.12);
+    }
+
+    .alert .btn-close,
+    [role="alert"] .btn-close {
+      filter: brightness(1.1) contrast(1.1);
+      opacity: 0.82;
+    }
+
+    .alert .btn-close:hover,
+    [role="alert"] .btn-close:hover {
+      opacity: 1;
+    }
+
+    .flash-badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.75rem;
+      height: 2.75rem;
+      border-radius: 0.9rem;
+      flex-shrink: 0;
+      box-shadow: inset 0 1px 0 rgba(255,255,255,0.08);
+    }
+
+    .flash-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: #fff;
+      letter-spacing: 0.01em;
+    }
+
+    .flash-text {
+      margin-top: 0.25rem;
+      color: rgba(226,232,240,0.9);
+      line-height: 1.55;
+    }
+
+    .page-toast {
+      position: fixed;
+      right: 1.5rem;
+      bottom: 1.5rem;
+      z-index: 9999;
+      display: flex;
+      align-items: flex-start;
+      gap: 0.85rem;
+      max-width: min(24rem, calc(100vw - 2rem));
+      padding: 1rem 1.05rem;
+      border-radius: 1.1rem;
+      border: 1px solid rgba(255,255,255,0.08);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      box-shadow: 0 24px 48px rgba(0,0,0,0.28);
+      transform-origin: bottom right;
+      animation: toastPop 0.22s ease-out both;
+    }
+
+    .page-toast__icon {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: 2.35rem;
+      height: 2.35rem;
+      border-radius: 0.85rem;
+      flex-shrink: 0;
+    }
+
+    .page-toast__title {
+      font-size: 0.88rem;
+      font-weight: 800;
+      color: #fff;
+      line-height: 1.2;
+    }
+
+    .page-toast__text {
+      margin-top: 0.2rem;
+      font-size: 0.82rem;
+      line-height: 1.55;
+      color: rgba(226,232,240,0.9);
+    }
+
+    .page-toast__close {
+      margin-left: 0.3rem;
+      align-self: flex-start;
+      color: rgba(226,232,240,0.75);
+      transition: color 0.2s ease, transform 0.2s ease;
+    }
+
+    .page-toast__close:hover {
+      color: #fff;
+      transform: scale(1.04);
+    }
+
+    @keyframes toastPop {
+      from { opacity: 0; transform: translateY(10px) scale(0.98); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
     .glass-hover:hover {
       background: rgba(22,32,50,0.85);
       border-color: rgba(37,99,235,0.4);
@@ -835,6 +993,22 @@
   window.chatInboxUrl = <?php echo json_encode(route('chat.inbox.poll')); ?>;
 </script>
 
+@if(request()->routeIs('home') || request()->routeIs('marketplace.home'))
+  <div id="page-preloader" class="fixed inset-0 z-[2000] flex items-center justify-center bg-slate-950/95 backdrop-blur-xl transition-opacity duration-500">
+    <div class="max-w-xs w-full p-8 rounded-[32px] border border-white/10 bg-slate-950/95 shadow-[0_0_60px_rgba(56,189,248,0.24)] text-center">
+      <div class="mx-auto mb-6 w-24 h-24 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-white/10 flex items-center justify-center shadow-glow">
+        <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="w-16 h-16 object-contain" />
+      </div>
+      <div class="text-xl font-bold text-white mb-2">Lapak Gaming</div>
+      <p class="text-sm surface-muted mb-6">Sedang memuat konten terbaik untuk kamu.</p>
+      <div class="h-2 rounded-full bg-slate-800 overflow-hidden">
+        <div id="page-preloader-bar" class="h-full w-0 bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-500 transition-all duration-300"></div>
+      </div>
+      <div id="page-preloader-status" class="mt-4 text-xs uppercase tracking-[0.22em] text-slate-400">Memuat halaman...</div>
+    </div>
+  </div>
+@endif
+
 <div id="gaming-bg"></div>
 
   {{-- Ambient top glow --}}
@@ -848,23 +1022,38 @@
 
   {{-- Flash Messages --}}
   @if(session('success') || session('error') || session('warning'))
-  <div class="max-w-7xl mx-auto px-4 pt-4 animate-fade-up">
+  <div class="max-w-7xl mx-auto px-4 pt-4 animate-fade-up space-y-3">
     @if(session('success'))
-      <div class="flex items-center gap-3 bg-emerald-900/30 border border-emerald-700/40 text-emerald-300 px-4 py-3 rounded-xl text-sm mb-3">
-        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        {{ session('success') }}
+      <div class="alert alert-success flex items-start gap-3 text-sm text-slate-100">
+        <div class="flash-badge bg-emerald-500/15 text-emerald-200">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+          <p class="flash-title">Berhasil</p>
+          <p class="flash-text">{{ session('success') }}</p>
+        </div>
       </div>
     @endif
     @if(session('error'))
-      <div class="flex items-center gap-3 bg-red-900/30 border border-red-700/40 text-red-300 px-4 py-3 rounded-xl text-sm mb-3">
-        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-        {{ session('error') }}
+      <div class="alert alert-danger flex items-start gap-3 text-sm text-slate-100">
+        <div class="flash-badge bg-rose-500/15 text-rose-200">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2m7-2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <div>
+          <p class="flash-title">Terjadi kesalahan</p>
+          <p class="flash-text">{{ session('error') }}</p>
+        </div>
       </div>
     @endif
     @if(session('warning'))
-      <div class="flex items-center gap-3 bg-amber-900/30 border border-amber-700/40 text-amber-300 px-4 py-3 rounded-xl text-sm mb-3">
-        <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
-        {{ session('warning') }}
+      <div class="alert alert-warning flex items-start gap-3 text-sm text-slate-100">
+        <div class="flash-badge bg-amber-500/15 text-amber-200">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <div>
+          <p class="flash-title">Peringatan</p>
+          <p class="flash-text">{{ session('warning') }}</p>
+        </div>
       </div>
     @endif
   </div>
@@ -872,15 +1061,21 @@
 
   {{-- Validation errors global --}}
   @if($errors->any())
-  <div class="max-w-7xl mx-auto px-4 pt-4">
-    <div class="bg-red-900/20 border border-red-700/30 rounded-xl px-4 py-3 mb-3">
-      <ul class="space-y-1">
-        @foreach($errors->all() as $error)
-          <li class="text-sm text-red-300 flex items-center gap-2">
-            <span class="w-1 h-1 rounded-full bg-red-400 shrink-0"></span>{{ $error }}
-          </li>
-        @endforeach
-      </ul>
+  <div class="max-w-7xl mx-auto px-4 pb-4 animate-fade-up">
+    <div class="alert alert-danger rounded-3xl p-4 text-sm text-slate-100">
+      <div class="flex items-start gap-3">
+        <div class="flash-badge bg-rose-500/15 text-rose-200">
+          <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        </div>
+        <div>
+          <p class="flash-title">Perbaiki data berikut</p>
+          <ul class="mt-3 list-disc list-inside space-y-1 text-slate-300">
+            @foreach($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+      </div>
     </div>
   </div>
   @endif
@@ -953,7 +1148,9 @@
         const items = Array.isArray(data.items) ? data.items : [];
 
         if (badge) {
-          badge.classList.toggle('hidden', !(Number(data.unread_count) > 0));
+          const count = Number(data.unread_count) || 0;
+          badge.textContent = count > 99 ? '99+' : count;
+          badge.classList.toggle('hidden', count <= 0);
         }
 
         if (!items.length) {
@@ -1027,27 +1224,48 @@
     }
 
     async function loadChatBadge() {
-      const badge = document.getElementById('chat-badge');
-      if (!badge) return;
 
-      try {
+    const badge = document.getElementById('chat-badge');
+
+    if (!badge) return;
+
+    try {
+
         const response = await fetch(window.chatInboxUrl, {
-          method: 'GET',
-          headers: {
-            'X-Requested-With': 'XMLHttpRequest',
-            'Accept': 'application/json'
-          }
+            method: 'GET',
+            headers: {
+                'X-Requested-With': 'XMLHttpRequest',
+                'Accept': 'application/json'
+            }
         });
 
-        if (!response.ok) throw new Error('Failed to load chat badge');
+        if (!response.ok) {
+            throw new Error('Failed to load chat badge');
+        }
 
         const data = await response.json();
-        badge.classList.toggle('hidden', !(Number(data.total_unread) > 0));
-      } catch (error) {
-        // no-op: badge stays as is
-      }
-    }
 
+        const unread = Number(data.total_unread) || 0;
+
+        if (unread > 0) {
+
+            badge.textContent = unread > 99
+                ? '99+'
+                : unread;
+
+            badge.classList.remove('hidden');
+
+        } else {
+
+            badge.classList.add('hidden');
+        }
+
+    } catch (error) {
+
+        // no-op
+
+    }
+}
     async function markAllNotificationsRead() {
       const panel = document.getElementById('notif-dropdown');
       if (!panel) return;
@@ -1116,12 +1334,46 @@
 
     // ── Toast Notifications ────────────────────────────
     function showToast(msg, type = 'success') {
-      const colors = { success:'border-emerald-600/40 bg-emerald-900/40 text-emerald-300', error:'border-red-600/40 bg-red-900/40 text-red-300', info:'border-brand-600/40 bg-brand-900/30 text-brand-300' };
+      const presets = {
+        success: {
+          shell: 'border-emerald-400/20 bg-emerald-950/95 text-emerald-100',
+          icon: 'bg-emerald-500/15 text-emerald-200',
+          title: 'Berhasil',
+          glyph: '✓',
+        },
+        error: {
+          shell: 'border-rose-400/20 bg-rose-950/95 text-rose-100',
+          icon: 'bg-rose-500/15 text-rose-200',
+          title: 'Terjadi kesalahan',
+          glyph: '!',
+        },
+        info: {
+          shell: 'border-brand-400/20 bg-slate-950/95 text-slate-100',
+          icon: 'bg-brand-500/15 text-brand-200',
+          title: 'Informasi',
+          glyph: 'i',
+        },
+      };
+
+      const preset = presets[type] || presets.info;
       const toast = document.createElement('div');
-      toast.className = `fixed bottom-6 right-6 z-[9999] flex items-center gap-3 px-4 py-3 rounded-xl border text-sm font-medium shadow-card animate-fade-in ${colors[type] || colors.info}`;
-      toast.innerHTML = `<span>${msg}</span>`;
+      toast.className = `page-toast ${preset.shell}`;
+      toast.innerHTML = `
+        <div class="page-toast__icon ${preset.icon}">${preset.glyph}</div>
+        <div class="min-w-0 flex-1">
+          <div class="page-toast__title">${preset.title}</div>
+          <div class="page-toast__text">${msg}</div>
+        </div>
+        <button type="button" class="page-toast__close" aria-label="Tutup notifikasi">✕</button>
+      `;
+
+      const closeBtn = toast.querySelector('.page-toast__close');
+      if (closeBtn) {
+        closeBtn.addEventListener('click', () => toast.remove());
+      }
+
       document.body.appendChild(toast);
-      setTimeout(() => { toast.style.opacity='0'; toast.style.transition='opacity 0.3s'; setTimeout(()=>toast.remove(), 300); }, 3500);
+      setTimeout(() => { toast.style.opacity='0'; toast.style.transform='translateY(10px) scale(0.98)'; toast.style.transition='opacity 0.3s, transform 0.3s'; setTimeout(()=>toast.remove(), 300); }, 3500);
     }
 
     document.addEventListener("DOMContentLoaded", () => {
@@ -1150,14 +1402,25 @@
 });
 
 document.addEventListener('DOMContentLoaded', () => {
+    const preloader = document.getElementById('page-preloader');
+    const preloaderBar = document.getElementById('page-preloader-bar');
+    const preloaderText = document.getElementById('page-preloader-status');
 
-    const bg = document.getElementById('gaming-bg');
+    if (preloader && preloaderBar && preloaderText) {
+      let progress = 0;
+      const tick = setInterval(() => {
+        progress = Math.min(98, progress + Math.random() * 12 + 6);
+        preloaderBar.style.width = `${progress}%`;
+      }, 250);
 
-    const types = [
-        'line',
-        'square',
-        'plus'
-    ];
+      setTimeout(() => {
+        clearInterval(tick);
+        preloaderBar.style.width = '100%';
+        preloaderText.textContent = 'Selesai memuat, selamat datang!';
+        preloader.style.opacity = '0';
+        setTimeout(() => preloader.remove(), 400);
+      }, 3000);
+    }
 
     for(let i = 0; i < 8; i++){
 

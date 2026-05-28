@@ -36,15 +36,18 @@ class NotificationController extends Controller
 
     public function poll(Request $request): JsonResponse
     {
+        // Exclude chat-message notifications from the global preview
+        // because chat has its own inbox/badge logic.
         $notifications = MarketplaceNotification::query()
             ->with('broadcast')
             ->where('user_id', $request->user()->id)
+            ->where('type', '!=', 'chat-message')
             ->latest()
             ->take(10)
             ->get();
 
         return response()->json([
-            'unread_count' => $notifications->where('is_read', false)->count(),
+            'unread_count' => $notifications->whereNull('read_at')->count(),
             'items' => $notifications,
         ]);
     }
@@ -60,7 +63,6 @@ class NotificationController extends Controller
         }
 
         $notification->forceFill([
-            'is_read' => true,
             'read_at' => now(),
         ])->save();
 
@@ -75,9 +77,8 @@ class NotificationController extends Controller
     {
         MarketplaceNotification::query()
             ->where('user_id', $request->user()->id)
-            ->where('is_read', false)
+            ->whereNull('read_at')
             ->update([
-                'is_read' => true,
                 'read_at' => now(),
             ]);
 
@@ -129,9 +130,7 @@ class NotificationController extends Controller
         if ($filter === MarketplaceNotification::CATEGORY_EVENT_REWARD) {
             return $query->where(function ($q): void {
                 $q->where('type', 'admin-event_reward')
-                    ->orWhere('metadata->category', MarketplaceNotification::CATEGORY_EVENT_REWARD)
-                    ->orWhereHas('broadcast', fn ($q2) => $q2->where('type', 'admin-event_reward')
-                        ->orWhere('metadata->category', MarketplaceNotification::CATEGORY_EVENT_REWARD));
+                    ->orWhereHas('broadcast', fn ($q2) => $q2->where('type', 'admin-event_reward'));
             });
         }
 
@@ -142,13 +141,11 @@ class NotificationController extends Controller
                     ->orWhere('type', 'like', 'payment-%')
                     ->orWhere('type', 'like', 'wallet-%')
                     ->orWhereIn('type', ['deposit', 'withdraw', 'escrow_hold'])
-                    ->orWhere('metadata->category', MarketplaceNotification::CATEGORY_TRANSACTION)
                     ->orWhereHas('broadcast', fn ($q2) => $q2->where('type', 'transaction')
                         ->orWhere('type', 'like', 'order-%')
                         ->orWhere('type', 'like', 'payment-%')
                         ->orWhere('type', 'like', 'wallet-%')
-                        ->orWhereIn('type', ['deposit', 'withdraw', 'escrow_hold'])
-                        ->orWhere('metadata->category', MarketplaceNotification::CATEGORY_TRANSACTION));
+                        ->orWhereIn('type', ['deposit', 'withdraw', 'escrow_hold']));
             });
         }
 

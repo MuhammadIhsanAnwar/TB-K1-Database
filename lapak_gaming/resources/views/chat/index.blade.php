@@ -2,7 +2,7 @@
 @extends('layouts.app')
 
 @section('content')
-<div class="flex h-[calc(100vh-80px)] bg-gray-100 overflow-hidden rounded-lg shadow-xl border border-gray-200 m-4 font-sans">
+<div class="flex h-[calc(100vh-80px)] bg-gray-100 overflow-hidden rounded-lg shadow-xl border border-gray-200 m-4 font-sans" data-auth-id="{{ auth()->id() }}">
     <!-- Sidebar: Daftar Chat -->
     <div class="w-1/3 bg-white border-r flex flex-col">
         <div class="p-4 border-b bg-white flex justify-between items-center">
@@ -30,7 +30,7 @@
         </div>
 
         <!-- Chat Header -->
-        <div id="chat-header" class="hidden p-3 bg-[#ededed] border-b flex items-center justify-between z-10 shadow-sm">
+        <div id="chat-header" class="p-3 bg-[#ededed] border-b items-center justify-between z-10 shadow-sm" style="display: none;">
             <div class="flex items-center space-x-3">
                 <img id="active-avatar" src="" class="w-10 h-10 rounded-full bg-gray-300">
                 <div>
@@ -41,7 +41,7 @@
         </div>
 
         <!-- Messages Container -->
-        <div id="messages-container" class="hidden flex-1 overflow-y-auto p-4 flex flex-col-reverse space-y-reverse space-y-2">
+        <div id="messages-container" class="flex-1 overflow-y-auto p-4 flex-col-reverse space-y-reverse space-y-2" style="display: none;">
             <!-- Messages injected here -->
         </div>
 
@@ -61,7 +61,7 @@
 <script>
 document.addEventListener('DOMContentLoaded', function() {
     let currentConversationId = null;
-    let authId = {{ auth()->id() }};
+    let authId = Number(document.querySelector('[data-auth-id]')?.dataset.authId || 0);
     let activeChannelName = null; // Variabel untuk menyimpan channel aktif
     
     const listEl = document.getElementById('conversation-list');
@@ -105,8 +105,8 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Tampilkan elemen Chat
         document.getElementById('chat-welcome').classList.add('hidden');
-        document.getElementById('chat-header').classList.remove('hidden');
-        document.getElementById('messages-container').classList.remove('hidden');
+        document.getElementById('chat-header').style.display = 'flex';
+        document.getElementById('messages-container').style.display = 'flex';
         document.getElementById('chat-footer').classList.remove('hidden');
         
         document.getElementById('active-name').innerText = name;

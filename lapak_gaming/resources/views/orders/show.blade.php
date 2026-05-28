@@ -170,6 +170,12 @@
                                     <div class="mt-1 text-sm text-slate-400">
                                         Jumlah: {{ $item->quantity }}
                                     </div>
+
+                                    @if($order->delivery_notes)
+                                        <div class="mt-2 rounded-xl border border-blue-500/20 bg-blue-500/10 px-3 py-2 text-xs leading-relaxed text-blue-200">
+                                            Catatan: {{ $order->delivery_notes }}
+                                        </div>
+                                    @endif
                                 </div>
 
                                 <div class="text-lg font-black text-white">
@@ -183,6 +189,22 @@
                     </div>
 
                 </div>
+
+                @if($order->delivery_notes)
+
+                <div class="mt-8 rounded-[26px] border border-white/5 surface-weak p-6 transition duration-300 hover:border-blue-500/30 hover:bg-blue-500/[0.04]">
+
+                    <div class="text-sm text-slate-400">
+                        Catatan Pesanan
+                    </div>
+
+                    <div class="mt-3 text-base leading-relaxed text-white">
+                        {{ $order->delivery_notes }}
+                    </div>
+
+                </div>
+
+                @endif
 
                 {{-- PAYMENT INFO --}}
                 <div class="mt-8 grid gap-5 md:grid-cols-2">
@@ -245,7 +267,7 @@
                                     @csrf
                                     <button type="submit"
                                         class="w-full rounded-[26px] border border-emerald-500/20 bg-emerald-500/10 px-5 py-4 text-base font-bold text-emerald-300 transition duration-300 hover:-translate-y-1 hover:bg-emerald-500/20 hover:shadow-[0_0_25px_rgba(16,185,129,0.15)]">
-                                        Tandai Sudah Dikirim
+                                        Tandai Selesai
                                     </button>
                                 </form>
                             @endif
@@ -263,7 +285,8 @@
 
                     </a>
 
-                    @if($order->buyer_id == auth()->id() && in_array($order->status, [\App\Models\Order::STATUS_COMPLETED, \App\Models\Order::STATUS_DELIVERED], true))
+                    @if($order->buyer_id == auth()->id() &&
+                    $order->status === \App\Models\Order::STATUS_COMPLETED)
                         <a href="{{ route('orders.receipt.pdf', $order->order_code) }}"
                            target="_blank"
                            rel="noopener noreferrer"

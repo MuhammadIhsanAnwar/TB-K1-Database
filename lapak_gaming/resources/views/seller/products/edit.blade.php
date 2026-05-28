@@ -34,6 +34,41 @@
         color: #e2e8f0;
     }
 
+    select.input-glass {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        padding-right: 2.75rem;
+        cursor: pointer;
+        background-image:
+            linear-gradient(45deg, transparent 50%, #60a5fa 50%),
+            linear-gradient(135deg, #60a5fa 50%, transparent 50%),
+            linear-gradient(to right, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+        background-position:
+            calc(100% - 18px) calc(50% - 2px),
+            calc(100% - 13px) calc(50% - 2px),
+            0 0;
+        background-size: 5px 5px, 5px 5px, 100% 100%;
+        background-repeat: no-repeat;
+        transition: background-color 0.2s ease, border-color 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    select.input-glass:hover {
+        border-color: rgba(96, 165, 250, 0.28);
+        transform: translateY(-1px);
+    }
+
+    select.input-glass:focus {
+        border-color: rgba(245, 158, 11, 0.55) !important;
+        box-shadow: 0 0 0 3px rgba(245, 158, 11, 0.12), 0 0 14px rgba(245, 158, 11, 0.18);
+        transform: translateY(-1px);
+    }
+
+    select.input-glass option:checked,
+    select.input-glass option:hover {
+        background: #132238;
+    }
+
     /* Custom File Input Container */
     .file-input-wrapper {
         border: 1px dashed rgba(255, 255, 255, 0.15);
@@ -166,11 +201,11 @@
                                 @php
                                     $imageUrl = str_starts_with($imagePath, 'http')
                                         ? $imagePath
-                                        : asset('storage/' . ltrim($imagePath, '/'));
+                                        : asset('storage/app/public/' . ltrim(str_replace('foto_produk/', 'foto-produk/', $imagePath), '/'));
                                 @endphp
-                                <div class="relative rounded-xl overflow-hidden group border border-white/5 bg-black/40 backdrop-blur-sm p-1" data-image-index="{{ $index }}">
+                                <div class="relative rounded-xl overflow-hidden group border border-white/5 bg-black/40 backdrop-blur-sm p-1 aspect-[16/9]" data-image-index="{{ $index }}">
                                     <img src="{{ $imageUrl }}" 
-                                         class="w-full h-24 object-cover rounded-lg" 
+                                         class="w-full h-full object-cover rounded-lg" 
                                          alt="Produk {{ $index + 1 }}" />
                                     <button type="button" 
                                             class="remove-image-btn absolute inset-1 bg-black/80 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 flex items-center justify-center"

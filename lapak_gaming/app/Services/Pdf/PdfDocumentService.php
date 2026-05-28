@@ -3,12 +3,12 @@
 namespace App\Services\Pdf;
 
 use App\Models\Order;
+use Illuminate\Http\Response;
 use Illuminate\Support\Collection;
-use Symfony\Component\HttpFoundation\BinaryFileResponse;
 
 class PdfDocumentService
 {
-    public function downloadOrdersReport(iterable $orders, string $filename = 'laporan-pesanan.pdf'): BinaryFileResponse
+    public function downloadOrdersReport(iterable $orders, string $filename = 'laporan-pesanan.pdf'): Response
     {
         return $this->downloadGeneratedPdf(
             $this->buildOrdersReport($orders),
@@ -16,7 +16,7 @@ class PdfDocumentService
         );
     }
 
-    public function downloadOrderReceipt(Order $order, string $filename): BinaryFileResponse
+    public function downloadOrderReceipt(Order $order, string $filename): Response
     {
         return $this->downloadGeneratedPdf(
             $this->buildOrderReceipt($order),
@@ -316,20 +316,20 @@ class PdfDocumentService
         }
     }
 
-    private function downloadGeneratedPdf(string $pdfContent, string $filename): BinaryFileResponse
+    private function downloadGeneratedPdf(string $pdfContent, string $filename)
     {
-        $tempPath = tempnam(sys_get_temp_dir(), 'lapak_pdf_');
-
-        if ($tempPath === false) {
-            abort(500, 'Tidak dapat menyiapkan file PDF sementara.');
+        if (ob_get_length()) {
+            ob_end_clean();
         }
 
-        file_put_contents($tempPath, $pdfContent);
-
-        return response()
-            ->download($tempPath, $filename, [
-                'Content-Type' => 'application/pdf',
-            ])
-            ->deleteFileAfterSend(true);
+        return response($pdfContent, 200, [
+            'Content-Type' => 'application/pdf',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+            'Content-Transfer-Encoding' => 'binary',
+            'Cache-Control' => 'private, no-store, no-cache, must-revalidate',
+            'Pragma' => 'no-cache',
+            'Expires' => '0',
+            'Content-Length' => (string) strlen($pdfContent),
+        ]);
     }
 }

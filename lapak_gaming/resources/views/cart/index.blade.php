@@ -94,9 +94,9 @@ use Illuminate\Support\Str;
                                 </div>
 
                                 {{-- Gambar Produk --}}
-                                <div class="shrink-0 relative">
+                                <div class="shrink-0 relative w-28 sm:w-36 aspect-[16/9]">
                                     <img src="{{ $item->product->image_url }}"
-                                         class="w-24 h-24 sm:w-28 sm:h-28 rounded-xl object-cover border border-slate-700 shadow-inner"
+                                         class="w-full h-full rounded-xl object-cover border border-slate-700 shadow-inner"
                                          onerror="this.onerror=null;this.src='https://ui-avatars.com/api/?name={{ urlencode($item->product->name) }}&background=1e293b&color=f59e0b&bold=true&size=128';">
                                 </div>
 
@@ -117,17 +117,6 @@ use Illuminate\Support\Str;
                                         Seller: <span class="text-amber-500/80 font-bold">{{ $item->product->seller->name }}</span>
                                     </div>
 
-                                    {{-- Catatan untuk Penjual --}}
-                                    <div class="mt-1">
-                                        <label class="text-[10px] uppercase tracking-wider font-bold text-slate-500 block mb-1">Catatan untuk Penjual</label>
-                                        <input type="text" 
-                                               id="note-input-{{ $item->id }}" 
-                                               data-item-id="{{ $item->id }}"
-                                               placeholder="Tulis catatan (misal: kirim instan ya, username/ID game dll)..." 
-                                               value="{{ $item->notes }}" 
-                                               onchange="updateItemNoteFromElement(this)" 
-                                               class="w-full text-xs rounded-xl bg-slate-950 border border-slate-800 text-slate-300 px-3.5 py-2.5 outline-none focus:border-amber-500/50 transition-colors">
-                                    </div>
                                 </div>
 
                                 {{-- Harga & Aksi --}}
@@ -290,39 +279,6 @@ use Illuminate\Support\Str;
             .catch(error => {
                 console.error("Toggle Select error:", error);
                 alert("Terjadi kesalahan koneksi saat memilih produk: " + error.message);
-            });
-        }
-
-        function updateItemNoteFromElement(el) {
-            const id = el.dataset.itemId;
-            const note = el.value;
-            console.log("Updating note for item:", id, "Note:", note);
-            fetch(`/cart/${id}/update-note`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                },
-                body: JSON.stringify({ notes: note })
-            })
-            .then(res => {
-                if (!res.ok) {
-                    throw new Error("HTTP error " + res.status);
-                }
-                return res.json();
-            })
-            .then(data => {
-                console.log("Update Note response data:", data);
-                if (data.success) {
-                    el.classList.add('border-emerald-500');
-                    setTimeout(() => {
-                        el.classList.remove('border-emerald-500');
-                    }, 1000);
-                }
-            })
-            .catch(error => {
-                console.error("Update Note error:", error);
             });
         }
 

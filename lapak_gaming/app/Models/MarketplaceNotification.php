@@ -21,13 +21,11 @@ class MarketplaceNotification extends Model
         'body',
         'link',
         'type',
-        'is_read',
         'read_at',
         'metadata',
     ];
 
     protected $casts = [
-        'is_read' => 'boolean',
         'read_at' => 'datetime',
         'metadata' => 'array',
     ];
@@ -35,6 +33,7 @@ class MarketplaceNotification extends Model
     protected $appends = [
         'category',
         'category_label',
+        'is_read',
     ];
 
     public function user()
@@ -69,6 +68,11 @@ class MarketplaceNotification extends Model
         }
 
         return self::CATEGORY_GENERAL;
+    }
+
+    public function getIsReadAttribute(): bool
+    {
+        return $this->read_at !== null;
     }
 
     public function getTitleAttribute(?string $value): ?string

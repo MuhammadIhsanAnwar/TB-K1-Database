@@ -16,58 +16,59 @@ use Illuminate\View\View;
 
 class CheckoutController extends Controller
 {
-    public function product(Request $request, Product $product): View|RedirectResponse
+    public function product(Request $request, Product $product): RedirectResponse
     {
-        $messages = [
-            'quantity.integer' => 'Jumlah harus berupa angka bulat.',
-            'quantity.min' => 'Jumlah produk minimal 1.',
-            'quantity.max' => 'Jumlah produk maksimal 99.',
-        ];
-
-        $data = $request->validate([
-            'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
-        ], $messages);
-
         $product->load(['seller', 'category']);
+
         abort_unless($product->status === 'published', 404);
-        abort_unless(! empty($product->seller) && ! $product->seller->deactivated_at, 404);
+        abort_unless(!empty($product->seller) && !$product->seller->deactivated_at, 404);
 
         if ((int) $product->seller_id === (int) $request->user()->id) {
-            return redirect()->route('products.show', $product->slug)
+
+            return redirect()
+                ->route('products.show', $product->slug)
                 ->with('error', 'Anda tidak bisa checkout produk sendiri.');
         }
 
-        $quantity = (int) ($data['quantity'] ?? 1);
-
         if ((int) $product->stock < 1) {
-            return redirect()->route('products.show', $product->slug)
+
+            return redirect()
+                ->route('products.show', $product->slug)
                 ->with('error', 'Stok produk sedang kosong.');
         }
 
+        $quantity = (int) $request->input('quantity', 1);
+
         if ($quantity > (int) $product->stock) {
-            return redirect()->route('products.show', $product->slug)
-                ->with('error', 'Stok produk tidak mencukupi untuk jumlah yang dipilih.');
+
+            return redirect()
+                ->route('products.show', $product->slug)
+                ->with('error', 'Stok produk tidak mencukupi.');
         }
 
-        $subtotal = $quantity * (float) $product->price;
-        $feePercent = 5;
-        $feeAmount = round($subtotal * $feePercent / 100, 2);
-        $grandTotal = $subtotal + $feeAmount;
-        $wallet = Wallet::firstOrCreate(['user_id' => $request->user()->id]);
-        $wallet->loadMissing('balanceState');
-        $availableBalance = (float) ($wallet->balanceState?->available_balance ?? 0);
+        $cartItem = \App\Models\Cart::where('user_id', $request->user()->id)
+            ->where('product_id', $product->id)
+            ->first();
 
-        return view('orders.product-checkout', compact(
-            'product',
-            'quantity',
-            'subtotal',
-            'feePercent',
-            'feeAmount',
-            'grandTotal',
-            'availableBalance'
-        ));
+        if ($cartItem) {
+
+            $cartItem->update([
+                'quantity' => $quantity,
+                'selected' => true,
+            ]);
+
+        } else {
+
+            \App\Models\Cart::create([
+                'user_id' => $request->user()->id,
+                'product_id' => $product->id,
+                'quantity' => $quantity,
+                'selected' => true,
+            ]);
+        }
+
+        return redirect()->route('cart.checkout');
     }
-
     public function store(Request $request): RedirectResponse
     {
         $messages = [
@@ -83,11 +84,12 @@ class CheckoutController extends Controller
         $data = $request->validate([
             'product_id' => ['required', 'exists:products,id'],
             'quantity' => ['nullable', 'integer', 'min:1', 'max:99'],
-            'payment_method' => ['required', 'in:wallet'],
+            'payment_method' => ['required', 'in:balance'],
+            'buyer_note' => ['nullable', 'string', 'max:1000'],
         ], $messages);
 
         $quantity = (int) ($data['quantity'] ?? 1);
-        $paymentMethod = 'wallet';
+        $paymentMethod = 'balance';
 
         $order = DB::transaction(function () use ($request, $quantity, $paymentMethod): Order {
             $product = Product::query()
@@ -114,6 +116,7 @@ class CheckoutController extends Controller
             $grandTotal = $subtotal + $feeAmount;
 
             $order = Order::create([
+                'delivery_notes' => $request->buyer_note,
                 'buyer_id' => $request->user()->id,
                 'seller_id' => $product->seller_id,
                 'invoice_number' => 'INV-'.now()->format('YmdHis').'-'.str_pad((string) random_int(1, 9999), 4, '0', STR_PAD_LEFT),
@@ -143,6 +146,18 @@ class CheckoutController extends Controller
             ]);
 
             $product->decrement('stock', $quantity);
+
+            if (! $request->user()->deductBalance($grandTotal, "Pembayaran Order #{$order->invoice_number}", $order->id)) {
+                throw ValidationException::withMessages([
+                    'payment_method' => 'Saldo tidak mencukupi!',
+                ]);
+            }
+
+            $order->forceFill([
+                'status' => Order::STATUS_PAYMENT_UPLOADED,
+                'payment_method' => $paymentMethod,
+                'paid_at' => now(),
+            ])->save();
 
             $wallet = Wallet::firstOrCreate(['user_id' => $request->user()->id]);
             $balanceState = $wallet->balanceState()->firstOrCreate([], [
@@ -231,12 +246,13 @@ class CheckoutController extends Controller
     public function deliver(Request $request, Order $order): RedirectResponse
     {
         abort_unless($order->seller_id === $request->user()->id, 403);
-        abort_unless($order->status === Order::STATUS_PROCESSING, 422, 'Order harus berstatus diproses sebelum ditandai sudah dikirim.');
+        abort_unless($order->status === Order::STATUS_PROCESSING, 422, 'Order harus berstatus diproses sebelum diselesaikan.');
 
         $order->forceFill([
-            'status' => Order::STATUS_DELIVERED,
+            'status' => Order::STATUS_COMPLETED,
+            'completed_at' => now(),
         ])->save();
 
-        return back()->with('success', 'Pesanan berhasil ditandai sudah dikirim.');
+        return back()->with('success', 'Pesanan berhasil diselesaikan.');
     }
 }
