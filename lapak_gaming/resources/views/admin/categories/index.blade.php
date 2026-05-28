@@ -56,7 +56,7 @@
                 <div class="flex items-center mt-2">
                     <label for="group" class="text-sm text-slate-300 mr-2">Pengelompokan:</label>>
                     <select name="group" id="group" class="input w-48" onchange="this.form.submit()">
-                        <option value="" {{ $group == '' ? 'selected' : '' }}>Campuran</option>
+                        <option value="" {{ $group == '' ? 'selected' : '' }}>Semua</option>
                         <option value="main" {{ $group == 'main' ? 'selected' : '' }}>Kategori Utama</option>
                         <option value="sub" {{ $group == 'sub' ? 'selected' : '' }}>Sub Kategori</option>
                     </select>
@@ -79,7 +79,8 @@
             <table class="w-full text-left text-sm text-slate-300">
                 <thead class="bg-[#0f172a]/80 text-xs font-semibold uppercase tracking-wider text-slate-400">
                     <tr>
-                        <th scope="col" class="px-6 py-4">Gambar/Ikon</th>
+                        <th class="px-6 py-4 text-center">No.</th>
+
                         <th scope="col" class="px-6 py-4">Kategori</th>
                         <th scope="col" class="px-6 py-4">Tipe</th>
                         <th scope="col" class="px-6 py-4 text-center">Status</th>
@@ -89,6 +90,7 @@
                 <tbody class="divide-y divide-blue-500/10">
                     @forelse($categories as $category)
                     <tr class="transition hover:bg-white/5">
+                        <td class="px-6 py-4 text-center">{{ $loop->iteration }}</td>
                         <td class="px-6 py-4">
                             @if($category->image)
                                 <img src="{{ asset('storage/' . $category->image) }}" alt="{{ $category->name }}" class="h-10 w-10 rounded-lg object-cover ring-1 ring-white/10" />

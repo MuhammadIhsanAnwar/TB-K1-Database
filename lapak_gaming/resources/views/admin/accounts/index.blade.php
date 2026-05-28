@@ -128,7 +128,7 @@
                     @endphp
 
                     @forelse($currentData as $user)
-                    <tr class="hover:bg-slate-800/40 transition">
+                    <tr class="hover:bg-slate-800/40 transition"><td class="px-4 py-4">{{ $loop->iteration }}</td>
                         <td class="px-6 py-4">
                             <div class="flex items-center gap-3">
                                 <div class="h-12 w-12 overflow-hidden rounded-2xl border border-slate-700 bg-slate-800">
