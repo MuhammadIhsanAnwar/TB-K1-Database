@@ -103,11 +103,7 @@
                     <p class="mt-1.5 text-xs text-slate-500">Abaikan jika tidak ingin mengganti gambar.</p>
                 </div>
 
-                {{-- Urutan (Sort Order) --}}
-                <div>
-                    <label for="sort_order" class="mb-2 block text-sm font-bold text-slate-300">Urutan (Sort Order)</label>
-                    <input type="number" name="sort_order" id="sort_order" value="{{ old('sort_order', $category->sort_order) }}" class="input w-32" min="0">
-                </div>
+
 
                 {{-- Status Aktif --}}
                 <div class="flex items-center gap-3">

@@ -93,12 +93,7 @@
                     <input type="file" name="image" id="image" accept="image/*" class="input w-full file:mr-4 file:cursor-pointer file:rounded-full file:border-0 file:bg-blue-500/10 file:px-4 file:py-2 file:text-sm file:font-semibold file:text-blue-400 hover:file:bg-blue-500/20" />
                 </div>
 
-                {{-- Urutan (Sort Order) --}}
-                <div>
-                    <label for="sort_order" class="mb-2 block text-sm font-bold text-slate-300">Urutan (Sort Order)</label>
-                    <input type="number" name="sort_order" id="sort_order" value="{{ old('sort_order', 0) }}" class="input w-32" min="0">
-                    <p class="mt-1.5 text-xs text-slate-500">Angka lebih kecil akan tampil lebih dulu (Cth: 0, 1, 2).</p>
-                </div>
+
 
                 {{-- Status Aktif --}}
                 <div class="flex items-center gap-3">
