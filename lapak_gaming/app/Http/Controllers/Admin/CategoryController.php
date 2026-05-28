@@ -13,7 +13,7 @@ class CategoryController extends Controller
     /**
      * Display a listing of the categories.
      */
-<?php
+
     public function index(Request $request)
     {
         $q = $request->query('q');
