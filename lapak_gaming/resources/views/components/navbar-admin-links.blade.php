@@ -1,10 +1,5 @@
 @php
-  /**
-   * Admin links partial – bisa dipakai di mobile drawer (grid) maupun desktop (horizontal)
-   * Expects $authUser, route helpers, dan optional $horizontal (default false)
-   */
   $isHorizontal = $horizontal ?? false;
-  
   $adminMenus = [
     'dashboard' => ['route' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
     'kelola-akun' => ['route' => 'admin.users.index', 'label' => 'Kelola Akun', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'],
@@ -19,7 +14,6 @@
 @endphp
 
 @if($isHorizontal)
-  {{-- Mode horizontal untuk desktop navbar --}}
   @foreach($adminMenus as $menu)
     @php
       $isActive = request()->routeIs($menu['route']);
@@ -34,36 +28,22 @@
     </a>
   @endforeach
 @else
-  {{-- Mode grid untuk mobile drawer & dropdown avatar --}}
-  <div class="p-4">
-    <p class="text-xs font-bold uppercase tracking-wider text-slate-400 mb-3 flex items-center gap-2">
-      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/>
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/>
-      </svg>
-      Admin Menu
-    </p>
-    <div class="grid grid-cols-2 gap-2">
-      @foreach($adminMenus as $menu)
-        @php
-          $isActive = request()->routeIs($menu['route']);
-          $url = route($menu['route'], $menu['params'] ?? []);
-        @endphp
-        <a href="{{ $url }}" 
-           class="group flex items-center gap-2 rounded-xl px-3 py-2.5 text-sm transition-all duration-200
-                  {{ $isActive 
-                     ? 'bg-cyan-500/15 border border-cyan-400/30 text-cyan-300 shadow-sm' 
-                     : 'border border-white/6 bg-white/3 text-slate-100 hover:border-white/15 hover:bg-white/6 hover:-translate-y-0.5' }}">
-          <svg class="w-4 h-4 shrink-0 {{ $isActive ? 'text-cyan-400' : 'text-slate-400 group-hover:text-slate-200' }}" 
-               fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $menu['icon'] }}" />
-          </svg>
-          <span class="truncate">{{ $menu['label'] }}</span>
-          @if($isActive)
-            <span class="ml-auto w-1.5 h-1.5 rounded-full bg-cyan-400 shadow-[0_0_6px_#22d3ee]"></span>
-          @endif
-        </a>
-      @endforeach
-    </div>
+  <div class="space-y-1">
+    @foreach($adminMenus as $menu)
+      @php
+        $isActive = request()->routeIs($menu['route']);
+        $url = route($menu['route'], $menu['params'] ?? []);
+      @endphp
+      <a href="{{ $url }}" 
+         class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-all duration-200
+                {{ $isActive 
+                   ? 'bg-cyan-500/10 text-cyan-300' 
+                   : 'text-slate-200 hover:bg-white/5 hover:text-white' }}">
+        <svg class="w-4 h-4 {{ $isActive ? 'text-cyan-400' : 'text-slate-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $menu['icon'] }}" />
+        </svg>
+        <span>{{ $menu['label'] }}</span>
+      </a>
+    @endforeach
   </div>
 @endif
