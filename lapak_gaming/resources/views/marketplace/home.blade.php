@@ -996,92 +996,105 @@
     </div>
   </section>
   @endguest
-  
-{{-- FAQ Section --}}
-<section class="py-16">
+
+{{-- ═══════════════════════════════════════════════════════════ --}}
+{{-- FAQ SECTION                                                 --}}
+{{-- ═══════════════════════════════════════════════════════════ --}}
+<section class="reveal-item py-16">
     <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
         <div class="mb-10 text-center">
-            <h2 class="text-2xl font-bold text-white md:text-3xl">Pertanyaan yang Sering Diajukan</h2>
+            <div class="sec-kicker justify-center mb-3">
+                <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                    <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+                </svg>
+                Bantuan Cepat
+            </div>
+            <h2 class="sec-title text-center" style="font-size:clamp(1.5rem,4vw,2.25rem);">
+                Pertanyaan yang Sering Diajukan
+            </h2>
             <p class="mt-4 text-sm text-slate-400">Punya pertanyaan? Temukan jawabannya di bawah ini.</p>
         </div>
 
         <div class="space-y-4">
             {{-- FAQ Item 1 --}}
-            <details class="group rounded-2xl border border-white/[0.04] bg-gradient-to-br from-[#08111f] via-[#091225] to-[#050b15] p-6 backdrop-blur-xl [&_summary::-webkit-details-marker]:hidden">
-                <summary class="flex cursor-pointer items-center justify-between gap-1.5 text-white hover:text-sky-300 transition-colors">
+            <div class="faq-item group rounded-2xl border border-white/[0.04] bg-gradient-to-br from-[#08111f] via-[#091225] to-[#050b15] p-6 backdrop-blur-xl transition-all duration-500 hover:border-sky-500/30">
+                <button class="faq-btn flex w-full cursor-pointer items-center justify-between gap-4 text-left text-white transition-colors group-hover:text-sky-300">
                     <h3 class="font-semibold text-sm md:text-base">Bagaimana cara membeli produk di sini?</h3>
-                    
-                    {{-- Icon Plus/Minus --}}
-                    <span class="relative size-5 shrink-0 text-sky-400">
-                        <svg class="absolute inset-0 size-5 opacity-100 group-open:opacity-0 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <span class="faq-icon relative size-5 shrink-0 text-sky-400 transition-transform duration-500">
+                        <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
-                        <svg class="absolute inset-0 size-5 opacity-0 group-open:opacity-100 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
-                        </svg>
                     </span>
-                </summary>
-                <div class="mt-4 text-sm leading-relaxed text-slate-400">
-                    <p>Pilih game atau produk yang ingin kamu beli, masukkan data yang diperlukan (seperti User ID dan Zone ID), pilih nominal, dan klik tombol "Beli Sekarang". Setelah itu, selesaikan pembayaran menggunakan metode yang tersedia.</p>
+                </button>
+                <div class="faq-content grid grid-rows-[0fr] opacity-0 transition-all duration-500">
+                    <div class="overflow-hidden">
+                        <div class="mt-4 text-sm leading-relaxed text-slate-400">
+                            <p>Pilih game atau produk yang ingin kamu beli, masukkan data yang diperlukan (seperti User ID dan Zone ID), pilih nominal, dan klik tombol "Beli Sekarang". Setelah itu, selesaikan pembayaran menggunakan metode yang tersedia.</p>
+                        </div>
+                    </div>
                 </div>
-            </details>
+            </div>
 
             {{-- FAQ Item 2 --}}
-            <details class="group rounded-2xl border border-white/[0.04] bg-gradient-to-br from-[#08111f] via-[#091225] to-[#050b15] p-6 backdrop-blur-xl [&_summary::-webkit-details-marker]:hidden">
-                <summary class="flex cursor-pointer items-center justify-between gap-1.5 text-white hover:text-sky-300 transition-colors">
+            <div class="faq-item group rounded-2xl border border-white/[0.04] bg-gradient-to-br from-[#08111f] via-[#091225] to-[#050b15] p-6 backdrop-blur-xl transition-all duration-500 hover:border-sky-500/30">
+                <button class="faq-btn flex w-full cursor-pointer items-center justify-between gap-4 text-left text-white transition-colors group-hover:text-sky-300">
                     <h3 class="font-semibold text-sm md:text-base">Berapa lama waktu proses pemesanan?</h3>
-                    <span class="relative size-5 shrink-0 text-sky-400">
-                        <svg class="absolute inset-0 size-5 opacity-100 group-open:opacity-0 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <span class="faq-icon relative size-5 shrink-0 text-sky-400 transition-transform duration-500">
+                        <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
-                        <svg class="absolute inset-0 size-5 opacity-0 group-open:opacity-100 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
-                        </svg>
                     </span>
-                </summary>
-                <div class="mt-4 text-sm leading-relaxed text-slate-400">
-                    <p>Sebagian besar produk (seperti Top Up otomatis) akan masuk dalam waktu 1-5 menit setelah pembayaran berhasil dikonfirmasi. Untuk produk tertentu, maksimal proses adalah 1x24 jam.</p>
+                </button>
+                <div class="faq-content grid grid-rows-[0fr] opacity-0 transition-all duration-500">
+                    <div class="overflow-hidden">
+                        <div class="mt-4 text-sm leading-relaxed text-slate-400">
+                            <p>Sebagian besar produk (seperti Top Up otomatis) akan masuk dalam waktu 1-5 menit setelah pembayaran berhasil dikonfirmasi. Untuk produk tertentu, maksimal proses adalah 1x24 jam.</p>
+                        </div>
+                    </div>
                 </div>
-            </details>
+            </div>
 
             {{-- FAQ Item 3 --}}
-            <details class="group rounded-2xl border border-white/[0.04] bg-gradient-to-br from-[#08111f] via-[#091225] to-[#050b15] p-6 backdrop-blur-xl [&_summary::-webkit-details-marker]:hidden">
-                <summary class="flex cursor-pointer items-center justify-between gap-1.5 text-white hover:text-sky-300 transition-colors">
+            <div class="faq-item group rounded-2xl border border-white/[0.04] bg-gradient-to-br from-[#08111f] via-[#091225] to-[#050b15] p-6 backdrop-blur-xl transition-all duration-500 hover:border-sky-500/30">
+                <button class="faq-btn flex w-full cursor-pointer items-center justify-between gap-4 text-left text-white transition-colors group-hover:text-sky-300">
                     <h3 class="font-semibold text-sm md:text-base">Metode pembayaran apa saja yang tersedia?</h3>
-                    <span class="relative size-5 shrink-0 text-sky-400">
-                        <svg class="absolute inset-0 size-5 opacity-100 group-open:opacity-0 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <span class="faq-icon relative size-5 shrink-0 text-sky-400 transition-transform duration-500">
+                        <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
-                        <svg class="absolute inset-0 size-5 opacity-0 group-open:opacity-100 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
-                        </svg>
                     </span>
-                </summary>
-                <div class="mt-4 text-sm leading-relaxed text-slate-400">
-                    <p>Kami menyediakan berbagai metode pembayaran termasuk e-Wallet (Gopay, OVO, Dana, ShopeePay), QRIS, Transfer Bank (BCA, Mandiri, BNI, BRI), hingga melalui minimarket (Alfamart & Indomaret).</p>
+                </button>
+                <div class="faq-content grid grid-rows-[0fr] opacity-0 transition-all duration-500">
+                    <div class="overflow-hidden">
+                        <div class="mt-4 text-sm leading-relaxed text-slate-400">
+                            <p>Kami menyediakan berbagai metode pembayaran termasuk e-Wallet (Gopay, OVO, Dana, ShopeePay), QRIS, Transfer Bank (BCA, Mandiri, BNI, BRI), hingga melalui minimarket (Alfamart & Indomaret).</p>
+                        </div>
+                    </div>
                 </div>
-            </details>
+            </div>
             
             {{-- FAQ Item 4 --}}
-            <details class="group rounded-2xl border border-white/[0.04] bg-gradient-to-br from-[#08111f] via-[#091225] to-[#050b15] p-6 backdrop-blur-xl [&_summary::-webkit-details-marker]:hidden">
-                <summary class="flex cursor-pointer items-center justify-between gap-1.5 text-white hover:text-sky-300 transition-colors">
+            <div class="faq-item group rounded-2xl border border-white/[0.04] bg-gradient-to-br from-[#08111f] via-[#091225] to-[#050b15] p-6 backdrop-blur-xl transition-all duration-500 hover:border-sky-500/30">
+                <button class="faq-btn flex w-full cursor-pointer items-center justify-between gap-4 text-left text-white transition-colors group-hover:text-sky-300">
                     <h3 class="font-semibold text-sm md:text-base">Apakah transaksi di sini aman?</h3>
-                    <span class="relative size-5 shrink-0 text-sky-400">
-                        <svg class="absolute inset-0 size-5 opacity-100 group-open:opacity-0 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                    <span class="faq-icon relative size-5 shrink-0 text-sky-400 transition-transform duration-500">
+                        <svg class="size-5" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
-                        <svg class="absolute inset-0 size-5 opacity-0 group-open:opacity-100 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
-                        </svg>
                     </span>
-                </summary>
-                <div class="mt-4 text-sm leading-relaxed text-slate-400">
-                    <p>Sangat aman! Sistem kami menggunakan enkripsi pembayaran yang dijamin oleh payment gateway resmi. Saldo akan diteruskan ke penjual hanya jika pesanan sudah masuk ke akun kamu.</p>
+                </button>
+                <div class="faq-content grid grid-rows-[0fr] opacity-0 transition-all duration-500">
+                    <div class="overflow-hidden">
+                        <div class="mt-4 text-sm leading-relaxed text-slate-400">
+                            <p>Sangat aman! Sistem kami menggunakan enkripsi pembayaran yang dijamin oleh payment gateway resmi. Saldo akan diteruskan ke penjual hanya jika pesanan sudah masuk ke akun kamu.</p>
+                        </div>
+                    </div>
                 </div>
-            </details>
+            </div>
         </div>
     </div>
 </section>
+
   <div class="pb-20 sm:pb-10"></div>
 
 </div>
@@ -1162,6 +1175,32 @@
       if (!isDown) return;
       e.preventDefault();
       track.scrollLeft = scrollLeft - (e.pageX - track.offsetLeft - startX) * 2;
+    });
+  });
+
+  /* ══ ACCORDION FAQ ANIMATION ═════════════════════════════════════ */
+  document.querySelectorAll('.faq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const currentItem = btn.closest('.faq-item');
+      const content = currentItem.querySelector('.faq-content');
+      const icon = currentItem.querySelector('.faq-icon');
+      const isOpen = currentItem.classList.contains('is-active');
+
+      // Opsi: Tutup semua FAQ lain saat satu dibuka (Accordion style)
+      document.querySelectorAll('.faq-item').forEach(item => {
+        item.classList.remove('is-active', 'border-sky-500/40');
+        item.querySelector('.faq-content').style.gridTemplateRows = '0fr';
+        item.querySelector('.faq-content').style.opacity = '0';
+        item.querySelector('.faq-icon').style.transform = 'rotate(0deg)';
+      });
+
+      // Buka yang diklik jika sebelumnya tertutup
+      if (!isOpen) {
+        currentItem.classList.add('is-active', 'border-sky-500/40');
+        content.style.gridTemplateRows = '1fr';
+        content.style.opacity = '1';
+        icon.style.transform = 'rotate(135deg)'; // Memutar tombol + menjadi x (silang)
+      }
     });
   });
 </script>
