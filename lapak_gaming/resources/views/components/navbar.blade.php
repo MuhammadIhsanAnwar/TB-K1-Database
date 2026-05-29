@@ -528,10 +528,10 @@ Premium Itemku/Codashop style marketplace navbar.
 
           {{-- Mega Menu Panel --}}
           <div
-            class="absolute left-0 top-full w-[850px] bg-[#070b16]/96 backdrop-blur-2xl rounded-2xl shadow-[0_25px_70px_rgba(0,0,0,0.7)] border border-white/10 hidden group-hover:flex z-50 min-h-[380px] max-h-[75vh] overflow-hidden mt-2 transition-all duration-300">
+            class="absolute left-0 top-full w-[850px] bg-[#0B1220] rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.9)] border border-white/10 hidden group-hover:flex z-[999] min-h-[380px] max-h-[75vh] overflow-hidden mt-2 transition-all duration-300">
 
             {{-- Kiri: List Kategori dari DB --}}
-            <div class="w-64 bg-black/30 border-r border-white/5 p-3 overflow-y-auto max-h-[75vh] no-scrollbar">
+            <div class="w-64 bg-[#060A14] border-r border-white/5 p-3 overflow-y-auto max-h-[75vh] no-scrollbar">
               <p class="text-[10px] font-bold text-slate-500 uppercase tracking-widest px-3 mb-2">Semua Game</p>
               @if($navCategories->isNotEmpty())
                 @foreach($navCategories as $cat)
