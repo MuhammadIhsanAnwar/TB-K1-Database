@@ -28,7 +28,7 @@
     
     {{-- Stock Badge --}}
     @if(($product->stock ?? 1) === 0)
-      <div class="absolute inset-0 flex items-center justify-center bg-black/55">
+      <div class="absolute inset-0 flex items-center justify-center bg-black/55 z-10">
         <span class="rounded-full border border-rose-400/20 bg-rose-500/20 px-3 py-1 text-xs font-bold text-rose-200">Habis</span>
       </div>
     @endif
@@ -60,14 +60,16 @@
         <span class="text-slate-500">{{ number_format($product->sold_count ?? 0) }} terjual</span>
       </div>
     </div>
-  </div>
-  <div class="mt-3 flex translate-y-3 gap-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
-    <button class="flex-1 rounded-xl border border-sky-400/20 bg-sky-500/12 py-2 text-xs font-bold text-sky-200 transition hover:bg-sky-500/20">
-      Beli Sekarang
-    </button>
 
-    <button class="rounded-xl border border-white/10 px-3 text-white/80 transition hover:bg-white/5 hover:text-white">
-      +
-    </button>
+    {{-- Action Buttons (Dimasukkan ke dalam p-3.5 agar paddingnya sejajar) --}}
+    <div class="mt-4 flex translate-y-3 gap-2 opacity-0 transition-all duration-300 group-hover:translate-y-0 group-hover:opacity-100">
+      <button class="flex-1 whitespace-nowrap rounded-xl border border-sky-400/20 bg-sky-500/12 py-2 px-2 text-xs font-bold text-sky-200 transition hover:bg-sky-500/20">
+        Beli Sekarang
+      </button>
+
+      <button class="flex-none rounded-xl border border-white/10 px-3 py-2 text-white/80 transition hover:bg-white/5 hover:text-white">
+        +
+      </button>
+    </div>
   </div>
 </a>
