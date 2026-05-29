@@ -24,7 +24,7 @@ Premium Itemku/Codashop style marketplace navbar.
       ->with('product.seller')
       ->latest()
       ->take(3)
-    get();
+      ->get();
   }
 @endphp
 
