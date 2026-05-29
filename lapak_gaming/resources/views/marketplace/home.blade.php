@@ -996,7 +996,92 @@
     </div>
   </section>
   @endguest
+  
+{{-- FAQ Section --}}
+<section class="py-16">
+    <div class="mx-auto max-w-4xl px-4 sm:px-6 lg:px-8">
+        <div class="mb-10 text-center">
+            <h2 class="text-2xl font-bold text-white md:text-3xl">Pertanyaan yang Sering Diajukan</h2>
+            <p class="mt-4 text-sm text-slate-400">Punya pertanyaan? Temukan jawabannya di bawah ini.</p>
+        </div>
 
+        <div class="space-y-4">
+            {{-- FAQ Item 1 --}}
+            <details class="group rounded-2xl border border-white/[0.04] bg-gradient-to-br from-[#08111f] via-[#091225] to-[#050b15] p-6 backdrop-blur-xl [&_summary::-webkit-details-marker]:hidden">
+                <summary class="flex cursor-pointer items-center justify-between gap-1.5 text-white hover:text-sky-300 transition-colors">
+                    <h3 class="font-semibold text-sm md:text-base">Bagaimana cara membeli produk di sini?</h3>
+                    
+                    {{-- Icon Plus/Minus --}}
+                    <span class="relative size-5 shrink-0 text-sky-400">
+                        <svg class="absolute inset-0 size-5 opacity-100 group-open:opacity-0 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        <svg class="absolute inset-0 size-5 opacity-0 group-open:opacity-100 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+                        </svg>
+                    </span>
+                </summary>
+                <div class="mt-4 text-sm leading-relaxed text-slate-400">
+                    <p>Pilih game atau produk yang ingin kamu beli, masukkan data yang diperlukan (seperti User ID dan Zone ID), pilih nominal, dan klik tombol "Beli Sekarang". Setelah itu, selesaikan pembayaran menggunakan metode yang tersedia.</p>
+                </div>
+            </details>
+
+            {{-- FAQ Item 2 --}}
+            <details class="group rounded-2xl border border-white/[0.04] bg-gradient-to-br from-[#08111f] via-[#091225] to-[#050b15] p-6 backdrop-blur-xl [&_summary::-webkit-details-marker]:hidden">
+                <summary class="flex cursor-pointer items-center justify-between gap-1.5 text-white hover:text-sky-300 transition-colors">
+                    <h3 class="font-semibold text-sm md:text-base">Berapa lama waktu proses pemesanan?</h3>
+                    <span class="relative size-5 shrink-0 text-sky-400">
+                        <svg class="absolute inset-0 size-5 opacity-100 group-open:opacity-0 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        <svg class="absolute inset-0 size-5 opacity-0 group-open:opacity-100 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+                        </svg>
+                    </span>
+                </summary>
+                <div class="mt-4 text-sm leading-relaxed text-slate-400">
+                    <p>Sebagian besar produk (seperti Top Up otomatis) akan masuk dalam waktu 1-5 menit setelah pembayaran berhasil dikonfirmasi. Untuk produk tertentu, maksimal proses adalah 1x24 jam.</p>
+                </div>
+            </details>
+
+            {{-- FAQ Item 3 --}}
+            <details class="group rounded-2xl border border-white/[0.04] bg-gradient-to-br from-[#08111f] via-[#091225] to-[#050b15] p-6 backdrop-blur-xl [&_summary::-webkit-details-marker]:hidden">
+                <summary class="flex cursor-pointer items-center justify-between gap-1.5 text-white hover:text-sky-300 transition-colors">
+                    <h3 class="font-semibold text-sm md:text-base">Metode pembayaran apa saja yang tersedia?</h3>
+                    <span class="relative size-5 shrink-0 text-sky-400">
+                        <svg class="absolute inset-0 size-5 opacity-100 group-open:opacity-0 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        <svg class="absolute inset-0 size-5 opacity-0 group-open:opacity-100 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+                        </svg>
+                    </span>
+                </summary>
+                <div class="mt-4 text-sm leading-relaxed text-slate-400">
+                    <p>Kami menyediakan berbagai metode pembayaran termasuk e-Wallet (Gopay, OVO, Dana, ShopeePay), QRIS, Transfer Bank (BCA, Mandiri, BNI, BRI), hingga melalui minimarket (Alfamart & Indomaret).</p>
+                </div>
+            </details>
+            
+            {{-- FAQ Item 4 --}}
+            <details class="group rounded-2xl border border-white/[0.04] bg-gradient-to-br from-[#08111f] via-[#091225] to-[#050b15] p-6 backdrop-blur-xl [&_summary::-webkit-details-marker]:hidden">
+                <summary class="flex cursor-pointer items-center justify-between gap-1.5 text-white hover:text-sky-300 transition-colors">
+                    <h3 class="font-semibold text-sm md:text-base">Apakah transaksi di sini aman?</h3>
+                    <span class="relative size-5 shrink-0 text-sky-400">
+                        <svg class="absolute inset-0 size-5 opacity-100 group-open:opacity-0 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        <svg class="absolute inset-0 size-5 opacity-0 group-open:opacity-100 transition-opacity duration-300" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 12h-15" />
+                        </svg>
+                    </span>
+                </summary>
+                <div class="mt-4 text-sm leading-relaxed text-slate-400">
+                    <p>Sangat aman! Sistem kami menggunakan enkripsi pembayaran yang dijamin oleh payment gateway resmi. Saldo akan diteruskan ke penjual hanya jika pesanan sudah masuk ke akun kamu.</p>
+                </div>
+            </details>
+        </div>
+    </div>
+</section>
   <div class="pb-20 sm:pb-10"></div>
 
 </div>
