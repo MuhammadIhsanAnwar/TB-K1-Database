@@ -474,6 +474,17 @@
       <div class="h-5 w-px bg-slate-200/20 mx-2"></div>
 
       {{-- Horizontal Links --}}
+      <div class="flex-1 overflow-x-auto no-scrollbar mask-gradient-right">
+        <div class="flex items-center gap-2 min-w-max">
+          <a href="{{ route('products.search', ['category'=>'game-key']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Game Key</a>
+          <a href="{{ route('products.search', ['category'=>'roblox']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Roblox</a>
+          <a href="{{ route('products.search', ['category'=>'item']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Item</a>
+          <a href="{{ route('products.search', ['category'=>'currency']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Currency</a>
+          <a href="{{ route('products.search', ['category'=>'game-top-up']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Top Up</a>
+          <a href="{{ route('products.search', ['category'=>'account']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Account</a>
+          <a href="{{ route('products.search', ['category'=>'gift-cards']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Gift Cards</a>
+        </div>
+      </div>
             <a href="{{ route('marketplace.home') }}"
         class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white/90 hover:text-white hover:bg-cyan-500/10 transition-all duration-300">
           
