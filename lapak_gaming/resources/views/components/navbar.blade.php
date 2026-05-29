@@ -485,67 +485,6 @@
           <a href="{{ route('products.search', ['category'=>'gift-cards']) }}" class="px-3 py-1.5 text-white text-sm hover:surface-weak rounded transition-colors whitespace-nowrap">Gift Cards</a>
         </div>
       </div>
-            <a href="{{ route('marketplace.home') }}"
-        class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white/90 hover:text-white hover:bg-cyan-500/10 transition-all duration-300">
-          
-          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M3 10l9-7 9 7v9a2 2 0 01-2 2h-4a2 2 0 01-2-2V13H9v6a2 2 0 01-2 2H3z"/>
-          </svg>
-          Beranda
-      </a>
-            <div class="flex-1 overflow-x-auto no-scrollbar mask-gradient-right">
-    <div class="flex items-center gap-2 min-w-max">
-
-        <a href="{{ route('products.search', ['q'=>'top up game']) }}"
-           class="nav-modern-link flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-cyan-300 bg-cyan-500/10 border border-cyan-400/20 whitespace-nowrap">
-
-            <span class="px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-200 text-[10px] font-bold">
-                HOT
-            </span>
-
-            Top Up Game
-        </a>
-
-        <a href="{{ route('products.search', ['q'=>'akun game']) }}"
-           class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">
-            Akun Game
-        </a>
-
-        <a href="{{ route('products.search', ['q'=>'voucher game']) }}"
-           class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">
-            Voucher Game
-        </a>
-
-        <a href="{{ route('products.search', ['category'=>'roblox']) }}"
-           class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">
-            Roblox Games
-        </a>
-
-        <a href="{{ route('products.search', ['category'=>'growtopia']) }}"
-           class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">
-            Growtopia
-        </a>
-
-        <a href="{{ route('products.search', ['category'=>'genshin-impact']) }}"
-           class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">
-            Genshin Impact
-        </a>
-
-        <a href="{{ route('products.search', ['category'=>'dota-2']) }}"
-           class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">
-            Dota 2 Item
-        </a>
-
-        <a href="{{ route('products.search', ['category'=>'game-key']) }}"
-           class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">
-            Game Key
-        </a>
-
-        <a href="{{ route('products.search', ['category'=>'mobile-legends']) }}"
-           class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">
-            Mobile Legend Account
-        </a>
 
     </div>
 </div>
