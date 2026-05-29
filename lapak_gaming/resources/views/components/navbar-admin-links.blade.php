@@ -1,49 +1,21 @@
 @php
-  $isHorizontal = $horizontal ?? false;
-  $adminMenus = [
-    'dashboard' => ['route' => 'admin.dashboard', 'label' => 'Dashboard', 'icon' => 'M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6'],
-    'kelola-akun' => ['route' => 'admin.users.index', 'label' => 'Kelola Akun', 'icon' => 'M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z'],
-    'verifikasi' => ['route' => 'admin.verification.index', 'label' => 'Verifikasi', 'icon' => 'M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z'],
-    'transaksi' => ['route' => 'admin.orders.index', 'label' => 'Transaksi', 'icon' => 'M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z'],
-    'banner' => ['route' => 'admin.banners.index', 'label' => 'Banner', 'icon' => 'M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z'],
-    'notifikasi' => ['route' => 'admin.notifications.index', 'label' => 'Notifikasi', 'icon' => 'M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9'],
-    'pesan-masuk' => ['route' => 'admin.contact-messages.index', 'label' => 'Pesan Masuk', 'icon' => 'M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z'],
-    'terminal' => ['route' => 'admin.terminal.index', 'label' => 'Terminal', 'icon' => 'M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z'],
-    'pengajuan' => ['route' => 'admin.users.index', 'params' => ['tab' => 'applications'], 'label' => 'Pengajuan', 'icon' => 'M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z'],
-  ];
+  /**
+   * Compact admin links partial used in mobile drawer and avatar dropdown
+   * Expects $authUser and route helpers to be available.
+   */
 @endphp
 
-@if($isHorizontal)
-  @foreach($adminMenus as $menu)
-    @php
-      $isActive = request()->routeIs($menu['route']);
-      $url = route($menu['route'], $menu['params'] ?? []);
-    @endphp
-    <a href="{{ $url }}" 
-       class="rounded-full border px-3 py-2 text-sm font-semibold transition-all duration-200 
-              {{ $isActive 
-                 ? 'border-cyan-400/40 bg-cyan-500/15 text-cyan-300 shadow-sm' 
-                 : 'border-white/10 bg-white/5 text-white hover:bg-white/10 hover:border-white/20 hover:-translate-y-0.5' }}">
-      {{ $menu['label'] }}
-    </a>
-  @endforeach
-@else
-  <div class="space-y-1">
-    @foreach($adminMenus as $menu)
-      @php
-        $isActive = request()->routeIs($menu['route']);
-        $url = route($menu['route'], $menu['params'] ?? []);
-      @endphp
-      <a href="{{ $url }}" 
-         class="flex items-center gap-2 rounded-lg px-3 py-2 text-sm transition-all duration-200
-                {{ $isActive 
-                   ? 'bg-cyan-500/10 text-cyan-300' 
-                   : 'text-slate-200 hover:bg-white/5 hover:text-white' }}">
-        <svg class="w-4 h-4 {{ $isActive ? 'text-cyan-400' : 'text-slate-400' }}" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $menu['icon'] }}" />
-        </svg>
-        <span>{{ $menu['label'] }}</span>
-      </a>
-    @endforeach
+<div class="p-4">
+  <p class="text-sm font-semibold text-slate-200 mb-2">Admin Menu</p>
+  <div class="grid grid-cols-2 gap-2">
+    <a href="{{ route('admin.dashboard') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Dashboard</a>
+    <a href="{{ route('admin.users.index') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Kelola Akun</a>
+    <a href="{{ route('admin.verification.index') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Verifikasi</a>
+    <a href="{{ route('admin.orders.index') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Transaksi</a>
+    <a href="{{ route('admin.banners.index') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Banner</a>
+    <a href="{{ route('admin.notifications.index') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Notifikasi</a>
+    <a href="{{ route('admin.contact-messages.index') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Pesan Masuk</a>
+    <a href="{{ route('admin.terminal.index') }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Terminal</a>
+    <a href="{{ route('admin.users.index', ['tab' => 'applications']) }}" class="rounded-xl border border-white/6 bg-white/3 px-3 py-2 text-center text-sm text-slate-100 transition hover:border-white/15 hover:bg-white/6">Pengajuan</a>
   </div>
-@endif
+</div>
