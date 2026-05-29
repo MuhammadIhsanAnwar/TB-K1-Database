@@ -620,7 +620,7 @@ Premium Itemku/Codashop style marketplace navbar.
                   <p class="text-[11px] text-slate-400 mt-0.5">Layanan Customer Service kami stand-by 24 jam penuh
                     untukmu.</p>
                 </div>
-                <a href="#" class="text-xs font-bold text-cyan-400 hover:underline">Hubungi CS</a>
+                <a href="/hubungi-kami" class="text-xs font-bold text-cyan-400 hover:underline">Hubungi Kami</a>
               </div>
             </div>
 
