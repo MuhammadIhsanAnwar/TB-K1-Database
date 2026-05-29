@@ -4,7 +4,6 @@
 
 @push('styles')
 <style>
-    /* ========== GLOBAL TOUCHES ========== */
     .admin-bg {
         background: radial-gradient(ellipse at 20% 50%, #0f172a 0%, #020617 100%);
         min-height: 100vh;
@@ -35,7 +34,6 @@
         box-shadow: 0 12px 40px rgba(245, 158, 11, 0.1);
     }
 
-    /* Status badges */
     .status-badge {
         display: inline-flex;
         align-items: center;
@@ -57,7 +55,6 @@
     .s-rejected     { background: rgba(239,68,68,0.12);  color: #f87171; border:1px solid rgba(239,68,68,0.25); }
     .s-suspended    { background: rgba(100,116,139,0.12); color: #94a3b8; border:1px solid rgba(100,116,139,0.25); }
 
-    /* Tabs */
     .tab-pill {
         display: inline-flex;
         align-items: center;
@@ -97,7 +94,6 @@
         padding: 0 5px;
     }
 
-    /* Empty state */
     .empty-illustration {
         opacity: 0.7;
     }
@@ -126,14 +122,14 @@
     <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
         @php
             $stats = [
-                ['pending', 'Pending', '#fbbf24', 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', '⏳'],
-                ['under_review', 'Direview', '#a5b4fc', 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z', '🔍'],
-                ['need_revision', 'Perlu Revisi', '#fb923c', 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z', '✏️'],
-                ['approved', 'Disetujui', '#34d399', 'M5 13l4 4L19 7', '✅'],
-                ['rejected', 'Ditolak/Suspend', '#f87171', 'M6 18L18 6M6 6l12 12', '❌'],
+                ['pending', 'Pending', '#fbbf24', 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'],
+                ['under_review', 'Direview', '#a5b4fc', 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z'],
+                ['need_revision', 'Perlu Revisi', '#fb923c', 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z'],
+                ['approved', 'Disetujui', '#34d399', 'M5 13l4 4L19 7'],
+                ['rejected', 'Ditolak/Suspend', '#f87171', 'M6 18L18 6M6 6l12 12'],
             ];
         @endphp
-        @foreach($stats as [$key, $label, $color, $path, $icon])
+        @foreach($stats as [$key, $label, $color, $path])
         <a href="?tab={{ $key }}" class="glass-card p-4 flex items-start gap-3 {{ $tab === $key ? 'ring-1 ring-amber-500/50' : '' }}">
             <div class="p-2 rounded-xl" style="background: {{ $color }}15;">
                 <svg class="w-6 h-6" style="color: {{ $color }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -152,15 +148,18 @@
     <div class="glass-card p-1.5 flex gap-1 overflow-x-auto scrollbar-hide">
         @php
             $tabs = [
-                ['pending', '⏳ Pending', 'rgba(245,158,11,0.2)', '#fbbf24'],
-                ['under_review', '🔍 Direview', 'rgba(99,102,241,0.2)', '#a5b4fc'],
-                ['need_revision', '✏️ Perlu Revisi', 'rgba(249,115,22,0.2)', '#fb923c'],
-                ['approved', '✅ Disetujui', 'rgba(16,185,129,0.2)', '#34d399'],
-                ['rejected', '❌ Ditolak/Suspend', 'rgba(239,68,68,0.2)', '#f87171'],
+                ['pending', 'Pending', 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z', '#fbbf24'],
+                ['under_review', 'Direview', 'M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z', '#a5b4fc'],
+                ['need_revision', 'Perlu Revisi', 'M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z', '#fb923c'],
+                ['approved', 'Disetujui', 'M5 13l4 4L19 7', '#34d399'],
+                ['rejected', 'Ditolak/Suspend', 'M6 18L18 6M6 6l12 12', '#f87171'],
             ];
         @endphp
-        @foreach($tabs as [$key, $label, $bg, $color])
+        @foreach($tabs as [$key, $label, $path, $color])
         <a href="?tab={{ $key }}" class="tab-pill {{ $tab === $key ? 'active' : '' }}">
+            <svg class="w-4 h-4 mr-1.5" style="color: {{ $tab === $key ? '#fff' : $color }}" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="{{ $path }}"/>
+            </svg>
             {{ $label }}
             @if($counts[$key] > 0)
             <span class="count-badge {{ $tab === $key ? 'bg-white/20 text-white' : 'bg-slate-800 text-slate-400' }}">
@@ -222,7 +221,10 @@
                     <p class="text-sm text-slate-400 truncate">{{ $user->email }}</p>
                     @if($user->shop_name)
                     <p class="text-sm font-medium text-slate-300 mt-1 flex items-center gap-1.5">
-                        <span class="text-base">🏪</span> {{ $user->shop_name }}
+                        <svg class="w-4 h-4 text-slate-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M8 21V7a2 2 0 012-2h4a2 2 0 012 2v14m-8 0h8m-8 0H6m10 0h2"/>
+                        </svg>
+                        {{ $user->shop_name }}
                     </p>
                     @endif
                     @if($user->shop_description)
@@ -241,7 +243,7 @@
                 </div>
             </div>
 
-            {{-- Rejection reason if any --}}
+            {{-- Rejection reason --}}
             @if($user->seller_rejection_reason)
             <div class="mt-3 p-3 rounded-xl bg-red-900/20 border border-red-800/30 flex gap-2">
                 <svg class="w-4 h-4 text-red-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
