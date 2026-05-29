@@ -17,6 +17,9 @@
         border-radius: 20px;
         box-shadow: 0 4px 24px rgba(0, 0, 0, 0.3);
         transition: all 0.25s ease;
+        /* Hilangkan highlight bawaan saat ditekan */
+        -webkit-tap-highlight-color: transparent;
+        user-select: none;
     }
 
     .glass-card:hover {
@@ -27,13 +30,18 @@
 
     .glass-card-interactive {
         cursor: pointer;
+        display: block; /* Ubah menjadi block untuk perilaku link */
+        text-decoration: none; /* Hilangkan garis bawah */
+        color: inherit;
     }
+
     .glass-card-interactive:hover {
         transform: translateY(-3px) scale(1.01);
         border-color: rgba(245, 158, 11, 0.45);
         box-shadow: 0 12px 40px rgba(245, 158, 11, 0.1);
     }
 
+    /* Status badges */
     .status-badge {
         display: inline-flex;
         align-items: center;
@@ -55,6 +63,7 @@
     .s-rejected     { background: rgba(239,68,68,0.12);  color: #f87171; border:1px solid rgba(239,68,68,0.25); }
     .s-suspended    { background: rgba(100,116,139,0.12); color: #94a3b8; border:1px solid rgba(100,116,139,0.25); }
 
+    /* Tabs */
     .tab-pill {
         display: inline-flex;
         align-items: center;
@@ -68,6 +77,7 @@
         white-space: nowrap;
         background: transparent;
         border: 1px solid transparent;
+        -webkit-tap-highlight-color: transparent;
     }
     .tab-pill:hover {
         color: #e2e8f0;
@@ -96,6 +106,11 @@
 
     .empty-illustration {
         opacity: 0.7;
+    }
+
+    /* Agar tombol Review tidak terkena efek highlight */
+    .btn-review {
+        -webkit-tap-highlight-color: transparent;
     }
 </style>
 @endpush
@@ -188,7 +203,8 @@
     @else
     <div class="space-y-4">
         @foreach($users as $user)
-        <div class="glass-card glass-card-interactive p-5" onclick="window.location='{{ route('admin.verification.show', $user) }}'">
+        {{-- Gunakan <a> sebagai wadah kartu agar bebas efek kejut putih --}}
+        <a href="{{ route('admin.verification.show', $user) }}" class="glass-card glass-card-interactive p-5 block">
             <div class="flex items-start gap-4">
                 {{-- Avatar --}}
                 <div class="relative shrink-0">
@@ -235,11 +251,11 @@
                 {{-- Date + Action --}}
                 <div class="shrink-0 text-right flex flex-col items-end">
                     <p class="text-xs text-slate-500 mb-2">{{ $user->created_at->diffForHumans() }}</p>
-                    <a href="{{ route('admin.verification.show', $user) }}"
-                       class="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500/15 text-amber-300 text-xs font-bold hover:bg-amber-500/25 transition-all border border-amber-500/20 hover:border-amber-500/40">
+                    {{-- Tombol Review terpisah agar tidak nested link --}}
+                    <span class="btn-review inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-amber-500/15 text-amber-300 text-xs font-bold hover:bg-amber-500/25 transition-all border border-amber-500/20 hover:border-amber-500/40">
                         Review
                         <svg class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </a>
+                    </span>
                 </div>
             </div>
 
@@ -250,7 +266,7 @@
                 <p class="text-xs text-red-300"><span class="font-bold">Alasan:</span> {{ $user->seller_rejection_reason }}</p>
             </div>
             @endif
-        </div>
+        </a>
         @endforeach
     </div>
 
@@ -262,22 +278,4 @@
 
 </div>
 </div>
-@push('scripts')
-<script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const cards = document.querySelectorAll('.spotlight-card');
-        cards.forEach(card => {
-            card.addEventListener('mousemove', e => {
-                const rect = card.getBoundingClientRect();
-                const x = e.clientX - rect.left;
-                const y = e.clientY - rect.top;
-                card.style.background = `radial-gradient(circle at ${x}px ${y}px, rgba(245,158,11,0.10), rgba(15,23,42,0.7) 45%)`;
-            });
-            card.addEventListener('mouseleave', () => {
-                card.style.background = ''; // kembali ke default CSS glass-card
-            });
-        });
-    });
-</script>
-@endpush
 @endsection
