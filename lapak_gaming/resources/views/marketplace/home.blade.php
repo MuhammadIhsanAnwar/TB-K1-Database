@@ -70,11 +70,9 @@
   z-index: 1;
   min-height: 86vh;
   display: flex;
-  flex-direction: column;
   align-items: center;
   justify-content: center;
-  text-align: center;
-  padding: 6.5rem 1rem 4rem;
+  padding: 6.5rem 0 4rem;
   overflow: hidden;
 }
 
@@ -142,7 +140,7 @@
   font-size: clamp(0.95rem, 2vw, 1.15rem);
   color: #94a3b8;
   max-width: 580px;
-  margin: 0 auto 2.75rem;
+  margin-bottom: 2.75rem;
   line-height: 1.75;
   animation: hFadeDown 0.75s 0.16s ease both;
 }
@@ -586,54 +584,66 @@
   {{-- HERO SECTION                                               --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
   <section class="hero-section">
-    <div class="hero-eyebrow">
-      <span class="hero-eyebrow-dot"></span>
-      Marketplace Gaming Terpercaya #1 Indonesia
-    </div>
+    <div class="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8 relative z-10 w-full px-4 lg:px-8">
+      
+      {{-- Left Column: Content --}}
+      <div class="flex-1 flex flex-col items-center text-center lg:items-start lg:text-left w-full max-w-2xl">
+        <div class="hero-eyebrow">
+          <span class="hero-eyebrow-dot"></span>
+          Marketplace Gaming Terpercaya #1 Indonesia
+        </div>
 
-    <h1 class="hero-title">
-      Top Up &amp; Beli Item Game<br>
-      <span class="grad">Mudah, Aman, Instan</span>
-    </h1>
+        <h1 class="hero-title lg:mx-0" style="margin-left: auto; margin-right: auto;">
+          Top Up &amp; Beli Item Game<br>
+          <span class="grad">Mudah, Aman, Instan</span>
+        </h1>
 
-    <p class="hero-sub">
-      Temukan ribuan produk digital — top up, akun, voucher, dan item game dari seller terpercaya.
-      Transaksi aman dengan pengiriman cepat.
-    </p>
+        <p class="hero-sub lg:mx-0" style="margin-left: auto; margin-right: auto; max-width: 580px;">
+          Temukan ribuan produk digital — top up, akun, voucher, dan item game dari seller terpercaya.
+          Transaksi aman dengan pengiriman cepat.
+        </p>
 
-    <div class="hero-cta">
-      <a href="{{ route('products.search') }}" class="btn-cta-primary">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-        </svg>
-        Jelajahi Produk
-      </a>
-      <a href="{{ route('marketplace.trending') }}" class="btn-cta-secondary">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-        </svg>
-        Lihat Trending
-      </a>
-    </div>
+        <div class="hero-cta justify-center lg:justify-start w-full">
+          <a href="{{ route('products.search') }}" class="btn-cta-primary">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
+            </svg>
+            Jelajahi Produk
+          </a>
+          <a href="{{ route('marketplace.trending') }}" class="btn-cta-secondary">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+            </svg>
+            Lihat Trending
+          </a>
+        </div>
 
-    {{-- Stats counters --}}
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="hero-stat-num text-cyan-300 counter" data-target="{{ $activeAccountCount }}">0</div>
-        <div class="hero-stat-lbl">Akun Aktif</div>
+        {{-- Stats counters --}}
+        <div class="hero-stats lg:mx-0" style="margin-left: auto; margin-right: auto;">
+          <div class="hero-stat">
+            <div class="hero-stat-num text-cyan-300 counter" data-target="{{ $activeAccountCount }}">0</div>
+            <div class="hero-stat-lbl">Akun Aktif</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num text-emerald-300 counter" data-target="{{ $activeProductCount }}">0</div>
+            <div class="hero-stat-lbl">Produk Aktif</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num text-amber-300 counter" data-target="{{ $verifiedSellerCount }}">0</div>
+            <div class="hero-stat-lbl">Seller Verified</div>
+          </div>
+          <div class="hero-stat">
+            <div class="hero-stat-num text-indigo-300 counter" data-target="{{ $transactionCount }}">0</div>
+            <div class="hero-stat-lbl">Transaksi</div>
+          </div>
+        </div>
       </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num text-emerald-300 counter" data-target="{{ $activeProductCount }}">0</div>
-        <div class="hero-stat-lbl">Produk Aktif</div>
+
+      {{-- Right Column: 3D Visual Model --}}
+      <div class="flex-1 w-full flex justify-center lg:justify-end">
+        @include('components.hero-3d-model')
       </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num text-amber-300 counter" data-target="{{ $verifiedSellerCount }}">0</div>
-        <div class="hero-stat-lbl">Seller Verified</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num text-indigo-300 counter" data-target="{{ $transactionCount }}">0</div>
-        <div class="hero-stat-lbl">Transaksi</div>
-      </div>
+
     </div>
   </section>
 
