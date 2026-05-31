@@ -11,17 +11,25 @@
     z-index: 10;
   }
 
+  @keyframes idleRock {
+    0%   { transform: rotateX(14deg) rotateY(-16deg); }
+    25%  { transform: rotateX(17deg) rotateY(-12deg); }
+    50%  { transform: rotateX(13deg) rotateY(-18deg); }
+    75%  { transform: rotateX(16deg) rotateY(-14deg); }
+    100% { transform: rotateX(14deg) rotateY(-16deg); }
+  }
+
   .hero-3d-container {
     position: relative;
     width: 460px;
     height: 460px;
     transform-style: preserve-3d;
-    transform: rotateX(15deg) rotateY(-15deg);
-    transition: transform 0.1s ease-out;
+    animation: idleRock 10s ease-in-out infinite;
   }
   @media (max-width: 640px) {
     .hero-3d-container {
-      transform: scale(0.7) rotateX(15deg) rotateY(-15deg);
+      transform: scale(0.7);
+      animation: none;
     }
   }
 
@@ -272,44 +280,4 @@
   </div>
 </div>
 
-<script>
-  document.addEventListener('DOMContentLoaded', () => {
-    const container = document.getElementById('model-container');
-    if(!container) return;
-    
-    let targetX = 15;
-    let targetY = -15;
-    let currentX = 15;
-    let currentY = -15;
-
-    const lerp = (start, end, factor) => start + (end - start) * factor;
-
-    const animate = () => {
-      if(window.innerWidth >= 1024) {
-        currentX = lerp(currentX, targetX, 0.06);
-        currentY = lerp(currentY, targetY, 0.06);
-        container.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
-      } else {
-        container.style.transform = `scale(0.7) rotateX(15deg) rotateY(-15deg)`;
-      }
-      requestAnimationFrame(animate);
-    };
-    
-    animate();
-
-    document.addEventListener('mousemove', (e) => {
-      if(window.innerWidth < 1024) return;
-      // Calculate rotation based on cursor position relative to center of screen
-      const xRot = ((window.innerHeight / 2) - e.pageY) / 35;
-      const yRot = (e.pageX - (window.innerWidth / 2)) / 35;
-      
-      targetX = xRot + 15;
-      targetY = yRot - 15;
-    });
-
-    document.addEventListener('mouseleave', () => {
-      targetX = 15;
-      targetY = -15;
-    });
-  });
-</script>
+{{-- Mouse parallax removed. Cards float via pure CSS animations. --}}
