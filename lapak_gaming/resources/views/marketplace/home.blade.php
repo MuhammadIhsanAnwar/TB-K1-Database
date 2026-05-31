@@ -200,16 +200,16 @@
   position: relative;
   font-family: 'Inter', sans-serif;
   font-size: 17px;
-  color: #64748B;
+  color: #00D4FF;
   height: 1.6em; /* keep height stable */
 }
 .typing-text {
-  border-right: 2px solid #64748B;
+  border-right: 2px solid #00D4FF;
   white-space: nowrap;
   overflow: hidden;
 }
 @keyframes blinkCursor {
-  0%, 49% { border-color: #64748B; }
+  0%, 49% { border-color: #00D4FF; }
   50%, 100% { border-color: transparent; }
 }
 .typing-text {
