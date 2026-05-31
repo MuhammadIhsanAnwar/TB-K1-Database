@@ -61,14 +61,17 @@ class ProductController extends Controller
                         $sub->where('category_id', $id)->orWhereHas('category', fn($c) => $c->where('parent_id', $id));
                     });
                 } else {
-                    $cat = \App\Models\Category::where('slug', $categorySlug)->first();
-                    if ($cat) {
-                        $children = $cat->children()->pluck('id')->push($cat->id)->all();
-                        $q->whereIn('category_id', $children);
-                    } else {
-                        // fallback to matching slug on related category record
-                        $q->whereHas('category', fn($c) => $c->where('slug', $categorySlug));
-                    }
+                    $cat = \App\Models\Category::where('slug', $categorySlug)
+                    ->orWhere('name', 'like', "%{$categorySlug}%")
+                    ->first();
+                if ($cat) {
+                    $children = $cat->children()->pluck('id')->push($cat->id)->all();
+                    $q->whereIn('category_id', $children);
+                } else {
+                    // fallback to matching partial slug or name on related category record
+                    $q->whereHas('category', fn($c) => $c->where('slug', 'like', "%{$categorySlug}%")
+                        ->orWhere('name', 'like', "%{$categorySlug}%"));
+                }
                 }
             })
             ->when($minPrice, fn($q) => $q->where('price', '>=', $minPrice))

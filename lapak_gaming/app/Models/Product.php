@@ -57,7 +57,11 @@ class Product extends Model {
         return $q->where(function (Builder $query) use ($term): void {
             $query->where('name', 'like', '%' . $term . '%')
                 ->orWhere('description', 'like', '%' . $term . '%')
-                ->orWhere('type', 'like', '%' . $term . '%');
+                ->orWhere('type', 'like', '%' . $term . '%')
+                ->orWhereHas('category', function (Builder $categoryQuery) use ($term): void {
+                    $categoryQuery->where('name', 'like', '%' . $term . '%')
+                        ->orWhere('slug', 'like', '%' . $term . '%');
+                });
         });
     }
 
