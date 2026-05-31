@@ -267,6 +267,72 @@ Route::prefix('verification')->name('verification.')->group(function () {
 Route::get('/account/reactivate', [SettingsController::class, 'reactivateForm'])->name('account.reactivate.form');
 Route::post('/account/reactivate', [SettingsController::class, 'reactivate'])->name('account.reactivate');
 
+// DEBUG ROUTE - Remove in production
+Route::get('/debug/search', function () {
+    use App\Models\Product;
+    use App\Models\Category;
+    use Illuminate\Support\Facades\DB;
+
+    $html = '<pre style="font-family: monospace; padding: 20px; background: #f5f5f5; overflow: auto;">';
+    $html .= "=== MARKETPLACE DEBUG ===\n\n";
+
+    // 1. Categories
+    $html .= "1. CATEGORIES:\n";
+    $categories = Category::all();
+    $html .= "Total: " . $categories->count() . "\n";
+    foreach ($categories as $cat) {
+        $html .= "  [{$cat->id}] {$cat->name} (slug: {$cat->slug}, parent: " . ($cat->parent_id ?? 'null') . ")\n";
+    }
+
+    // 2. Products with active + inStock
+    $html .= "\n2. PRODUCTS (active + in stock):\n";
+    $active = Product::active()->inStock()->count();
+    $html .= "Total: {$active}\n";
+    if ($active > 0) {
+        foreach (Product::active()->inStock()->take(5)->get() as $p) {
+            $html .= "  [{$p->id}] {$p->name} | cat_id: {$p->category_id} | stock: {$p->stock}\n";
+        }
+        if ($active > 5) $html .= "  ... and " . ($active - 5) . " more\n";
+    }
+
+    // 3. Test "Top Up Game" category search
+    $html .= "\n3. CATEGORY 'TOP-UP-GAME' TEST:\n";
+    $topup = Category::where('slug', 'top-up-game')->first();
+    if ($topup) {
+        $html .= "Found: {$topup->name} (ID: {$topup->id})\n";
+        $inCat = Product::active()->inStock()->where('category_id', $topup->id)->count();
+        $html .= "Products in category: {$inCat}\n";
+        foreach (Product::active()->inStock()->where('category_id', $topup->id)->take(3)->get() as $p) {
+            $html .= "  - {$p->name}\n";
+        }
+    } else {
+        $html .= "NOT FOUND!\n";
+    }
+
+    // 4. Search test
+    $html .= "\n4. SEARCH TEST - 'Mobile':\n";
+    $search = Product::active()->inStock()->where(function($q) {
+        $q->where('name', 'like', '%Mobile%')
+          ->orWhere('description', 'like', '%Mobile%');
+    })->count();
+    $html .= "Results: {$search}\n";
+
+    // 5. Raw stats
+    $html .= "\n5. DATABASE STATS:\n";
+    $total = DB::table('products')->count();
+    $published = DB::table('products')->where('status', 'published')->count();
+    $inStock = DB::table('products')->where('stock', '>', 0)->count();
+    $activeInStock = DB::table('products')->where('status', 'published')->where('stock', '>', 0)->count();
+    $html .= "Total products: {$total}\n";
+    $html .= "Published: {$published}\n";
+    $html .= "In stock (stock > 0): {$inStock}\n";
+    $html .= "Published AND In stock: {$activeInStock}\n";
+
+    $html .= "\n=== END DEBUG ===\n";
+    $html .= '</pre>';
+    return $html;
+});
+
 // Setup & Migration routes removed to avoid redirecting users to first-run pages.
 // If you need them in development, wrap these routes with an environment check
 // (e.g. `if (app()->environment('local')) { ... }`) instead of exposing them publicly.

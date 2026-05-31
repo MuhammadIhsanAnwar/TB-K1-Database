@@ -677,15 +677,15 @@ Premium Itemku/Codashop style marketplace navbar.
   $navActive   = 'text-cyan-400 bg-cyan-500/10 border border-cyan-400/20';
   $navInactive = 'text-white/75 hover:text-white hover:bg-white/[0.04]';
 @endphp
-            <a href="{{ route('products.search', ['q' => 'top up game']) }}"
-              class="{{ $navLinkBase }} flex items-center gap-2 {{ ($currentQ === 'top up game') ? $navActive : $navInactive }}">
+            <a href="{{ route('products.search', ['category' => 'top-up-game']) }}"
+              class="{{ $navLinkBase }} flex items-center gap-2 {{ ($currentCat === 'top-up-game') ? $navActive : $navInactive }}">
               <span class="px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-200 text-[10px] font-bold">HOT</span>
               Top Up Game
             </a>
-            <a href="{{ route('products.search', ['q' => 'akun game']) }}"
-              class="{{ $navLinkBase }} {{ ($currentQ === 'akun game') ? $navActive : $navInactive }}">Akun Game</a>
-            <a href="{{ route('products.search', ['q' => 'voucher game']) }}"
-              class="{{ $navLinkBase }} {{ ($currentQ === 'voucher game') ? $navActive : $navInactive }}">Voucher Game</a>
+            <a href="{{ route('products.search', ['category' => 'akun']) }}"
+              class="{{ $navLinkBase }} {{ ($currentCat === 'akun') ? $navActive : $navInactive }}">Akun Game</a>
+            <a href="{{ route('products.search', ['category' => 'voucher']) }}"
+              class="{{ $navLinkBase }} {{ ($currentCat === 'voucher') ? $navActive : $navInactive }}">Voucher Game</a>
             <a href="{{ route('products.search', ['category' => 'roblox']) }}"
               class="{{ $navLinkBase }} {{ ($currentCat === 'roblox') ? $navActive : $navInactive }}">Roblox Games</a>
             <a href="{{ route('products.search', ['category' => 'growtopia']) }}"
