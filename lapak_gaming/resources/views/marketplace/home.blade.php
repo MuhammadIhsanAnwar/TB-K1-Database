@@ -126,24 +126,50 @@
   animation: hFadeDown 0.75s 0.08s ease both;
 }
 .title-line-1 {
-  font-weight: 800;
-  display: block;
-  width: max-content;
-  background: linear-gradient(
-    to right,
-    #FFD700,
-    #F59E0B,
-    #8B5CF6
-);
-  background-size: 200% auto;
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
-  animation: shineText 3s linear infinite;
+    position: relative;
+    font-weight: 800;
+    display: inline-block;
+
+    background: linear-gradient(
+        90deg,
+        #FFD700,
+        #F59E0B,
+        #8B5CF6
+    );
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
-@keyframes shineText {
-  to { background-position: -200% center; }
+
+.title-line-1::after {
+    content: attr(data-text);
+
+    position: absolute;
+    inset: 0;
+
+    background: linear-gradient(
+        120deg,
+        transparent 40%,
+        rgba(255,255,255,0.9) 50%,
+        transparent 60%
+    );
+
+    background-size: 200% 100%;
+    animation: shine 3s linear infinite;
+
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
+
+@keyframes shine {
+    from {
+        background-position: 200% 0;
+    }
+    to {
+        background-position: -200% 0;
+    }
+}
+
 .title-line-2 { font-weight: 800; color: #FFFFFF; display: block; }
 .title-line-3 { 
   font-weight: 800; display: block;
@@ -634,7 +660,7 @@
         </div>
 
         <h1 class="hero-title">
-          <span class="title-line-1">Top Up Game</span>
+          <span class="title-line-1" data-text="Top Up Game">Top Up Game</span>
           <span class="title-line-2">Favoritmu,</span>
           <span class="title-line-3">Instan & Aman</span>
         </h1>
