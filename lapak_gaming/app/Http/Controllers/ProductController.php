@@ -51,7 +51,11 @@ class ProductController extends Controller
 
         $products = Product::active()->inStock()
             ->when($query, fn($q) => $q->where(function($q) use ($query) {
-                $q->where('name', 'like', "%$query%")->orWhere('description', 'like', "%$query%");
+                $q->where('name', 'like', "%{$query}%")
+                    ->orWhere('description', 'like', "%{$query}%")
+                    ->orWhere('type', 'like', "%{$query}%")
+                    ->orWhereHas('category', fn($c) => $c->where('name', 'like', "%{$query}%")
+                        ->orWhere('slug', 'like', "%{$query}%"));
             }))
             ->when($categorySlug, function($q) use ($categorySlug) {
                 // support both slug and numeric id, include direct children categories
