@@ -65,6 +65,29 @@ Premium Itemku/Codashop style marketplace navbar.
       width: 100%;
     }
 
+    /* ACTIVE state for nav links */
+    .nav-modern-link.is-active {
+      color: #22d3ee !important;
+    }
+    .nav-modern-link.is-active::after {
+      width: 100%;
+      background: linear-gradient(90deg, #22d3ee, #818cf8);
+      box-shadow: 0 0 8px rgba(34, 211, 238, 0.6);
+    }
+
+    /* Beranda active (standalone pill) */
+    .nav-home-link.is-active {
+      color: #22d3ee !important;
+      background: rgba(6, 182, 212, 0.12) !important;
+      box-shadow: 0 0 16px rgba(6, 182, 212, 0.15);
+    }
+
+    /* Mobile drawer active */
+    .mobile-nav-link.is-active {
+      color: #22d3ee !important;
+      font-weight: 700;
+    }
+
     /* ICON BUTTON */
     .nav-icon-btn {
       position: relative;
@@ -229,11 +252,11 @@ Premium Itemku/Codashop style marketplace navbar.
       <div>
         <ul class="space-y-1">
           <li><a href="{{ route('marketplace.home') }}"
-              class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium">Beranda</a></li>
+              class="mobile-nav-link flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium {{ request()->routeIs('marketplace.home') ? 'is-active' : '' }}">Beranda</a></li>
           <li><a href="{{ route('marketplace.browse') }}"
-              class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium">Semua Produk</a></li>
+              class="mobile-nav-link flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium {{ request()->routeIs('marketplace.browse') ? 'is-active' : '' }}">Semua Produk</a></li>
           <li><a href="{{ route('marketplace.trending') }}"
-              class="flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium">Trending</a></li>
+              class="mobile-nav-link flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium {{ request()->routeIs('marketplace.trending') ? 'is-active' : '' }}">Trending</a></li>
         </ul>
       </div>
 
@@ -631,7 +654,7 @@ Premium Itemku/Codashop style marketplace navbar.
 
         {{-- Horizontal Links --}}
         <a href="{{ route('marketplace.home') }}"
-          class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white/90 hover:text-white hover:bg-cyan-500/10 transition-all duration-300">
+          class="nav-home-link hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white/90 hover:text-white hover:bg-cyan-500/10 transition-all duration-300 {{ request()->routeIs('marketplace.home') ? 'is-active' : '' }}">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M3 10l9-7 9 7v9a2 2 0 01-2 2h-4a2 2 0 01-2-2V13H9v6a2 2 0 01-2 2H3z" />
@@ -641,34 +664,40 @@ Premium Itemku/Codashop style marketplace navbar.
 
         <div class="flex-1 overflow-x-auto no-scrollbar mask-gradient-right">
           <div class="flex items-center gap-2 min-w-max">
+@php
+  $currentQ = request('q', '');
+  $currentCat = request('category', '');
+@endphp
             <a href="{{ route('products.search', ['q' => 'top up game']) }}"
-              class="nav-modern-link flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium text-cyan-300 bg-cyan-500/10 border border-cyan-400/20 whitespace-nowrap">
+              class="nav-modern-link flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-300
+                {{ ($currentQ === 'top up game') ? 'text-cyan-300 bg-cyan-500/10 border border-cyan-400/20 is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">
               <span class="px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-200 text-[10px] font-bold">HOT</span>
               Top Up Game
             </a>
             <a href="{{ route('products.search', ['q' => 'akun game']) }}"
-              class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">Akun
-              Game</a>
+              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
+                {{ ($currentQ === 'akun game') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Akun Game</a>
             <a href="{{ route('products.search', ['q' => 'voucher game']) }}"
-              class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">Voucher
-              Game</a>
+              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
+                {{ ($currentQ === 'voucher game') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Voucher Game</a>
             <a href="{{ route('products.search', ['category' => 'roblox']) }}"
-              class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">Roblox
-              Games</a>
+              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
+                {{ ($currentCat === 'roblox') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Roblox Games</a>
             <a href="{{ route('products.search', ['category' => 'growtopia']) }}"
-              class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">Growtopia</a>
+              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
+                {{ ($currentCat === 'growtopia') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Growtopia</a>
             <a href="{{ route('products.search', ['category' => 'genshin-impact']) }}"
-              class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">Genshin
-              Impact</a>
+              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
+                {{ ($currentCat === 'genshin-impact') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Genshin Impact</a>
             <a href="{{ route('products.search', ['category' => 'dota-2']) }}"
-              class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">Dota
-              2 Item</a>
+              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
+                {{ ($currentCat === 'dota-2') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Dota 2 Item</a>
             <a href="{{ route('products.search', ['category' => 'game-key']) }}"
-              class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">Game
-              Key</a>
+              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
+                {{ ($currentCat === 'game-key') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Game Key</a>
             <a href="{{ route('products.search', ['category' => 'mobile-legends']) }}"
-              class="nav-modern-link px-4 py-2 text-white/85 text-sm font-medium hover:bg-white/[0.04] rounded-xl transition-all duration-300 whitespace-nowrap">Mobile
-              Legend Account</a>
+              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
+                {{ ($currentCat === 'mobile-legends') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Mobile Legend Account</a>
           </div>
         </div>
       </div>
