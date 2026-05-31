@@ -9,7 +9,7 @@
    =================================================================== */
 
 /* ── PAGE SHELL ──────────────────────────────────────────────────── */
-.home-page { position: relative; overflow-x: hidden; }
+.home-page { position: relative; overflow-x: hidden; background: #0A0A1A; }
 
 /* ── AMBIENT ORBS ────────────────────────────────────────────────── */
 .amb-orb {
@@ -22,19 +22,19 @@
 .amb-orb-1 {
   width: 700px; height: 700px;
   left: -220px; top: -120px;
-  background: radial-gradient(circle, rgba(37,99,235,0.16) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
   animation: ambFloat1 22s ease-in-out infinite;
 }
 .amb-orb-2 {
   width: 550px; height: 550px;
   right: -160px; top: 180px;
-  background: radial-gradient(circle, rgba(249,115,22,0.11) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(0,212,255,0.15) 0%, transparent 70%);
   animation: ambFloat2 28s ease-in-out infinite;
 }
 .amb-orb-3 {
   width: 450px; height: 450px;
   left: 35%; bottom: 80px;
-  background: radial-gradient(circle, rgba(14,165,233,0.08) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%);
   animation: ambFloat3 19s ease-in-out infinite;
 }
 @keyframes ambFloat1 {
@@ -55,11 +55,12 @@
 .home-grid-bg {
   position: absolute;
   inset: 0;
-  background-image:
-    linear-gradient(rgba(37,99,235,0.035) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(37,99,235,0.035) 1px, transparent 1px);
-  background-size: 64px 64px;
-  mask-image: linear-gradient(180deg, rgba(0,0,0,0.65) 0%, transparent 55%);
+  background-image: 
+    radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
+    radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+  background-size: 40px 40px;
+  background-position: 0 0, 20px 20px;
+  mask-image: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 70%);
   pointer-events: none;
   z-index: 0;
 }
@@ -68,7 +69,7 @@
 .hero-section {
   position: relative;
   z-index: 1;
-  min-height: 86vh;
+  min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -81,8 +82,8 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 90% 65% at 50% 0%, rgba(37,99,235,0.18) 0%, transparent 60%),
-    radial-gradient(ellipse 55% 45% at 85% 85%, rgba(249,115,22,0.09) 0%, transparent 55%);
+    radial-gradient(ellipse 90% 65% at 50% 0%, rgba(139,92,246,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 55% 45% at 85% 85%, rgba(0,212,255,0.05) 0%, transparent 55%);
   pointer-events: none;
 }
 
@@ -118,30 +119,24 @@
 
 /* Title */
 .hero-title {
-  font-family: 'Oxanium', sans-serif;
-  font-size: clamp(2.4rem, 6.5vw, 4.8rem);
-  font-weight: 900;
-  line-height: 1.05;
-  letter-spacing: -0.025em;
+  font-family: 'Exo 2', sans-serif;
+  font-size: clamp(32px, 5vw, 56px);
+  font-weight: 800;
+  line-height: 1.1;
   color: #fff;
   text-wrap: balance;
-  margin-bottom: 1.5rem;
+  margin-bottom: 1.25rem;
   animation: hFadeDown 0.75s 0.08s ease both;
-}
-.hero-title .grad {
-  background: linear-gradient(135deg, #60a5fa 0%, #a78bfa 42%, #fb923c 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* Sub */
 .hero-sub {
-  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;
   color: #94a3b8;
   max-width: 580px;
-  margin-bottom: 2.75rem;
-  line-height: 1.75;
+  margin-bottom: 2.25rem;
+  line-height: 1.6;
   animation: hFadeDown 0.75s 0.16s ease both;
 }
 
@@ -149,97 +144,119 @@
 .hero-cta {
   display: flex;
   flex-wrap: wrap;
-  gap: 0.875rem;
-  justify-content: center;
-  margin-bottom: 3.75rem;
+  gap: 1rem;
+  margin-bottom: 2.5rem;
   animation: hFadeDown 0.75s 0.24s ease both;
+}
+@media (max-width: 640px) {
+  .hero-cta { flex-direction: column; width: 100%; }
+  .btn-cta-primary, .btn-cta-secondary { width: 100%; justify-content: center; }
+}
+
+@keyframes pulseGlow {
+  0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); }
+  70% { box-shadow: 0 0 0 15px rgba(0, 212, 255, 0); }
+  100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
 }
 
 .btn-cta-primary {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 0.95rem 2.1rem;
-  border-radius: 14px;
-  font-family: 'Oxanium', sans-serif; font-weight: 700; font-size: 0.95rem;
-  color: #fff;
-  background: linear-gradient(135deg, #2563eb, #1d4ed8);
-  border: 1px solid rgba(59,130,246,0.3);
-  box-shadow: 0 0 32px rgba(37,99,235,0.38), 0 8px 22px rgba(0,0,0,0.32);
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 1.05rem;
+  color: #0A0A1A;
+  background: #00D4FF;
   text-decoration: none;
-  transition: transform 0.3s cubic-bezier(0.2,0.8,0.2,1), box-shadow 0.3s ease;
-  position: relative; overflow: hidden;
-}
-.btn-cta-primary::before {
-  content: '';
-  position: absolute; inset: 0;
-  background: linear-gradient(135deg, rgba(255,255,255,0.12), transparent);
-  opacity: 0; transition: opacity 0.3s;
+  transition: all 0.3s ease;
+  animation: pulseGlow 2s infinite;
 }
 .btn-cta-primary:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 0 55px rgba(37,99,235,0.5), 0 16px 38px rgba(0,0,0,0.42);
+  transform: translateY(-2px);
+  background: #33dfff;
+  box-shadow: 0 10px 25px rgba(0, 212, 255, 0.5);
 }
-.btn-cta-primary:hover::before { opacity: 1; }
 
 .btn-cta-secondary {
   display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 0.95rem 2.1rem;
-  border-radius: 14px;
-  font-family: 'Oxanium', sans-serif; font-weight: 700; font-size: 0.95rem;
-  color: #cbd5e1;
-  background: rgba(255,255,255,0.04);
-  border: 1px solid rgba(255,255,255,0.1);
-  backdrop-filter: blur(12px);
+  padding: 1rem 2rem;
+  border-radius: 9999px;
+  font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 1.05rem;
+  color: #fff;
+  background: transparent;
+  border: 1px solid rgba(255,255,255,0.2);
   text-decoration: none;
   transition: all 0.3s ease;
 }
 .btn-cta-secondary:hover {
-  background: rgba(255,255,255,0.09);
-  border-color: rgba(255,255,255,0.2);
-  color: #fff;
+  background: rgba(255,255,255,0.1);
+  border-color: #fff;
   transform: translateY(-2px);
 }
 
-/* Stats grid */
-.hero-stats {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 0.875rem;
-  width: 100%;
-  max-width: 660px;
+/* Trust Badges & Games Row */
+.hero-trust-badges {
   animation: hFadeDown 0.75s 0.32s ease both;
 }
-@media (max-width: 500px) {
-  .hero-stats { grid-template-columns: repeat(2, 1fr); }
+.trust-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+}
+.trust-badge-icon {
+  font-size: 1.1rem;
 }
 
-.hero-stat {
-  background: rgba(255,255,255,0.035);
-  border: 1px solid rgba(255,255,255,0.07);
-  border-radius: 18px;
-  padding: 1.1rem 0.75rem;
-  backdrop-filter: blur(12px);
-  text-align: center;
-  transition: all 0.3s ease;
+.hero-games-row {
+  margin-top: 2.5rem;
+  animation: hFadeDown 0.75s 0.4s ease both;
 }
-.hero-stat:hover {
-  background: rgba(255,255,255,0.065);
-  border-color: rgba(96,165,250,0.2);
-  transform: translateY(-3px);
-  box-shadow: 0 12px 32px rgba(0,0,0,0.25);
-}
-.hero-stat-num {
-  font-family: 'Oxanium', sans-serif;
-  font-size: 1.65rem;
-  font-weight: 900;
-  line-height: 1;
-  margin-bottom: 0.3rem;
-}
-.hero-stat-lbl {
-  font-size: 0.68rem;
+.hero-games-label {
+  font-size: 0.85rem;
+  color: #64748b;
+  margin-bottom: 0.75rem;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.09em;
-  color: #475569;
+  letter-spacing: 0.05em;
+}
+.hero-games-marquee {
+  display: flex;
+  gap: 1rem;
+  overflow: hidden;
+  width: 100%;
+}
+.hero-games-track {
+  display: flex;
+  gap: 1.25rem;
+  animation: scrollGames 15s linear infinite;
+}
+@media (min-width: 768px) {
+  .hero-games-track { animation: none; flex-wrap: wrap; }
+}
+@keyframes scrollGames {
+  from { transform: translateX(0); }
+  to { transform: translateX(-50%); }
+}
+.game-mini-thumb {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: rgba(255,255,255,0.05);
+  border: 1px solid rgba(255,255,255,0.1);
+  display: flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.3s ease;
+}
+.game-mini-thumb:hover {
+  transform: translateY(-3px) scale(1.05);
+  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
+  border-color: #8B5CF6;
+}
+.game-mini-thumb img {
+  width: 100%; height: 100%; border-radius: 11px; object-fit: cover;
 }
 
 /* ── ANIMATIONS ──────────────────────────────────────────────────── */
@@ -594,53 +611,74 @@
         </div>
 
         <h1 class="hero-title lg:mx-0" style="margin-left: auto; margin-right: auto;">
-          Top Up &amp; Beli Item Game<br>
-          <span class="grad">Mudah, Aman, Instan</span>
+          Top Up Game Favoritmu, <span style="color: #00D4FF;">Instan & Aman</span>
         </h1>
 
         <p class="hero-sub lg:mx-0" style="margin-left: auto; margin-right: auto; max-width: 580px;">
-          Temukan ribuan produk digital — top up, akun, voucher, dan item game dari seller terpercaya.
-          Transaksi aman dengan pengiriman cepat.
+          Proses otomatis dalam hitungan detik. 100+ game tersedia.
         </p>
 
         <div class="hero-cta justify-center lg:justify-start w-full">
           <a href="{{ route('products.search') }}" class="btn-cta-primary">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/>
-            </svg>
-            Jelajahi Produk
+            Top Up Sekarang &rarr;
           </a>
           <a href="{{ route('marketplace.trending') }}" class="btn-cta-secondary">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
-            </svg>
-            Lihat Trending
+            Lihat Semua Game
           </a>
         </div>
 
-        {{-- Stats counters --}}
-        <div class="hero-stats lg:mx-0" style="margin-left: auto; margin-right: auto;">
-          <div class="hero-stat">
-            <div class="hero-stat-num text-cyan-300 counter" data-target="{{ $activeAccountCount }}">0</div>
-            <div class="hero-stat-lbl">Akun Aktif</div>
+        {{-- Trust Indicators --}}
+        <div class="hero-trust-badges flex flex-wrap gap-4 justify-center lg:justify-start">
+          <div class="trust-badge">
+            <span class="trust-badge-icon">✅</span>
+            <span>500K+ Transaksi</span>
           </div>
-          <div class="hero-stat">
-            <div class="hero-stat-num text-emerald-300 counter" data-target="{{ $activeProductCount }}">0</div>
-            <div class="hero-stat-lbl">Produk Aktif</div>
+          <div class="trust-badge">
+            <span class="trust-badge-icon">⚡</span>
+            <span>Proses Instan</span>
           </div>
-          <div class="hero-stat">
-            <div class="hero-stat-num text-amber-300 counter" data-target="{{ $verifiedSellerCount }}">0</div>
-            <div class="hero-stat-lbl">Seller Verified</div>
-          </div>
-          <div class="hero-stat">
-            <div class="hero-stat-num text-indigo-300 counter" data-target="{{ $transactionCount }}">0</div>
-            <div class="hero-stat-lbl">Transaksi</div>
+          <div class="trust-badge">
+            <span class="trust-badge-icon">🔒</span>
+            <span>Pembayaran Aman</span>
           </div>
         </div>
+
+        {{-- Game Thumbnails --}}
+        <div class="hero-games-row w-full">
+          <div class="hero-games-label">Game Tersedia:</div>
+          <div class="hero-games-marquee">
+            <div class="hero-games-track">
+              <!-- Thumbnails -->
+              <div class="game-mini-thumb">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=150&auto=format&fit=crop" alt="Game 1">
+              </div>
+              <div class="game-mini-thumb">
+                <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=150&auto=format&fit=crop" alt="Game 2">
+              </div>
+              <div class="game-mini-thumb">
+                <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=150&auto=format&fit=crop" alt="Game 3">
+              </div>
+              <div class="game-mini-thumb">
+                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=150&auto=format&fit=crop" alt="Game 4">
+              </div>
+              <div class="game-mini-thumb">
+                <img src="https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=150&auto=format&fit=crop" alt="Game 5">
+              </div>
+              <!-- Duplicate for seamless scroll on mobile -->
+              <div class="game-mini-thumb md:hidden">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=150&auto=format&fit=crop" alt="Game 1">
+              </div>
+              <div class="game-mini-thumb md:hidden">
+                <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=150&auto=format&fit=crop" alt="Game 2">
+              </div>
+            </div>
+          </div>
+        </div>
+
       </div>
 
       {{-- Right Column: 3D Visual Model --}}
-      <div class="flex-1 w-full flex justify-center lg:justify-end">
+      <div class="flex-1 w-full flex justify-center lg:justify-end mt-8 lg:mt-0">
         @include('components.hero-3d-model')
       </div>
 

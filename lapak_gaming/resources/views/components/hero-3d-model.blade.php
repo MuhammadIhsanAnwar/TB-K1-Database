@@ -273,26 +273,43 @@
 </div>
 
 <script>
-  // Wait for DOM
   document.addEventListener('DOMContentLoaded', () => {
     const container = document.getElementById('model-container');
     if(!container) return;
     
+    let targetX = 15;
+    let targetY = -15;
+    let currentX = 15;
+    let currentY = -15;
+
+    const lerp = (start, end, factor) => start + (end - start) * factor;
+
+    const animate = () => {
+      if(window.innerWidth >= 1024) {
+        currentX = lerp(currentX, targetX, 0.06);
+        currentY = lerp(currentY, targetY, 0.06);
+        container.style.transform = `rotateX(${currentX}deg) rotateY(${currentY}deg)`;
+      } else {
+        container.style.transform = `scale(0.7) rotateX(15deg) rotateY(-15deg)`;
+      }
+      requestAnimationFrame(animate);
+    };
+    
+    animate();
+
     document.addEventListener('mousemove', (e) => {
-      if(window.innerWidth < 1024) return; // Only on large screens
+      if(window.innerWidth < 1024) return;
+      // Calculate rotation based on cursor position relative to center of screen
+      const xRot = ((window.innerHeight / 2) - e.pageY) / 35;
+      const yRot = (e.pageX - (window.innerWidth / 2)) / 35;
       
-      const xAxis = ((window.innerWidth / 2) - e.pageX) / 35;
-      const yAxis = ((window.innerHeight / 2) - e.pageY) / 35;
-      
-      const targetX = yAxis + 15;
-      const targetY = xAxis - 15;
-      
-      container.style.transform = `rotateY(${targetY}deg) rotateX(${targetX}deg)`;
+      targetX = xRot + 15;
+      targetY = yRot - 15;
     });
 
     document.addEventListener('mouseleave', () => {
-      if(window.innerWidth < 1024) return;
-      container.style.transform = `rotateX(15deg) rotateY(-15deg)`;
+      targetX = 15;
+      targetY = -15;
     });
   });
 </script>
