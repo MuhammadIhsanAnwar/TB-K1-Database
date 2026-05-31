@@ -252,11 +252,14 @@ Premium Itemku/Codashop style marketplace navbar.
       <div>
         <ul class="space-y-1">
           <li><a href="{{ route('marketplace.home') }}"
-              class="mobile-nav-link flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium {{ request()->routeIs('marketplace.home') ? 'is-active' : '' }}">Beranda</a></li>
+              class="flex items-center py-2 text-sm font-medium transition-colors
+                {{ request()->routeIs('marketplace.home') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Beranda</a></li>
           <li><a href="{{ route('marketplace.browse') }}"
-              class="mobile-nav-link flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium {{ request()->routeIs('marketplace.browse') ? 'is-active' : '' }}">Semua Produk</a></li>
+              class="flex items-center py-2 text-sm font-medium transition-colors
+                {{ request()->routeIs('marketplace.browse') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Semua Produk</a></li>
           <li><a href="{{ route('marketplace.trending') }}"
-              class="mobile-nav-link flex items-center py-2 surface-text hover:text-itemku-blue text-sm font-medium {{ request()->routeIs('marketplace.trending') ? 'is-active' : '' }}">Trending</a></li>
+              class="flex items-center py-2 text-sm font-medium transition-colors
+                {{ request()->routeIs('marketplace.trending') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Trending</a></li>
         </ul>
       </div>
 
@@ -654,7 +657,10 @@ Premium Itemku/Codashop style marketplace navbar.
 
         {{-- Horizontal Links --}}
         <a href="{{ route('marketplace.home') }}"
-          class="nav-home-link hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold text-white/90 hover:text-white hover:bg-cyan-500/10 transition-all duration-300 {{ request()->routeIs('marketplace.home') ? 'is-active' : '' }}">
+          class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300
+            {{ request()->routeIs('marketplace.home')
+                ? 'text-cyan-400 bg-cyan-500/10 border border-cyan-400/20 shadow-[0_0_14px_rgba(6,182,212,0.15)]'
+                : 'text-white/80 hover:text-white hover:bg-cyan-500/10' }}">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M3 10l9-7 9 7v9a2 2 0 01-2 2h-4a2 2 0 01-2-2V13H9v6a2 2 0 01-2 2H3z" />
@@ -667,37 +673,31 @@ Premium Itemku/Codashop style marketplace navbar.
 @php
   $currentQ = request('q', '');
   $currentCat = request('category', '');
+  $navLinkBase = 'nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap';
+  $navActive   = 'text-cyan-400 bg-cyan-500/10 border border-cyan-400/20';
+  $navInactive = 'text-white/75 hover:text-white hover:bg-white/[0.04]';
 @endphp
             <a href="{{ route('products.search', ['q' => 'top up game']) }}"
-              class="nav-modern-link flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-medium whitespace-nowrap transition-all duration-300
-                {{ ($currentQ === 'top up game') ? 'text-cyan-300 bg-cyan-500/10 border border-cyan-400/20 is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">
+              class="{{ $navLinkBase }} flex items-center gap-2 {{ ($currentQ === 'top up game') ? $navActive : $navInactive }}">
               <span class="px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-200 text-[10px] font-bold">HOT</span>
               Top Up Game
             </a>
             <a href="{{ route('products.search', ['q' => 'akun game']) }}"
-              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
-                {{ ($currentQ === 'akun game') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Akun Game</a>
+              class="{{ $navLinkBase }} {{ ($currentQ === 'akun game') ? $navActive : $navInactive }}">Akun Game</a>
             <a href="{{ route('products.search', ['q' => 'voucher game']) }}"
-              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
-                {{ ($currentQ === 'voucher game') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Voucher Game</a>
+              class="{{ $navLinkBase }} {{ ($currentQ === 'voucher game') ? $navActive : $navInactive }}">Voucher Game</a>
             <a href="{{ route('products.search', ['category' => 'roblox']) }}"
-              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
-                {{ ($currentCat === 'roblox') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Roblox Games</a>
+              class="{{ $navLinkBase }} {{ ($currentCat === 'roblox') ? $navActive : $navInactive }}">Roblox Games</a>
             <a href="{{ route('products.search', ['category' => 'growtopia']) }}"
-              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
-                {{ ($currentCat === 'growtopia') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Growtopia</a>
+              class="{{ $navLinkBase }} {{ ($currentCat === 'growtopia') ? $navActive : $navInactive }}">Growtopia</a>
             <a href="{{ route('products.search', ['category' => 'genshin-impact']) }}"
-              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
-                {{ ($currentCat === 'genshin-impact') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Genshin Impact</a>
+              class="{{ $navLinkBase }} {{ ($currentCat === 'genshin-impact') ? $navActive : $navInactive }}">Genshin Impact</a>
             <a href="{{ route('products.search', ['category' => 'dota-2']) }}"
-              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
-                {{ ($currentCat === 'dota-2') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Dota 2 Item</a>
+              class="{{ $navLinkBase }} {{ ($currentCat === 'dota-2') ? $navActive : $navInactive }}">Dota 2 Item</a>
             <a href="{{ route('products.search', ['category' => 'game-key']) }}"
-              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
-                {{ ($currentCat === 'game-key') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Game Key</a>
+              class="{{ $navLinkBase }} {{ ($currentCat === 'game-key') ? $navActive : $navInactive }}">Game Key</a>
             <a href="{{ route('products.search', ['category' => 'mobile-legends']) }}"
-              class="nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap
-                {{ ($currentCat === 'mobile-legends') ? 'is-active' : 'text-white/85 hover:bg-white/[0.04]' }}">Mobile Legend Account</a>
+              class="{{ $navLinkBase }} {{ ($currentCat === 'mobile-legends') ? $navActive : $navInactive }}">Mobile Legend Account</a>
           </div>
         </div>
       </div>
