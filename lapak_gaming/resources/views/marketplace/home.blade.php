@@ -76,6 +76,9 @@
   padding: 0;
   overflow: hidden;
 }
+.hero-left-column {
+  transform: translateY(-18px);
+}
 
 .hero-section::before {
   content: '';
@@ -650,10 +653,10 @@
   {{-- HERO SECTION                                               --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
   <section class="hero-section">
-    <div class="w-full mx-auto flex flex-col lg:flex-row items-center justify-between relative z-10 w-full" style="max-width: 1440px; padding-left: clamp(24px, 5vw, 80px); padding-right: clamp(24px, 5vw, 80px);">
+    <div class="w-full mx-auto flex flex-col lg:flex-row items-center justify-between relative z-10" style="max-width: 1440px; padding-left: clamp(24px, 5vw, 80px); padding-right: clamp(24px, 5vw, 80px);">
       
       {{-- Left Column: Content --}}
-      <div class="flex-1 flex flex-col items-start text-left w-full" style="max-width: 560px;">
+      <div class="hero-left-column flex-1 flex flex-col items-start text-left w-full" style="max-width: 560px;">
         <div class="hero-eyebrow">
           <span class="hero-eyebrow-dot"></span>
           MARKETPLACE GAMING TERPERCAYA #1 INDONESIA
@@ -704,7 +707,7 @@
       </div>
 
       {{-- Right Column: 3D Visual Model --}}
-      <div class="flex-1 w-full flex justify-center lg:justify-end mt-12 lg:mt-0" style="padding-left: clamp(0px, 4vw, 48px);">
+      <div class="hidden lg:flex flex-1 w-full justify-center lg:justify-end mt-12 lg:mt-0" style="padding-left: clamp(0px, 4vw, 48px);">
         @include('components.hero-3d-model')
       </div>
 
