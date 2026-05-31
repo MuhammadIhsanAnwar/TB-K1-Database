@@ -704,7 +704,7 @@
       </div>
 
       {{-- Right Column: 3D Visual Model --}}
-      <div class="flex-1 w-full flex justify-center lg:justify-end mt-12 lg:mt-0">
+      <div class="flex-1 w-full flex justify-center lg:justify-end mt-12 lg:mt-0" style="padding-left: clamp(0px, 4vw, 48px);">
         @include('components.hero-3d-model')
       </div>
 

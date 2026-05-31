@@ -3,12 +3,13 @@
   .hero-3d-wrapper {
     perspective: 1200px;
     display: flex;
-    justify-content: center;
+    justify-content: flex-end;
     align-items: center;
     width: 100%;
     height: 500px;
     position: relative;
     z-index: 10;
+    padding-right: 20px;
   }
 
   @keyframes idleRock {
