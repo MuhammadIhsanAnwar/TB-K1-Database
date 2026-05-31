@@ -1000,7 +1000,7 @@
 {{-- ═══════════════════════════════════════════════════════════ --}}
 {{-- FAQ SECTION (PREMIUM REDESIGN)                              --}}
 {{-- ═══════════════════════════════════════════════════════════ --}}
-<section class="reveal-item home-wrap sec-gap-sm pb-16">
+<section class="reveal-item home-wrap sec-gap-sm pb-16" id="faq">
     <div class="cat-panel" style="padding: 3.5rem 2rem;">
         
         {{-- Header FAQ --}}
@@ -1011,28 +1011,57 @@
                 </svg>
                 Pusat Bantuan
             </div>
-            <h2 class="sec-title" style="font-size:clamp(1.5rem, 3.5vw, 2.2rem);">Frequently Asked Questions</h2>
-            <p class="sec-sub mt-2 max-w-md mx-auto text-center" style="line-height: 1.6;">
-                Temukan jawaban cepat untuk pertanyaan yang paling sering ditanyakan oleh pelanggan Lapak Gaming.
+            <h2 class="sec-title" style="font-size:clamp(1.5rem, 3.5vw, 2.2rem);">Pertanyaan yang Sering Diajukan</h2>
+            <p class="sec-sub mt-2 max-w-lg mx-auto text-center" style="line-height: 1.6;">
+                Temukan jawaban atas pertanyaan yang paling sering ditanyakan mengenai top up game, pembayaran, dan proses transaksi.
             </p>
         </div>
 
         {{-- Daftar FAQ --}}
-        <div class="max-w-3xl mx-auto space-y-3.5 relative z-10">
+        <div class="faq-container max-w-3xl mx-auto space-y-3.5 relative z-10">
             
-            {{-- FAQ Item 1 --}}
+            @php
+            $faqs = [
+                [
+                    'q' => 'Bagaimana cara melakukan top up game?',
+                    'a' => 'Pilih game yang ingin di-top up, masukkan User ID, pilih nominal yang diinginkan, lakukan pembayaran, dan pesanan akan diproses secara otomatis.'
+                ],
+                [
+                    'q' => 'Berapa lama proses top up berlangsung?',
+                    'a' => 'Sebagian besar transaksi diproses dalam hitungan detik hingga beberapa menit setelah pembayaran berhasil diverifikasi.'
+                ],
+                [
+                    'q' => 'Metode pembayaran apa saja yang tersedia?',
+                    'a' => 'Kami mendukung berbagai metode pembayaran seperti QRIS, Transfer Bank, E-Wallet, Virtual Account, dan metode pembayaran lainnya yang tersedia pada halaman checkout.'
+                ],
+                [
+                    'q' => 'Apakah data akun game saya aman?',
+                    'a' => 'Ya. Kami hanya memerlukan User ID atau informasi yang dibutuhkan untuk pengiriman item dan tidak pernah meminta password akun game Anda.'
+                ],
+                [
+                    'q' => 'Apa yang harus dilakukan jika top up belum masuk?',
+                    'a' => 'Silakan hubungi customer support dengan menyertakan ID transaksi agar tim kami dapat membantu melakukan pengecekan.'
+                ],
+                [
+                    'q' => 'Apakah layanan tersedia 24 jam?',
+                    'a' => 'Ya. Sistem transaksi berjalan 24/7 sehingga Anda dapat melakukan top up kapan saja.'
+                ]
+            ];
+            @endphp
+
+            @foreach($faqs as $index => $faq)
             <div class="faq-item group relative overflow-hidden rounded-[20px] border border-white/[0.05] bg-white/[0.015] transition-all duration-300 hover:bg-white/[0.03] hover:border-sky-500/30">
                 {{-- Left Accent Line --}}
                 <div class="faq-accent absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-sky-400 to-blue-600 opacity-0 transition-all duration-500 scale-y-0 origin-top"></div>
 
-                <button class="faq-btn flex w-full items-center justify-between gap-4 p-5 sm:p-6 text-left cursor-pointer outline-none">
+                <button class="faq-btn flex w-full items-center justify-between gap-4 p-5 sm:p-6 text-left cursor-pointer outline-none focus:outline-none">
                     <div class="flex items-center gap-4 sm:gap-6">
-                        <span class="faq-num font-['Oxanium'] text-xl sm:text-2xl font-black text-white/10 transition-colors duration-300">01</span>
-                        <h3 class="faq-title font-semibold text-white/80 text-sm sm:text-base transition-colors duration-300 group-hover:text-sky-300">Bagaimana cara membeli produk di sini?</h3>
+                        <span class="faq-num font-['Oxanium'] text-xl sm:text-2xl font-black text-white/10 transition-colors duration-300">{{ sprintf('%02d', $index + 1) }}</span>
+                        <h3 class="faq-title font-semibold text-white/80 text-sm sm:text-base transition-colors duration-300 group-hover:text-sky-300">{{ $faq['q'] }}</h3>
                     </div>
                     <div class="faq-icon-box flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition-all duration-300 group-hover:border-sky-400/30 group-hover:bg-sky-500/10">
-                        <svg class="faq-icon h-4 w-4 text-sky-400 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        <svg class="faq-icon h-4 w-4 text-sky-400 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                            <path class="faq-icon-path" stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
                     </div>
                 </button>
@@ -1041,93 +1070,13 @@
                     <div class="overflow-hidden">
                         <div class="pb-6 pl-[4.2rem] pr-6 pt-0 text-sm leading-relaxed text-slate-400 sm:pl-[5.2rem]">
                             <div class="border-l-2 border-white/5 pl-4 text-[13px] sm:text-sm">
-                                Pilih game atau produk yang ingin kamu beli, masukkan data yang diperlukan (seperti User ID dan Zone ID), pilih nominal, dan klik tombol "Beli Sekarang". Setelah itu, selesaikan pembayaran menggunakan metode yang tersedia.
+                                {{ $faq['a'] }}
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
-
-            {{-- FAQ Item 2 --}}
-            <div class="faq-item group relative overflow-hidden rounded-[20px] border border-white/[0.05] bg-white/[0.015] transition-all duration-300 hover:bg-white/[0.03] hover:border-sky-500/30">
-                <div class="faq-accent absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-sky-400 to-blue-600 opacity-0 transition-all duration-500 scale-y-0 origin-top"></div>
-
-                <button class="faq-btn flex w-full items-center justify-between gap-4 p-5 sm:p-6 text-left cursor-pointer outline-none">
-                    <div class="flex items-center gap-4 sm:gap-6">
-                        <span class="faq-num font-['Oxanium'] text-xl sm:text-2xl font-black text-white/10 transition-colors duration-300">02</span>
-                        <h3 class="faq-title font-semibold text-white/80 text-sm sm:text-base transition-colors duration-300 group-hover:text-sky-300">Berapa lama waktu proses pemesanan?</h3>
-                    </div>
-                    <div class="faq-icon-box flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition-all duration-300 group-hover:border-sky-400/30 group-hover:bg-sky-500/10">
-                        <svg class="faq-icon h-4 w-4 text-sky-400 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                    </div>
-                </button>
-
-                <div class="faq-content grid grid-rows-[0fr] opacity-0 transition-all duration-500">
-                    <div class="overflow-hidden">
-                        <div class="pb-6 pl-[4.2rem] pr-6 pt-0 text-sm leading-relaxed text-slate-400 sm:pl-[5.2rem]">
-                            <div class="border-l-2 border-white/5 pl-4 text-[13px] sm:text-sm">
-                                Sebagian besar produk (seperti Top Up otomatis) akan masuk dalam waktu 1-5 menit setelah pembayaran berhasil dikonfirmasi. Untuk produk tertentu, maksimal proses adalah 1x24 jam.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- FAQ Item 3 --}}
-            <div class="faq-item group relative overflow-hidden rounded-[20px] border border-white/[0.05] bg-white/[0.015] transition-all duration-300 hover:bg-white/[0.03] hover:border-sky-500/30">
-                <div class="faq-accent absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-sky-400 to-blue-600 opacity-0 transition-all duration-500 scale-y-0 origin-top"></div>
-
-                <button class="faq-btn flex w-full items-center justify-between gap-4 p-5 sm:p-6 text-left cursor-pointer outline-none">
-                    <div class="flex items-center gap-4 sm:gap-6">
-                        <span class="faq-num font-['Oxanium'] text-xl sm:text-2xl font-black text-white/10 transition-colors duration-300">03</span>
-                        <h3 class="faq-title font-semibold text-white/80 text-sm sm:text-base transition-colors duration-300 group-hover:text-sky-300">Metode pembayaran apa saja yang tersedia?</h3>
-                    </div>
-                    <div class="faq-icon-box flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition-all duration-300 group-hover:border-sky-400/30 group-hover:bg-sky-500/10">
-                        <svg class="faq-icon h-4 w-4 text-sky-400 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                    </div>
-                </button>
-
-                <div class="faq-content grid grid-rows-[0fr] opacity-0 transition-all duration-500">
-                    <div class="overflow-hidden">
-                        <div class="pb-6 pl-[4.2rem] pr-6 pt-0 text-sm leading-relaxed text-slate-400 sm:pl-[5.2rem]">
-                            <div class="border-l-2 border-white/5 pl-4 text-[13px] sm:text-sm">
-                                Kami menyediakan berbagai metode pembayaran termasuk e-Wallet (Gopay, OVO, Dana, ShopeePay), QRIS, Transfer Bank (BCA, Mandiri, BNI, BRI), hingga melalui minimarket (Alfamart & Indomaret).
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {{-- FAQ Item 4 --}}
-            <div class="faq-item group relative overflow-hidden rounded-[20px] border border-white/[0.05] bg-white/[0.015] transition-all duration-300 hover:bg-white/[0.03] hover:border-sky-500/30">
-                <div class="faq-accent absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-sky-400 to-blue-600 opacity-0 transition-all duration-500 scale-y-0 origin-top"></div>
-
-                <button class="faq-btn flex w-full items-center justify-between gap-4 p-5 sm:p-6 text-left cursor-pointer outline-none">
-                    <div class="flex items-center gap-4 sm:gap-6">
-                        <span class="faq-num font-['Oxanium'] text-xl sm:text-2xl font-black text-white/10 transition-colors duration-300">04</span>
-                        <h3 class="faq-title font-semibold text-white/80 text-sm sm:text-base transition-colors duration-300 group-hover:text-sky-300">Apakah transaksi di sini aman?</h3>
-                    </div>
-                    <div class="faq-icon-box flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition-all duration-300 group-hover:border-sky-400/30 group-hover:bg-sky-500/10">
-                        <svg class="faq-icon h-4 w-4 text-sky-400 transition-transform duration-500" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
-                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                        </svg>
-                    </div>
-                </button>
-
-                <div class="faq-content grid grid-rows-[0fr] opacity-0 transition-all duration-500">
-                    <div class="overflow-hidden">
-                        <div class="pb-6 pl-[4.2rem] pr-6 pt-0 text-sm leading-relaxed text-slate-400 sm:pl-[5.2rem]">
-                            <div class="border-l-2 border-white/5 pl-4 text-[13px] sm:text-sm">
-                                Sangat aman! Sistem kami menggunakan enkripsi pembayaran yang dijamin oleh payment gateway resmi. Saldo akan diteruskan ke penjual hanya jika pesanan sudah masuk ke akun kamu.
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            @endforeach
 
         </div>
     </div>
@@ -1216,6 +1165,81 @@
     });
   });
 
-  
+  /* ══ FAQ ACCORDION ═════════════════════════════════════════════ */
+  document.querySelectorAll('.faq-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const item = btn.closest('.faq-item');
+      const content = item.querySelector('.faq-content');
+      const iconPath = item.querySelector('.faq-icon-path');
+      const iconBox = item.querySelector('.faq-icon-box');
+      const accent = item.querySelector('.faq-accent');
+      const title = item.querySelector('.faq-title');
+      const num = item.querySelector('.faq-num');
+      
+      const isOpen = item.classList.contains('is-open');
+
+      // Close all FAQs first
+      document.querySelectorAll('.faq-item').forEach(otherItem => {
+        otherItem.classList.remove('is-open');
+        otherItem.style.backgroundColor = '';
+        otherItem.style.borderColor = '';
+        
+        const otherContent = otherItem.querySelector('.faq-content');
+        const otherIconPath = otherItem.querySelector('.faq-icon-path');
+        const otherIconBox = otherItem.querySelector('.faq-icon-box');
+        const otherAccent = otherItem.querySelector('.faq-accent');
+        const otherTitle = otherItem.querySelector('.faq-title');
+        const otherNum = otherItem.querySelector('.faq-num');
+
+        if(otherContent) {
+            otherContent.style.gridTemplateRows = '0fr';
+            otherContent.style.opacity = '0';
+        }
+        if(otherIconPath) {
+            otherIconPath.setAttribute('d', 'M12 4.5v15m7.5-7.5h-15');
+        }
+        if(otherIconBox) {
+            otherIconBox.style.backgroundColor = '';
+            otherIconBox.style.borderColor = '';
+        }
+        if(otherAccent) {
+            otherAccent.style.transform = 'scaleY(0)';
+            otherAccent.style.opacity = '0';
+        }
+        if(otherTitle) {
+            otherTitle.classList.remove('text-sky-400');
+            otherTitle.classList.add('text-white/80');
+        }
+        if(otherNum) {
+            otherNum.classList.remove('text-sky-500/30');
+            otherNum.classList.add('text-white/10');
+        }
+      });
+
+      // Toggle current FAQ
+      if (!isOpen) {
+        item.classList.add('is-open');
+        item.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
+        item.style.borderColor = 'rgba(14, 165, 233, 0.3)';
+        
+        content.style.gridTemplateRows = '1fr';
+        content.style.opacity = '1';
+        
+        if (iconPath) iconPath.setAttribute('d', 'M19.5 12h-15'); // minus icon
+        if (iconBox) {
+            iconBox.style.backgroundColor = 'rgba(14, 165, 233, 0.1)';
+            iconBox.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+        }
+        
+        accent.style.transform = 'scaleY(1)';
+        accent.style.opacity = '1';
+        title.classList.remove('text-white/80');
+        title.classList.add('text-sky-400');
+        num.classList.remove('text-white/10');
+        num.classList.add('text-sky-500/30');
+      }
+    });
+  });
+
 </script>
 @endpush
