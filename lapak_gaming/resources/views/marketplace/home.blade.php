@@ -125,9 +125,11 @@
   margin-bottom: 20px;
   animation: hFadeDown 0.75s 0.08s ease both;
 }
-.title-line-1 { 
-  font-weight: 800; display: block; width: max-content;
-  background: linear-gradient(110deg, #F59E0B 0%, #FBBF24 40%, #FFFFFF 50%, #FBBF24 60%, #F59E0B 100%);
+.title-line-1 {
+  font-weight: 800;
+  display: block;
+  width: max-content;
+  background: linear-gradient(to right, #00D4FF, #FFFFFF);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
@@ -157,6 +159,37 @@
   line-height: 1.6;
   animation: hFadeDown 0.75s 0.16s ease both;
 }
+
+/* Typing animation wrapper */
+.typing-wrapper {
+  display: inline-block;
+  position: relative;
+  font-family: 'Inter', sans-serif;
+  font-size: 17px;
+  color: #64748B;
+  height: 1.6em; /* keep height stable */
+}
+.typing-text {
+  border-right: 2px solid #64748B;
+  white-space: nowrap;
+  overflow: hidden;
+}
+@keyframes blinkCursor {
+  0%, 49% { border-color: #64748B; }
+  50%, 100% { border-color: transparent; }
+}
+.typing-text {
+  animation: blinkCursor 0.8s steps(1) infinite;
+}
+@keyframes typeAnim {
+  from { width: 0; }
+  to { width: 100%; }
+}
+@keyframes deleteAnim {
+  from { width: 100%; }
+  to { width: 0; }
+}
+
 
 /* CTA row */
 .hero-cta {
@@ -601,9 +634,9 @@
           <span class="title-line-3">Instan & Aman</span>
         </h1>
 
-        <p class="hero-sub">
-          Proses otomatis dalam hitungan detik. 100+ game tersedia.
-        </p>
+        <div class="hero-sub typing-wrapper">
+          <span class="typing-text" id="typing-text"></span>
+        </div>
 
         <div class="hero-cta w-full">
           <a href="{{ route('products.search') }}" class="btn-cta-primary">
@@ -1251,5 +1284,33 @@
     });
   });
 
+  // Typewriter effect
+  const typingTexts = ["Proses otomatis dalam hitungan detik.", "100+ game tersedia.", "Instant top up, zero delay.", "Banyak pilihan game."];
+  let tIdx = 0, cIdx = 0, typingForward = true;
+  const typingElem = document.getElementById('typing-text');
+  function typeWriter() {
+    if (!typingElem) return;
+    const current = typingTexts[tIdx];
+    if (typingForward) {
+      typingElem.textContent = current.slice(0, cIdx + 1);
+      cIdx++;
+      if (cIdx === current.length) {
+        typingForward = false;
+        setTimeout(typeWriter, 1500);
+        return;
+      }
+    } else {
+      typingElem.textContent = current.slice(0, cIdx - 1);
+      cIdx--;
+      if (cIdx === 0) {
+        typingForward = true;
+        tIdx = (tIdx + 1) % typingTexts.length;
+        setTimeout(typeWriter, 500);
+        return;
+      }
+    }
+    setTimeout(typeWriter, 80);
+  }
+  typeWriter();
 </script>
 @endpush
