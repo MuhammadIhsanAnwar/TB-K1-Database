@@ -73,7 +73,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 6.5rem 0 4rem;
+  padding: 0;
   overflow: hidden;
 }
 
@@ -82,7 +82,7 @@
   position: absolute;
   inset: 0;
   background:
-    radial-gradient(ellipse 90% 65% at 50% 0%, rgba(139,92,246,0.08) 0%, transparent 60%),
+    radial-gradient(ellipse 600px 400px at 20% 50%, rgba(0,212,255,0.04) 0%, transparent 70%),
     radial-gradient(ellipse 55% 45% at 85% 85%, rgba(0,212,255,0.05) 0%, transparent 55%);
   pointer-events: none;
 }
@@ -91,51 +91,58 @@
 .hero-eyebrow {
   display: inline-flex;
   align-items: center;
-  gap: 0.5rem;
-  padding: 0.4rem 1.1rem;
+  gap: 8px;
+  padding: 6px 12px;
   border-radius: 999px;
-  border: 1px solid rgba(96,165,250,0.25);
-  background: rgba(37,99,235,0.09);
-  backdrop-filter: blur(12px);
-  font-size: 0.72rem;
-  font-weight: 700;
-  letter-spacing: 0.16em;
+  border: 1px solid rgba(0,212,255,0.3);
+  background: transparent;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.12em;
   text-transform: uppercase;
-  color: #93c5fd;
-  margin-bottom: 1.75rem;
+  color: #00D4FF;
+  margin-bottom: 16px;
   animation: hFadeDown 0.7s ease both;
+  font-family: 'Inter', sans-serif;
 }
 .hero-eyebrow-dot {
-  width: 7px; height: 7px;
+  width: 6px; height: 6px;
   border-radius: 50%;
-  background: #60a5fa;
-  animation: dotPulse 2.2s ease-in-out infinite;
-  box-shadow: 0 0 8px rgba(96,165,250,0.6);
+  background: #00D4FF;
+  animation: dotPulse 2s infinite;
 }
 @keyframes dotPulse {
-  0%,100% { opacity:1; transform:scale(1); box-shadow: 0 0 8px rgba(96,165,250,0.6); }
-  50%     { opacity:0.5; transform:scale(0.7); box-shadow: 0 0 3px rgba(96,165,250,0.2); }
+  0%,100% { transform:scale(1); opacity:1; }
+  50%     { transform:scale(1.5); opacity:0.4; }
 }
 
 /* Title */
 .hero-title {
-  font-family: 'Exo 2', sans-serif;
-  font-size: clamp(32px, 5vw, 56px);
-  font-weight: 800;
+  font-family: 'Sora', sans-serif;
+  font-size: clamp(40px, 5.5vw, 68px);
   line-height: 1.1;
-  color: #fff;
   text-wrap: balance;
-  margin-bottom: 1.25rem;
+  margin-bottom: 20px;
   animation: hFadeDown 0.75s 0.08s ease both;
+}
+.title-line-1 { font-weight: 400; color: #94A3B8; display: block; }
+.title-line-2 { font-weight: 800; color: #FFFFFF; display: block; }
+.title-line-3 { 
+  font-weight: 800; display: block;
+  background: linear-gradient(to right, #00D4FF, #8B5CF6);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
 }
 
 /* Sub */
 .hero-sub {
   font-family: 'Inter', sans-serif;
-  font-size: 18px;
-  color: #94a3b8;
-  max-width: 580px;
-  margin-bottom: 2.25rem;
+  font-size: 17px;
+  color: #64748B;
+  font-weight: 400;
+  max-width: 420px;
+  margin-bottom: 36px;
   line-height: 1.6;
   animation: hFadeDown 0.75s 0.16s ease both;
 }
@@ -143,9 +150,9 @@
 /* CTA row */
 .hero-cta {
   display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-  margin-bottom: 2.5rem;
+  gap: 12px;
+  align-items: center;
+  margin-bottom: 32px;
   animation: hFadeDown 0.75s 0.24s ease both;
 }
 @media (max-width: 640px) {
@@ -153,110 +160,122 @@
   .btn-cta-primary, .btn-cta-secondary { width: 100%; justify-content: center; }
 }
 
-@keyframes pulseGlow {
-  0% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0.4); }
-  70% { box-shadow: 0 0 0 15px rgba(0, 212, 255, 0); }
-  100% { box-shadow: 0 0 0 0 rgba(0, 212, 255, 0); }
-}
-
 .btn-cta-primary {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 1rem 2rem;
-  border-radius: 9999px;
-  font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 1.05rem;
-  color: #0A0A1A;
-  background: #00D4FF;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif; font-weight: 700; font-size: 15px;
+  color: #000000;
+  background: linear-gradient(135deg, #00D4FF 0%, #0EA5E9 100%);
   text-decoration: none;
-  transition: all 0.3s ease;
-  animation: pulseGlow 2s infinite;
+  box-shadow: 0 0 24px rgba(0, 212, 255, 0.35);
+  transition: all 0.2s ease;
+  height: 52px;
+}
+.btn-cta-primary .btn-arrow {
+  transition: transform 0.2s ease;
 }
 .btn-cta-primary:hover {
   transform: translateY(-2px);
-  background: #33dfff;
-  box-shadow: 0 10px 25px rgba(0, 212, 255, 0.5);
+  box-shadow: 0 0 40px rgba(0, 212, 255, 0.55);
+}
+.btn-cta-primary:hover .btn-arrow {
+  transform: translateX(3px);
 }
 
 .btn-cta-secondary {
-  display: inline-flex; align-items: center; gap: 0.5rem;
-  padding: 1rem 2rem;
-  border-radius: 9999px;
-  font-family: 'Exo 2', sans-serif; font-weight: 700; font-size: 1.05rem;
-  color: #fff;
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 14px 28px;
+  border-radius: 10px;
+  font-family: 'Inter', sans-serif; font-weight: 500; font-size: 15px;
+  color: #E2E8F0;
   background: transparent;
-  border: 1px solid rgba(255,255,255,0.2);
+  border: 1.5px solid rgba(255,255,255,0.15);
   text-decoration: none;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  height: 52px;
 }
 .btn-cta-secondary:hover {
-  background: rgba(255,255,255,0.1);
-  border-color: #fff;
-  transform: translateY(-2px);
+  background: rgba(255,255,255,0.04);
+  border-color: rgba(255,255,255,0.35);
 }
 
-/* Trust Badges & Games Row */
+/* Trust Badges */
 .hero-trust-badges {
+  display: flex;
+  align-items: center;
+  gap: 24px;
   animation: hFadeDown 0.75s 0.32s ease both;
+}
+@media (max-width: 500px) {
+  .hero-trust-badges { flex-direction: column; align-items: flex-start; gap: 12px; }
+  .trust-divider { display: none; }
 }
 .trust-badge {
   display: inline-flex;
   align-items: center;
-  gap: 0.4rem;
-  font-size: 0.85rem;
-  color: #cbd5e1;
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
+  gap: 8px;
 }
 .trust-badge-icon {
-  font-size: 1.1rem;
+  width: 16px; height: 16px;
+  color: #00D4FF;
+}
+.trust-badge-text {
+  color: #94A3B8;
+  font-size: 13px;
+  font-weight: 500;
+  font-family: 'Inter', sans-serif;
+}
+.trust-divider {
+  width: 1px;
+  height: 16px;
+  background: rgba(255,255,255,0.08);
 }
 
+/* Games Row */
 .hero-games-row {
-  margin-top: 2.5rem;
+  margin-top: 28px;
   animation: hFadeDown 0.75s 0.4s ease both;
 }
 .hero-games-label {
-  font-size: 0.85rem;
-  color: #64748b;
-  margin-bottom: 0.75rem;
+  font-family: 'Inter', sans-serif;
+  font-size: 11px;
+  color: #475569;
+  margin-bottom: 8px;
   font-weight: 600;
   text-transform: uppercase;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.1em;
 }
-.hero-games-marquee {
+.hero-games-list {
   display: flex;
-  gap: 1rem;
-  overflow: hidden;
-  width: 100%;
-}
-.hero-games-track {
-  display: flex;
-  gap: 1.25rem;
-  animation: scrollGames 15s linear infinite;
-}
-@media (min-width: 768px) {
-  .hero-games-track { animation: none; flex-wrap: wrap; }
-}
-@keyframes scrollGames {
-  from { transform: translateX(0); }
-  to { transform: translateX(-50%); }
+  gap: 10px;
+  flex-wrap: wrap;
 }
 .game-mini-thumb {
-  width: 48px;
-  height: 48px;
-  border-radius: 12px;
+  width: 44px;
+  height: 44px;
+  border-radius: 10px;
   background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.1);
+  border: 1px solid rgba(255,255,255,0.08);
   display: flex; align-items: center; justify-content: center;
   flex-shrink: 0;
-  transition: all 0.3s ease;
+  transition: all 0.2s ease;
+  color: #94a3b8;
+  font-family: 'Sora', sans-serif;
+  font-weight: 800;
+  font-size: 12px;
 }
+.game-mini-thumb.ml { color: #3b82f6; }
+.game-mini-thumb.ff { color: #ef4444; }
+.game-mini-thumb.pubg { color: #f59e0b; }
+.game-mini-thumb.gi { color: #8b5cf6; }
+.game-mini-thumb.val { color: #ef4444; }
+.game-mini-thumb.hok { color: #10b981; }
+
 .game-mini-thumb:hover {
-  transform: translateY(-3px) scale(1.05);
-  box-shadow: 0 8px 20px rgba(139, 92, 246, 0.4);
-  border-color: #8B5CF6;
-}
-.game-mini-thumb img {
-  width: 100%; height: 100%; border-radius: 11px; object-fit: cover;
+  transform: scale(1.08);
+  background: rgba(0,212,255,0.06);
+  border-color: rgba(0,212,255,0.4);
 }
 
 /* ── ANIMATIONS ──────────────────────────────────────────────────── */
@@ -601,26 +620,32 @@
   {{-- HERO SECTION                                               --}}
   {{-- ═══════════════════════════════════════════════════════════ --}}
   <section class="hero-section">
-    <div class="w-full max-w-7xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-8 relative z-10 w-full px-4 lg:px-8">
+    <div class="w-full mx-auto flex flex-col lg:flex-row items-center justify-between relative z-10 w-full" style="max-width: 1440px; padding-left: clamp(24px, 5vw, 80px); padding-right: clamp(24px, 5vw, 80px);">
       
       {{-- Left Column: Content --}}
-      <div class="flex-1 flex flex-col items-center text-center lg:items-start lg:text-left w-full max-w-2xl">
+      <div class="flex-1 flex flex-col items-start text-left w-full" style="max-width: 560px;">
         <div class="hero-eyebrow">
           <span class="hero-eyebrow-dot"></span>
-          Marketplace Gaming Terpercaya #1 Indonesia
+          MARKETPLACE GAMING TERPERCAYA #1 INDONESIA
         </div>
 
-        <h1 class="hero-title lg:mx-0" style="margin-left: auto; margin-right: auto;">
-          Top Up Game Favoritmu, <span style="color: #00D4FF;">Instan & Aman</span>
+        <h1 class="hero-title">
+          <span class="title-line-1">Top Up Game</span>
+          <span class="title-line-2">Favoritmu,</span>
+          <span class="title-line-3">Instan & Aman</span>
         </h1>
 
-        <p class="hero-sub lg:mx-0" style="margin-left: auto; margin-right: auto; max-width: 580px;">
+        <p class="hero-sub">
           Proses otomatis dalam hitungan detik. 100+ game tersedia.
         </p>
 
-        <div class="hero-cta justify-center lg:justify-start w-full">
+        <div class="hero-cta w-full">
           <a href="{{ route('products.search') }}" class="btn-cta-primary">
-            Top Up Sekarang &rarr;
+            Top Up Sekarang
+            <svg class="btn-arrow" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+              <polyline points="12 5 19 12 12 19"></polyline>
+            </svg>
           </a>
           <a href="{{ route('marketplace.trending') }}" class="btn-cta-secondary">
             Lihat Semua Game
@@ -628,57 +653,40 @@
         </div>
 
         {{-- Trust Indicators --}}
-        <div class="hero-trust-badges flex flex-wrap gap-4 justify-center lg:justify-start">
+        <div class="hero-trust-badges">
           <div class="trust-badge">
-            <span class="trust-badge-icon">✅</span>
-            <span>500K+ Transaksi</span>
+            <svg class="trust-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>
+            <span class="trust-badge-text">500K+ Transaksi</span>
           </div>
+          <div class="trust-divider"></div>
           <div class="trust-badge">
-            <span class="trust-badge-icon">⚡</span>
-            <span>Proses Instan</span>
+            <svg class="trust-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon></svg>
+            <span class="trust-badge-text">Proses Instan</span>
           </div>
+          <div class="trust-divider"></div>
           <div class="trust-badge">
-            <span class="trust-badge-icon">🔒</span>
-            <span>Pembayaran Aman</span>
+            <svg class="trust-badge-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg>
+            <span class="trust-badge-text">Pembayaran Aman</span>
           </div>
         </div>
 
         {{-- Game Thumbnails --}}
-        <div class="hero-games-row w-full">
-          <div class="hero-games-label">Game Tersedia:</div>
-          <div class="hero-games-marquee">
-            <div class="hero-games-track">
-              <!-- Thumbnails -->
-              <div class="game-mini-thumb">
-                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=150&auto=format&fit=crop" alt="Game 1">
-              </div>
-              <div class="game-mini-thumb">
-                <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=150&auto=format&fit=crop" alt="Game 2">
-              </div>
-              <div class="game-mini-thumb">
-                <img src="https://images.unsplash.com/photo-1552820728-8b83bb6b773f?q=80&w=150&auto=format&fit=crop" alt="Game 3">
-              </div>
-              <div class="game-mini-thumb">
-                <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=150&auto=format&fit=crop" alt="Game 4">
-              </div>
-              <div class="game-mini-thumb">
-                <img src="https://images.unsplash.com/photo-1605901309584-818e25960b8f?q=80&w=150&auto=format&fit=crop" alt="Game 5">
-              </div>
-              <!-- Duplicate for seamless scroll on mobile -->
-              <div class="game-mini-thumb md:hidden">
-                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=150&auto=format&fit=crop" alt="Game 1">
-              </div>
-              <div class="game-mini-thumb md:hidden">
-                <img src="https://images.unsplash.com/photo-1538481199705-c710c4e965fc?q=80&w=150&auto=format&fit=crop" alt="Game 2">
-              </div>
-            </div>
+        <div class="hero-games-row">
+          <div class="hero-games-label">TERSEDIA DI</div>
+          <div class="hero-games-list">
+            <div class="game-mini-thumb ml">ML</div>
+            <div class="game-mini-thumb ff">FF</div>
+            <div class="game-mini-thumb pubg">PUBG</div>
+            <div class="game-mini-thumb gi">GI</div>
+            <div class="game-mini-thumb val">VAL</div>
+            <div class="game-mini-thumb hok">HOK</div>
           </div>
         </div>
 
       </div>
 
       {{-- Right Column: 3D Visual Model --}}
-      <div class="flex-1 w-full flex justify-center lg:justify-end mt-8 lg:mt-0">
+      <div class="flex-1 w-full flex justify-center lg:justify-end mt-12 lg:mt-0">
         @include('components.hero-3d-model')
       </div>
 
