@@ -129,7 +129,12 @@
   font-weight: 800;
   display: block;
   width: max-content;
-  background: linear-gradient(to right, #00D4FF, #FFFFFF);
+  background: linear-gradient(
+    to right,
+    #FFD700,
+    #F59E0B,
+    #8B5CF6
+);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
