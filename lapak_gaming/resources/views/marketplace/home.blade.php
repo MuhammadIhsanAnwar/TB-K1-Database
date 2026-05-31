@@ -125,7 +125,18 @@
   margin-bottom: 20px;
   animation: hFadeDown 0.75s 0.08s ease both;
 }
-.title-line-1 { font-weight: 400; color: #94A3B8; display: block; }
+.title-line-1 { 
+  font-weight: 800; display: block; width: max-content;
+  background: linear-gradient(110deg, #F59E0B 0%, #FBBF24 40%, #FFFFFF 50%, #FBBF24 60%, #F59E0B 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shineText 3s linear infinite;
+}
+@keyframes shineText {
+  to { background-position: -200% center; }
+}
 .title-line-2 { font-weight: 800; color: #FFFFFF; display: block; }
 .title-line-3 { 
   font-weight: 800; display: block;
@@ -232,52 +243,7 @@
   background: rgba(255,255,255,0.08);
 }
 
-/* Games Row */
-.hero-games-row {
-  margin-top: 28px;
-  animation: hFadeDown 0.75s 0.4s ease both;
-}
-.hero-games-label {
-  font-family: 'Inter', sans-serif;
-  font-size: 11px;
-  color: #475569;
-  margin-bottom: 8px;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-}
-.hero-games-list {
-  display: flex;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.game-mini-thumb {
-  width: 44px;
-  height: 44px;
-  border-radius: 10px;
-  background: rgba(255,255,255,0.05);
-  border: 1px solid rgba(255,255,255,0.08);
-  display: flex; align-items: center; justify-content: center;
-  flex-shrink: 0;
-  transition: all 0.2s ease;
-  color: #94a3b8;
-  font-family: 'Sora', sans-serif;
-  font-weight: 800;
-  font-size: 12px;
-}
-.game-mini-thumb.ml { color: #3b82f6; }
-.game-mini-thumb.ff { color: #ef4444; }
-.game-mini-thumb.pubg { color: #f59e0b; }
-.game-mini-thumb.gi { color: #8b5cf6; }
-.game-mini-thumb.val { color: #ef4444; }
-.game-mini-thumb.hok { color: #10b981; }
-
-.game-mini-thumb:hover {
-  transform: scale(1.08);
-  background: rgba(0,212,255,0.06);
-  border-color: rgba(0,212,255,0.4);
-}
-
+/* Games Row Removed */
 /* ── ANIMATIONS ──────────────────────────────────────────────────── */
 @keyframes hFadeDown {
   from { opacity: 0; transform: translateY(-18px); }
@@ -670,18 +636,6 @@
           </div>
         </div>
 
-        {{-- Game Thumbnails --}}
-        <div class="hero-games-row">
-          <div class="hero-games-label">TERSEDIA DI</div>
-          <div class="hero-games-list">
-            <div class="game-mini-thumb ml">ML</div>
-            <div class="game-mini-thumb ff">FF</div>
-            <div class="game-mini-thumb pubg">PUBG</div>
-            <div class="game-mini-thumb gi">GI</div>
-            <div class="game-mini-thumb val">VAL</div>
-            <div class="game-mini-thumb hok">HOK</div>
-          </div>
-        </div>
 
       </div>
 
