@@ -1173,12 +1173,12 @@
               <div class="flex items-start gap-4">
                 <div class="shrink-0 mt-1">
                   ${unread 
-                    ? \`<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+                    ? `<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.4)]">
                          <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
-                       </div>\` 
-                    : \`<div class="w-10 h-10 rounded-xl bg-slate-800 border border-white/10 flex items-center justify-center">
+                       </div>` 
+                    : `<div class="w-10 h-10 rounded-xl bg-slate-800 border border-white/10 flex items-center justify-center">
                          <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                       </div>\`
+                       </div>`
                   }
                 </div>
                 <div class="min-w-0 flex-1">
@@ -1189,13 +1189,13 @@
                   <p class="text-xs leading-relaxed text-slate-400 line-clamp-2">${bodyText}</p>
                   
                   <div class="mt-3 flex items-center gap-3">
-                    ${link ? \`<button type="button" data-notification-id="\${item.id}" data-notification-link="\${link}" class="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors">
+                    ${link ? `<button type="button" data-notification-id="${item.id}" data-notification-link="${link}" class="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors">
                       Lihat Detail <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
-                    </button>\` : ''}
+                    </button>` : ''}
                     
-                    ${unread ? \`<button type="button" data-notification-id="\${item.id}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors ml-auto">
+                    ${unread ? `<button type="button" data-notification-id="${item.id}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors ml-auto">
                       <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Tandai Dibaca
-                    </button>\` : ''}
+                    </button>` : ''}
                   </div>
                 </div>
               </div>
