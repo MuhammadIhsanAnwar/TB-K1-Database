@@ -254,13 +254,13 @@ Premium Itemku/Codashop style marketplace navbar.
         <ul class="space-y-1">
           <li><a href="{{ route('marketplace.home') }}"
               class="flex items-center py-2 text-sm font-medium transition-colors
-                  {{ request()->routeIs('marketplace.home') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Beranda</a></li>
+                    {{ request()->routeIs('marketplace.home') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Beranda</a></li>
           <li><a href="{{ route('marketplace.browse') }}"
               class="flex items-center py-2 text-sm font-medium transition-colors
-                  {{ request()->routeIs('marketplace.browse') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Semua Produk</a></li>
+                    {{ request()->routeIs('marketplace.browse') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Semua Produk</a></li>
           <li><a href="{{ route('marketplace.trending') }}"
               class="flex items-center py-2 text-sm font-medium transition-colors
-                  {{ request()->routeIs('marketplace.trending') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Trending</a></li>
+                    {{ request()->routeIs('marketplace.trending') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Trending</a></li>
         </ul>
       </div>
 
@@ -466,57 +466,137 @@ Premium Itemku/Codashop style marketplace navbar.
           {{-- User Avatar Dropdown --}}
           <div class="relative hidden sm:block">
             <button onclick="toggleDropdown('user-dropdown')"
-              class="flex items-center gap-2 rounded-2xl border border-white/5 bg-white/[0.03] px-3 py-2 text-white hover:bg-white/[0.06] transition-all duration-300">
+              class="flex items-center gap-2.5 rounded-full border border-white/10 bg-black/20 pl-2 pr-3 py-1.5 hover:bg-white/5 transition-colors">
               <img src="{{ $authUser?->avatar_url ?? $avatarFallback }}"
-                class="w-7 h-7 rounded-full object-cover border border-white/20" alt="Avatar">
-              <span class="text-sm font-medium truncate max-w-[100px]">{{ $authUser?->name ?? 'User' }}</span>
-              <svg class="w-3 h-3 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                class="w-7 h-7 rounded-full object-cover border border-cyan-500/30" alt="Avatar">
+              <span class="text-sm font-bold text-white truncate max-w-[120px]">{{ $authUser?->name ?? 'User' }}</span>
+              <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
+
             <div id="user-dropdown"
-              class="dropdown-panel absolute right-0 top-full mt-3 w-56 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50 py-2">
-              <div class="px-4 py-2 border-b border-white/6 mb-1">
-                <p class="text-sm font-bold text-slate-100 truncate">{{ $authUser->name }}</p>
-                <p class="text-xs text-slate-400 truncate">{{ $authUser->email }}</p>
+              class="dropdown-panel absolute right-0 top-full mt-4 w-64 hidden z-50 overflow-hidden">
+
+              {{-- Header Profil --}}
+              <div class="px-4 py-4 border-b border-white/10 bg-gradient-to-r from-cyan-500/10 to-transparent">
+                <p class="text-sm font-black text-white truncate">{{ $authUser->name }}</p>
+                <p class="text-xs text-cyan-100/70 truncate mt-0.5">{{ $authUser->email }}</p>
               </div>
 
-              @if(($isAdminRoute || $isAdminSettingsRoute) && $authUser->isAdmin())
-                <a href="{{ route('admin.dashboard') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Panel Admin</a>
-                <a href="{{ route('admin.contact-messages.index') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pesan Masuk</a>
-                <a href="{{ route('admin.users.index') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Kelola Akun</a>
-              @else
-                <a href="{{ route('dashboard') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Dashboard</a>
-                <a href="{{ route('orders.index') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pesanan Saya</a>
-                <a href="{{ route('wallet.index') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Wallet</a>
-                @if($authUser->isSellerAccount())
-                  <a href="{{ route('seller.dashboard') }}"
-                    class="block px-4 py-2 text-sm surface-text hover:surface-weak">Dashboard Penjual</a>
+              {{-- Menu Links --}}
+              <div class="p-2 space-y-1">
+                @if(($isAdminRoute || $isAdminSettingsRoute) && $authUser->isAdmin())
+                  <a href="{{ route('admin.dashboard') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+                    <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                    </svg>
+                    Panel Admin
+                  </a>
+                  <a href="{{ route('admin.contact-messages.index') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+                    <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                    Pesan Masuk
+                  </a>
+                  <a href="{{ route('admin.users.index') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+                    <svg class="w-4 h-4 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                    </svg>
+                    Kelola Akun
+                  </a>
                 @else
-                  <a href="{{ route('seller.register.form') }}"
-                    class="block px-4 py-2 text-sm text-amber-400 font-medium hover:bg-amber-800/10">Daftar Jadi Penjual</a>
+                  <a href="{{ route('dashboard') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-all">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                    </svg>
+                    Dashboard
+                  </a>
+                  <a href="{{ route('orders.index') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-all">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                    </svg>
+                    Pesanan Saya
+                  </a>
+                  <a href="{{ route('wallet.index') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-cyan-500/10 hover:text-cyan-400 transition-all">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z" />
+                    </svg>
+                    Wallet Digital
+                  </a>
+                  @if($authUser->isSellerAccount())
+                    <a href="{{ route('seller.dashboard') }}"
+                      class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-emerald-500/10 hover:text-emerald-400 transition-all mt-1">
+                      <svg class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" />
+                      </svg>
+                      Dashboard Penjual
+                    </a>
+                  @else
+                    <a href="{{ route('seller.register.form') }}"
+                      class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-amber-400 bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/20 transition-all mt-1">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                          d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                      </svg>
+                      Daftar Jadi Penjual
+                    </a>
+                  @endif
                 @endif
-              @endif
-              {{-- Pengaturan Akun (visible to all authenticated users) --}}
-              @if(Route::has('settings.account'))
-                <a href="{{ route('settings.account') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pengaturan Akun</a>
-              @else
-                <a href="{{ url('/settings/account') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pengaturan Akun</a>
-              @endif
 
-              <div class="border-t border-gray-100 mt-1 pt-1">
+                <div class="h-px bg-white/10 my-1 mx-2"></div>
+
+                {{-- Pengaturan Akun --}}
+                @if(Route::has('settings.account'))
+                  <a href="{{ route('settings.account') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Pengaturan Akun
+                  </a>
+                @else
+                  <a href="{{ url('/settings/account') }}"
+                    class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium text-slate-300 hover:bg-white/10 hover:text-white transition-all">
+                    <svg class="w-4 h-4 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                    </svg>
+                    Pengaturan Akun
+                  </a>
+                @endif
+              </div>
+
+              {{-- Logout Button --}}
+              <div class="p-2 border-t border-white/10 bg-black/20">
                 <form method="POST" action="{{ route('logout') }}">
                   @csrf
                   <button type="submit"
-                    class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Keluar</button>
+                    class="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-rose-400 hover:bg-rose-500/10 hover:text-rose-300 transition-all">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                        d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
+                    </svg>
+                    Keluar
+                  </button>
                 </form>
               </div>
             </div>
@@ -659,7 +739,7 @@ Premium Itemku/Codashop style marketplace navbar.
 
         {{-- Horizontal Links --}}
         <a href="{{ route('marketplace.home') }}" class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300
-              {{ request()->routeIs('marketplace.home')
+                {{ request()->routeIs('marketplace.home')
       ? 'text-cyan-400 bg-cyan-500/10 border border-cyan-400/20 shadow-[0_0_14px_rgba(6,182,212,0.15)]'
       : 'text-white/80 hover:text-white hover:bg-cyan-500/10' }}">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
