@@ -254,13 +254,13 @@ Premium Itemku/Codashop style marketplace navbar.
         <ul class="space-y-1">
           <li><a href="{{ route('marketplace.home') }}"
               class="flex items-center py-2 text-sm font-medium transition-colors
-                      {{ request()->routeIs('marketplace.home') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Beranda</a></li>
+                        {{ request()->routeIs('marketplace.home') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Beranda</a></li>
           <li><a href="{{ route('marketplace.browse') }}"
               class="flex items-center py-2 text-sm font-medium transition-colors
-                      {{ request()->routeIs('marketplace.browse') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Semua Produk</a></li>
+                        {{ request()->routeIs('marketplace.browse') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Semua Produk</a></li>
           <li><a href="{{ route('marketplace.trending') }}"
               class="flex items-center py-2 text-sm font-medium transition-colors
-                      {{ request()->routeIs('marketplace.trending') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Trending</a></li>
+                        {{ request()->routeIs('marketplace.trending') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Trending</a></li>
         </ul>
       </div>
 
@@ -740,7 +740,7 @@ Premium Itemku/Codashop style marketplace navbar.
 
         {{-- Horizontal Links --}}
         <a href="{{ route('marketplace.home') }}" class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300
-                  {{ request()->routeIs('marketplace.home')
+                    {{ request()->routeIs('marketplace.home')
       ? 'text-cyan-400 bg-cyan-500/10 border border-cyan-400/20 shadow-[0_0_14px_rgba(6,182,212,0.15)]'
       : 'text-white/80 hover:text-white hover:bg-cyan-500/10' }}">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -834,6 +834,130 @@ Premium Itemku/Codashop style marketplace navbar.
       } else {
         navbar.style.boxShadow = '';
       }
+    });
+    // ═══ DROPDOWN SYSTEM ═══
+    function toggleDropdown(id) {
+      const el = document.getElementById(id);
+      if (!el) return;
+
+      const isHidden = el.classList.contains('hidden');
+
+      // Tutup semua dropdown dulu
+      closeAllDropdowns();
+
+      // Kalau tadinya hidden, buka. Kalau sudah terbuka, biarkan tertutup.
+      if (isHidden) {
+        el.classList.remove('hidden');
+      }
+    }
+
+    function closeAllDropdowns() {
+      ['user-dropdown', 'notif-dropdown', 'cart-dropdown'].forEach(id => {
+        const el = document.getElementById(id);
+        if (el) el.classList.add('hidden');
+      });
+    }
+
+    // Klik di luar = tutup semua dropdown
+    document.addEventListener('click', function (e) {
+      const clickedTrigger = e.target.closest('button[onclick], a[onclick]');
+      const clickedInsideDropdown = e.target.closest('#user-dropdown, #notif-dropdown, #cart-dropdown');
+
+      if (!clickedTrigger && !clickedInsideDropdown) {
+        closeAllDropdowns();
+      }
+    });
+
+    // Tutup dengan tombol ESC
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') closeAllDropdowns();
+    });
+
+    // ═══ MOBILE DRAWER ═══
+    function openDrawer() {
+      const drawer = document.getElementById('mobile-drawer');
+      if (drawer) {
+        drawer.classList.remove('-translate-x-full');
+        drawer.classList.add('translate-x-0');
+        document.body.style.overflow = 'hidden';
+      }
+    }
+
+    function closeDrawer() {
+      const drawer = document.getElementById('mobile-drawer');
+      if (drawer) {
+        drawer.classList.add('-translate-x-full');
+        drawer.classList.remove('translate-x-0');
+        document.body.style.overflow = '';
+      }
+    }
+
+    // Klik backdrop untuk tutup drawer
+    document.addEventListener('click', function (e) {
+      const drawer = document.getElementById('mobile-drawer');
+      if (!drawer) return;
+      const isOpen = drawer.classList.contains('translate-x-0');
+      if (isOpen && !drawer.contains(e.target) && !e.target.closest('button[onclick="openDrawer()"]')) {
+        closeDrawer();
+      }
+    });
+
+    // ═══ NOTIFICATION PREVIEW (stub — ganti dengan implementasi kamu) ═══
+    function loadNotificationPreview() {
+      const dropdown = document.getElementById('notif-dropdown');
+      const body = document.getElementById('notif-dropdown-body');
+      if (!dropdown || !body) return;
+
+      const url = dropdown.dataset.notificationsUrl;
+      if (!url) return;
+
+      body.innerHTML = '<div class="px-4 py-6 text-sm text-slate-400 text-center">Memuat...</div>';
+
+      fetch(url, {
+        headers: { 'X-Requested-With': 'XMLHttpRequest', 'Accept': 'application/json' }
+      })
+        .then(r => r.json())
+        .then(data => {
+          const notifs = data.notifications ?? data.data ?? [];
+          const badge = document.getElementById('notif-badge');
+
+          if (notifs.length === 0) {
+            body.innerHTML = '<div class="px-4 py-6 text-sm text-slate-400 text-center">Tidak ada notifikasi baru.</div>';
+            if (badge) badge.classList.add('hidden');
+            return;
+          }
+
+          if (badge) badge.classList.remove('hidden');
+
+          body.innerHTML = notifs.slice(0, 5).map(n => `
+          <a href="${n.url ?? '#'}" class="flex gap-3 px-4 py-3 hover:bg-white/5 border-b border-white/5 transition-colors" style="text-decoration:none">
+            <div class="flex-1 min-w-0">
+              <div class="text-sm text-slate-200 font-medium truncate">${n.title ?? 'Notifikasi'}</div>
+              <div class="text-xs text-slate-400 mt-0.5 line-clamp-2">${n.message ?? n.body ?? ''}</div>
+              <div class="text-[10px] text-slate-500 mt-1">${n.created_at ?? ''}</div>
+            </div>
+            ${!n.read_at ? '<span class="w-2 h-2 rounded-full bg-cyan-400 shrink-0 mt-1"></span>' : ''}
+          </a>
+        `).join('');
+        })
+        .catch(() => {
+          body.innerHTML = '<div class="px-4 py-6 text-sm text-red-400 text-center">Gagal memuat notifikasi.</div>';
+        });
+    }
+
+    // ═══ SCROLL NAVBAR EFFECT ═══
+    document.addEventListener('DOMContentLoaded', function () {
+      const navbar = document.getElementById('main-navbar');
+      if (!navbar) return;
+
+      window.addEventListener('scroll', () => {
+        if (window.scrollY > 12) {
+          navbar.style.backdropFilter = 'blur(28px)';
+          navbar.style.boxShadow = '0 14px 45px rgba(0,0,0,.38)';
+        } else {
+          navbar.style.boxShadow = '';
+        }
+      });
     });
   </script>
 @endpush
