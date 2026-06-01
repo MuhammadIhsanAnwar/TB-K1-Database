@@ -357,13 +357,13 @@ Premium Itemku/Codashop style marketplace navbar.
             </a>
 
             {{-- Notifications --}}
-            <div class="relative">
+            <div class="relative flex items-center justify-center">
               <button onclick="toggleDropdown('notif-dropdown'); loadNotificationPreview();"
                 class="nav-icon-btn group relative">
-                <svg class="w-5 h-5 text-slate-300 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <svg class="w-6 h-6 text-slate-300 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-                <span id="notif-badge" class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-[0_0_10px_rgba(244,63,94,0.5)] border border-[#0b1121] hidden"></span>
+                <span id="notif-badge" class="absolute top-1 right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-[0_0_10px_rgba(244,63,94,0.5)] border border-[#0b1121] hidden"></span>
               </button>
               <div id="notif-dropdown" data-notifications-url="{{ route('notifications.poll') }}"
                 data-notifications-read-base-url="{{ route('notifications.index') }}"
@@ -387,25 +387,25 @@ Premium Itemku/Codashop style marketplace navbar.
 
             {{-- Chat --}}
             @if(!$authUser?->isAdmin())
-              <div class="relative">
+              <div class="relative flex items-center justify-center">
                 <a href="{{ route('chat.inbox') }}" class="nav-icon-btn group relative">
-                  <svg class="w-5 h-5 text-slate-300 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg class="w-6 h-6 text-slate-300 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a.863.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                   <span id="chat-badge"
-                    class="absolute -top-1 -right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-[0_0_10px_rgba(244,63,94,0.5)] border border-[#0b1121] hidden">0</span>
+                    class="absolute top-1 right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-[0_0_10px_rgba(244,63,94,0.5)] border border-[#0b1121] hidden">0</span>
                 </a>
               </div>
 
               {{-- Cart --}}
-              <div class="relative">
+              <div class="relative flex items-center justify-center">
                 <button onclick="toggleDropdown('cart-dropdown')"
                   class="nav-icon-btn group relative">
-                  <svg class="w-5 h-5 text-slate-300 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <svg class="w-6 h-6 text-slate-300 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                   @if($cartCount > 0)
-                    <span class="absolute -top-1 -right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-[0_0_10px_rgba(244,63,94,0.5)] border border-[#0b1121]">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
+                    <span class="absolute top-1 right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-[0_0_10px_rgba(244,63,94,0.5)] border border-[#0b1121]">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
                   @endif
                 </button>
                 <div id="cart-dropdown"
