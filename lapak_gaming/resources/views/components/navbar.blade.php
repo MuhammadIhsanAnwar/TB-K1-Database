@@ -69,6 +69,7 @@ Premium Itemku/Codashop style marketplace navbar.
     .nav-modern-link.is-active {
       color: #22d3ee !important;
     }
+
     .nav-modern-link.is-active::after {
       width: 100%;
       background: linear-gradient(90deg, #22d3ee, #818cf8);
@@ -253,13 +254,13 @@ Premium Itemku/Codashop style marketplace navbar.
         <ul class="space-y-1">
           <li><a href="{{ route('marketplace.home') }}"
               class="flex items-center py-2 text-sm font-medium transition-colors
-                {{ request()->routeIs('marketplace.home') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Beranda</a></li>
+                  {{ request()->routeIs('marketplace.home') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Beranda</a></li>
           <li><a href="{{ route('marketplace.browse') }}"
               class="flex items-center py-2 text-sm font-medium transition-colors
-                {{ request()->routeIs('marketplace.browse') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Semua Produk</a></li>
+                  {{ request()->routeIs('marketplace.browse') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Semua Produk</a></li>
           <li><a href="{{ route('marketplace.trending') }}"
               class="flex items-center py-2 text-sm font-medium transition-colors
-                {{ request()->routeIs('marketplace.trending') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Trending</a></li>
+                  {{ request()->routeIs('marketplace.trending') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Trending</a></li>
         </ul>
       </div>
 
@@ -423,7 +424,8 @@ Premium Itemku/Codashop style marketplace navbar.
                           <div class="flex-1 min-w-0">
                             <div class="text-sm surface-text font-medium truncate">{{ $item->product?->name ?? 'Produk' }}</div>
                             <div class="text-xs surface-muted mt-1">{{ $item->quantity }} x Rp
-                              {{ number_format((float) ($item->product?->price ?? 0), 0, ',', '.') }}</div>
+                              {{ number_format((float) ($item->product?->price ?? 0), 0, ',', '.') }}
+                            </div>
                           </div>
                         </a>
                       @endforeach
@@ -656,11 +658,10 @@ Premium Itemku/Codashop style marketplace navbar.
         <div class="h-5 w-px bg-slate-200/20 mx-2"></div>
 
         {{-- Horizontal Links --}}
-        <a href="{{ route('marketplace.home') }}"
-          class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300
-            {{ request()->routeIs('marketplace.home')
-                ? 'text-cyan-400 bg-cyan-500/10 border border-cyan-400/20 shadow-[0_0_14px_rgba(6,182,212,0.15)]'
-                : 'text-white/80 hover:text-white hover:bg-cyan-500/10' }}">
+        <a href="{{ route('marketplace.home') }}" class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300
+              {{ request()->routeIs('marketplace.home')
+      ? 'text-cyan-400 bg-cyan-500/10 border border-cyan-400/20 shadow-[0_0_14px_rgba(6,182,212,0.15)]'
+      : 'text-white/80 hover:text-white hover:bg-cyan-500/10' }}">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
               d="M3 10l9-7 9 7v9a2 2 0 01-2 2h-4a2 2 0 01-2-2V13H9v6a2 2 0 01-2 2H3z" />
@@ -670,13 +671,13 @@ Premium Itemku/Codashop style marketplace navbar.
 
         <div class="flex-1 overflow-x-auto no-scrollbar mask-gradient-right">
           <div class="flex items-center gap-2 min-w-max">
-@php
-  $currentQ = request('q', '');
-  $currentCat = request('category', '');
-  $navLinkBase = 'nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap';
-  $navActive   = 'text-cyan-400 bg-cyan-500/10 border border-cyan-400/20';
-  $navInactive = 'text-white/75 hover:text-white hover:bg-white/[0.04]';
-@endphp
+            @php
+              $currentQ = request('q', '');
+              $currentCat = request('category', '');
+              $navLinkBase = 'nav-modern-link px-4 py-2 text-sm font-medium rounded-xl transition-all duration-300 whitespace-nowrap';
+              $navActive = 'text-cyan-400 bg-cyan-500/10 border border-cyan-400/20';
+              $navInactive = 'text-white/75 hover:text-white hover:bg-white/[0.04]';
+            @endphp
             <a href="{{ route('products.search', ['category' => 'top-up-game']) }}"
               class="{{ $navLinkBase }} flex items-center gap-2 {{ ($currentCat === 'top-up-game') ? $navActive : $navInactive }}">
               <span class="px-2 py-0.5 rounded-full bg-cyan-400/20 text-cyan-200 text-[10px] font-bold">HOT</span>
@@ -691,13 +692,15 @@ Premium Itemku/Codashop style marketplace navbar.
             <a href="{{ route('products.search', ['category' => 'growtopia']) }}"
               class="{{ $navLinkBase }} {{ ($currentCat === 'growtopia') ? $navActive : $navInactive }}">Growtopia</a>
             <a href="{{ route('products.search', ['category' => 'genshin-impact']) }}"
-              class="{{ $navLinkBase }} {{ ($currentCat === 'genshin-impact') ? $navActive : $navInactive }}">Genshin Impact</a>
+              class="{{ $navLinkBase }} {{ ($currentCat === 'genshin-impact') ? $navActive : $navInactive }}">Genshin
+              Impact</a>
             <a href="{{ route('products.search', ['category' => 'dota-2']) }}"
               class="{{ $navLinkBase }} {{ ($currentCat === 'dota-2') ? $navActive : $navInactive }}">Dota 2 Item</a>
             <a href="{{ route('products.search', ['category' => 'game-key']) }}"
               class="{{ $navLinkBase }} {{ ($currentCat === 'game-key') ? $navActive : $navInactive }}">Game Key</a>
             <a href="{{ route('products.search', ['category' => 'mobile-legends']) }}"
-              class="{{ $navLinkBase }} {{ ($currentCat === 'mobile-legends') ? $navActive : $navInactive }}">Mobile Legend Account</a>
+              class="{{ $navLinkBase }} {{ ($currentCat === 'mobile-legends') ? $navActive : $navInactive }}">Mobile
+              Legend Account</a>
           </div>
         </div>
       </div>
