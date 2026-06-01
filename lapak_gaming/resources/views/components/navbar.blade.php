@@ -388,52 +388,64 @@ Premium Itemku/Codashop style marketplace navbar.
             {{-- Chat --}}
             @if(!$authUser?->isAdmin())
               <div class="relative">
-                <a href="{{ route('chat.inbox') }}" class="block text-white opacity-90 hover:opacity-100 p-1">
-                  <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a.863.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
+                <a href="{{ route('chat.inbox') }}" class="nav-icon-btn group relative">
+                  <svg class="w-5 h-5 text-slate-300 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a.863.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
                   </svg>
                   <span id="chat-badge"
-                    class="absolute -top-2 -right-2 min-w-[18px] h-[18px] px-1 flex items-center justify-center rounded-full bg-red-500 text-white text-[10px] font-bold hidden">0</span>
+                    class="absolute -top-1 -right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-[0_0_10px_rgba(244,63,94,0.5)] border border-[#0b1121] hidden">0</span>
                 </a>
               </div>
 
               {{-- Cart --}}
               <div class="relative">
                 <button onclick="toggleDropdown('cart-dropdown')"
-                  class="text-white opacity-90 hover:opacity-100 p-1 relative">
-                  <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                  class="nav-icon-btn group relative">
+                  <svg class="w-5 h-5 text-slate-300 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
                   </svg>
                   @if($cartCount > 0)
-                    <span
-                      class="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
+                    <span class="absolute -top-1 -right-1 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-[0_0_10px_rgba(244,63,94,0.5)] border border-[#0b1121]">{{ $cartCount > 99 ? '99+' : $cartCount }}</span>
                   @endif
                 </button>
                 <div id="cart-dropdown"
-                  class="dropdown-panel absolute right-0 top-full mt-2 w-72 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50">
-                  <div class="px-4 py-3 border-b flex justify-between items-center bg-transparent">
-                    <span class="font-bold text-sm text-slate-100">Keranjang</span>
-                    <a href="{{ route('cart.index') }}" class="text-xs text-itemku-blue">Lihat semua</a>
+                  class="dropdown-panel absolute right-0 top-full mt-3 w-80 sm:w-96 bg-[#0b1121]/95 backdrop-blur-2xl rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden text-left z-50 transform origin-top-right transition-all duration-300">
+                  <div class="px-5 py-4 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-cyan-500/10 to-transparent">
+                    <div class="flex items-center gap-2">
+                      <div class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></div>
+                      <span class="font-bold text-[15px] text-white">Keranjang</span>
+                    </div>
+                    <a href="{{ route('cart.index') }}" class="text-xs font-semibold text-cyan-400 hover:text-cyan-300 hover:underline">Lihat Semua</a>
                   </div>
                   @if($cartItems->isNotEmpty())
-                    <div class="max-h-72 overflow-y-auto divide-y" style="border-color:var(--card-border)">
+                    <div class="max-h-[360px] overflow-y-auto no-scrollbar bg-white/[0.02]">
                       @foreach($cartItems as $item)
-                        <a href="{{ route('cart.index') }}" class="flex gap-3 px-4 py-3 hover:surface-panel"
-                          style="text-decoration:none">
-                          <img src="{{ $item->product?->image_url }}" alt="" class="w-10 h-10 object-cover rounded"
-                            style="background:var(--card-border)">
-                          <div class="flex-1 min-w-0">
-                            <div class="text-sm surface-text font-medium truncate">{{ $item->product?->name ?? 'Produk' }}</div>
-                            <div class="text-xs surface-muted mt-1">{{ $item->quantity }} x Rp
-                              {{ number_format((float) ($item->product?->price ?? 0), 0, ',', '.') }}</div>
+                        <a href="{{ route('cart.index') }}" class="group relative flex gap-4 px-5 py-4 border-b border-white/5 hover:bg-white/5 transition-all duration-300">
+                          <div class="shrink-0">
+                            <img src="{{ $item->product?->image_url }}" alt="" class="w-12 h-12 object-cover rounded-xl border border-white/10 group-hover:border-cyan-500/50 shadow-sm transition-all" style="background:var(--card-border)">
+                          </div>
+                          <div class="flex-1 min-w-0 flex flex-col justify-center">
+                            <p class="text-sm font-bold text-slate-300 group-hover:text-white truncate transition-colors">{{ $item->product?->name ?? 'Produk' }}</p>
+                            <p class="text-xs font-semibold text-cyan-400 mt-1">{{ $item->quantity }} x Rp {{ number_format((float) ($item->product?->price ?? 0), 0, ',', '.') }}</p>
                           </div>
                         </a>
                       @endforeach
                     </div>
+                    <div class="px-5 py-4 border-t border-white/5 bg-[#060a14]">
+                      <a href="{{ route('cart.index') }}" class="flex items-center justify-center w-full py-2.5 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 text-sm font-bold text-white shadow-[0_5px_15px_rgba(6,182,212,0.3)] hover:shadow-[0_8px_25px_rgba(6,182,212,0.5)] hover:-translate-y-0.5 transition-all">
+                        Checkout Sekarang
+                      </a>
+                    </div>
                   @else
-                    <div class="p-6 text-center text-sm text-slate-400">Keranjang kosong</div>
+                    <div class="px-5 py-10 text-center flex flex-col items-center justify-center gap-3 bg-white/[0.02]">
+                      <div class="w-12 h-12 rounded-full bg-slate-800/50 flex items-center justify-center border border-white/5 mb-2">
+                        <svg class="w-6 h-6 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z" />
+                        </svg>
+                      </div>
+                      <p class="text-sm font-semibold text-slate-400">Keranjang masih kosong</p>
+                      <a href="{{ route('marketplace.browse') }}" class="mt-1 text-xs font-bold text-cyan-400 hover:text-cyan-300">Mulai Belanja</a>
+                    </div>
                   @endif
                 </div>
               </div>
