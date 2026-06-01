@@ -3,7 +3,7 @@
   Itemku style 5-column footer.
 --}}
 
-<footer class="surface-panel border-t border-white/10 mt-20 pt-16 pb-8">
+<footer class="surface-panel border-t border-white/5 mt-20 pt-16 pb-8 bg-gradient-to-b from-slate-950/40 to-slate-950/70 backdrop-blur-sm">
   <div class="max-w-7xl mx-auto px-4">
 
     {{-- Top section: footer brand and links --}}
