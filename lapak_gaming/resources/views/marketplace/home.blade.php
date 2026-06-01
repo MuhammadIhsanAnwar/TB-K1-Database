@@ -9,7 +9,23 @@
    =================================================================== */
 
 /* ── PAGE SHELL ──────────────────────────────────────────────────── */
-.home-page { position: relative; overflow-x: hidden; background: #0A0A1A; }
+.home-page {
+  position: relative;
+  overflow-x: hidden;
+  background: var(--bg, #060A12);
+}
+
+/* Seamless vignette blending into body */
+.home-page::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 0;
+  background:
+    radial-gradient(ellipse 120% 60% at 50% 0%, rgba(37,99,235,0.06) 0%, transparent 60%),
+    radial-gradient(ellipse 80% 50% at 80% 100%, rgba(139,92,246,0.04) 0%, transparent 50%);
+}
 
 /* ── AMBIENT ORBS ────────────────────────────────────────────────── */
 .amb-orb {
@@ -17,38 +33,50 @@
   border-radius: 999px;
   pointer-events: none;
   will-change: transform;
-  filter: blur(100px);
+  filter: blur(120px);
+  z-index: 0;
 }
 .amb-orb-1 {
-  width: 700px; height: 700px;
-  left: -220px; top: -120px;
-  background: radial-gradient(circle, rgba(139,92,246,0.15) 0%, transparent 70%);
+  width: 800px; height: 800px;
+  left: -280px; top: -180px;
+  background: radial-gradient(circle, rgba(139,92,246,0.12) 0%, transparent 65%);
   animation: ambFloat1 22s ease-in-out infinite;
 }
 .amb-orb-2 {
-  width: 550px; height: 550px;
-  right: -160px; top: 180px;
-  background: radial-gradient(circle, rgba(0,212,255,0.15) 0%, transparent 70%);
+  width: 650px; height: 650px;
+  right: -200px; top: 200px;
+  background: radial-gradient(circle, rgba(0,212,255,0.10) 0%, transparent 65%);
   animation: ambFloat2 28s ease-in-out infinite;
 }
 .amb-orb-3 {
-  width: 450px; height: 450px;
-  left: 35%; bottom: 80px;
-  background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 70%);
+  width: 500px; height: 500px;
+  left: 30%; bottom: 120px;
+  background: radial-gradient(circle, rgba(255,215,0,0.05) 0%, transparent 65%);
   animation: ambFloat3 19s ease-in-out infinite;
+}
+.amb-orb-4 {
+  width: 600px; height: 600px;
+  right: 15%; top: 55%;
+  background: radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 60%);
+  animation: ambFloat4 25s ease-in-out infinite;
 }
 @keyframes ambFloat1 {
   0%,100% { transform: translate(0, 0) scale(1); }
-  33%     { transform: translate(35px, -50px) scale(1.06); }
-  66%     { transform: translate(-25px, 25px) scale(0.96); }
+  33%     { transform: translate(40px, -60px) scale(1.08); }
+  66%     { transform: translate(-30px, 30px) scale(0.95); }
 }
 @keyframes ambFloat2 {
   0%,100% { transform: translate(0, 0) scale(1); }
-  50%     { transform: translate(-45px, 35px) scale(1.09); }
+  50%     { transform: translate(-50px, 40px) scale(1.10); }
 }
 @keyframes ambFloat3 {
   0%,100% { transform: translate(0, 0); }
-  50%     { transform: translate(25px, -35px); }
+  50%     { transform: translate(30px, -40px); }
+}
+@keyframes ambFloat4 {
+  0%,100% { transform: translate(0, 0) scale(1); }
+  40%     { transform: translate(-35px, -25px) scale(1.06); }
+  70%     { transform: translate(20px, 15px) scale(0.97); }
 }
 
 /* ── GRID OVERLAY ────────────────────────────────────────────────── */
@@ -56,11 +84,12 @@
   position: absolute;
   inset: 0;
   background-image: 
-    radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px),
-    radial-gradient(rgba(255,255,255,0.05) 1px, transparent 1px);
+    radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px),
+    radial-gradient(rgba(255,255,255,0.04) 1px, transparent 1px);
   background-size: 40px 40px;
   background-position: 0 0, 20px 20px;
-  mask-image: linear-gradient(180deg, rgba(0,0,0,0.8) 0%, transparent 70%);
+  mask-image: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.15) 50%, transparent 80%);
+  -webkit-mask-image: linear-gradient(180deg, rgba(0,0,0,0.7) 0%, rgba(0,0,0,0.15) 50%, transparent 80%);
   pointer-events: none;
   z-index: 0;
 }
@@ -647,6 +676,7 @@
   <div class="amb-orb amb-orb-1" aria-hidden="true"></div>
   <div class="amb-orb amb-orb-2" aria-hidden="true"></div>
   <div class="amb-orb amb-orb-3" aria-hidden="true"></div>
+  <div class="amb-orb amb-orb-4" aria-hidden="true"></div>
   <div class="home-grid-bg" aria-hidden="true"></div>
 
   {{-- ═══════════════════════════════════════════════════════════ --}}
