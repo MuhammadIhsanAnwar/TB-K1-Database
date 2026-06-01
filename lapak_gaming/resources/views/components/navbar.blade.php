@@ -254,13 +254,13 @@ Premium Itemku/Codashop style marketplace navbar.
         <ul class="space-y-1">
           <li><a href="{{ route('marketplace.home') }}"
               class="flex items-center py-2 text-sm font-medium transition-colors
-                    {{ request()->routeIs('marketplace.home') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Beranda</a></li>
+                      {{ request()->routeIs('marketplace.home') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Beranda</a></li>
           <li><a href="{{ route('marketplace.browse') }}"
               class="flex items-center py-2 text-sm font-medium transition-colors
-                    {{ request()->routeIs('marketplace.browse') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Semua Produk</a></li>
+                      {{ request()->routeIs('marketplace.browse') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Semua Produk</a></li>
           <li><a href="{{ route('marketplace.trending') }}"
               class="flex items-center py-2 text-sm font-medium transition-colors
-                    {{ request()->routeIs('marketplace.trending') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Trending</a></li>
+                      {{ request()->routeIs('marketplace.trending') ? 'text-cyan-400 font-bold' : 'text-slate-300 hover:text-cyan-400' }}">Trending</a></li>
         </ul>
       </div>
 
@@ -477,9 +477,10 @@ Premium Itemku/Codashop style marketplace navbar.
 
             <div id="user-dropdown"
               class="absolute right-0 top-full mt-4 w-64 hidden z-[999] bg-[#0B1220] rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.9)] border border-white/10 overflow-hidden">
-              
+
               {{-- Header Profil --}}
-              <div class="px-4 py-4 border-b border-white/10 bg-[#060A14] bg-gradient-to-r from-cyan-500/10 to-transparent">
+              <div
+                class="px-4 py-4 border-b border-white/10 bg-[#060A14] bg-gradient-to-r from-cyan-500/10 to-transparent">
                 <p class="text-sm font-black text-white truncate">{{ $authUser->name }}</p>
                 <p class="text-xs text-cyan-100/70 truncate mt-0.5">{{ $authUser->email }}</p>
               </div>
@@ -739,7 +740,7 @@ Premium Itemku/Codashop style marketplace navbar.
 
         {{-- Horizontal Links --}}
         <a href="{{ route('marketplace.home') }}" class="hidden lg:flex items-center gap-2 px-4 py-2 rounded-xl text-sm font-semibold transition-all duration-300
-                {{ request()->routeIs('marketplace.home')
+                  {{ request()->routeIs('marketplace.home')
       ? 'text-cyan-400 bg-cyan-500/10 border border-cyan-400/20 shadow-[0_0_14px_rgba(6,182,212,0.15)]'
       : 'text-white/80 hover:text-white hover:bg-cyan-500/10' }}">
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
