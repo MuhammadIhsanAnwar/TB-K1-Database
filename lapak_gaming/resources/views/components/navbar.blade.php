@@ -464,57 +464,113 @@ Premium Itemku/Codashop style marketplace navbar.
           {{-- User Avatar Dropdown --}}
           <div class="relative hidden sm:block">
             <button onclick="toggleDropdown('user-dropdown')"
-              class="flex items-center gap-2 rounded-2xl border border-white/5 bg-white/[0.03] px-3 py-2 text-white hover:bg-white/[0.06] transition-all duration-300">
+              class="flex items-center gap-2.5 rounded-full border border-white/10 bg-white/[0.04] pl-2 pr-4 py-1.5 text-white hover:bg-white/[0.08] hover:border-white/20 hover:shadow-[0_0_15px_rgba(6,182,212,0.15)] transition-all duration-300">
               <img src="{{ $authUser?->avatar_url ?? $avatarFallback }}"
-                class="w-7 h-7 rounded-full object-cover border border-white/20" alt="Avatar">
-              <span class="text-sm font-medium truncate max-w-[100px]">{{ $authUser?->name ?? 'User' }}</span>
-              <svg class="w-3 h-3 opacity-80" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                class="w-8 h-8 rounded-full object-cover border border-cyan-500/30" alt="Avatar">
+              <span class="text-sm font-bold truncate max-w-[100px]">{{ $authUser?->name ?? 'User' }}</span>
+              <svg class="w-3.5 h-3.5 opacity-70 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
               </svg>
             </button>
             <div id="user-dropdown"
-              class="dropdown-panel absolute right-0 top-full mt-3 w-56 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left z-50 py-2">
-              <div class="px-4 py-2 border-b border-white/6 mb-1">
-                <p class="text-sm font-bold text-slate-100 truncate">{{ $authUser->name }}</p>
-                <p class="text-xs text-slate-400 truncate">{{ $authUser->email }}</p>
+              class="dropdown-panel absolute right-0 top-full mt-3 w-72 bg-[#0b1121]/95 backdrop-blur-2xl rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.4)] border border-white/10 overflow-hidden text-left z-50 p-2 transform origin-top-right transition-all duration-300">
+              
+              {{-- Header User --}}
+              <div class="flex items-center gap-3 px-4 py-3 bg-gradient-to-br from-cyan-500/10 to-transparent rounded-xl border border-white/5 mb-2">
+                <div class="relative shrink-0">
+                  <img src="{{ $authUser?->avatar_url ?? $avatarFallback }}" class="w-12 h-12 rounded-full object-cover border-2 border-cyan-500/40 shadow-[0_0_10px_rgba(6,182,212,0.3)]">
+                  <span class="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-[#0b1121] rounded-full"></span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="text-[15px] font-bold text-white truncate">{{ $authUser->name }}</p>
+                  <p class="text-[11px] font-medium text-cyan-300 truncate tracking-wide">{{ $authUser->email }}</p>
+                </div>
               </div>
 
+              {{-- Menu Links --}}
+              <div class="space-y-0.5">
               @if(($isAdminRoute || $isAdminSettingsRoute) && $authUser->isAdmin())
-                <a href="{{ route('admin.dashboard') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Panel Admin</a>
-                <a href="{{ route('admin.contact-messages.index') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pesan Masuk</a>
-                <a href="{{ route('admin.users.index') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Kelola Akun</a>
+                <a href="{{ route('admin.dashboard') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-indigo-500/10 text-indigo-400 group-hover:bg-indigo-500/20 group-hover:scale-110 transition-all shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/></svg>
+                  </div>
+                  Panel Admin
+                </a>
+                <a href="{{ route('admin.contact-messages.index') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 group-hover:bg-sky-500/20 group-hover:scale-110 transition-all shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z"/></svg>
+                  </div>
+                  Pesan Masuk
+                </a>
+                <a href="{{ route('admin.users.index') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20 group-hover:scale-110 transition-all shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"/></svg>
+                  </div>
+                  Kelola Akun
+                </a>
               @else
-                <a href="{{ route('dashboard') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Dashboard</a>
-                <a href="{{ route('orders.index') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pesanan Saya</a>
-                <a href="{{ route('wallet.index') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Wallet</a>
+                <a href="{{ route('dashboard') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-blue-500/10 text-blue-400 group-hover:bg-blue-500/20 group-hover:scale-110 transition-all shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zm10 0a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+                  </div>
+                  Dashboard
+                </a>
+                <a href="{{ route('orders.index') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-orange-500/10 text-orange-400 group-hover:bg-orange-500/20 group-hover:scale-110 transition-all shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+                  </div>
+                  Pesanan Saya
+                </a>
+                <a href="{{ route('wallet.index') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/10 text-emerald-400 group-hover:bg-emerald-500/20 group-hover:scale-110 transition-all shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>
+                  </div>
+                  Wallet
+                </a>
                 @if($authUser->isSellerAccount())
-                  <a href="{{ route('seller.dashboard') }}"
-                    class="block px-4 py-2 text-sm surface-text hover:surface-weak">Dashboard Penjual</a>
+                  <a href="{{ route('seller.dashboard') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all">
+                    <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-purple-500/10 text-purple-400 group-hover:bg-purple-500/20 group-hover:scale-110 transition-all shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"/></svg>
+                    </div>
+                    Dashboard Penjual
+                  </a>
                 @else
-                  <a href="{{ route('seller.register.form') }}"
-                    class="block px-4 py-2 text-sm text-amber-400 font-medium hover:bg-amber-800/10">Daftar Jadi Penjual</a>
+                  <a href="{{ route('seller.register.form') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-amber-400 hover:text-amber-300 hover:bg-amber-500/10 transition-all">
+                    <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 group-hover:bg-amber-500/20 group-hover:scale-110 transition-all shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8c-1.657 0-3 .895-3 2s1.343 2 3 2 3 .895 3 2-1.343 2-3 2m0-8c1.11 0 2.08.402 2.599 1M12 8V7m0 1v8m0 0v1m0-1c-1.11 0-2.08-.402-2.599-1M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                    </div>
+                    Daftar Jadi Penjual
+                  </a>
                 @endif
               @endif
-              {{-- Pengaturan Akun (visible to all authenticated users) --}}
+
+              <div class="h-px bg-white/5 my-2"></div>
+              
+              {{-- Pengaturan Akun --}}
               @if(Route::has('settings.account'))
-                <a href="{{ route('settings.account') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pengaturan Akun</a>
+                <a href="{{ route('settings.account') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-500/10 text-slate-400 group-hover:bg-slate-500/20 group-hover:scale-110 transition-all shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  </div>
+                  Pengaturan Akun
+                </a>
               @else
-                <a href="{{ url('/settings/account') }}"
-                  class="block px-4 py-2 text-sm surface-text hover:surface-weak">Pengaturan Akun</a>
+                <a href="{{ url('/settings/account') }}" class="group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-semibold text-slate-300 hover:text-white hover:bg-white/5 transition-all">
+                  <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-slate-500/10 text-slate-400 group-hover:bg-slate-500/20 group-hover:scale-110 transition-all shrink-0">
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+                  </div>
+                  Pengaturan Akun
+                </a>
               @endif
 
-              <div class="border-t border-gray-100 mt-1 pt-1">
-                <form method="POST" action="{{ route('logout') }}">
+                <form method="POST" action="{{ route('logout') }}" class="mt-1 block">
                   @csrf
-                  <button type="submit"
-                    class="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50">Keluar</button>
+                  <button type="submit" class="w-full group flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-bold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-all">
+                    <div class="flex items-center justify-center w-8 h-8 rounded-lg bg-rose-500/10 text-rose-400 group-hover:bg-rose-500/20 group-hover:scale-110 transition-all shrink-0">
+                      <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
+                    </div>
+                    Keluar
+                  </button>
                 </form>
               </div>
             </div>
