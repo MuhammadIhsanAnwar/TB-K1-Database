@@ -8,23 +8,14 @@
    Aesthetic: Gaming × Fintech · Codashop × UniPin × Steam Dark UI
    =================================================================== */
 
+/* ── HIDE GLOBAL GAMING-BG ON HOMEPAGE (prevent double background) ── */
+#gaming-bg { display: none !important; }
+
 /* ── PAGE SHELL ──────────────────────────────────────────────────── */
 .home-page {
   position: relative;
   overflow-x: hidden;
   background: var(--bg, #060A12);
-}
-
-/* Seamless vignette blending into body */
-.home-page::after {
-  content: '';
-  position: fixed;
-  inset: 0;
-  pointer-events: none;
-  z-index: 0;
-  background:
-    radial-gradient(ellipse 120% 60% at 50% 0%, rgba(37,99,235,0.06) 0%, transparent 60%),
-    radial-gradient(ellipse 80% 50% at 80% 100%, rgba(139,92,246,0.04) 0%, transparent 50%);
 }
 
 /* ── AMBIENT ORBS ────────────────────────────────────────────────── */
