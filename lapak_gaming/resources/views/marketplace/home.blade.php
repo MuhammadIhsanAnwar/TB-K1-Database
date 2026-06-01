@@ -8,17 +8,8 @@
    Aesthetic: Gaming × Fintech · Codashop × UniPin × Steam Dark UI
    =================================================================== */
 
-/* ── HIDE GLOBAL GAMING-BG ON HOMEPAGE (prevent double background) ── */
-#gaming-bg { display: none !important; }
-
-/* ── PAGE SHELL ──────────────────────────────────────────────────── */
-.home-page {
-  position: relative;
-  overflow-x: hidden;
-  background: var(--bg, #060A12);
-}
-
 /* ── AMBIENT ORBS ────────────────────────────────────────────────── */
+/* pastikan parent memiliki position: relative */
 .amb-orb {
   position: absolute;
   border-radius: 999px;
@@ -221,7 +212,7 @@
   font-family: 'Inter', sans-serif;
   font-size: 17px;
   color: #00D4FF;
-  height: 1.6em; /* keep height stable */
+  height: 1.6em;
 }
 .typing-text {
   border-right: 2px solid #00D4FF;
@@ -235,15 +226,6 @@
 .typing-text {
   animation: blinkCursor 0.8s steps(1) infinite;
 }
-@keyframes typeAnim {
-  from { width: 0; }
-  to { width: 100%; }
-}
-@keyframes deleteAnim {
-  from { width: 100%; }
-  to { width: 0; }
-}
-
 
 /* CTA row */
 .hero-cta {
@@ -330,7 +312,6 @@
   background: rgba(255,255,255,0.08);
 }
 
-/* Games Row Removed */
 /* ── ANIMATIONS ──────────────────────────────────────────────────── */
 @keyframes hFadeDown {
   from { opacity: 0; transform: translateY(-18px); }
@@ -555,7 +536,6 @@
 }
 .cat-item:hover .cat-lbl { color: #e2e8f0; }
 
-/* Floating anim for category icons */
 @keyframes catBob {
   0%,100% { transform: translateY(0); }
   50%     { transform: translateY(-5px); }
@@ -661,7 +641,8 @@
 @endpush
 
 @section('content')
-<div class="home-page">
+{{-- Container baru tanpa class .home-page agar background dari layout global tampil utuh --}}
+<div class="relative w-full">
 
   {{-- ── DECORATIVE BACKGROUND ─────────────────────────────────── --}}
   <div class="amb-orb amb-orb-1" aria-hidden="true"></div>
@@ -723,7 +704,6 @@
             <span class="trust-badge-text">Pembayaran Aman</span>
           </div>
         </div>
-
 
       </div>
 
@@ -797,7 +777,6 @@
     </div>
   </section>
   @else
-    {{-- Empty state --}}
     <div class="home-wrap sec-gap-sm">
       <div class="rounded-[24px] border border-white/6 bg-slate-950/60 p-10 text-center">
         <p class="text-sm text-slate-500">Belum ada hero banner tersedia. Tambahkan dari panel admin.</p>
@@ -1038,7 +1017,6 @@
     <div class="feat-panel p-3 md:p-4">
       <div style="overflow:hidden;">
         <div class="feat-scroll-inner">
-          {{-- Render twice for seamless loop --}}
           @foreach($featuredBanners as $fb)
             <a href="{{ $fb->link_url ?: '#' }}"
                class="flex-none w-[360px] md:w-[480px] rounded-xl overflow-hidden block aspect-[3/1] border border-white/8 shadow-md transition-opacity hover:opacity-90">
@@ -1149,7 +1127,6 @@
 
             @foreach($faqs as $index => $faq)
             <div class="faq-item group relative overflow-hidden rounded-[20px] border border-white/[0.05] bg-white/[0.015] transition-all duration-300 hover:bg-white/[0.03] hover:border-sky-500/30">
-                {{-- Left Accent Line --}}
                 <div class="faq-accent absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-sky-400 to-blue-600 opacity-0 transition-all duration-500 scale-y-0 origin-top"></div>
 
                 <button class="faq-btn flex w-full items-center justify-between gap-4 p-5 sm:p-6 text-left cursor-pointer outline-none focus:outline-none">
@@ -1182,7 +1159,7 @@
 
   <div class="pb-20 sm:pb-10"></div>
 
-</div>
+</div> {{-- akhir relative w-full --}}
 @endsection
 
 @push('scripts')
@@ -1276,7 +1253,6 @@
       
       const isOpen = item.classList.contains('is-open');
 
-      // Close all FAQs first
       document.querySelectorAll('.faq-item').forEach(otherItem => {
         otherItem.classList.remove('is-open');
         otherItem.style.backgroundColor = '';
@@ -1314,7 +1290,6 @@
         }
       });
 
-      // Toggle current FAQ
       if (!isOpen) {
         item.classList.add('is-open');
         item.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
@@ -1323,7 +1298,7 @@
         content.style.gridTemplateRows = '1fr';
         content.style.opacity = '1';
         
-        if (iconPath) iconPath.setAttribute('d', 'M19.5 12h-15'); // minus icon
+        if (iconPath) iconPath.setAttribute('d', 'M19.5 12h-15');
         if (iconBox) {
             iconBox.style.backgroundColor = 'rgba(14, 165, 233, 0.1)';
             iconBox.style.borderColor = 'rgba(56, 189, 248, 0.3)';
