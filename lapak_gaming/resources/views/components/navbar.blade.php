@@ -476,10 +476,10 @@ Premium Itemku/Codashop style marketplace navbar.
             </button>
 
             <div id="user-dropdown"
-              class="dropdown-panel absolute right-0 top-full mt-4 w-64 hidden z-50 overflow-hidden">
-
+              class="absolute right-0 top-full mt-4 w-64 hidden z-[999] bg-[#0B1220] rounded-2xl shadow-[0_30px_80px_rgba(0,0,0,0.9)] border border-white/10 overflow-hidden">
+              
               {{-- Header Profil --}}
-              <div class="px-4 py-4 border-b border-white/10 bg-gradient-to-r from-cyan-500/10 to-transparent">
+              <div class="px-4 py-4 border-b border-white/10 bg-[#060A14] bg-gradient-to-r from-cyan-500/10 to-transparent">
                 <p class="text-sm font-black text-white truncate">{{ $authUser->name }}</p>
                 <p class="text-xs text-cyan-100/70 truncate mt-0.5">{{ $authUser->email }}</p>
               </div>
