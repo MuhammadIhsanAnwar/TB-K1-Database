@@ -8,8 +8,12 @@
    Aesthetic: Gaming × Fintech · Codashop × UniPin × Steam Dark UI
    =================================================================== */
 
+/* Hilangkan scrollbar horizontal */
+body {
+  overflow-x: hidden;
+}
+
 /* ── AMBIENT ORBS ────────────────────────────────────────────────── */
-/* pastikan parent memiliki position: relative */
 .amb-orb {
   position: absolute;
   border-radius: 999px;
@@ -642,7 +646,7 @@
 
 @section('content')
 {{-- Container baru tanpa class .home-page agar background dari layout global tampil utuh --}}
-<div class="relative w-full">
+<div class="relative w-full overflow-x-hidden">
 
   {{-- ── DECORATIVE BACKGROUND ─────────────────────────────────── --}}
   <div class="amb-orb amb-orb-1" aria-hidden="true"></div>
