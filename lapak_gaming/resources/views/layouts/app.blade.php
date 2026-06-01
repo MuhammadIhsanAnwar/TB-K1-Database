@@ -1131,7 +1131,7 @@
       const notificationReadBaseUrl = panel.dataset.notificationsReadBaseUrl;
       if (!notificationsUrl || !notificationReadBaseUrl) return;
 
-      body.innerHTML = '<div class="px-4 py-3 text-sm text-slate-400 text-center">Memuat notifikasi...</div>';
+      body.innerHTML = '<div class="px-5 py-8 text-sm text-slate-400 text-center flex flex-col items-center justify-center gap-3"><svg class="w-10 h-10 text-slate-600 animate-spin" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>Memuat notifikasi...</div>';
 
       try {
         const response = await fetch(notificationsUrl, {
@@ -1154,7 +1154,7 @@
         }
 
         if (!items.length) {
-          body.innerHTML = '<div class="px-4 py-3 text-sm text-slate-400 text-center">Tidak ada notifikasi baru.</div>';
+          body.innerHTML = '<div class="px-5 py-8 text-sm text-slate-400 text-center flex flex-col items-center justify-center gap-3"><svg class="w-10 h-10 text-slate-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>Tidak ada notifikasi baru.</div>';
           return;
         }
 
@@ -1169,17 +1169,34 @@
           }) : '';
 
           return `
-            <div class="px-4 py-3 border-b border-slate-800 last:border-b-0 ${unread ? 'bg-slate-900/60' : ''}">
-              <div class="flex items-start gap-3">
-                <span class="mt-1 h-2.5 w-2.5 shrink-0 rounded-full ${unread ? 'bg-rose-400' : 'bg-slate-700'}"></span>
-                <div class="min-w-0 flex-1">
-                  <div class="text-sm font-semibold text-white">${title}</div>
-                  <div class="mt-1 text-sm text-slate-400">${bodyText}</div>
-                  <div class="mt-2 text-[11px] uppercase tracking-[0.18em] text-slate-500">${createdAt}</div>
+            <div class="group relative px-5 py-4 border-b border-white/5 last:border-b-0 hover:bg-white/5 transition-all duration-300 ${unread ? 'bg-cyan-500/[0.03]' : ''}">
+              <div class="flex items-start gap-4">
+                <div class="shrink-0 mt-1">
+                  ${unread 
+                    ? \`<div class="w-10 h-10 rounded-xl bg-gradient-to-br from-cyan-500 to-blue-600 flex items-center justify-center shadow-[0_0_15px_rgba(6,182,212,0.4)]">
+                         <svg class="w-5 h-5 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+                       </div>\` 
+                    : \`<div class="w-10 h-10 rounded-xl bg-slate-800 border border-white/10 flex items-center justify-center">
+                         <svg class="w-5 h-5 text-slate-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                       </div>\`
+                  }
                 </div>
-                <div class="ml-2 flex shrink-0 flex-col items-end gap-2">
-                  ${link ? `<button type="button" data-notification-id="${item.id}" data-notification-link="${link}" class="text-xs font-semibold text-brand-300 hover:text-brand-200">Buka</button>` : ''}
-                  ${unread ? `<button type="button" data-notification-id="${item.id}" class="text-xs font-semibold text-slate-300 hover:text-white">Tandai dibaca</button>` : ''}
+                <div class="min-w-0 flex-1">
+                  <div class="flex items-center justify-between gap-2 mb-1">
+                    <p class="text-sm font-bold truncate ${unread ? 'text-white' : 'text-slate-300'}">${title}</p>
+                    <span class="text-[10px] uppercase tracking-wider font-semibold whitespace-nowrap text-slate-500">${createdAt}</span>
+                  </div>
+                  <p class="text-xs leading-relaxed text-slate-400 line-clamp-2">${bodyText}</p>
+                  
+                  <div class="mt-3 flex items-center gap-3">
+                    ${link ? \`<button type="button" data-notification-id="\${item.id}" data-notification-link="\${link}" class="inline-flex items-center gap-1.5 text-xs font-bold text-cyan-400 hover:text-cyan-300 transition-colors">
+                      Lihat Detail <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                    </button>\` : ''}
+                    
+                    ${unread ? \`<button type="button" data-notification-id="\${item.id}" class="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors ml-auto">
+                      <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg> Tandai Dibaca
+                    </button>\` : ''}
+                  </div>
                 </div>
               </div>
             </div>

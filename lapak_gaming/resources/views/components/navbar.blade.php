@@ -359,23 +359,27 @@ Premium Itemku/Codashop style marketplace navbar.
             {{-- Notifications --}}
             <div class="relative">
               <button onclick="toggleDropdown('notif-dropdown'); loadNotificationPreview();"
-                class="nav-icon-btn text-white/90">
-                <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                    d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
+                class="nav-icon-btn group relative">
+                <svg class="w-5 h-5 text-slate-300 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9" />
                 </svg>
-                <span id="notif-badge" class="absolute top-1 right-1 w-2 h-2 bg-red-500 rounded-full hidden"></span>
+                <span id="notif-badge" class="absolute -top-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-rose-500 text-[9px] font-bold text-white shadow-[0_0_10px_rgba(244,63,94,0.5)] border border-[#0b1121] hidden"></span>
               </button>
               <div id="notif-dropdown" data-notifications-url="{{ route('notifications.poll') }}"
                 data-notifications-read-base-url="{{ route('notifications.index') }}"
                 data-notifications-read-all-url="{{ route('notifications.read-all') }}"
-                class="dropdown-panel absolute right-0 top-full mt-2 w-80 bg-surface-850 rounded-lg shadow-xl border border-white/6 overflow-hidden text-left text-slate-200 z-50">
-                <div class="px-4 py-3 border-b flex justify-between items-center bg-transparent">
-                  <span class="font-bold text-sm text-slate-100">Notifikasi</span>
-                  <a href="{{ route('notifications.index') }}" class="text-xs text-itemku-blue">Lihat semua</a>
+                class="dropdown-panel absolute right-0 top-full mt-3 w-80 sm:w-96 bg-[#0b1121]/95 backdrop-blur-2xl rounded-2xl shadow-[0_20px_40px_rgba(0,0,0,0.5)] border border-white/10 overflow-hidden text-left z-50 transform origin-top-right transition-all duration-300">
+                <div class="px-5 py-4 border-b border-white/5 flex justify-between items-center bg-gradient-to-r from-cyan-500/10 to-transparent">
+                  <div class="flex items-center gap-2">
+                    <div class="w-2 h-2 rounded-full bg-cyan-400 shadow-[0_0_8px_#22d3ee]"></div>
+                    <span class="font-bold text-[15px] text-white">Notifikasi</span>
+                  </div>
+                  <a href="{{ route('notifications.index') }}" class="text-xs font-semibold text-cyan-400 hover:text-cyan-300 hover:underline">Lihat Semua</a>
                 </div>
-                <div id="notif-dropdown-body" class="max-h-72 overflow-y-auto">
-                  <div class="px-4 py-6 text-sm text-slate-400 text-center">Klik ikon notifikasi untuk memuat pesan terbaru.
+                <div id="notif-dropdown-body" class="max-h-[360px] overflow-y-auto no-scrollbar bg-white/[0.02]">
+                  <div class="px-5 py-8 text-sm text-slate-400 text-center flex flex-col items-center justify-center gap-3">
+                    <svg class="w-10 h-10 text-slate-600 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    Klik ikon notifikasi untuk memuat.
                   </div>
                 </div>
               </div>
