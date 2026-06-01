@@ -9,17 +9,7 @@
    =================================================================== */
 
 /* ── PAGE SHELL ──────────────────────────────────────────────────── */
-.home-page {
-  position: relative;
-  overflow-x: hidden;
-  background: linear-gradient(
-    180deg,
-    #0A0A1A 0%,
-    #0A0A1A 85%,
-    rgba(10,10,26,0.8) 95%,
-    #060A12 100%
-  );
-}
+.home-page { position: relative; overflow-x: hidden; background: #0A0A1A; }
 
 /* ── AMBIENT ORBS ────────────────────────────────────────────────── */
 .amb-orb {
@@ -639,13 +629,6 @@
     transition: none !important;
   }
   .reveal-item { opacity: 1; transform: none; }
-}
-
-/* ── FOOTER INTEGRATION ─────────────────────────────────────────── */
-@supports selector(:has(~ footer)) {
-  main {
-    background: linear-gradient(to bottom, transparent 0%, rgba(6,10,18,0.4) 100%);
-  }
 }
 
 /* ── MOBILE TWEAKS ───────────────────────────────────────────────── */
