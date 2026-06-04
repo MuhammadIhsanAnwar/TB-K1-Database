@@ -882,6 +882,92 @@
       filter: brightness(1.1) drop-shadow(0 0 12px rgba(59, 130, 246, 0.5));
     }
 
+    /* ── FAQ STYLING ─────────────────────────────────────────────────── */
+    .faq-item {
+      position: relative;
+      animation: faqSlideIn 0.6s ease-out backwards;
+    }
+
+    .faq-item:nth-child(1) { animation-delay: 0.1s; }
+    .faq-item:nth-child(2) { animation-delay: 0.2s; }
+    .faq-item:nth-child(3) { animation-delay: 0.3s; }
+    .faq-item:nth-child(4) { animation-delay: 0.4s; }
+    .faq-item:nth-child(5) { animation-delay: 0.5s; }
+    .faq-item:nth-child(6) { animation-delay: 0.6s; }
+
+    @keyframes faqSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .faq-item:hover {
+      background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%);
+      border-color: rgba(59, 130, 246, 0.35);
+      box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .faq-accent {
+      opacity: 1 !important;
+      transform: scaleY(1) !important;
+    }
+
+    .faq-item:hover .faq-accent {
+      background: linear-gradient(to bottom, #06b6d4, #3b82f6);
+    }
+
+    .faq-num {
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover .faq-num {
+      color: rgba(255, 255, 255, 0.25);
+      font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    }
+
+    .faq-title {
+      transition: all 0.3s ease;
+    }
+
+    .faq-item:hover .faq-title {
+      color: rgba(6, 182, 212, 0.9);
+      text-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+    }
+
+    .faq-icon-box {
+      background: rgba(59, 130, 246, 0.1);
+      border: 1.5px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .faq-item:hover .faq-icon-box {
+      background: rgba(6, 182, 212, 0.15);
+      border-color: rgba(6, 182, 212, 0.5);
+      box-shadow: 0 0 16px rgba(6, 182, 212, 0.2);
+    }
+
+    .faq-icon {
+      transition: all 0.4s cubic-bezier(0.2, 0.8, 0.2, 1);
+    }
+
+    .faq-item.active .faq-icon {
+      transform: rotate(45deg);
+      color: rgba(6, 182, 212, 1);
+    }
+
+    .faq-content {
+      max-height: 0;
+    }
+
+    .faq-item.active .faq-content {
+      grid-template-rows: 1fr;
+      opacity: 1;
+    }
+
     /* ── SCROLLBAR ───────────────────────────────────────────────────── */
     ::-webkit-scrollbar {
       width: 6px;
