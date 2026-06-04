@@ -4,6 +4,8 @@
 
 namespace App\Filament\Admin\Resources;
 
+use BackedEnum;
+use UnitEnum;
 use App\Filament\Admin\Resources\CategoryResource\Pages;
 use App\Models\Category;
 use Filament\Forms\Components\Grid;
@@ -13,7 +15,6 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
-use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -30,19 +31,19 @@ class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static string|null $navigationIcon = 'heroicon-o-tag';
+    protected static string|BackedEnum|null $navigationIcon = 'heroicon-o-tag';
 
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationLabel = 'Categories';
 
-    protected static string|null $navigationGroup = 'Management';
+    protected static string|UnitEnum|null $navigationGroup = 'Management';
 
     /** @noinspection PhpUndefinedNamespaceInspection */
     #[\Override]
-    public static function form(Schema $schema): Schema
+    public static function form(Form $form): Form
     {
-        return $schema->schema([
+        return $form->schema([
                 Section::make('Category Information')
                     ->schema([
                         TextInput::make('name')
