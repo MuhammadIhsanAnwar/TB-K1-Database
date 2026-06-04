@@ -526,5 +526,5 @@
             }
         });
     });
-
+</script>
 @endpush
