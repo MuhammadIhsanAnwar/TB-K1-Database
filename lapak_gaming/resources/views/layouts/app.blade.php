@@ -1013,7 +1013,7 @@
 
       <!-- Title with animation -->
       <div class="text-2xl font-black text-white mb-1 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent" style="animation: titlePulse 2s ease-in-out infinite;">
-        LAPAK GAMING
+        Lapak Gaming
       </div>
       
       <!-- Animated subtitle -->
