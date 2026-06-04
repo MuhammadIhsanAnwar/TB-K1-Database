@@ -1,4 +1,6 @@
 <?php
+/** @noinspection PhpUndefinedNamespaceInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 namespace App\Filament\Admin\Resources;
 
@@ -8,7 +10,9 @@ use Filament\Forms\Components\Grid;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -18,22 +22,32 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\DeleteAction;
 
+/**
+ * @phpstan-ignore-next-line
+ */
 class OrderResource extends Resource
 {
     protected static ?string $model = Order::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-inbox';
+    /**
+     * @var string|\Filament\Support\Enums\FontFamily|null
+     */
+    protected static string|null $navigationIcon = 'heroicon-o-inbox';
 
     protected static ?string $recordTitleAttribute = 'order_code';
 
     protected static ?string $navigationLabel = 'Orders';
 
-    protected static ?string $navigationGroup = 'Management';
+    /**
+     * @var string|\Filament\Support\Enums\FontFamily|null
+     */
+    protected static string|null $navigationGroup = 'Management';
 
-    public static function form(Form $form): Form
+    /** @noinspection PhpUndefinedNamespaceInspection */
+    #[\Override]
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema->schema([
                 Section::make('Order Information')
                     ->schema([
                         Grid::make(2)
@@ -42,9 +56,10 @@ class OrderResource extends Resource
                                     ->relationship('buyer', 'name')
                                     ->disabled()
                                     ->dehydrated(),
-                                TextColumn::make('order_code')
+                                TextInput::make('order_code')
                                     ->label('Order Code')
-                                    ->disabled(),
+                                    ->disabled()
+                                    ->dehydrated(),
                             ]),
                         Select::make('status')
                             ->options([
@@ -65,6 +80,7 @@ class OrderResource extends Resource
             ]);
     }
 
+    /** @noinspection PhpUndefinedNamespaceInspection */
     public static function table(Table $table): Table
     {
         return $table

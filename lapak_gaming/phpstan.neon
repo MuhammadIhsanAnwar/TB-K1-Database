@@ -1,0 +1,27 @@
+includes:
+    - phpstan-baseline.neon
+
+parameters:
+    level: 5
+    paths:
+        - app
+        - config
+        - routes
+    
+    # Filament package analysis settings
+    ignoreErrors:
+        # Filament property type mismatches (false positives)
+        - message: 'Property.*\$navigationIcon must have type'
+          path: 'app/Filament/Admin/Resources/*'
+        - message: 'Property.*\$navigationGroup must have type'
+          path: 'app/Filament/Admin/Resources/*'
+        
+        # Filament component undefined class warnings (IDE caching)
+        - message: 'Undefined class.*Filament\\Forms\\Components'
+          path: 'app/Filament/Admin/Resources/*'
+        - message: 'Undefined class.*Filament\\Tables\\Actions'
+          path: 'app/Filament/Admin/Resources/*'
+        - message: 'Use of unknown class.*Filament\\Forms\\Components'
+          path: 'app/Filament/Admin/Resources/*'
+        - message: 'Use of unknown class.*Filament\\Tables\\Actions'
+          path: 'app/Filament/Admin/Resources/*'

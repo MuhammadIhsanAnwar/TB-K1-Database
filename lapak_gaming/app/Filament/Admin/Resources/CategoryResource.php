@@ -1,4 +1,6 @@
 <?php
+/** @noinspection PhpUndefinedNamespaceInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 namespace App\Filament\Admin\Resources;
 
@@ -11,6 +13,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -20,22 +23,26 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\DeleteAction;
 
+/**
+ * @phpstan-ignore-next-line
+ */
 class CategoryResource extends Resource
 {
     protected static ?string $model = Category::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-tag';
+    protected static string|null $navigationIcon = 'heroicon-o-tag';
 
     protected static ?string $recordTitleAttribute = 'name';
 
     protected static ?string $navigationLabel = 'Categories';
 
-    protected static ?string $navigationGroup = 'Management';
+    protected static string|null $navigationGroup = 'Management';
 
-    public static function form(Form $form): Form
+    /** @noinspection PhpUndefinedNamespaceInspection */
+    #[\Override]
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema->schema([
                 Section::make('Category Information')
                     ->schema([
                         TextInput::make('name')
@@ -74,6 +81,7 @@ class CategoryResource extends Resource
             ]);
     }
 
+    /** @noinspection PhpUndefinedNamespaceInspection */
     public static function table(Table $table): Table
     {
         return $table

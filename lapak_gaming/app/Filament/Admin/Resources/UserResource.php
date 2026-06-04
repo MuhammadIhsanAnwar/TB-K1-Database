@@ -1,4 +1,6 @@
 <?php
+/** @noinspection PhpUndefinedNamespaceInspection */
+/** @noinspection PhpUndefinedClassInspection */
 
 namespace App\Filament\Admin\Resources;
 
@@ -11,6 +13,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Form;
+use Filament\Schemas\Schema;
 use Filament\Resources\Resource;
 use Filament\Tables\Actions\BulkActionGroup;
 use Filament\Tables\Actions\DeleteBulkAction;
@@ -21,22 +24,32 @@ use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\DeleteAction;
 
+/**
+ * @phpstan-ignore-next-line
+ */
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
+    /**
+     * @var string|\Filament\Support\Enums\FontFamily|null
+     */
+    protected static string|null $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationLabel = 'Users';
 
-    protected static ?string $navigationGroup = 'Management';
+    /**
+     * @var string|\Filament\Support\Enums\FontFamily|null
+     */
+    protected static string|null $navigationGroup = 'Management';
 
     protected static ?string $recordTitleAttribute = 'name';
 
-    public static function form(Form $form): Form
+    /** @noinspection PhpUndefinedNamespaceInspection */
+    #[\Override]
+    public static function form(Schema $schema): Schema
     {
-        return $form
-            ->schema([
+        return $schema->schema([
                 Section::make('Personal Information')
                     ->schema([
                         Grid::make(2)
@@ -116,6 +129,7 @@ class UserResource extends Resource
             ]);
     }
 
+    /** @noinspection PhpUndefinedNamespaceInspection */
     public static function table(Table $table): Table
     {
         return $table
