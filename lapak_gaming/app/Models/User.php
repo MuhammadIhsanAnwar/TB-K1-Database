@@ -14,21 +14,31 @@ use App\Models\UserProfile;
 use App\Models\UserPolicyConsent;
 use App\Models\WalletTransaction;
 use Illuminate\Auth\Notifications\VerifyEmail;
+use Laravel\Jetstream\HasTeams;
+use Laravel\Jetstream\HasProfilePhoto;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable;
+    use HasFactory, Notifiable, HasTeams, HasProfilePhoto;
 
     protected $fillable = [
         'name', 'email', 'password', 'role',
         'status', 'seller_level_id', 'suspended_at', 'suspend_reason',
-        'google_id', 'phone', 'avatar',
+        'google_id', 'phone', 'avatar', 'profile_photo_path',
         'account_deletion_token', 'account_deletion_token_sent_at', 'deactivated_at',
         'two_factor_enabled', 'two_factor_methods', 'two_factor_google_secret', 'two_factor_confirmed_at',
         // Seller registration workflow
         'seller_status', 'seller_rejection_reason',
         // Shop profile
         'shop_name', 'shop_photo', 'shop_description',
+        // Jetstream
+        'current_team_id',
+    ];
+
+    protected $guarded = [];
+
+    protected $appends = [
+        'profile_photo_url',
     ];
 
     protected $casts = [
