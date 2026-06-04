@@ -1760,10 +1760,11 @@
         const title = item.querySelector('.faq-title');
         const num = item.querySelector('.faq-num');
 
-        const isOpen = item.classList.contains('is-open');
+        const isOpen = item.classList.contains('is-open') || item.classList.contains('active');
 
+        // Close all other items
         document.querySelectorAll('.faq-item').forEach(otherItem => {
-          otherItem.classList.remove('is-open');
+          otherItem.classList.remove('is-open', 'active');
           otherItem.style.backgroundColor = '';
           otherItem.style.borderColor = '';
 
@@ -1800,8 +1801,8 @@
         });
 
         if (!isOpen) {
-          item.classList.add('is-open');
-          item.style.backgroundColor = 'rgba(255, 255, 255, 0.03)';
+          item.classList.add('is-open', 'active');
+          item.style.backgroundColor = 'rgba(14, 165, 233, 0.05)';
           item.style.borderColor = 'rgba(14, 165, 233, 0.3)';
 
           content.style.gridTemplateRows = '1fr';
