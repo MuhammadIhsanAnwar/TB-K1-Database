@@ -217,6 +217,7 @@
           #F59E0B,
           #8B5CF6);
 
+      background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -235,6 +236,7 @@
       background-size: 200% 100%;
       animation: shine 3s linear infinite;
 
+      background-clip: text;
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
     }
@@ -699,6 +701,7 @@
       overflow: hidden;
       position: relative;
       transition: all 0.3s ease;
+      animation: catBob var(--cat-duration, 4.5s) ease-in-out infinite var(--cat-delay, 0s);
     }
 
     .cat-icon-box::after {
@@ -1165,8 +1168,12 @@
         <div class="flex flex-wrap justify-center gap-5 sm:gap-6 relative" style="z-index:1;">
           @foreach($catsToShow->take(13) as $i => $cat)
             <a href="{{ route('categories.show', $cat->slug) }}" class="cat-item" aria-label="Kategori {{ $cat->name }}">
+              @php
+                $duration = 4.5 + ($i * 0.28);
+                $delay = $i * 0.14;
+              @endphp
               <div class="cat-icon-box"
-                style="animation: catBob {{ 4.5 + ($i * 0.28) }}s ease-in-out infinite {{ $i * 0.14 }}s;">
+                style="--cat-duration: {{ $duration }}s; --cat-delay: {{ $delay }}s;">
                 @if(!empty($cat->image_url))
                   <img src="{{ $cat->image_url }}" alt="{{ $cat->name }}" class="w-full h-full object-cover">
                 @else
@@ -1367,6 +1374,73 @@
         </div>
       </section>
     @endguest
+
+    {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- SDGs BANNER SECTION --}}
+    {{-- ═══════════════════════════════════════════════════════════ --}}
+    <section class="reveal-item home-wrap" style="padding: 3rem 1.5rem 4rem;">
+      <div class="relative overflow-hidden rounded-2xl bg-gradient-to-r from-blue-900/20 via-purple-900/20 to-pink-900/20 border border-white/10 backdrop-blur-sm p-8 md:p-12">
+        <!-- Decorative blur elements -->
+        <div class="absolute top-0 left-0 w-96 h-96 bg-blue-500/10 blur-3xl rounded-full -translate-x-1/2 -translate-y-1/2 pointer-events-none"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-purple-500/10 blur-3xl rounded-full translate-x-1/2 translate-y-1/2 pointer-events-none"></div>
+
+        <div class="relative z-10">
+          <!-- Header -->
+          <div class="text-center mb-10">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-cyan-500/20 to-blue-500/20 border border-cyan-400/30 mb-4">
+              <svg class="w-4 h-4 text-cyan-400" fill="currentColor" viewBox="0 0 20 20">
+                <path d="M11 3a1 1 0 10-2 0v1a1 1 0 102 0V3zM15.657 5.757a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM18 10a1 1 0 01-1 1h-1a1 1 0 110-2h1a1 1 0 011 1zM15.657 14.243a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414l.707.707zM11 17a1 1 0 102 0v-1a1 1 0 10-2 0v1zM5.757 15.657a1 1 0 00-1.414-1.414l-.707.707a1 1 0 001.414 1.414l.707-.707zM2 10a1 1 0 011-1h1a1 1 0 110 2H3a1 1 0 01-1-1zM5.757 5.757a1 1 0 000-1.414L5.05 3.636a1 1 0 00-1.414 1.414l.707.707z" />
+              </svg>
+              <span class="text-xs font-bold text-cyan-300 uppercase tracking-wider">Sustainability</span>
+            </div>
+
+            <h3 class="text-2xl md:text-3xl lg:text-4xl font-bold text-white mb-3 tracking-tight">
+              Website Ini Mendukung
+            </h3>
+            <h2 class="text-3xl md:text-4xl lg:text-5xl font-black bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent mb-4">
+              Sustainable Development Goals
+            </h2>
+            <p class="text-slate-300 text-sm md:text-base max-w-2xl mx-auto leading-relaxed">
+              Lapak Gaming berkomitmen untuk mendukung pembangunan berkelanjutan melalui praktik bisnis yang bertanggung jawab dan inovatif.
+            </p>
+          </div>
+
+          <!-- SDGs Logos -->
+          <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 pt-6">
+            <!-- SDG 9 - Industry, Innovation & Infrastructure -->
+            <div class="flex flex-col items-center gap-3 group">
+              <div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-white/5 border border-white/10 p-4 flex items-center justify-center hover:border-white/30 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-blue-500/20">
+                <img src="{{ url('storage/app/public/sdgs/sdgs9.png') }}" alt="SDG 9 - Industry, Innovation & Infrastructure" class="w-full h-full object-contain">
+              </div>
+              <p class="text-xs md:text-sm font-semibold text-slate-300 text-center">Industry, Innovation &amp;<br>Infrastructure</p>
+            </div>
+
+            <!-- SDG 17 - Partnerships for the Goals -->
+            <div class="flex flex-col items-center gap-3 group">
+              <div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-white/5 border border-white/10 p-4 flex items-center justify-center hover:border-white/30 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-purple-500/20">
+                <img src="{{ url('storage/app/public/sdgs/sdgs17.png') }}" alt="SDG 17 - Partnerships for the Goals" class="w-full h-full object-contain">
+              </div>
+              <p class="text-xs md:text-sm font-semibold text-slate-300 text-center">Partnerships for<br>the Goals</p>
+            </div>
+
+            <!-- SDG Combined (using the combined logo) -->
+            <div class="flex flex-col items-center gap-3 group">
+              <div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-white/5 border border-white/10 p-4 flex items-center justify-center hover:border-white/30 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-cyan-500/20">
+                <img src="{{ url('storage/app/public/sdgs/E_SDG-goals_icons-individual-rgb-.png') }}" alt="Sustainable Development Goals" class="w-full h-full object-contain">
+              </div>
+              <p class="text-xs md:text-sm font-semibold text-slate-300 text-center">SDGs United<br>Nations</p>
+            </div>
+          </div>
+
+          <!-- Footer text -->
+          <div class="text-center mt-10 pt-8 border-t border-white/10">
+            <p class="text-slate-400 text-xs md:text-sm max-w-2xl mx-auto">
+              Kami percaya bahwa teknologi dan inovasi dapat berkontribusi pada pembangunan berkelanjutan yang menguntungkan semua pihak.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
 
     {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- FAQ SECTION (PREMIUM REDESIGN) --}}

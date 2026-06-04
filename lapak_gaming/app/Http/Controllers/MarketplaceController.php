@@ -63,12 +63,12 @@ class MarketplaceController extends Controller
 
         // 2. Featured Game Keys ("Unlock the Simulation")
         $featuredGameKeys = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['statistics', 'seller', 'category'])->inRandomOrder()->take(6)->get()
+            ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['statistics', 'seller', 'category'])->inRandomOrder()->take(12)->get()
             : collect();
 
         // 3. Featured RPG Keys ("Unlock Epic RPG Worlds")
         $featuredRPGKeys = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['statistics', 'seller', 'category'])->inRandomOrder()->take(6)->get()
+            ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['statistics', 'seller', 'category'])->inRandomOrder()->take(12)->get()
             : collect();
 
         // 4. Category Sections

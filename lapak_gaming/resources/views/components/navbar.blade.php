@@ -225,9 +225,17 @@ Premium Itemku/Codashop style marketplace navbar.
       </div>
     </div>
   @else
-    <div class="p-4 border-b border-white/6 flex gap-2">
-      <a href="{{ route('login') }}" class="flex-1 btn-ghost text-sm font-semibold text-center">Masuk</a>
-      <a href="{{ route('register') }}" class="flex-1 btn-accent text-sm font-semibold text-center">Daftar</a>
+    <div class="p-4 border-b border-white/6 flex flex-col gap-2">
+      <a href="https://lapakgaming.neoverse.my.id/hubungi-kami" class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-700/40 transition-colors">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+        </svg>
+        Bantuan
+      </a>
+      <div class="flex gap-2">
+        <a href="{{ route('login') }}" class="flex-1 btn-ghost text-sm font-semibold text-center">Masuk</a>
+        <a href="{{ route('register') }}" class="flex-1 btn-accent text-sm font-semibold text-center">Daftar</a>
+      </div>
     </div>
   @endauth
 
@@ -599,6 +607,12 @@ Premium Itemku/Codashop style marketplace navbar.
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
+          </a>
+          <a href="https://lapakgaming.neoverse.my.id/hubungi-kami" class="hidden sm:flex items-center gap-1 text-white text-sm font-semibold hover:opacity-80 transition-opacity">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            Bantuan
           </a>
           <a href="{{ route('login') }}"
             class="hidden sm:block text-white text-sm font-semibold hover:opacity-80 transition-opacity">Masuk</a>
