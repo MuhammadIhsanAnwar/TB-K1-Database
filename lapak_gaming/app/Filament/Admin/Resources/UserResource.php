@@ -32,16 +32,16 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
 
     /**
-     * @var string|\Filament\Support\Enums\FontFamily|null
+     * @var string|\BackedEnum|null
      */
-    protected static string|null $navigationIcon = 'heroicon-o-users';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-users';
 
     protected static ?string $navigationLabel = 'Users';
 
     /**
-     * @var string|\Filament\Support\Enums\FontFamily|null
+     * @var string|\UnitEnum|null
      */
-    protected static string|null $navigationGroup = 'Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Management';
 
     protected static ?string $recordTitleAttribute = 'name';
 

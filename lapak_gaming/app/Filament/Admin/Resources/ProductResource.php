@@ -33,16 +33,16 @@ class ProductResource extends Resource
     protected static ?string $model = Product::class;
 
     /**
-     * @var string|\Filament\Support\Enums\FontFamily|null
+     * @var string|\BackedEnum|null
      */
-    protected static string|null $navigationIcon = 'heroicon-o-shopping-cart';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-shopping-cart';
 
     protected static ?string $navigationLabel = 'Products';
 
     /**
-     * @var string|\Filament\Support\Enums\FontFamily|null
+     * @var string|\UnitEnum|null
      */
-    protected static string|null $navigationGroup = 'Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Management';
 
     protected static ?string $recordTitleAttribute = 'name';
 

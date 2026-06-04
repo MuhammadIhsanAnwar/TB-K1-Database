@@ -30,18 +30,18 @@ class OrderResource extends Resource
     protected static ?string $model = Order::class;
 
     /**
-     * @var string|\Filament\Support\Enums\FontFamily|null
+     * @var string|\BackedEnum|null
      */
-    protected static string|null $navigationIcon = 'heroicon-o-inbox';
+    protected static string|\BackedEnum|null $navigationIcon = 'heroicon-o-inbox';
 
     protected static ?string $recordTitleAttribute = 'order_code';
 
     protected static ?string $navigationLabel = 'Orders';
 
     /**
-     * @var string|\Filament\Support\Enums\FontFamily|null
+     * @var string|\UnitEnum|null
      */
-    protected static string|null $navigationGroup = 'Management';
+    protected static string|\UnitEnum|null $navigationGroup = 'Management';
 
     /** @noinspection PhpUndefinedNamespaceInspection */
     #[\Override]

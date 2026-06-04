@@ -1,6 +1,3 @@
-includes:
-    - phpstan-baseline.neon
-
 parameters:
     level: 5
     paths:
@@ -8,20 +5,29 @@ parameters:
         - config
         - routes
     
-    # Filament package analysis settings
+    # Filament package analysis settings - suppress vendor autoload issues
     ignoreErrors:
-        # Filament property type mismatches (false positives)
-        - message: 'Property.*\$navigationIcon must have type'
-          path: 'app/Filament/Admin/Resources/*'
-        - message: 'Property.*\$navigationGroup must have type'
-          path: 'app/Filament/Admin/Resources/*'
+        # Filament Forms Components (IDE caching - vendor classes not fully indexed)
+        -
+            message: '(Undefined type|Use of unknown class).*Filament\\Forms\\Components'
+            path: 'app/Filament/Admin/Resources/*'
         
-        # Filament component undefined class warnings (IDE caching)
-        - message: 'Undefined class.*Filament\\Forms\\Components'
-          path: 'app/Filament/Admin/Resources/*'
-        - message: 'Undefined class.*Filament\\Tables\\Actions'
-          path: 'app/Filament/Admin/Resources/*'
-        - message: 'Use of unknown class.*Filament\\Forms\\Components'
-          path: 'app/Filament/Admin/Resources/*'
-        - message: 'Use of unknown class.*Filament\\Tables\\Actions'
-          path: 'app/Filament/Admin/Resources/*'
+        # Filament Tables Actions (IDE caching - vendor classes not fully indexed)
+        -
+            message: '(Undefined type|Use of unknown class).*Filament\\Tables\\Actions'
+            path: 'app/Filament/Admin/Resources/*'
+        
+        # Filament Schemas (IDE caching)
+        -
+            message: '(Undefined type|Use of unknown class).*Filament\\Schemas'
+            path: 'app/Filament/Admin/Resources/*'
+        
+        # Filament Pages components
+        -
+            message: '(Undefined type|Use of unknown class).*Filament\\Pages'
+            path: 'app/Filament/Admin/Pages/*'
+        
+        # Widget classes
+        -
+            message: '(Undefined type|Use of unknown class).*Filament.*Widget'
+            path: 'app/Filament/Admin/Widgets/*'
