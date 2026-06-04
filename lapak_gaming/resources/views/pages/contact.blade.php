@@ -451,5 +451,80 @@
         reveals.forEach(el => observer.observe(el));
 
     });
-</script>
+
+    /* ══ CONTACT PAGE FAQ ACCORDION ════════════════════════════════ */
+    document.querySelectorAll('.contact-faq-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const item = btn.closest('.contact-faq-item');
+            const content = item.querySelector('.contact-faq-content');
+            const iconPath = item.querySelector('.contact-faq-icon-path');
+            const iconBox = item.querySelector('.contact-faq-icon-box');
+            const accent = item.querySelector('.contact-faq-accent');
+            const title = item.querySelector('.contact-faq-title');
+            const num = item.querySelector('.contact-faq-num');
+
+            const isOpen = item.classList.contains('is-open') || item.classList.contains('active');
+
+            // Close all other items
+            document.querySelectorAll('.contact-faq-item').forEach(otherItem => {
+                otherItem.classList.remove('is-open', 'active');
+                otherItem.style.backgroundColor = '';
+                otherItem.style.borderColor = '';
+
+                const otherContent = otherItem.querySelector('.contact-faq-content');
+                const otherIconPath = otherItem.querySelector('.contact-faq-icon-path');
+                const otherIconBox = otherItem.querySelector('.contact-faq-icon-box');
+                const otherAccent = otherItem.querySelector('.contact-faq-accent');
+                const otherTitle = otherItem.querySelector('.contact-faq-title');
+                const otherNum = otherItem.querySelector('.contact-faq-num');
+
+                if (otherContent) {
+                    otherContent.style.gridTemplateRows = '0fr';
+                    otherContent.style.opacity = '0';
+                }
+                if (otherIconPath) {
+                    otherIconPath.setAttribute('d', 'M12 4.5v15m7.5-7.5h-15');
+                }
+                if (otherIconBox) {
+                    otherIconBox.style.backgroundColor = '';
+                    otherIconBox.style.borderColor = '';
+                }
+                if (otherAccent) {
+                    otherAccent.style.transform = 'scaleY(0)';
+                    otherAccent.style.opacity = '0';
+                }
+                if (otherTitle) {
+                    otherTitle.classList.remove('text-sky-400');
+                    otherTitle.classList.add('text-white/80');
+                }
+                if (otherNum) {
+                    otherNum.classList.remove('text-sky-500/30');
+                    otherNum.classList.add('text-white/10');
+                }
+            });
+
+            if (!isOpen) {
+                item.classList.add('is-open', 'active');
+                item.style.backgroundColor = 'rgba(14, 165, 233, 0.05)';
+                item.style.borderColor = 'rgba(14, 165, 233, 0.3)';
+
+                content.style.gridTemplateRows = '1fr';
+                content.style.opacity = '1';
+
+                if (iconPath) iconPath.setAttribute('d', 'M19.5 12h-15');
+                if (iconBox) {
+                    iconBox.style.backgroundColor = 'rgba(14, 165, 233, 0.1)';
+                    iconBox.style.borderColor = 'rgba(56, 189, 248, 0.3)';
+                }
+
+                accent.style.transform = 'scaleY(1)';
+                accent.style.opacity = '1';
+                title.classList.remove('text-white/80');
+                title.classList.add('text-sky-400');
+                num.classList.remove('text-white/10');
+                num.classList.add('text-sky-500/30');
+            }
+        });
+    });
+
 @endpush
