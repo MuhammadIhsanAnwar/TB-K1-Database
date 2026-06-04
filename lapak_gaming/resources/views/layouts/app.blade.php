@@ -486,13 +486,13 @@
       font-weight: 600;
       font-size: 0.9375rem;
       color: #94a3b8;
-      background: transparent;
-      border: 1px solid #1E2D45;
+      background: rgba(15, 23, 42, 0.8);
+      border: 1px solid rgba(59, 130, 246, 0.3);
       transition: all 0.2s;
       cursor: pointer;
       text-decoration: none;
     }
-    .btn-ghost:hover { border-color: rgba(37,99,235,0.5); color: white; background: rgba(37,99,235,0.08); }
+    .btn-ghost:hover { border-color: rgba(37,99,235,0.5); color: white; background: rgba(59, 130, 246, 0.15); }
 
     /* ── Form Inputs ────────────────────────────────────────────── */
     .input {
