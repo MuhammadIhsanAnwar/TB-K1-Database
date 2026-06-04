@@ -848,6 +848,40 @@
       pointer-events: none;
     }
 
+    /* ── SDGS LOGO ANIMATIONS ────────────────────────────────────── */
+    .sdgs-logo-box {
+      animation: sdgsPulse 3s ease-in-out infinite;
+    }
+
+    .sdgs-logo-box:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    .sdgs-logo-box:nth-child(3) {
+      animation-delay: 0.4s;
+    }
+
+    .sdgs-logo-box:nth-child(4) {
+      animation-delay: 0.6s;
+    }
+
+    @keyframes sdgsPulse {
+      0%, 100% {
+        transform: scale(1) translateY(0);
+      }
+      50% {
+        transform: scale(1.08) translateY(-8px);
+      }
+    }
+
+    .sdgs-logo-box img {
+      transition: filter 0.4s ease;
+    }
+
+    .sdgs-logo-box:hover img {
+      filter: brightness(1.1) drop-shadow(0 0 12px rgba(59, 130, 246, 0.5));
+    }
+
     /* ── SCROLLBAR ───────────────────────────────────────────────────── */
     ::-webkit-scrollbar {
       width: 6px;
@@ -1406,27 +1440,35 @@
           </div>
 
           <!-- SDGs Logos -->
-          <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 pt-6">
+          <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-12 pt-6 flex-wrap">
+            <!-- SDG 8 - Decent Work & Economic Growth -->
+            <div class="sdgs-logo-box flex flex-col items-center gap-3 group">
+              <div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-white/5 border border-white/10 p-4 flex items-center justify-center hover:border-white/30 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-red-500/20">
+                <img src="{{ url('storage/app/public/sdgs/sdgs8.png') }}" alt="SDG 8 - Decent Work & Economic Growth" class="w-full h-full object-contain" loading="lazy">
+              </div>
+              <p class="text-xs md:text-sm font-semibold text-slate-300 text-center">Decent Work &amp;<br>Economic Growth</p>
+            </div>
+
             <!-- SDG 9 - Industry, Innovation & Infrastructure -->
-            <div class="flex flex-col items-center gap-3 group">
+            <div class="sdgs-logo-box flex flex-col items-center gap-3 group">
               <div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-white/5 border border-white/10 p-4 flex items-center justify-center hover:border-white/30 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-blue-500/20">
-                <img src="{{ url('storage/app/public/sdgs/sdgs9.png') }}" alt="SDG 9 - Industry, Innovation & Infrastructure" class="w-full h-full object-contain">
+                <img src="{{ url('storage/app/public/sdgs/sdgs9.png') }}" alt="SDG 9 - Industry, Innovation & Infrastructure" class="w-full h-full object-contain" loading="lazy">
               </div>
               <p class="text-xs md:text-sm font-semibold text-slate-300 text-center">Industry, Innovation &amp;<br>Infrastructure</p>
             </div>
 
             <!-- SDG 17 - Partnerships for the Goals -->
-            <div class="flex flex-col items-center gap-3 group">
+            <div class="sdgs-logo-box flex flex-col items-center gap-3 group">
               <div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-white/5 border border-white/10 p-4 flex items-center justify-center hover:border-white/30 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-purple-500/20">
-                <img src="{{ url('storage/app/public/sdgs/sdgs17.png') }}" alt="SDG 17 - Partnerships for the Goals" class="w-full h-full object-contain">
+                <img src="{{ url('storage/app/public/sdgs/sdgs17.png') }}" alt="SDG 17 - Partnerships for the Goals" class="w-full h-full object-contain" loading="lazy">
               </div>
               <p class="text-xs md:text-sm font-semibold text-slate-300 text-center">Partnerships for<br>the Goals</p>
             </div>
 
             <!-- SDG Combined (using the combined logo) -->
-            <div class="flex flex-col items-center gap-3 group">
+            <div class="sdgs-logo-box flex flex-col items-center gap-3 group">
               <div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-white/5 border border-white/10 p-4 flex items-center justify-center hover:border-white/30 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-cyan-500/20">
-                <img src="{{ url('storage/app/public/sdgs/E_SDG-goals_icons-individual-rgb-.png') }}" alt="Sustainable Development Goals" class="w-full h-full object-contain">
+                <img src="{{ url('storage/app/public/sdgs/E_SDG-goals_icons-individual-rgb-.png') }}" alt="Sustainable Development Goals" class="w-full h-full object-contain" loading="lazy">
               </div>
               <p class="text-xs md:text-sm font-semibold text-slate-300 text-center">SDGs United<br>Nations</p>
             </div>
