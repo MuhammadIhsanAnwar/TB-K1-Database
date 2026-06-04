@@ -333,7 +333,7 @@
             @endphp
 
             @foreach($contactFaqs as $index => $faq)
-                <div class="contact-faq-item group relative overflow-hidden rounded-[20px] border border-white/[0.05] bg-white/[0.015] transition-all duration-300 hover:bg-white/[0.03] hover:border-sky-500/30" style="animation: faqSlideIn 0.6s ease-out backwards; animation-delay: {{ $index * 0.1 }}s;">
+                <div class="contact-faq-item group relative overflow-hidden rounded-[20px] border border-white/[0.05] bg-white/[0.015] transition-all duration-300 hover:bg-white/[0.03] hover:border-sky-500/30">
                     <div class="contact-faq-accent absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-sky-400 to-blue-600 opacity-0 transition-all duration-500 scale-y-0 origin-top"></div>
 
                     <button class="contact-faq-btn flex w-full items-center justify-between gap-4 p-5 sm:p-6 text-left cursor-pointer outline-none focus:outline-none">
@@ -374,6 +374,17 @@
             transform: translateY(0);
         }
     }
+
+    .contact-faq-item {
+        animation: faqSlideIn 0.6s ease-out backwards;
+    }
+
+    .contact-faq-item:nth-child(1) { animation-delay: 0s; }
+    .contact-faq-item:nth-child(2) { animation-delay: 0.1s; }
+    .contact-faq-item:nth-child(3) { animation-delay: 0.2s; }
+    .contact-faq-item:nth-child(4) { animation-delay: 0.3s; }
+    .contact-faq-item:nth-child(5) { animation-delay: 0.4s; }
+    .contact-faq-item:nth-child(6) { animation-delay: 0.5s; }
 
     .contact-faq-item:hover {
         background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%);
