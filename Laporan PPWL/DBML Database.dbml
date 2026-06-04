@@ -1,0 +1,458 @@
+// Full DBML generated from Lapak Gaming SQL
+
+Table banners {
+  id bigint [pk, increment]
+  title varchar
+  subtitle varchar
+  image_url varchar
+  image_path varchar
+  link_url varchar
+  position varchar
+  sort_order int
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table buyers {
+  id bigint [pk, increment]
+  user_id bigint
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table carts {
+  id bigint [pk, increment]
+  user_id bigint
+  product_id bigint
+  quantity int
+  notes text
+  is_selected boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table categories {
+  id bigint [pk, increment]
+  parent_id bigint
+  name varchar
+  slug varchar
+  icon varchar
+  image varchar
+  sort_order int
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table comment_likes {
+  id bigint [pk, increment]
+  product_comment_id bigint
+  user_id bigint
+}
+
+Table contact_messages {
+  id bigint [pk, increment]
+  user_id bigint
+  name varchar
+  email varchar
+  subject varchar
+  category varchar
+  message text
+  admin_reply text
+  replied_by bigint
+  replied_at timestamp
+  read_at timestamp
+  status varchar
+  metadata text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table conversations {
+  id bigint [pk, increment]
+  buyer_id bigint
+  seller_id bigint
+  unread_buyer int
+  unread_seller int
+  last_message text
+  subject varchar
+  last_message_at timestamp
+  status varchar
+  metadata text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table jobs {
+  id bigint [pk, increment]
+  queue varchar
+  payload text
+  attempts varchar
+  reserved_at int
+  available_at int
+  created_at int
+}
+
+Table marketplace_notifications {
+  id bigint [pk, increment]
+  user_id bigint
+  broadcast_id bigint
+  title varchar
+  body text
+  link varchar
+  type varchar
+  data text
+  read_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table messages {
+  id bigint [pk, increment]
+  hash varchar
+  conversation_id bigint
+  sender_id bigint
+  receiver_id bigint
+  sender_role varchar
+  message text
+  attachment_path varchar
+  attachment_type varchar
+  deleted_for_everyone_at timestamp
+  deleted_for_sender_at timestamp
+  deleted_for_receiver_at timestamp
+  read_at timestamp
+  metadata text
+  created_at timestamp
+  updated_at timestamp
+  edited_at timestamp
+  is_read boolean
+}
+
+Table migrations {
+  id int [pk, increment]
+  migration varchar
+  batch int
+}
+
+Table notification_broadcasts {
+  id bigint [pk, increment]
+  title varchar
+  body text
+  link varchar
+  type varchar
+  metadata text
+  starts_at timestamp
+  ends_at timestamp
+  is_active boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table orders {
+  id bigint [pk, increment]
+  buyer_id bigint
+  seller_id bigint
+  invoice_number varchar
+  order_code varchar
+  status varchar
+  payment_method varchar
+  payment_proof varchar
+  delivery_notes text
+  tracking_code varchar
+  due_at timestamp
+  paid_at timestamp
+  completed_at timestamp
+  disputed_at timestamp
+  notes text
+  metadata text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table order_financials {
+  id bigint [pk, increment]
+  order_id bigint
+  subtotal decimal
+  fee_amount decimal
+  escrow_amount decimal
+  grand_total decimal
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table order_items {
+  id bigint [pk, increment]
+  order_id bigint
+  product_id bigint
+  seller_id bigint
+  name_snapshot varchar
+  price_snapshot decimal
+  quantity int
+  delivery_data text
+  status varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table products {
+  id bigint [pk, increment]
+  seller_id bigint
+  category_id bigint
+  name varchar
+  slug varchar
+  description text
+  price decimal
+  sale_price decimal
+  stock int
+  file_path text
+  delivery_content text
+  is_auto_delivery boolean
+  is_featured boolean
+  is_trending boolean
+  type varchar
+  status varchar
+  meta text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table product_comments {
+  id bigint [pk, increment]
+  product_id bigint
+  user_id bigint
+  parent_comment_id bigint
+  content text
+  rating varchar
+  is_verified_buyer boolean
+  status varchar
+  deleted_at timestamp
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table product_statistics {
+  id bigint [pk, increment]
+  product_id bigint
+  sold_count int
+  rating_average decimal
+  review_count int
+  views_count int
+  downloads_count int
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table reviews {
+  id bigint [pk, increment]
+  user_id bigint
+  product_id bigint
+  order_id bigint
+  seller_id bigint
+  rating varchar
+  comment text
+  is_public boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sellers {
+  id bigint [pk, increment]
+  user_id bigint
+  seller_level_id bigint
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table seller_levels {
+  id bigint [pk, increment]
+  name varchar
+  minimum_orders int
+  minimum_revenue decimal
+  fee_percent decimal
+  badge_color varchar
+  auto_approve boolean
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table seller_level_benefits {
+  id bigint [pk, increment]
+  seller_level_id bigint
+  sort_order int
+  benefit varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table sessions {
+  id bigint [pk, increment]
+  user_id bigint
+  ip_address varchar
+  user_agent text
+  payload text
+  last_activity int
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table users {
+  id bigint [pk, increment]
+  name varchar
+  username varchar
+  email varchar
+  email_verified_at timestamp
+  password varchar
+  role varchar
+  status varchar
+  seller_level_id bigint
+  seller_status varchar
+  seller_rejection_reason text
+  google_id varchar
+  phone varchar
+  avatar varchar
+  shop_name varchar
+  shop_photo varchar
+  shop_description text
+  suspended_at timestamp
+  suspend_reason text
+  deactivated_at timestamp
+  account_deletion_token varchar
+  account_deletion_token_sent_at timestamp
+  two_factor_enabled boolean
+  two_factor_methods text
+  two_factor_google_secret varchar
+  two_factor_confirmed_at timestamp
+  remember_token varchar
+  last_login_at timestamp
+  last_login_ip varchar
+  last_login_user_agent text
+  last_login_device_hash varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_addresses {
+  id bigint [pk, increment]
+  user_id bigint
+  province varchar
+  regency varchar
+  district varchar
+  village varchar
+  postal_code varchar
+  full_address text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_policy_consents {
+  id bigint [pk, increment]
+  user_id bigint
+  policy_type varchar
+  version varchar
+  agreed_at timestamp
+  ip_address varchar
+  user_agent text
+  consent_status varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table user_profiles {
+  id bigint [pk, increment]
+  user_id bigint
+  gender varchar
+  birth_date varchar
+  phone varchar
+  avatar_path varchar
+  bio text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table verification_logs {
+  id bigint [pk, increment]
+  user_id bigint
+  admin_id bigint
+  action varchar
+  notes text
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table wallets {
+  id bigint [pk, increment]
+  user_id bigint
+  currency varchar
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table wallet_balances {
+  id bigint [pk, increment]
+  wallet_id bigint
+  balance decimal
+  available_balance decimal
+  locked_balance decimal
+  created_at timestamp
+  updated_at timestamp
+}
+
+Table wallet_transactions {
+  id bigint [pk, increment]
+  wallet_id bigint
+  type varchar
+  direction varchar
+  amount decimal
+  balance_before decimal
+  balance_after decimal
+  reference_type varchar
+  reference_id bigint
+  description text
+  metadata text
+  created_at timestamp
+  updated_at timestamp
+}
+Ref: buyers.user_id > users.id
+Ref: carts.product_id > products.id
+Ref: carts.user_id > users.id
+Ref: categories.parent_id > categories.id
+Ref: comment_likes.product_comment_id > product_comments.id
+Ref: comment_likes.user_id > users.id
+Ref: contact_messages.replied_by > users.id
+Ref: contact_messages.user_id > users.id
+Ref: conversations.buyer_id > users.id
+Ref: conversations.seller_id > users.id
+Ref: marketplace_notifications.user_id > users.id
+Ref: messages.conversation_id > conversations.id
+Ref: messages.receiver_id > users.id
+Ref: messages.sender_id > users.id
+Ref: orders.buyer_id > users.id
+Ref: orders.seller_id > users.id
+Ref: order_financials.order_id > orders.id
+Ref: order_items.order_id > orders.id
+Ref: order_items.product_id > products.id
+Ref: order_items.seller_id > users.id
+Ref: products.category_id > categories.id
+Ref: products.seller_id > users.id
+Ref: product_comments.parent_comment_id > product_comments.id
+Ref: product_comments.product_id > products.id
+Ref: product_comments.user_id > users.id
+Ref: product_statistics.product_id > products.id
+Ref: reviews.order_id > orders.id
+Ref: reviews.product_id > products.id
+Ref: reviews.seller_id > users.id
+Ref: reviews.user_id > users.id
+Ref: sellers.seller_level_id > seller_levels.id
+Ref: sellers.user_id > users.id
+Ref: seller_level_benefits.seller_level_id > seller_levels.id
+Ref: sessions.user_id > users.id
+Ref: users.seller_level_id > seller_levels.id
+Ref: user_addresses.user_id > users.id
+Ref: user_policy_consents.user_id > users.id
+Ref: user_profiles.user_id > users.id
+Ref: verification_logs.admin_id > users.id
+Ref: verification_logs.user_id > users.id
+Ref: wallets.user_id > users.id
+Ref: wallet_balances.wallet_id > wallets.id
+Ref: wallet_transactions.wallet_id > wallets.id
