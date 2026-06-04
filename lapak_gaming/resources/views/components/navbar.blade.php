@@ -233,7 +233,7 @@ Premium Itemku/Codashop style marketplace navbar.
         Bantuan
       </a>
       <div class="flex gap-2">
-        <a href="{{ route('login') }}" class="flex-1 btn-ghost text-sm font-semibold text-center">Masuk</a>
+        <a href="{{ route('login') }}" class="flex-1 btn-primary text-sm font-semibold text-center">Masuk</a>
         <a href="{{ route('register') }}" class="flex-1 btn-accent text-sm font-semibold text-center">Daftar</a>
       </div>
     </div>
@@ -615,7 +615,7 @@ Premium Itemku/Codashop style marketplace navbar.
             Bantuan
           </a>
           <a href="{{ route('login') }}"
-            class="hidden sm:block text-white text-sm font-semibold hover:opacity-80 transition-opacity">Masuk</a>
+            class="hidden sm:block btn-primary text-sm font-semibold">Masuk</a>
           <a href="{{ route('register') }}" class="btn-accent">Daftar</a>
         @endif
 

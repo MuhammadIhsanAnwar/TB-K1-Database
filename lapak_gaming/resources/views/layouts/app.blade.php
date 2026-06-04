@@ -994,19 +994,99 @@
 </script>
 
 @if(request()->routeIs('home') || request()->routeIs('marketplace.home'))
-  <div id="page-preloader" class="fixed inset-0 z-[2000] flex items-center justify-center bg-slate-950/95 backdrop-blur-xl transition-opacity duration-500">
-    <div class="max-w-xs w-full p-8 rounded-[32px] border border-white/10 bg-slate-950/95 shadow-[0_0_60px_rgba(56,189,248,0.24)] text-center">
-      <div class="mx-auto mb-6 w-24 h-24 rounded-3xl bg-gradient-to-br from-slate-900 via-slate-800 to-slate-950 border border-white/10 flex items-center justify-center shadow-glow">
-        <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="w-16 h-16 object-contain" />
+  <div id="page-preloader" class="fixed inset-0 z-[2000] flex items-center justify-center bg-gradient-to-br from-slate-950 via-slate-900 to-slate-950 backdrop-blur-md transition-all duration-500 overflow-hidden">
+    <!-- Animated background orbs -->
+    <div class="absolute inset-0 overflow-hidden">
+      <div class="absolute top-1/3 left-1/4 w-96 h-96 bg-blue-500/20 rounded-full blur-3xl animate-pulse" style="animation: orbFloat1 8s ease-in-out infinite;"></div>
+      <div class="absolute bottom-1/4 right-1/3 w-72 h-72 bg-purple-500/15 rounded-full blur-3xl animate-pulse" style="animation: orbFloat2 10s ease-in-out infinite; animation-delay: 1s;"></div>
+      <div class="absolute top-1/2 right-1/4 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl" style="animation: orbFloat3 12s ease-in-out infinite; animation-delay: 2s;"></div>
+    </div>
+
+    <div class="max-w-xs w-full p-8 rounded-[32px] border border-white/20 bg-slate-900/80 backdrop-blur-xl shadow-[0_0_60px_rgba(56,189,248,0.35)] text-center relative z-10">
+      <!-- Animated logo container -->
+      <div class="mx-auto mb-8 w-28 h-28 relative">
+        <div class="absolute inset-0 rounded-full bg-gradient-to-r from-blue-500 via-cyan-400 to-purple-500 opacity-75 blur-lg animate-pulse" style="animation: glowPulse 2s ease-in-out infinite;"></div>
+        <div class="relative w-full h-full rounded-3xl bg-gradient-to-br from-slate-800 via-slate-900 to-slate-950 border border-white/30 flex items-center justify-center shadow-[0_0_40px_rgba(59,130,246,0.4)]" style="animation: logoFloat 3s ease-in-out infinite;">
+          <img src="{{ url('storage/app/public/logo/logo.png') }}" alt="Lapak Gaming" class="w-20 h-20 object-contain" />
+        </div>
       </div>
-      <div class="text-xl font-bold text-white mb-2">Lapak Gaming</div>
-      <p class="text-sm surface-muted mb-6">Sedang memuat konten terbaik untuk kamu.</p>
-      <div class="h-2 rounded-full bg-slate-800 overflow-hidden">
-        <div id="page-preloader-bar" class="h-full w-0 bg-gradient-to-r from-sky-400 via-blue-500 to-indigo-500 transition-all duration-300"></div>
+
+      <!-- Title with animation -->
+      <div class="text-2xl font-black text-white mb-1 bg-gradient-to-r from-cyan-400 via-blue-400 to-purple-400 bg-clip-text text-transparent" style="animation: titlePulse 2s ease-in-out infinite;">
+        LAPAK GAMING
       </div>
-      <div id="page-preloader-status" class="mt-4 text-xs uppercase tracking-[0.22em] text-slate-400">Memuat halaman...</div>
+      
+      <!-- Animated subtitle -->
+      <div class="text-sm text-slate-300 mb-8 h-6 overflow-hidden">
+        <div id="loading-text" class="transition-all duration-500" style="animation: textSlide 6s ease-in-out infinite;">
+          Sedang memuat konten terbaik...
+        </div>
+      </div>
+
+      <!-- Enhanced progress bar -->
+      <div class="space-y-2 mb-6">
+        <div class="h-3 rounded-full bg-slate-800/80 overflow-hidden border border-white/10 shadow-inner">
+          <div id="page-preloader-bar" class="h-full w-0 bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 transition-all duration-300 shadow-[0_0_20px_rgba(34,211,238,0.5)]" style="animation: barGlow 1.5s ease-in-out infinite;"></div>
+        </div>
+        <div class="flex justify-between items-center px-1">
+          <span class="text-xs font-semibold text-blue-400">Mempersiapkan...</span>
+          <span id="page-preloader-percent" class="text-xs font-bold text-cyan-400">0%</span>
+        </div>
+      </div>
+
+      <!-- Status text -->
+      <div id="page-preloader-status" class="text-xs uppercase tracking-[0.15em] text-slate-400 font-medium">Memuat halaman...</div>
+
+      <!-- Loading dots animation -->
+      <div class="flex justify-center gap-1.5 mt-6">
+        <span class="inline-block w-2 h-2 bg-blue-400 rounded-full" style="animation: dotBounce 1.4s infinite;"></span>
+        <span class="inline-block w-2 h-2 bg-cyan-400 rounded-full" style="animation: dotBounce 1.4s infinite; animation-delay: 0.2s;"></span>
+        <span class="inline-block w-2 h-2 bg-purple-400 rounded-full" style="animation: dotBounce 1.4s infinite; animation-delay: 0.4s;"></span>
+      </div>
     </div>
   </div>
+
+  <style>
+    @keyframes orbFloat1 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(20px, -30px); }
+    }
+    @keyframes orbFloat2 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(-25px, 25px); }
+    }
+    @keyframes orbFloat3 {
+      0%, 100% { transform: translate(0, 0); }
+      50% { transform: translate(30px, 20px); }
+    }
+    @keyframes glowPulse {
+      0%, 100% { opacity: 0.6; }
+      50% { opacity: 1; }
+    }
+    @keyframes logoFloat {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    @keyframes titlePulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.7; }
+    }
+    @keyframes textSlide {
+      0%, 10% { transform: translateY(0); opacity: 1; }
+      25%, 35% { transform: translateY(-24px); opacity: 0; }
+      50%, 60% { transform: translateY(-48px); opacity: 1; }
+      75%, 85% { transform: translateY(-72px); opacity: 0; }
+      100% { transform: translateY(0); opacity: 1; }
+    }
+    @keyframes barGlow {
+      0%, 100% { filter: drop-shadow(0 0 8px rgba(34, 211, 238, 0.3)); }
+      50% { filter: drop-shadow(0 0 20px rgba(34, 211, 238, 0.6)); }
+    }
+    @keyframes dotBounce {
+      0%, 60%, 100% { transform: translateY(0); opacity: 0.6; }
+      30% { transform: translateY(-10px); opacity: 1; }
+    }
+  </style>
 @endif
 
 <div id="gaming-bg"></div>
@@ -1422,21 +1502,60 @@ document.addEventListener('DOMContentLoaded', () => {
     const preloader = document.getElementById('page-preloader');
     const preloaderBar = document.getElementById('page-preloader-bar');
     const preloaderText = document.getElementById('page-preloader-status');
+    const preloaderPercent = document.getElementById('page-preloader-percent');
+    const loadingText = document.getElementById('loading-text');
+
+    const loadingMessages = [
+      'Sedang memuat konten terbaik...',
+      'Menyiapkan dashboard gaming...',
+      'Mengoptimalkan performa...',
+      'Memuat data terbaru...',
+      'Mengunduh aset game...',
+      'Hampir selesai...',
+    ];
 
     if (preloader && preloaderBar && preloaderText) {
       let progress = 0;
+      let messageIndex = 0;
+      
+      // Rotating loading messages
+      const messageInterval = setInterval(() => {
+        messageIndex = (messageIndex + 1) % loadingMessages.length;
+        if (loadingText) {
+          loadingText.style.animation = 'none';
+          setTimeout(() => {
+            loadingText.textContent = loadingMessages[messageIndex];
+            loadingText.style.animation = 'textSlide 6s ease-in-out infinite';
+          }, 10);
+        }
+      }, 1500);
+
       const tick = setInterval(() => {
-        progress = Math.min(98, progress + Math.random() * 12 + 6);
+        progress = Math.min(98, progress + Math.random() * 15 + 5);
         preloaderBar.style.width = `${progress}%`;
-      }, 250);
+        if (preloaderPercent) {
+          preloaderPercent.textContent = `${Math.round(progress)}%`;
+        }
+      }, 200);
 
       setTimeout(() => {
         clearInterval(tick);
+        clearInterval(messageInterval);
+        progress = 100;
         preloaderBar.style.width = '100%';
+        if (preloaderPercent) {
+          preloaderPercent.textContent = '100%';
+        }
         preloaderText.textContent = 'Selesai memuat, selamat datang!';
-        preloader.style.opacity = '0';
-        setTimeout(() => preloader.remove(), 400);
-      }, 3000);
+        if (loadingText) {
+          loadingText.textContent = 'Siap bermain...';
+        }
+        setTimeout(() => {
+          preloader.style.opacity = '0';
+          preloader.style.transform = 'scale(0.95)';
+          setTimeout(() => preloader.remove(), 500);
+        }, 1500);
+      }, 3500);
     }
 
     for(let i = 0; i < 8; i++){

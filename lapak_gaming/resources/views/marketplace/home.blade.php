@@ -861,10 +861,6 @@
       animation-delay: 0.4s;
     }
 
-    .sdgs-logo-box:nth-child(4) {
-      animation-delay: 0.6s;
-    }
-
     @keyframes sdgsPulse {
       0%, 100% {
         transform: scale(1) translateY(0);
@@ -1358,6 +1354,85 @@
     @endif
 
     {{-- ═══════════════════════════════════════════════════════════ --}}
+    {{-- FEATURED CATEGORY SHOWCASE (2-3 Selected Categories) --}}
+    {{-- ═══════════════════════════════════════════════════════════ --}}
+    @if(isset($featuredCategoryShowcases) && $featuredCategoryShowcases->count() > 0)
+      <section class="reveal-item home-wrap" style="padding-bottom:3rem;">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          @foreach($featuredCategoryShowcases as $idx => $showcase)
+            @php
+              $gradients = [
+                'from-orange-600/30 via-orange-500/20 to-red-600/20',
+                'from-emerald-600/30 via-emerald-500/20 to-teal-600/20',
+                'from-violet-600/30 via-purple-500/20 to-fuchsia-600/20'
+              ];
+              $borders = ['border-orange-500/30', 'border-emerald-500/30', 'border-violet-500/30'];
+              $accentColors = ['text-orange-400', 'text-emerald-400', 'text-violet-400'];
+              $icons = ['👤', '💳', '👑'];
+              $gradient = $gradients[$idx % count($gradients)];
+              $border = $borders[$idx % count($borders)];
+              $accentColor = $accentColors[$idx % count($accentColors)];
+              $icon = $icons[$idx % count($icons)];
+            @endphp
+            <div class="reveal-item group rounded-2xl border {{ $border }} bg-gradient-to-br {{ $gradient }} backdrop-blur-sm overflow-hidden transition-all duration-300 hover:border-opacity-60 hover:shadow-lg hover:scale-[1.02]">
+              {{-- Header --}}
+              <div class="relative p-6 border-b border-white/5">
+                <div class="flex items-start justify-between">
+                  <div class="flex-1">
+                    <div class="text-3xl mb-2">{{ $icon }}</div>
+                    <h3 class="text-xl font-bold text-white mb-1">{{ $showcase['category']->name }}</h3>
+                    <p class="text-sm text-slate-400">{{ $showcase['products']->count() }} produk tersedia</p>
+                  </div>
+                  <a href="{{ route('categories.show', $showcase['category']->slug) }}" class="flex-shrink-0 p-2 rounded-full bg-white/10 hover:bg-white/20 transition-colors group-hover:text-cyan-400">
+                    <svg class="w-5 h-5 text-slate-300 group-hover:text-cyan-400 transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </a>
+                </div>
+              </div>
+
+              {{-- Products Grid --}}
+              <div class="p-4">
+                <div class="grid grid-cols-2 gap-3">
+                  @foreach($showcase['products']->take(4) as $product)
+                    <a href="{{ route('products.show', $product->slug) }}" class="group/card relative rounded-lg border border-white/10 bg-white/5 hover:bg-white/10 overflow-hidden transition-all duration-200 hover:border-white/20 hover:shadow-md">
+                      <div class="aspect-square relative overflow-hidden bg-slate-900/50">
+                        @if($product->image_url)
+                          <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-full object-cover group-hover/card:scale-110 transition-transform duration-300">
+                        @else
+                          <div class="w-full h-full flex items-center justify-center text-slate-600">
+                            <svg class="w-8 h-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
+                            </svg>
+                          </div>
+                        @endif
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover/card:opacity-100 transition-opacity duration-200 flex items-end p-2">
+                          <span class="text-xs font-semibold text-white truncate">{{ $product->name }}</span>
+                        </div>
+                      </div>
+                      <div class="p-2">
+                        <div class="text-xs font-semibold text-cyan-400 truncate">Rp{{ number_format($product->price, 0, ',', '.') }}</div>
+                        @if($product->statistics?->rating_avg > 0)
+                          <div class="flex items-center gap-1 mt-1">
+                            <svg class="w-3 h-3 text-yellow-400 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" /></svg>
+                            <span class="text-xs text-slate-300">{{ number_format($product->statistics->rating_avg, 1) }}</span>
+                          </div>
+                        @endif
+                      </div>
+                    </a>
+                  @endforeach
+                </div>
+                <a href="{{ route('categories.show', $showcase['category']->slug) }}" class="mt-4 w-full py-2.5 px-3 rounded-lg border border-white/20 text-white text-sm font-medium hover:bg-white/10 transition-colors text-center block cursor-pointer">
+                  Lihat Semua {{ $showcase['category']->name }}
+                </a>
+              </div>
+            </div>
+          @endforeach
+        </div>
+      </section>
+    @endif
+
+    {{-- ═══════════════════════════════════════════════════════════ --}}
     {{-- DYNAMIC CATEGORY SECTIONS --}}
     {{-- ═══════════════════════════════════════════════════════════ --}}
     @if(isset($categorySections) && $categorySections->count() > 0)
@@ -1549,14 +1624,6 @@
                 <img src="{{ url('storage/app/public/sdgs/sdgs17.png') }}" alt="SDG 17 - Partnerships for the Goals" class="w-full h-full object-contain" loading="lazy">
               </div>
               <p class="text-xs md:text-sm font-semibold text-slate-300 text-center">Partnerships for<br>the Goals</p>
-            </div>
-
-            <!-- SDG Combined (using the combined logo) -->
-            <div class="sdgs-logo-box flex flex-col items-center gap-3 group">
-              <div class="w-32 h-32 md:w-40 md:h-40 rounded-2xl bg-white/5 border border-white/10 p-4 flex items-center justify-center hover:border-white/30 transition-all duration-300 group-hover:shadow-lg group-hover:shadow-cyan-500/20">
-                <img src="{{ url('storage/app/public/sdgs/E_SDG-goals_icons-individual-rgb-.png') }}" alt="Sustainable Development Goals" class="w-full h-full object-contain" loading="lazy">
-              </div>
-              <p class="text-xs md:text-sm font-semibold text-slate-300 text-center">SDGs United<br>Nations</p>
             </div>
           </div>
 

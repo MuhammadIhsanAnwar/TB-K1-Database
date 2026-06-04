@@ -71,7 +71,25 @@ class MarketplaceController extends Controller
             ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['statistics', 'seller', 'category'])->inRandomOrder()->take(12)->get()
             : collect();
 
-        // 4. Category Sections
+        // 4. Featured Category Showcase (2-3 selected categories)
+        $featuredCategoryShowcases = collect();
+        if (Schema::hasTable('products')) {
+            $showcaseCategories = ['Account', 'Gift Cards', 'Membership'];
+            foreach($showcaseCategories as $catName) {
+                $cat = Category::query()->active()->where('name', 'like', "%{$catName}%")->first();
+                if ($cat) {
+                    $products = Product::query()->active()->inStock()->where('category_id', $cat->id)->with(['statistics', 'seller', 'category'])->take(8)->get();
+                    if (!$products->isEmpty()) {
+                        $featuredCategoryShowcases->push([
+                            'category' => $cat,
+                            'products' => $products
+                        ]);
+                    }
+                }
+            }
+        }
+
+        // 5. Category Sections
         $categorySections = collect();
         if (Schema::hasTable('products')) {
             $categoriesToFetch = [
@@ -145,6 +163,7 @@ class MarketplaceController extends Controller
             'featuredBanners' => $featuredBanners,
             'featuredGameKeys' => $featuredGameKeys,
             'featuredRPGKeys' => $featuredRPGKeys,
+            'featuredCategoryShowcases' => $featuredCategoryShowcases,
             'categorySections' => $categorySections,
             'homepageProducts' => $homepageProducts,
         ]);
