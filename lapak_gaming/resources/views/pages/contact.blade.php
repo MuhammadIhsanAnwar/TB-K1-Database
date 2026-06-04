@@ -288,8 +288,143 @@
             </div>
         </div>
     </div>
+
+    {{-- FAQ SECTION --}}
+    <div class="mt-20 pt-16 border-t border-gray-800">
+        <div class="text-center mb-12">
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 border border-blue-400/30 mb-4">
+                <svg class="w-3.5 h-3.5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+                <span class="text-xs font-bold text-blue-300 uppercase tracking-wider">Pusat Bantuan</span>
+            </div>
+            <h2 class="text-3xl md:text-4xl font-bold text-white mb-2">Pertanyaan yang Sering Diajukan</h2>
+            <p class="text-slate-400 text-sm md:text-base max-w-xl mx-auto">Temukan jawaban atas pertanyaan yang paling sering ditanyakan mengenai top up, pembayaran, dan transaksi.</p>
+        </div>
+
+        <div class="max-w-3xl mx-auto space-y-3.5">
+            @php
+                $contactFaqs = [
+                    [
+                        'q' => 'Bagaimana cara melakukan top up game?',
+                        'a' => 'Pilih game yang ingin di-top up, masukkan User ID, pilih nominal yang diinginkan, lakukan pembayaran, dan pesanan akan diproses secara otomatis.'
+                    ],
+                    [
+                        'q' => 'Berapa lama proses top up berlangsung?',
+                        'a' => 'Sebagian besar transaksi diproses dalam hitungan detik hingga beberapa menit setelah pembayaran berhasil diverifikasi.'
+                    ],
+                    [
+                        'q' => 'Metode pembayaran apa saja yang tersedia?',
+                        'a' => 'Kami mendukung berbagai metode pembayaran seperti QRIS, Transfer Bank, E-Wallet, Virtual Account, dan metode pembayaran lainnya yang tersedia pada halaman checkout.'
+                    ],
+                    [
+                        'q' => 'Apakah data akun game saya aman?',
+                        'a' => 'Ya. Kami hanya memerlukan User ID atau informasi yang dibutuhkan untuk pengiriman item dan tidak pernah meminta password akun game Anda.'
+                    ],
+                    [
+                        'q' => 'Apa yang harus dilakukan jika top up belum masuk?',
+                        'a' => 'Silakan hubungi customer support dengan menyertakan ID transaksi agar tim kami dapat membantu melakukan pengecekan.'
+                    ],
+                    [
+                        'q' => 'Apakah layanan tersedia 24 jam?',
+                        'a' => 'Ya. Sistem transaksi berjalan 24/7 sehingga Anda dapat melakukan top up kapan saja.'
+                    ]
+                ];
+            @endphp
+
+            @foreach($contactFaqs as $index => $faq)
+                <div class="contact-faq-item group relative overflow-hidden rounded-[20px] border border-white/[0.05] bg-white/[0.015] transition-all duration-300 hover:bg-white/[0.03] hover:border-sky-500/30" style="animation: faqSlideIn 0.6s ease-out backwards; animation-delay: {{ $index * 0.1 }}s;">
+                    <div class="contact-faq-accent absolute left-0 top-0 bottom-0 w-[3px] bg-gradient-to-b from-sky-400 to-blue-600 opacity-0 transition-all duration-500 scale-y-0 origin-top"></div>
+
+                    <button class="contact-faq-btn flex w-full items-center justify-between gap-4 p-5 sm:p-6 text-left cursor-pointer outline-none focus:outline-none">
+                        <div class="flex items-center gap-4 sm:gap-6">
+                            <span class="contact-faq-num font-['Oxanium'] text-xl sm:text-2xl font-black text-white/10 transition-colors duration-300">{{ sprintf('%02d', $index + 1) }}</span>
+                            <h3 class="contact-faq-title font-semibold text-white/80 text-sm sm:text-base transition-colors duration-300 group-hover:text-sky-300">{{ $faq['q'] }}</h3>
+                        </div>
+                        <div class="contact-faq-icon-box flex h-9 w-9 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-white/5 transition-all duration-300 group-hover:border-sky-400/30 group-hover:bg-sky-500/10">
+                            <svg class="contact-faq-icon h-4 w-4 text-sky-400 transition-all duration-300" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                                <path class="contact-faq-icon-path" stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                        </div>
+                    </button>
+
+                    <div class="contact-faq-content grid grid-rows-[0fr] opacity-0 transition-all duration-500">
+                        <div class="overflow-hidden">
+                            <div class="pb-6 pl-[4.2rem] pr-6 pt-0 text-sm leading-relaxed text-slate-400 sm:pl-[5.2rem]">
+                                <div class="border-l-2 border-white/5 pl-4 text-[13px] sm:text-sm">{{ $faq['a'] }}</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            @endforeach
+        </div>
+    </div>
 </div>
 @endsection
+
+@push('styles')
+<style>
+    @keyframes faqSlideIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .contact-faq-item:hover {
+        background: linear-gradient(135deg, rgba(14, 165, 233, 0.08) 0%, rgba(59, 130, 246, 0.05) 100%);
+        border-color: rgba(59, 130, 246, 0.35);
+        box-shadow: 0 8px 32px rgba(59, 130, 246, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.05);
+    }
+
+    .contact-faq-item.active .contact-faq-accent {
+        opacity: 1 !important;
+        transform: scaleY(1) !important;
+        background: linear-gradient(to bottom, #06b6d4, #3b82f6);
+    }
+
+    .contact-faq-item:hover .contact-faq-accent {
+        opacity: 1;
+        transform: scaleY(1);
+        background: linear-gradient(to bottom, #06b6d4, #3b82f6);
+    }
+
+    .contact-faq-item:hover .contact-faq-num {
+        color: rgba(255, 255, 255, 0.25);
+        font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+    }
+
+    .contact-faq-item:hover .contact-faq-title {
+        color: rgba(6, 182, 212, 0.9);
+        text-shadow: 0 0 8px rgba(6, 182, 212, 0.3);
+    }
+
+    .contact-faq-icon-box {
+        background: rgba(59, 130, 246, 0.1);
+        border: 1.5px solid rgba(59, 130, 246, 0.2);
+    }
+
+    .contact-faq-item:hover .contact-faq-icon-box {
+        background: rgba(6, 182, 212, 0.15);
+        border-color: rgba(6, 182, 212, 0.5);
+        box-shadow: 0 0 16px rgba(6, 182, 212, 0.2);
+    }
+
+    .contact-faq-item.active .contact-faq-icon {
+        transform: rotate(45deg);
+        color: rgba(6, 182, 212, 1);
+    }
+
+    .contact-faq-item.active .contact-faq-content {
+        grid-template-rows: 1fr;
+        opacity: 1;
+    }
+</style>
+@endpush
 
 @push('scripts')
 <script>
