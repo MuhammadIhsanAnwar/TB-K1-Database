@@ -65,7 +65,7 @@ return [
     'panels' => [
         'admin' => [
             'id' => 'admin',
-            'path' => 'admin',
+            'path' => 'admin-panel',
             'auth_middleware' => [
                 'web',
                 \Illuminate\Session\Middleware\AuthenticateSession::class,

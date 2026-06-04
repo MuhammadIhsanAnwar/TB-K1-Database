@@ -1,5 +1,7 @@
 <?php
 
+use Laravel\Jetstream\Features;
+
 return [
 
     /*
