@@ -19,7 +19,10 @@ use Laravel\Jetstream\HasProfilePhoto;
 
 class User extends Authenticatable implements MustVerifyEmail
 {
-    use HasFactory, Notifiable, HasTeams, HasProfilePhoto;
+    use HasFactory;
+    use Notifiable;
+    use HasTeams;
+    use HasProfilePhoto;
 
     protected $fillable = [
         'name', 'email', 'password', 'role',

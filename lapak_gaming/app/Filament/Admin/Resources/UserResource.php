@@ -20,7 +20,6 @@ use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Filament\Tables\Actions\DeleteAction;
-use Filament\Forms\Components\DateTimePicker;
 
 class UserResource extends Resource
 {
@@ -28,11 +27,11 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
-    protected static ?string $recordTitleAttribute = 'name';
-
     protected static ?string $navigationLabel = 'Users';
 
     protected static ?string $navigationGroup = 'Management';
+
+    protected static ?string $recordTitleAttribute = 'name';
 
     public static function form(Form $form): Form
     {
