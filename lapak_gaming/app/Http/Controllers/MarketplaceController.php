@@ -74,7 +74,19 @@ class MarketplaceController extends Controller
         // 4. Category Sections
         $categorySections = collect();
         if (Schema::hasTable('products')) {
-            $categoriesToFetch = ['Game Top Up', 'Game Key', 'Roblox Games', 'Account', 'Gift Cards', 'Currency'];
+            $categoriesToFetch = [
+                'Game Top Up', 
+                'Game Key', 
+                'Roblox Games', 
+                'Account', 
+                'Gift Cards', 
+                'Currency',
+                'Skin',
+                'Bundle',
+                'DLC',
+                'Battle Pass',
+                'Membership'
+            ];
             foreach($categoriesToFetch as $catName) {
                 $cat = Category::query()->active()->where('name', 'like', "%{$catName}%")->first();
                 if ($cat) {
