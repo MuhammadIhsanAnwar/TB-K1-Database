@@ -841,14 +841,13 @@ Premium Itemku/Codashop style marketplace navbar.
 
     document.addEventListener('DOMContentLoaded', initTheme);
 
-    const navScrollTarget = document.getElementById('main-navbar');
+    const navbar = document.getElementById('main-navbar');
     window.addEventListener('scroll', () => {
-      if (!navScrollTarget) return;
       if (window.scrollY > 12) {
-        navScrollTarget.style.backdropFilter = 'blur(28px)';
-        navScrollTarget.style.boxShadow = '0 14px 45px rgba(0,0,0,.38)';
+        navbar.style.backdropFilter = 'blur(28px)';
+        navbar.style.boxShadow = '0 14px 45px rgba(0,0,0,.38)';
       } else {
-        navScrollTarget.style.boxShadow = '';
+        navbar.style.boxShadow = '';
       }
     });
   </script>

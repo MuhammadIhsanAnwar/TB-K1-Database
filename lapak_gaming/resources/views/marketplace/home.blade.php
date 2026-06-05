@@ -1786,17 +1786,17 @@
     document.querySelectorAll('.reveal-item').forEach(el => revealObs.observe(el));
 
     /* ══ NAVBAR SCROLL GLAZE ════════════════════════════════════════ */
-    const homeNavbar = document.getElementById('main-navbar');
-    if (homeNavbar) {
+    const navbar = document.getElementById('main-navbar');
+    if (navbar) {
       const onScroll = () => {
         if (window.scrollY > 12) {
-          homeNavbar.style.background = 'rgba(2,6,23,.9)';
-          homeNavbar.style.backdropFilter = 'blur(28px)';
-          homeNavbar.style.boxShadow = '0 12px 42px rgba(0,0,0,.42)';
+          navbar.style.background = 'rgba(2,6,23,.9)';
+          navbar.style.backdropFilter = 'blur(28px)';
+          navbar.style.boxShadow = '0 12px 42px rgba(0,0,0,.42)';
         } else {
-          homeNavbar.style.background = '';
-          homeNavbar.style.backdropFilter = '';
-          homeNavbar.style.boxShadow = '';
+          navbar.style.background = '';
+          navbar.style.backdropFilter = '';
+          navbar.style.boxShadow = '';
         }
       };
       window.addEventListener('scroll', onScroll, { passive: true });

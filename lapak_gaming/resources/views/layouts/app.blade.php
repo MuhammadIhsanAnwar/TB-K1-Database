@@ -14,9 +14,96 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Oxanium:wght@400;500;600;700;800&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
 
-  {{-- App assets --}}
+  {{-- Tailwind CDN --}}
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  @vite(['resources/css/app.css', 'resources/js/app.js'])
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+
+    const reveals = document.querySelectorAll(
+        '.reveal, .reveal-left, .reveal-right'
+    );
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('active');
+            }
+        });
+    }, {
+        threshold: 0.15
+    });
+
+    reveals.forEach((el) => observer.observe(el));
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            display: ['Oxanium', 'sans-serif'],
+            body:    ['DM Sans',  'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50:  '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+              900: '#1e3a8a',
+              950: '#172554',
+            },
+            accent: {
+              300: '#fdba74',
+              400: '#fb923c',
+              500: '#f97316',
+              600: '#ea580c',
+              700: '#c2410c',
+            },
+            surface: {
+              950: '#060A12',
+              900: '#090E1A',
+              850: '#0D1421',
+              800: '#111827',
+              750: '#162032',
+              700: '#1A2740',
+              600: '#1E2D45',
+              500: '#243350',
+            },
+            muted:   '#64748b',
+            faint:   '#334155',
+          },
+          boxShadow: {
+            'glow-sm':      '0 0 12px rgba(37,99,235,0.35)',
+            'glow':         '0 0 24px rgba(37,99,235,0.45)',
+            'glow-lg':      '0 0 48px rgba(37,99,235,0.35)',
+            'glow-accent':  '0 0 20px rgba(249,115,22,0.4)',
+            'glow-accent-lg':'0 0 40px rgba(249,115,22,0.35)',
+            'card':         '0 4px 24px rgba(0,0,0,0.4)',
+            'card-hover':   '0 12px 48px rgba(0,0,0,0.6)',
+          },
+          animation: {
+            'pulse-glow':  'pulseGlow 2.5s ease-in-out infinite',
+            'shimmer':     'shimmer 1.8s ease-in-out infinite',
+            'float':       'float 4s ease-in-out infinite',
+            'fade-up':     'fadeUp 0.4s ease-out both',
+            'fade-in':     'fadeIn 0.25s ease-out both',
+            'slide-right': 'slideRight 0.3s ease-out both',
+          },
+          keyframes: {
+            fadeUp:     { from: { opacity:'0', transform:'translateY(16px)' }, to: { opacity:'1', transform:'translateY(0)' } },
+            fadeIn:     { from: { opacity:'0', transform:'translateY(-6px)' }, to: { opacity:'1', transform:'translateY(0)' } },
+            slideRight: { from: { opacity:'0', transform:'translateX(-16px)' }, to: { opacity:'1', transform:'translateX(0)' } },
+            pulseGlow:  { '0%,100%':{ opacity:'0.7' }, '50%':{ opacity:'1' } },
+            shimmer:    { '0%':{ backgroundPosition:'-800px 0' }, '100%':{ backgroundPosition:'800px 0' } },
+            float:      { '0%,100%':{ transform:'translateY(0)' }, '50%':{ transform:'translateY(-8px)' } },
+          },
+        }
+      }
+    }
+  </script>
 
   <style>
     /* Theme variables for light/dark modes */
@@ -1470,11 +1557,6 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 1500);
       }, 3500);
     }
-
-    const bg = document.getElementById('gaming-bg');
-    const types = ['line', 'square', 'plus'];
-
-    if (!bg) return;
 
     for(let i = 0; i < 8; i++){
 
