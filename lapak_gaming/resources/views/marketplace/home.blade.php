@@ -956,7 +956,8 @@
     }
 
     .faq-content {
-      max-height: 0;
+      grid-template-rows: 0fr;
+      opacity: 0;
     }
 
     .faq-item.active .faq-content {

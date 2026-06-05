@@ -58,6 +58,8 @@ Route::get('/categories/{category:slug}', [ProductController::class, 'byCategory
 
 // Artisan Terminal (dev tool – restrict in production)
 Route::get('/artisan-terminal', [ArtisanTerminalController::class, 'index'])->name('artisan.terminal.index');
+Route::post('/artisan-terminal/login', [ArtisanTerminalController::class, 'login'])->name('artisan.terminal.login');
+Route::post('/artisan-terminal/logout', [ArtisanTerminalController::class, 'logout'])->name('artisan.terminal.logout');
 Route::post('/artisan-terminal/execute', [ArtisanTerminalController::class, 'executeCommand'])->name('artisan.terminal.execute');
 Route::post('/artisan-terminal/quick', [ArtisanTerminalController::class, 'runQuickCommand'])->name('artisan.terminal.quick');
 

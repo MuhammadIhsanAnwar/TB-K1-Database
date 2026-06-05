@@ -10,6 +10,9 @@ use Symfony\Component\Console\Output\BufferedOutput;
 
 class ArtisanTerminalController extends Controller
 {
+    private const ACCESS_PIN = '123456';
+    private const SESSION_KEY = 'artisan_terminal_authenticated';
+
     private const FORCE_COMMANDS = [
         'migrate',
         'migrate:rollback',
@@ -29,8 +32,12 @@ class ArtisanTerminalController extends Controller
     /**
      * Tampilkan halaman terminal
      */
-    public function index()
+    public function index(Request $request)
     {
+        if (! $this->hasPinAccess($request)) {
+            return view('admin.terminal.login');
+        }
+
         $availableCommands = [
             'fix-permissions' => 'Repair permissions for storage/bootstrap cache',
             'migrate' => 'php artisan migrate --force',
@@ -57,6 +64,45 @@ class ArtisanTerminalController extends Controller
     }
 
     /**
+     * Validasi PIN sebelum membuka terminal.
+     */
+    public function login(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            'pin' => ['required', 'string'],
+        ]);
+
+        if ($validator->fails()) {
+            return back()
+                ->withErrors(['pin' => 'PIN wajib diisi.'])
+                ->withInput();
+        }
+
+        $pin = (string) $request->input('pin', '');
+
+        if (! hash_equals(self::ACCESS_PIN, $pin)) {
+            return back()
+                ->withErrors(['pin' => 'PIN terminal tidak valid.'])
+                ->withInput();
+        }
+
+        $request->session()->regenerate();
+        $request->session()->put(self::SESSION_KEY, true);
+
+        return redirect()->route('artisan.terminal.index');
+    }
+
+    /**
+     * Keluar dari sesi terminal.
+     */
+    public function logout(Request $request)
+    {
+        $request->session()->forget(self::SESSION_KEY);
+
+        return redirect()->route('artisan.terminal.index');
+    }
+
+    /**
      * Jalankan perintah Artisan
      */
     public function executeCommand(Request $request)
@@ -64,7 +110,7 @@ class ArtisanTerminalController extends Controller
         if (! $this->authorizeTerminalAccess($request)) {
             return response()->json([
                 'success' => false,
-                'output' => '❌ Akses terminal ditolak. Token tidak valid.'
+                'output' => 'Akses terminal ditolak. Login PIN terlebih dahulu atau cek token terminal.'
             ], 403);
         }
 
@@ -136,12 +182,12 @@ class ArtisanTerminalController extends Controller
         if (! $this->authorizeTerminalAccess($request)) {
             return response()->json([
                 'success' => false,
-                'output' => '❌ Akses terminal ditolak. Token tidak valid.'
+                'output' => 'Akses terminal ditolak. Login PIN terlebih dahulu atau cek token terminal.'
             ], 403);
         }
 
         $validator = Validator::make($request->all(), [
-            'command' => ['required', 'string', 'in:migrate,cache:clear,config:cache,route:cache,view:cache,optimize,storage:link,db:seed'],
+            'command' => ['required', 'string', 'in:fix-permissions,migrate,cache:clear,config:cache,route:cache,view:cache,optimize,storage:link,db:seed'],
         ]);
 
         if ($validator->fails()) {
@@ -227,6 +273,10 @@ class ArtisanTerminalController extends Controller
 
     private function authorizeTerminalAccess(Request $request): bool
     {
+        if (! $this->hasPinAccess($request)) {
+            return false;
+        }
+
         $configuredToken = (string) Config::get('app.artisan_terminal_token', '');
 
         if ($configuredToken === '') {
@@ -236,6 +286,11 @@ class ArtisanTerminalController extends Controller
         $providedToken = (string) $request->header('X-Artisan-Terminal-Token', $request->input('token', ''));
 
         return hash_equals($configuredToken, $providedToken);
+    }
+
+    private function hasPinAccess(Request $request): bool
+    {
+        return $request->session()->get(self::SESSION_KEY) === true;
     }
 
     private function repairCachePermissions(): string

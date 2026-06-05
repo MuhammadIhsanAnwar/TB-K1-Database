@@ -31,11 +31,39 @@ class MarketplaceController extends Controller
             $allCategories = $query->get();
         }
 
+        $categoryProductIds = function (Category $category): array {
+            $childIds = $category->relationLoaded('children')
+                ? $category->children->pluck('id')
+                : $category->children()->pluck('id');
+
+            return $childIds->push($category->id)->unique()->values()->all();
+        };
+
+        $productsForCategory = function (Category $category, int $limit = 12, bool $random = false) use ($categoryProductIds) {
+            if (! Schema::hasTable('products')) {
+                return collect();
+            }
+
+            $query = Product::query()
+                ->active()
+                ->inStock()
+                ->whereIn('category_id', $categoryProductIds($category))
+                ->with(['statistics', 'seller', 'category']);
+
+            $random ? $query->inRandomOrder() : $query->latest();
+
+            return $query->take($limit)->get();
+        };
+
         // Determine which categories should be displayed on homepage (only those that have products)
         $displayCategories = collect();
         if ($allCategories->isNotEmpty() && Schema::hasTable('products')) {
             foreach ($allCategories as $cat) {
-                $has = Product::query()->active()->inStock()->where('category_id', $cat->id)->exists();
+                $has = Product::query()
+                    ->active()
+                    ->inStock()
+                    ->whereIn('category_id', $categoryProductIds($cat))
+                    ->exists();
                 if ($has) {
                     $displayCategories->push($cat);
                 }
@@ -62,23 +90,62 @@ class MarketplaceController extends Controller
         }
 
         // 2. Featured Game Keys ("Unlock the Simulation")
-        $featuredGameKeys = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['statistics', 'seller', 'category'])->inRandomOrder()->take(12)->get()
+        $gameKeyCategory = $allCategories->firstWhere('slug', 'game-key');
+        if (! $gameKeyCategory && Schema::hasTable('categories')) {
+            $gameKeyCategory = Category::query()
+                ->active()
+                ->where('slug', 'game-key')
+                ->with(['children' => fn ($query) => $query->active()->ordered()])
+                ->first();
+        }
+
+        $featuredGameKeys = $gameKeyCategory
+            ? $productsForCategory($gameKeyCategory, 12, true)
             : collect();
 
         // 3. Featured RPG Keys ("Unlock Epic RPG Worlds")
-        $featuredRPGKeys = Schema::hasTable('products')
-            ? Product::query()->active()->inStock()->whereHas('category', fn($q) => $q->where('name', 'like', '%Key%')->orWhere('slug', 'like', '%key%'))->with(['statistics', 'seller', 'category'])->inRandomOrder()->take(12)->get()
-            : collect();
+        $featuredRPGKeys = collect();
+        if ($gameKeyCategory && Schema::hasTable('products')) {
+            $rpgTerms = ['rpg', 'adventure', 'assassin', 'palworld', 'honkai', 'genshin', 'ark', 'atlas', 'atomic', 'banishers'];
+
+            $featuredRPGKeys = Product::query()
+                ->active()
+                ->inStock()
+                ->whereIn('category_id', $categoryProductIds($gameKeyCategory))
+                ->where(function ($query) use ($rpgTerms): void {
+                    foreach ($rpgTerms as $term) {
+                        $query->orWhere('name', 'like', "%{$term}%")
+                            ->orWhereHas('category', fn ($categoryQuery) => $categoryQuery
+                                ->where('name', 'like', "%{$term}%")
+                                ->orWhere('slug', 'like', "%{$term}%"));
+                    }
+                })
+                ->with(['statistics', 'seller', 'category'])
+                ->inRandomOrder()
+                ->take(12)
+                ->get();
+
+            if ($featuredRPGKeys->isEmpty()) {
+                $featuredRPGKeys = $featuredGameKeys->shuffle()->take(12)->values();
+            }
+        }
 
         // 4. Featured Category Showcase (2-3 selected categories)
         $featuredCategoryShowcases = collect();
         if (Schema::hasTable('products')) {
-            $showcaseCategories = ['Account', 'Gift Cards', 'Membership'];
-            foreach($showcaseCategories as $catName) {
-                $cat = Category::query()->active()->where('name', 'like', "%{$catName}%")->first();
+            $showcaseCategorySlugs = ['akun', 'voucher', 'top-up-login'];
+            foreach ($showcaseCategorySlugs as $slug) {
+                $cat = $allCategories->firstWhere('slug', $slug);
+                if (! $cat) {
+                    $cat = Category::query()
+                        ->active()
+                        ->where('slug', $slug)
+                        ->with(['children' => fn ($query) => $query->active()->ordered()])
+                        ->first();
+                }
+
                 if ($cat) {
-                    $products = Product::query()->active()->inStock()->where('category_id', $cat->id)->with(['statistics', 'seller', 'category'])->take(8)->get();
+                    $products = $productsForCategory($cat, 8);
                     if (!$products->isEmpty()) {
                         $featuredCategoryShowcases->push([
                             'category' => $cat,
@@ -92,40 +159,27 @@ class MarketplaceController extends Controller
         // 5. Category Sections
         $categorySections = collect();
         if (Schema::hasTable('products')) {
-            $categoriesToFetch = [
-                'Game Top Up', 
-                'Game Key', 
-                'Roblox Games', 
-                'Account', 
-                'Gift Cards', 
-                'Currency',
-                'Skin',
-                'Bundle',
-                'DLC',
-                'Battle Pass',
-                'Membership'
-            ];
-            foreach($categoriesToFetch as $catName) {
-                $cat = Category::query()->active()->where('name', 'like', "%{$catName}%")->first();
-                if ($cat) {
-                    $products = Product::query()->active()->inStock()->where('category_id', $cat->id)->with(['statistics', 'seller', 'category'])->take(12)->get();
-                    if ($products->isEmpty()) {
-                        continue;
-                    }
-                    $categorySections->push([
-                        'category' => $cat,
-                        'products' => $products
-                    ]);
+            foreach ($allCategories as $cat) {
+                $products = $productsForCategory($cat, 12);
+                if ($products->isEmpty()) {
+                    continue;
                 }
+
+                $categorySections->push([
+                    'category' => $cat,
+                    'products' => $products,
+                ]);
             }
         }
 
         // Keep default categories if not found by name
         if ($categorySections->isEmpty() && Schema::hasTable('products')) {
             $categorySections = $allCategories->map(function (Category $category) {
+                $childrenIds = $category->children()->pluck('id')->push($category->id)->all();
+
                 return [
                     'category' => $category,
-                    'products' => Product::query()->active()->inStock()->where('category_id', $category->id)->with(['statistics', 'seller', 'category'])->take(12)->get(),
+                    'products' => Product::query()->active()->inStock()->whereIn('category_id', $childrenIds)->with(['statistics', 'seller', 'category'])->take(12)->get(),
                 ];
             })->filter(fn (array $entry) => $entry['products']->isNotEmpty())->take(8)->values();
         }

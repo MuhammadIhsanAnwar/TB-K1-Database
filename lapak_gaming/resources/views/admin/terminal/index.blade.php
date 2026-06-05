@@ -207,10 +207,10 @@
         <div class="hero">
             <div class="panel panel-pad">
                 <h1>Laravel Artisan Terminal</h1>
-                <p class="lead">Halaman ini dibuat tanpa layout utama supaya bisa dibuka walau tabel lain belum lengkap. Gunakan untuk menjalankan perintah Artisan dari browser tanpa login.</p>
+                <p class="lead">Halaman ini dibuat tanpa layout utama supaya bisa dibuka walau tabel lain belum lengkap. Gunakan untuk menjalankan perintah Artisan dari browser setelah login PIN.</p>
                 <div class="pill-row">
-                    <div class="pill">Public access</div>
-                    <div class="pill">No login required</div>
+                    <div class="pill">PIN protected</div>
+                    <div class="pill">Session access</div>
                     <div class="pill">Safe whitelist</div>
                     <div class="pill">Standalone view</div>
                 </div>
@@ -218,20 +218,24 @@
             <div class="aside-grid">
                 <div class="stat">
                     <strong>Access</strong>
-                    <span>Route public: <code>/artisan-terminal</code></span>
+                    <span>Route: <code>/artisan-terminal</code>, dilindungi PIN sesi browser.</span>
                 </div>
                 <div class="stat">
                     <strong>Security</strong>
-                    <span>Jika <code>ARTISAN_TERMINAL_TOKEN</code> diisi, request akan dicek memakai token itu.</span>
+                    <span>Jika <code>ARTISAN_TERMINAL_TOKEN</code> diisi, request command tetap dicek memakai token tambahan itu.</span>
                 </div>
+                <form method="POST" action="{{ route('artisan.terminal.logout') }}">
+                    @csrf
+                    <button class="btn btn-secondary" type="submit" style="width:100%;">Keluar Terminal</button>
+                </form>
             </div>
         </div>
 
         <div class="panel panel-pad">
             <div class="toolbar">
                 <div class="field">
-                    <label for="terminalToken">Token akses terminal</label>
-                    <input id="terminalToken" type="text" placeholder="Kosongkan jika token belum dipakai" autocomplete="off">
+                    <label for="terminalToken">Token tambahan terminal</label>
+                    <input id="terminalToken" type="text" placeholder="Opsional, hanya isi jika ARTISAN_TERMINAL_TOKEN dipakai" autocomplete="off">
                 </div>
                 <button class="btn btn-primary" type="button" onclick="clearTerminal()">Clear Output</button>
             </div>
@@ -270,7 +274,7 @@
             </div>
 
             <div class="footer-note">
-                Setelah akses terbuka, file ini tetap sebaiknya dibatasi token di <code>.env</code> dan dihapus jika sudah tidak dipakai.
+                Setelah akses terbuka, terminal tetap sebaiknya dibatasi token di <code>.env</code> dan dinonaktifkan jika sudah tidak dipakai.
             </div>
         </div>
     </div>
