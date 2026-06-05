@@ -776,12 +776,29 @@
 
     /* ── HORIZONTAL SCROLL ───────────────────────────────────────────── */
     .banner-track {
-      scrollbar-width: none;
-      -ms-overflow-style: none;
+      scrollbar-width: thin;
+      scrollbar-color: rgba(14, 165, 233, 0.8) rgba(15, 23, 42, 0.85);
     }
 
     .banner-track::-webkit-scrollbar {
-      display: none;
+      display: block;
+      height: 10px;
+    }
+
+    .banner-track::-webkit-scrollbar-track {
+      background: rgba(15, 23, 42, 0.85);
+      border-radius: 999px;
+      margin-inline: 4px;
+    }
+
+    .banner-track::-webkit-scrollbar-thumb {
+      background: linear-gradient(90deg, rgba(34, 211, 238, 0.95), rgba(59, 130, 246, 0.95));
+      border: 2px solid rgba(15, 23, 42, 0.85);
+      border-radius: 999px;
+    }
+
+    .banner-track::-webkit-scrollbar-thumb:hover {
+      background: linear-gradient(90deg, #67e8f9, #60a5fa);
     }
 
     /* ── FEATURED BANNERS MARQUEE ────────────────────────────────────── */
@@ -1368,19 +1385,17 @@
                 'from-violet-600/30 via-purple-500/20 to-fuchsia-600/20'
               ];
               $borders = ['border-orange-500/30', 'border-emerald-500/30', 'border-violet-500/30'];
-              $accentColors = ['text-orange-400', 'text-emerald-400', 'text-violet-400'];
-              $icons = ['👤', '💳', '👑'];
               $gradient = $gradients[$idx % count($gradients)];
               $border = $borders[$idx % count($borders)];
-              $accentColor = $accentColors[$idx % count($accentColors)];
-              $icon = $icons[$idx % count($icons)];
             @endphp
             <div class="reveal-item group rounded-2xl border {{ $border }} bg-gradient-to-br {{ $gradient }} backdrop-blur-sm overflow-hidden transition-all duration-300 hover:border-opacity-60 hover:shadow-lg hover:scale-[1.02]">
               {{-- Header --}}
               <div class="relative p-6 border-b border-white/5">
                 <div class="flex items-start justify-between">
                   <div class="flex-1">
-                    <div class="text-3xl mb-2">{{ $icon }}</div>
+                    <div class="mb-3 flex h-12 w-12 items-center justify-center rounded-2xl border border-white/10 bg-white/10 p-2 shadow-lg shadow-black/10">
+                      <img src="{{ $showcase['category']->image_url }}" alt="{{ $showcase['category']->name }}" class="h-full w-full object-contain" loading="lazy">
+                    </div>
                     <h3 class="text-xl font-bold text-white mb-1">{{ $showcase['category']->name }}</h3>
                     <p class="text-sm text-slate-400">{{ $showcase['products']->count() }} produk tersedia</p>
                   </div>
@@ -1771,17 +1786,17 @@
     document.querySelectorAll('.reveal-item').forEach(el => revealObs.observe(el));
 
     /* ══ NAVBAR SCROLL GLAZE ════════════════════════════════════════ */
-    const navbar = document.getElementById('main-navbar');
-    if (navbar) {
+    const homeNavbar = document.getElementById('main-navbar');
+    if (homeNavbar) {
       const onScroll = () => {
         if (window.scrollY > 12) {
-          navbar.style.background = 'rgba(2,6,23,.9)';
-          navbar.style.backdropFilter = 'blur(28px)';
-          navbar.style.boxShadow = '0 12px 42px rgba(0,0,0,.42)';
+          homeNavbar.style.background = 'rgba(2,6,23,.9)';
+          homeNavbar.style.backdropFilter = 'blur(28px)';
+          homeNavbar.style.boxShadow = '0 12px 42px rgba(0,0,0,.42)';
         } else {
-          navbar.style.background = '';
-          navbar.style.backdropFilter = '';
-          navbar.style.boxShadow = '';
+          homeNavbar.style.background = '';
+          homeNavbar.style.backdropFilter = '';
+          homeNavbar.style.boxShadow = '';
         }
       };
       window.addEventListener('scroll', onScroll, { passive: true });
