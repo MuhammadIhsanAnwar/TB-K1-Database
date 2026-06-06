@@ -6,7 +6,7 @@
 <div class="min-h-screen bg-surface py-12 px-4">
     <div class="mx-auto max-w-4xl space-y-8">
         @if(session('success'))
-            <div class="rounded-3xl border border-emerald-600/30 bg-emerald-500/10 p-4 text-emerald-200">{{ session('success') }}</div>
+        <div class="rounded-3xl border border-emerald-600/30 bg-emerald-500/10 p-4 text-emerald-200">{{ session('success') }}</div>
         @endif
 
         <div class="surface-panel rounded-3xl border border-white/10 p-8">
@@ -24,14 +24,20 @@
 
                 <div>
                     <label class="block text-sm font-medium surface-muted">Nama Toko</label>
-                    <input name="shop_name" type="text" value="{{ old('shop_name', $user->shop_name) }}" class="mt-2 w-full rounded-2xl border border-white/10 bg-surface-weak px-4 py-3 surface-text outline-none" required />
-                    @error('store_name') <p class="mt-2 text-sm text-rose-400">{{ $message }}</p> @enderror
+                    <input
+                        name="shop_name"
+                        type="text"
+                        value="{{ old('shop_name', $user->shop_name) }}"
+                        class="mt-2 w-full rounded-2xl border border-white/10 bg-surface-weak px-4 py-3 text-black outline-none"
+                        required /> @error('store_name') <p class="mt-2 text-sm text-rose-400">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
                     <label class="block text-sm font-medium surface-muted">Deskripsi Toko</label>
-                    <textarea name="bio" rows="4" class="mt-2 w-full rounded-2xl border border-white/10 bg-surface-weak px-4 py-3 surface-text outline-none">{{ old('bio', $user->shop_description ?: $profile?->bio) }}</textarea>
-                    @error('bio') <p class="mt-2 text-sm text-rose-400">{{ $message }}</p> @enderror
+                    <textarea
+                        name="bio"
+                        rows="4"
+                        class="mt-2 w-full rounded-2xl border border-white/10 bg-surface-weak px-4 py-3 text-black outline-none">{{ old('bio', $user->shop_description ?: $profile?->bio) }}</textarea> @error('bio') <p class="mt-2 text-sm text-rose-400">{{ $message }}</p> @enderror
                 </div>
 
                 <div>
@@ -39,11 +45,11 @@
                     <div class="mt-2 flex items-center gap-4">
                         <div class="w-24 h-24 rounded-lg overflow-hidden bg-black/40 border border-white/5">
                             @if(!empty($user->shop_photo_url))
-                                <img src="{{ $user->shop_photo_url }}" alt="Foto Toko" class="w-full h-full object-cover">
+                            <img src="{{ $user->shop_photo_url }}" alt="Foto Toko" class="w-full h-full object-cover">
                             @elseif(!empty($profile?->avatar_path))
-                                <img src="{{ asset('storage/' . $profile->avatar_path) }}" alt="Foto Toko" class="w-full h-full object-cover">
+                            <img src="{{ asset('storage/' . $profile->avatar_path) }}" alt="Foto Toko" class="w-full h-full object-cover">
                             @else
-                                <div class="w-full h-full flex items-center justify-center text-sm surface-muted">No Image</div>
+                            <div class="w-full h-full flex items-center justify-center text-sm surface-muted">No Image</div>
                             @endif
                         </div>
 
@@ -57,7 +63,7 @@
                 <button type="submit" class="rounded-2xl bg-amber-500 px-5 py-3 font-semibold text-slate-950 transition hover:bg-amber-400">Simpan Perubahan Toko</button>
             </form>
 
-                <div class="mt-8 rounded-3xl surface-panel border border-white/10 bg-surface-weak/70 p-6 space-y-4">
+            <div class="mt-8 rounded-3xl surface-panel border border-white/10 bg-surface-weak/70 p-6 space-y-4">
                 <h2 class="text-xl font-bold surface-text">Nonaktifkan / Hapus Toko</h2>
                 <p class="mt-2 surface-muted">Anda dapat menonaktifkan toko agar tidak menerima pesanan lagi, atau menghapus toko secara permanen jika belum ada transaksi.</p>
 
@@ -73,7 +79,7 @@
                 </form>
 
                 @if($errors->has('store'))
-                    <p class="mt-2 text-sm text-rose-400">{{ $errors->first('store') }}</p>
+                <p class="mt-2 text-sm text-rose-400">{{ $errors->first('store') }}</p>
                 @endif
             </div>
         </div>
