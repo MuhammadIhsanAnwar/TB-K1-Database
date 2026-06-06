@@ -226,9 +226,6 @@ use Illuminate\Support\Str;
 
                         <div class="mt-8 pt-6 border-t border-white/5">
                             <div class="flex items-center justify-center gap-3 opacity-40 grayscale hover:grayscale-0 transition-all">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/b/b5/PayPal.svg" class="h-3.5" alt="Paypal">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/5/5e/Visa_Inc._logo.svg" class="h-3" alt="Visa">
-                                <img src="https://upload.wikimedia.org/wikipedia/commons/2/2a/Mastercard-logo.svg" class="h-4.5" alt="Mastercard">
                             </div>
                             <p class="mt-4 text-[9px] text-slate-500 text-center font-bold tracking-widest leading-relaxed uppercase flex items-center justify-center gap-1.5">
                                 <svg class="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"/></svg>
