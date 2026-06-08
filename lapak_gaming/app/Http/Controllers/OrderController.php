@@ -268,144 +268,47 @@ class OrderController extends Controller {
             ->with('success', count($createdOrders) . ' pesanan berhasil dibuat untuk ' . count($createdOrders) . ' penjual berbeda!');
     }
 
-{
-    $order = Order::where('order_code', $order_code)
-        ->orWhere('invoice_number', $order_code)
-        ->firstOrFail();
+    public function pay(Request $request, $order_code) {
+        $order = Order::where('order_code', $order_code)
+            ->orWhere('invoice_number', $order_code)
+            ->firstOrFail();
 
-    abort_if($order->buyer_id != Auth::id(), 403);
-    abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
+        abort_if($order->buyer_id != Auth::id(), 403);
+        abort_if($order->status !== Order::STATUS_PENDING_PAYMENT, 422, 'Order sudah diproses.');
 
-    /** @var User $user */
-    $user = Auth::user();
+        /** @var User $user */
+        $user = Auth::user();
 
-    $request->validate([
-        'payment_method' => 'required|in:balance',
-    ]);
-
-    $amount = (float) ($order->grand_total ?? $order->total_price ?? 0);
-
-    if ($user->balance < $amount) {
-        return back()->with('error', 'Saldo tidak mencukupi!');
-    }
-
-    DB::transaction(function () use ($order, $user, $amount) {
-
-        $user->deductBalance(
-            $amount,
-            "Pembayaran Order #{$order->order_code}",
-            $order->id
-        );
-
-        $order->update([
-            'status' => Order::STATUS_PAYMENT_UPLOADED,
-            'payment_method' => 'balance',
-            'paid_at' => now(),
-        ]);
-    });
-
-    return redirect()
-        ->route('orders.show', $order->order_code ?? $order->invoice_number)
-        ->with('success', 'Pembayaran berhasil!');
-}
-    public function store(Request $request) {
-        $messages = [
-            'payment_method.required' => 'Metode pembayaran wajib dipilih.',
-            'payment_method.in' => 'Metode pembayaran tidak valid.',
-            'buyer_note.string' => 'Catatan pesanan harus berupa teks.',
-            'buyer_note.max' => 'Catatan pesanan maksimal 1000 karakter.',
-        ];
-
-        $validated = $request->validate([
+        $request->validate([
             'payment_method' => 'required|in:balance',
-            'buyer_note' => 'nullable|string|max:1000',
-        ], $messages);
+        ]);
 
-        $cartItems = Cart::where('user_id', Auth::id())->where('is_selected', true)->with('product')->get();
-        if ($cartItems->isEmpty()) {
-            return redirect()->route('cart.index')->with('error', 'Keranjang kosong atau belum ada produk yang dipilih!');
+        $amount = (float) ($order->grand_total ?? $order->total_price ?? 0);
+
+        if ($user->balance < $amount) {
+            return back()->with('error', 'Saldo tidak mencukupi!');
         }
 
-        foreach ($cartItems as $item) {
-            if ($item->product->stock < $item->quantity) {
-                return redirect()->route('cart.index')
-                    ->with('error', "Stok {$item->product->name} tidak mencukupi!");
-            }
-        }
+        DB::transaction(function () use ($order, $user, $amount) {
 
-        DB::transaction(function () use ($request, $cartItems) {
-            $subtotal = $cartItems->sum(fn($c) => $c->product->price * $c->quantity);
-            $fee = round($subtotal * 0.02);
-            $grand_total = $subtotal + $fee; 
+            $user->deductBalance(
+                $amount,
+                "Pembayaran Order #{$order->order_code}",
+                $order->id
+            );
 
-            $notesArray = [];
-            foreach ($cartItems as $item) {
-                if (!empty($item->notes)) {
-                    $notesArray[] = $item->product->name . ': ' . $item->notes;
-                }
-            }
-            $combinedNotes = implode("\n", $notesArray);
-
-            $sellerIds = $cartItems->pluck('product.seller_id')->filter()->unique()->values();
-
-            $orderData = [
-                'buyer_id'       => Auth::id(),
-                'invoice_number' => 'INV-' . strtoupper(Str::random(10)),
-                'status'         => Order::STATUS_PENDING_PAYMENT,
-                'payment_method' => $request->payment_method,
-                'delivery_notes' => $validated['buyer_note'] ?? null,
-            ];
-
-            if ($sellerIds->count() === 1) {
-                $orderData['seller_id'] = $sellerIds->first();
-            }
-
-            if (\Illuminate\Support\Facades\Schema::hasColumn('orders', 'total_price')) {
-                $orderData['total_price'] = $grand_total;
-            }
-
-            if (Schema::hasColumn('orders', 'notes')) {
-                $orderData['notes'] = $combinedNotes ?: null;
-            }
-
-            $order = Order::create($orderData);
-
-            if (method_exists($order, 'financial')) {
-                $order->financial()->create([
-                    'subtotal' => $subtotal,
-                    'fee_amount' => $fee,
-                    'escrow_amount' => $subtotal,
-                    'grand_total' => $grand_total,
-                ]);
-            }   
-
-            foreach ($cartItems as $item) {
-                OrderItem::create([
-                    'order_id' => $order->id,
-                    'product_id' => $item->product_id,
-                    'seller_id' => $item->product->seller_id,
-
-                    'name_snapshot' => $item->product->name,
-                    'price_snapshot' => $item->product->price,
-
-                    'product_name' => $item->product->name,
-                    'price' => $item->product->price,
-                    'quantity' => $item->quantity,
-                    'subtotal' => $item->product->price * $item->quantity,
-                ]);
-
-                $item->product->decrement('stock', $item->quantity);
-            }
-
-            Cart::where('user_id', Auth::id())->where('is_selected', true)->delete();
-
-            $identifier = $order->order_code ?? $order->invoice_number ?? $order->id;
-            session(['last_order_code' => $identifier]);
+            $order->update([
+                'status' => Order::STATUS_PAYMENT_UPLOADED,
+                'payment_method' => 'balance',
+                'paid_at' => now(),
+            ]);
         });
 
-        return redirect()->route('orders.show', session('last_order_code'))
-            ->with('success', 'Order berhasil dibuat!');
+        return redirect()
+            ->route('orders.show', $order->order_code ?? $order->invoice_number)
+            ->with('success', 'Pembayaran berhasil!');
     }
+    
 
     public function complete($order_code) {
         $order = Order::where('order_code', $order_code)->orWhere('invoice_number', $order_code)->firstOrFail();

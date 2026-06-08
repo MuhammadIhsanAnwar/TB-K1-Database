@@ -64,19 +64,38 @@
                             <h2 class="font-display text-sm font-bold uppercase tracking-[0.22em] text-sky-300">Item yang Dibeli</h2>
                         </div>
                         <div class="space-y-4 p-5">
-                            @foreach($cartItems as $item)
-                                <div class="flex gap-4 rounded-[24px] border border-white/5 bg-white/[0.03] p-4">
-                                    <img src="{{ $item->product->image_url }}" class="w-24 shrink-0 rounded-2xl object-cover aspect-[16/9] border border-white/8" alt="">
-                                    <div class="min-w-0 flex-1">
-                                        <p class="mb-1 text-sm font-bold leading-tight text-white">{{ $item->product->name }}</p>
-                                        <div class="mb-3 flex flex-wrap items-center gap-2">
-                                            <span class="rounded-full bg-sky-500/10 px-2.5 py-1 text-[10px] font-bold text-sky-300">{{ $item->product->category->name ?? 'Game' }}</span>
-                                            <span class="text-[10px] text-slate-400">Toko: {{ $item->product->seller?->store_name ?? $item->product->seller?->name ?? 'Unknown' }}</span>
+                            @foreach($groupSummaries as $sellerId => $summary)
+                                <div class="mb-4 rounded-[18px] border border-white/6 bg-white/[0.02] p-4">
+                                    <div class="mb-3 flex items-center justify-between">
+                                        <div class="flex items-center gap-3">
+                                            <div class="h-10 w-10 rounded-full bg-white/5 flex items-center justify-center text-sm font-bold text-white">{{ strtoupper(substr($summary['seller']->store_name ?? $summary['seller']->name ?? 'T',0,1)) }}</div>
+                                            <div>
+                                                <div class="text-sm font-bold text-white">{{ $summary['seller']->store_name ?? $summary['seller']->name ?? 'Penjual' }}</div>
+                                                <div class="text-xs text-slate-400">Items: {{ $summary['items']->count() }} | Subtotal: Rp {{ number_format($summary['subtotal'],0,',','.') }}</div>
+                                            </div>
                                         </div>
-                                        <div class="flex items-end justify-between gap-3">
-                                            <p class="text-sm font-semibold text-slate-300">Rp {{ number_format($item->product->price, 0, ',', '.') }} <span class="text-xs font-normal text-slate-500">× {{ $item->quantity }}</span></p>
-                                            <p class="text-sm font-black text-sky-300">Rp {{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}</p>
+                                    </div>
+
+                                    @foreach($summary['items'] as $item)
+                                        <div class="flex gap-4 rounded-[16px] border border-white/5 bg-white/[0.02] p-3 mb-3">
+                                            <img src="{{ $item->product->image_url }}" class="w-20 shrink-0 rounded-2xl object-cover aspect-[16/9] border border-white/8" alt="">
+                                            <div class="min-w-0 flex-1">
+                                                <p class="mb-1 text-sm font-bold leading-tight text-white">{{ $item->product->name }}</p>
+                                                <div class="mb-2 flex items-center gap-2">
+                                                    <span class="rounded-full bg-sky-500/10 px-2.5 py-1 text-[10px] font-bold text-sky-300">{{ $item->product->category->name ?? 'Game' }}</span>
+                                                </div>
+                                                <div class="flex items-end justify-between gap-3">
+                                                    <p class="text-sm font-semibold text-slate-300">Rp {{ number_format($item->product->price, 0, ',', '.') }} <span class="text-xs font-normal text-slate-500">× {{ $item->quantity }}</span></p>
+                                                    <p class="text-sm font-black text-sky-300">Rp {{ number_format($item->product->price * $item->quantity, 0, ',', '.') }}</p>
+                                                </div>
+                                            </div>
                                         </div>
+                                    @endforeach
+
+                                    {{-- Per-seller note for this group --}}
+                                    <div class="mt-2">
+                                        <label class="block text-sm font-medium text-slate-300 mb-2">Catatan untuk penjual (opsional)</label>
+                                        <textarea name="seller_notes[{{ $sellerId }}]" rows="3" placeholder="Contoh: Tolong kirim cepat, sertakan kode lisensi di catatan." class="w-full resize-none rounded-[12px] border border-white/10 bg-white/[0.02] px-3 py-2 text-white placeholder:text-slate-500">{{ old('seller_notes.'.$sellerId) }}</textarea>
                                     </div>
                                 </div>
                             @endforeach
