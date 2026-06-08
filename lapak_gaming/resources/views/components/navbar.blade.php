@@ -238,9 +238,9 @@ Premium Itemku/Codashop style marketplace navbar.
         </svg>
         Bantuan
       </a>
-      <div class="flex gap-2">
-        <a href="{{ route('login') }}" class="flex-1 btn-primary text-sm font-semibold text-center">Masuk</a>
-        <a href="{{ route('register') }}" class="flex-1 btn-accent text-sm font-semibold text-center">Daftar</a>
+      <div class="flex gap-3">
+        <a href="{{ route('login') }}" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-bold text-white border border-white/20 bg-white/5 hover:bg-white/10 transition-all duration-300">Masuk</a>
+        <a href="{{ route('register') }}" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-bold text-slate-900 bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 shadow-[0_4px_14px_rgba(34,211,238,0.4)] transition-all duration-300">Daftar</a>
       </div>
     </div>
   @endauth
@@ -627,9 +627,11 @@ Premium Itemku/Codashop style marketplace navbar.
             </svg>
             Bantuan
           </a>
+          <div class="h-6 w-px bg-white/10 mx-2 hidden sm:block"></div>
           <a href="{{ route('login') }}"
-            class="hidden sm:block btn-primary text-sm font-semibold">Masuk</a>
-          <a href="{{ route('register') }}" class="btn-accent">Daftar</a>
+            class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-white border border-white/20 bg-white/5 hover:bg-white/10 hover:border-white/30 backdrop-blur-sm transition-all duration-300">Masuk</a>
+          <a href="{{ route('register') }}" 
+            class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-slate-900 bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 shadow-[0_4px_14px_rgba(34,211,238,0.4)] hover:shadow-[0_6px_20px_rgba(34,211,238,0.6)] hover:-translate-y-0.5 transition-all duration-300">Daftar</a>
         @endif
 
       </div>
