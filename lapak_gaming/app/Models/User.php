@@ -54,6 +54,7 @@ class User extends Authenticatable implements MustVerifyEmail
         'suspended_at'                => 'datetime',
         'last_login_at'               => 'datetime',
         'two_factor_confirmed_at'     => 'datetime',
+        'seller_reviewed_at'          => 'datetime',
     ];
 
     protected $hidden = ['password', 'remember_token', 'two_factor_google_secret'];
