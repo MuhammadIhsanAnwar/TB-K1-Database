@@ -130,6 +130,11 @@ class OrderController extends Controller {
         $grandFee = round($grandSubtotal * $feePercent);
         $grandTotal = $grandSubtotal + $grandFee;
 
+        // expose variables expected by the view (legacy names)
+        $subtotal = $grandSubtotal;
+        $fee = $grandFee;
+        $total = $grandTotal;
+
         // Hitung per-group
         $groupSummaries = $sellerGroups->map(function ($items) use ($feePercent) {
             $subtotal = $items->sum(fn($i) => $i->product->price * $i->quantity);
@@ -145,7 +150,8 @@ class OrderController extends Controller {
 
         return view('orders.checkout', compact(
             'cartItems', 'sellerGroups', 'groupSummaries',
-            'grandSubtotal', 'grandFee', 'grandTotal'
+            'grandSubtotal', 'grandFee', 'grandTotal',
+            'subtotal', 'fee', 'total'
         ));
     }
 
