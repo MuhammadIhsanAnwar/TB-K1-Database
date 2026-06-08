@@ -107,28 +107,167 @@ class OrderController extends Controller {
     public function checkout(Request $request) {
         $cartItems = Cart::where('user_id', Auth::id())
             ->where('is_selected', true)
-            ->with('product')->get();
+            ->with(['product.seller', 'product.category'])
+            ->get();
 
         if ($cartItems->isEmpty()) {
             return redirect()->route('cart.index')->with('error', 'Keranjang kosong atau belum ada produk yang dipilih!');
         }
 
-        // Validasi stok
+        // Validasi stok semua item
         foreach ($cartItems as $item) {
-            if ($item->product->stock < $item->quantity) {
+            if (!$item->product || $item->product->stock < $item->quantity) {
                 return redirect()->route('cart.index')
                     ->with('error', "Stok {$item->product->name} tidak mencukupi!");
             }
         }
 
-        $subtotal = $cartItems->sum(fn($c) => $c->product->price * $c->quantity);
-        $fee = round($subtotal * 0.02); // 2% platform fee
-        $total = $subtotal + $fee;
+        // Kelompokkan per seller (ala Shopee)
+        $sellerGroups = $cartItems->groupBy(fn($item) => $item->product->seller_id);
 
-        return view('orders.checkout', compact('cartItems', 'subtotal', 'fee', 'total'));
+        $feePercent = 0.02;
+        $grandSubtotal = $cartItems->sum(fn($c) => $c->product->price * $c->quantity);
+        $grandFee = round($grandSubtotal * $feePercent);
+        $grandTotal = $grandSubtotal + $grandFee;
+
+        // Hitung per-group
+        $groupSummaries = $sellerGroups->map(function ($items) use ($feePercent) {
+            $subtotal = $items->sum(fn($i) => $i->product->price * $i->quantity);
+            $fee      = round($subtotal * $feePercent);
+            return [
+                'items'    => $items,
+                'seller'   => $items->first()->product->seller,
+                'subtotal' => $subtotal,
+                'fee'      => $fee,
+                'total'    => $subtotal + $fee,
+            ];
+        });
+
+        return view('orders.checkout', compact(
+            'cartItems', 'sellerGroups', 'groupSummaries',
+            'grandSubtotal', 'grandFee', 'grandTotal'
+        ));
     }
 
-    public function pay(Request $request, $order_code)
+    public function store(Request $request) {
+        $messages = [
+            'payment_method.required' => 'Metode pembayaran wajib dipilih.',
+            'payment_method.in'       => 'Metode pembayaran tidak valid.',
+        ];
+
+        $validated = $request->validate([
+            'payment_method' => 'required|in:balance',
+            'seller_notes'   => 'nullable|array',
+            'seller_notes.*' => 'nullable|string|max:500',
+        ], $messages);
+
+        $cartItems = Cart::where('user_id', Auth::id())
+            ->where('is_selected', true)
+            ->with(['product.seller'])
+            ->get();
+
+        if ($cartItems->isEmpty()) {
+            return redirect()->route('cart.index')->with('error', 'Keranjang kosong atau belum ada produk yang dipilih!');
+        }
+
+        // Validasi stok semua item dulu
+        foreach ($cartItems as $item) {
+            if (!$item->product || $item->product->stock < $item->quantity) {
+                return redirect()->route('cart.index')
+                    ->with('error', "Stok {$item->product->name} tidak mencukupi!");
+            }
+        }
+
+        $feePercent = 0.02;
+        $grandSubtotal = $cartItems->sum(fn($c) => $c->product->price * $c->quantity);
+        $grandFee      = round($grandSubtotal * $feePercent);
+        $grandTotal    = $grandSubtotal + $grandFee;
+
+        // Cek saldo sekali sebelum transaksi
+        /** @var \App\Models\User $buyer */
+        $buyer = Auth::user();
+        if ((float) $buyer->balance < $grandTotal) {
+            return back()->with('error', 'Saldo tidak mencukupi! Silakan isi saldo terlebih dahulu.');
+        }
+
+        // Kelompokkan per seller
+        $sellerGroups = $cartItems->groupBy(fn($item) => $item->product->seller_id);
+        $createdOrders = [];
+
+        DB::transaction(function () use ($request, $buyer, $sellerGroups, $feePercent, $grandTotal, &$createdOrders) {
+            // Kurangi saldo buyer sekali untuk total keseluruhan
+            $buyer->deductBalance($grandTotal, "Checkout Multi-Seller " . now()->format('YmdHis'), null);
+
+            foreach ($sellerGroups as $sellerId => $items) {
+                $subtotal = $items->sum(fn($i) => $i->product->price * $i->quantity);
+                $fee      = round($subtotal * $feePercent);
+                $total    = $subtotal + $fee;
+
+                $sellerNote = $request->input("seller_notes.{$sellerId}");
+
+                $order = Order::create([
+                    'buyer_id'       => $buyer->id,
+                    'seller_id'      => $sellerId,
+                    'invoice_number' => 'INV-' . now()->format('YmdHis') . '-' . strtoupper(\Illuminate\Support\Str::random(6)),
+                    'status'         => Order::STATUS_PAYMENT_UPLOADED,
+                    'payment_method' => 'balance',
+                    'paid_at'        => now(),
+                    'due_at'         => now()->addDays(2),
+                    'delivery_notes' => $sellerNote,
+                    'notes'          => $sellerNote,
+                    'metadata'       => [
+                        'fee_percent'     => $feePercent * 100,
+                        'checkout_source' => 'cart_multi_seller',
+                        'seller_count'    => $sellerGroups->count(),
+                    ],
+                ]);
+
+                $order->financial()->create([
+                    'subtotal'      => $subtotal,
+                    'fee_amount'    => $fee,
+                    'escrow_amount' => $subtotal,
+                    'grand_total'   => $total,
+                ]);
+
+                foreach ($items as $item) {
+                    OrderItem::create([
+                        'order_id'       => $order->id,
+                        'product_id'     => $item->product_id,
+                        'seller_id'      => $item->product->seller_id,
+                        'name_snapshot'  => $item->product->name,
+                        'price_snapshot' => $item->product->price,
+                        'product_name'   => $item->product->name,
+                        'price'          => $item->product->price,
+                        'quantity'       => $item->quantity,
+                        'subtotal'       => $item->product->price * $item->quantity,
+                        'status'         => 'pending',
+                    ]);
+
+                    $item->product->decrement('stock', $item->quantity);
+                }
+
+                $createdOrders[] = $order;
+            }
+
+            // Hapus item yang sudah di-checkout dari keranjang
+            Cart::where('user_id', $buyer->id)->where('is_selected', true)->delete();
+
+            // Simpan order codes ke session untuk halaman sukses
+            session(['last_order_codes' => collect($createdOrders)->pluck('order_code')->toArray()]);
+        });
+
+        // Jika hanya 1 seller, redirect ke detail order itu
+        if (count($createdOrders) === 1) {
+            $code = $createdOrders[0]->order_code ?? $createdOrders[0]->invoice_number;
+            return redirect()->route('orders.show', $code)
+                ->with('success', 'Pesanan berhasil dibuat dan sedang diproses!');
+        }
+
+        // Jika multi-seller, redirect ke daftar pesanan
+        return redirect()->route('orders.index')
+            ->with('success', count($createdOrders) . ' pesanan berhasil dibuat untuk ' . count($createdOrders) . ' penjual berbeda!');
+    }
+
 {
     $order = Order::where('order_code', $order_code)
         ->orWhere('invoice_number', $order_code)
