@@ -1,3 +1,30 @@
+@php
+    $heroCard = null;
+    try {
+        if (\Illuminate\Support\Facades\Schema::hasTable('hero_cards')) {
+            $heroCard = \App\Models\HeroCard::first();
+        }
+    } catch (\Exception $e) {}
+
+    if (!$heroCard) {
+        $heroCard = new \App\Models\HeroCard([
+            'title' => 'Cosmic Warfare',
+            'subtitle' => 'User ID: 8847291 • Zone: Global',
+            'option1_value' => '250',
+            'option1_price' => 'Rp 45.000',
+            'option2_value' => '750',
+            'option2_price' => 'Rp 120.000',
+            'payment_text' => '250 Diamonds - Rp 45.000',
+            'region_text' => 'SEA Server',
+            'promo_badge' => 'BONUS +20% TODAY',
+            'receipt_title' => 'Order #92841',
+            'receipt_desc' => 'Delivered instantly in 2s',
+            'image_path' => null,
+        ]);
+    }
+    
+    $bgImage = $heroCard->image_path ? asset($heroCard->image_path) : 'https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop';
+@endphp
 <style>
   /* 3D Floating UI Styles */
   .hero-3d-wrapper {
@@ -76,7 +103,7 @@
     width: 100%;
     height: 160px;
     border-radius: 14px;
-    background: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?q=80&w=2070&auto=format&fit=crop') center/cover;
+    background: url('{{ $bgImage }}') center/cover;
     position: relative;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.1);
@@ -220,23 +247,23 @@
     <!-- 1. Main Card -->
     <div class="float-card card-main">
       <div class="main-img"></div>
-      <div class="game-title">Cosmic Warfare</div>
-      <div class="game-subtitle">User ID: 8847291 • Zone: Global</div>
+      <div class="game-title">{{ $heroCard->title }}</div>
+      <div class="game-subtitle">{{ $heroCard->subtitle }}</div>
       
       <div class="denom-grid">
         <div class="denom-item active">
           <div class="denom-val">
             <svg class="diamond-icon" viewBox="0 0 24 24"><path d="M12 2L2 12l10 10 10-10L12 2zm0 3.5l6.5 6.5-6.5 6.5-6.5-6.5L12 5.5z"/></svg>
-            250
+            {{ $heroCard->option1_value }}
           </div>
-          <div class="denom-price">Rp 45.000</div>
+          <div class="denom-price">{{ $heroCard->option1_price }}</div>
         </div>
         <div class="denom-item">
           <div class="denom-val">
             <svg class="diamond-icon" viewBox="0 0 24 24"><path d="M12 2L2 12l10 10 10-10L12 2zm0 3.5l6.5 6.5-6.5 6.5-6.5-6.5L12 5.5z"/></svg>
-            750
+            {{ $heroCard->option2_value }}
           </div>
-          <div class="denom-price">Rp 120.000</div>
+          <div class="denom-price">{{ $heroCard->option2_price }}</div>
         </div>
       </div>
 
@@ -251,7 +278,7 @@
       <div class="icon-success">✓</div>
       <div class="payment-text">
         <h4>Payment Confirmed</h4>
-        <p>250 Diamonds - Rp 45.000</p>
+        <p>{{ $heroCard->payment_text }}</p>
       </div>
     </div>
 
@@ -259,22 +286,22 @@
     <div class="float-card card-server">
       <div class="server-info">
         <span>Region</span>
-        <span>SEA Server</span>
+        <span>{{ $heroCard->region_text }}</span>
       </div>
       <div class="server-arrow">▼</div>
     </div>
 
     <!-- 4. Promo Badge -->
     <div class="float-card card-promo">
-      BONUS +20% TODAY
+      {{ $heroCard->promo_badge }}
     </div>
 
     <!-- 5. User Receipt -->
     <div class="float-card card-receipt">
       <div class="avatar"></div>
       <div class="receipt-text">
-        <h4>Order #92841 <span class="bolt">⚡</span></h4>
-        <p>Delivered instantly in 2s</p>
+        <h4>{{ $heroCard->receipt_title }} <span class="bolt">⚡</span></h4>
+        <p>{{ $heroCard->receipt_desc }}</p>
       </div>
     </div>
 

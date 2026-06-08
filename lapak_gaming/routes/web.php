@@ -215,6 +215,10 @@ Route::middleware(['auth', 'account.active'])->group(function (): void {
         Route::get('/orders/{order:order_code}', [AdminController::class, 'showOrder'])->name('orders.show');
         Route::get('/terminal', fn() => redirect()->route('artisan.terminal.index'))->name('terminal.index');
 
+        // Hero Card
+        Route::get('/hero-card', [\App\Http\Controllers\Admin\HeroCardController::class, 'edit'])->name('hero-card.edit');
+        Route::post('/hero-card', [\App\Http\Controllers\Admin\HeroCardController::class, 'update'])->name('hero-card.update');
+
         // Categories Management
         Route::resource('categories', \App\Http\Controllers\Admin\CategoryController::class)->except(['show']);
 
