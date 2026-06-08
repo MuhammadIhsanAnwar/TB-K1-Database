@@ -419,9 +419,14 @@ class AdminController extends Controller
 
         $ordersQuery = Order::query()->with(['buyer', 'seller', 'financial'])
             ->when($q, function ($qBuilder) use ($q) {
-                $qBuilder->where('order_code', 'like', "%{$q}%")
-                    ->orWhereHas('buyer', fn($b) => $b->where('name', 'like', "%{$q}%"))
-                    ->orWhereHas('seller', fn($s) => $s->where('name', 'like', "%{$q}%"));
+                $qBuilder->where(function ($inner) use ($q) {
+                    $inner->where('order_code', 'like', "%{$q}%")
+                        ->orWhere('invoice_number', 'like', "%{$q}%")
+                        ->orWhereHas('buyer', fn($b) => $b->where('name', 'like', "%{$q}%")
+                                                           ->orWhere('email', 'like', "%{$q}%"))
+                        ->orWhereHas('seller', fn($s) => $s->where('name', 'like', "%{$q}%")
+                                                            ->orWhere('shop_name', 'like', "%{$q}%"));
+                });
             });
 
         if ($sort === 'grand_total') {
