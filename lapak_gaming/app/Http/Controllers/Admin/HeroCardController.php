@@ -48,15 +48,21 @@ class HeroCardController extends Controller
                 $imageBase64 = base64_decode($imageParts[1]);
                 $fileName = 'hero_card_' . Str::random(10) . '.' . $imageType;
                 
-                // Save to public storage
-                Storage::disk('public')->put('images/hero/' . $fileName, $imageBase64);
+                $path = public_path('images/hero');
+                if (!file_exists($path)) {
+                    mkdir($path, 0755, true);
+                }
+                file_put_contents($path . '/' . $fileName, $imageBase64);
                 
                 // Delete old image if exists
-                if ($heroCard->image_path) {
-                    Storage::disk('public')->delete(str_replace('storage/', '', $heroCard->image_path));
+                if ($heroCard->image_path && str_starts_with($heroCard->image_path, 'images/hero/')) {
+                    $oldFile = public_path($heroCard->image_path);
+                    if (file_exists($oldFile)) {
+                        unlink($oldFile);
+                    }
                 }
 
-                $heroCard->image_path = 'storage/images/hero/' . $fileName;
+                $heroCard->image_path = 'images/hero/' . $fileName;
             }
         }
 
