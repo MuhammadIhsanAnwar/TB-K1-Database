@@ -13,14 +13,18 @@
 
 @section('content')
 <div class="mx-auto max-w-7xl px-5 py-8">
-    <div class="mb-8 flex items-center justify-between">
+    <div class="mb-6">
+        <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 px-4 py-2 text-xs font-bold text-slate-300 transition-all uppercase tracking-widest w-fit">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            Kembali ke Dasbor
+        </a>
+    </div>
+
+    <div class="mb-8">
         <div>
             <h1 class="text-3xl font-black text-white">Manage 3D Card</h1>
             <p class="mt-2 text-sm text-slate-400">Atur konten dinamis untuk 3D Card di halaman utama.</p>
         </div>
-        <a href="{{ route('admin.dashboard') }}" class="rounded-xl border border-slate-700 bg-slate-800/60 px-5 py-2 text-sm font-bold text-white transition hover:bg-slate-700">
-            Kembali
-        </a>
     </div>
 
     @if(session('success'))

@@ -301,7 +301,13 @@ a{
   <div class="dashboard-container px-6 lg:px-8 space-y-8 relative z-10">
 
     {{-- ── HEADER CONTROL ───────────────────────────────────── --}}
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between border-b border-white/5 pb-5">
+    <div class="flex flex-col gap-4 border-b border-white/5 pb-5">
+      <div class="mb-2">
+        <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 px-4 py-2 text-xs font-bold text-slate-300 transition-all uppercase tracking-widest w-fit">
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+          Kembali ke Dasbor
+        </a>
+      </div>
       <div>
         <div class="flex items-center gap-2 mb-1.5">
           <span class="w-1.5 h-1.5 rounded-full bg-red-500 animate-pulse"></span>
@@ -310,13 +316,6 @@ a{
         <h1 class="text-3xl font-extrabold text-white tracking-tight">Kelola Otoritas Akun</h1>
         <p class="text-slate-400 text-sm mt-0.5">Kelola data pengguna, hak akses seller, dan validasi pengajuan berkas toko.</p>
       </div>
-      <a href="{{ route('admin.dashboard') }}"
-         class="inline-flex items-center gap-2 rounded-xl surface-weak hover:brightness-105 border border-white/5 px-4 py-2.5 text-xs font-bold surface-muted transition-all tracking-wide">
-        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7"/>
-        </svg>
-        KEMBALI KE DASBOR
-      </a>"
     </div>
     {{-- SEARCH & SORT FORM --}}
     <div class="mt-4 mb-2 flex items-center justify-end gap-3">

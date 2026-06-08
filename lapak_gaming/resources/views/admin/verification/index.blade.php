@@ -105,17 +105,18 @@
 <div class="mx-auto max-w-7xl space-y-8">
 
     {{-- Header --}}
-    <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <div class="flex flex-col gap-4 border-b border-white/5 pb-5">
+        <div class="mb-2">
+            <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 px-4 py-2 text-xs font-bold text-slate-300 transition-all uppercase tracking-widest w-fit">
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+                Kembali ke Dasbor
+            </a>
+        </div>
         <div>
             <p class="text-xs uppercase tracking-widest text-amber-400/80 font-bold mb-1">Admin Panel</p>
             <h1 class="text-3xl sm:text-4xl font-black text-white tracking-tight">Verifikasi Seller</h1>
             <p class="text-slate-400 text-sm mt-1 max-w-xl">Kelola pengajuan, klarifikasi, dan pantau status verifikasi setiap penjual.</p>
         </div>
-        <a href="{{ route('admin.dashboard') }}" 
-           class="inline-flex items-center gap-2 text-sm font-medium text-slate-300 hover:text-white bg-white/5 hover:bg-white/10 px-4 py-2 rounded-xl transition-all">
-            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
-            Kembali ke Dashboard
-        </a>
     </div>
 
     {{-- Stats Cards --}}

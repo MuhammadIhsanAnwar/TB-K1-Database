@@ -5,27 +5,12 @@
 @section('content')
 <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
 
-    {{-- Breadcrumbs --}}
-    <nav class="mb-6 flex" aria-label="Breadcrumb">
-        <ol class="inline-flex items-center space-x-1 md:space-x-3">
-            <li class="inline-flex items-center">
-                <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center text-sm font-medium text-slate-400 hover:text-white">
-                    <svg class="mr-2 h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
-                    </svg>
-                    Dashboard
-                </a>
-            </li>
-            <li aria-current="page">
-                <div class="flex items-center">
-                    <svg class="h-5 w-5 text-slate-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
-                    </svg>
-                    <span class="ml-1 text-sm font-medium text-slate-200 md:ml-2">Kategori</span>
-                </div>
-            </li>
-        </ol>
-    </nav>
+    <div class="mb-6">
+        <a href="{{ route('admin.dashboard') }}" class="inline-flex items-center gap-2 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 px-4 py-2 text-xs font-bold text-slate-300 transition-all uppercase tracking-widest w-fit">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M10 19l-7-7m0 0l7-7m-7 7h18"/></svg>
+            Kembali ke Dasbor
+        </a>
+    </div>
 
     {{-- Header --}}
     <div class="mb-8 flex flex-col justify-between gap-4 sm:flex-row sm:items-center">
