@@ -223,21 +223,25 @@ Premium Itemku/Codashop style marketplace navbar.
           <div class="text-xs text-slate-400 truncate">{{ $authUser?->email ?? '' }}</div>
         </div>
       </div>
+      @if(!$isAdminRoute)
       <a href="{{ route('contact') }}" class="mt-3 w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-700/40 transition-colors">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         Bantuan
       </a>
+      @endif
     </div>
   @else
     <div class="p-4 border-b border-white/6 flex flex-col gap-2">
+      @if(!$isAdminRoute)
       <a href="{{ route('contact') }}" class="w-full flex items-center justify-center gap-2 px-3 py-2 rounded-lg text-sm font-semibold text-slate-300 hover:text-white hover:bg-slate-700/40 transition-colors">
         <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
           <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         </svg>
         Bantuan
       </a>
+      @endif
       <div class="flex gap-3">
         <a href="{{ route('login') }}" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-bold text-white border border-white/20 bg-white/5 hover:bg-white/10 transition-all duration-300">Masuk</a>
         <a href="{{ route('register') }}" class="flex-1 inline-flex items-center justify-center px-4 py-2.5 rounded-xl text-sm font-bold text-slate-900 bg-gradient-to-r from-cyan-400 to-cyan-300 hover:from-cyan-300 hover:to-cyan-200 shadow-[0_4px_14px_rgba(34,211,238,0.4)] transition-all duration-300">Daftar</a>
@@ -466,12 +470,14 @@ Premium Itemku/Codashop style marketplace navbar.
             @endif
           @endif
 
+          @if(!$isAdminRoute)
           <a href="{{ route('contact') }}" class="hidden sm:flex items-center gap-1 text-white text-sm font-semibold hover:opacity-80 transition-opacity">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Bantuan
           </a>
+          @endif
 
           {{-- If on admin routes, show admin quick links instead of chat/cart --}}
           @if($isAdminRoute && $authUser?->isAdmin())
@@ -621,12 +627,14 @@ Premium Itemku/Codashop style marketplace navbar.
                 d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
             </svg>
           </a>
+          @if(!$isAdminRoute)
           <a href="{{ route('contact') }}" class="hidden sm:flex items-center gap-1 text-white text-sm font-semibold hover:opacity-80 transition-opacity">
             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Bantuan
           </a>
+          @endif
           <div class="h-6 w-px bg-white/10 mx-2 hidden sm:block"></div>
           <a href="{{ route('login') }}"
             class="hidden sm:inline-flex items-center justify-center px-5 py-2.5 rounded-xl text-sm font-bold text-white border border-white/20 bg-white/5 hover:bg-white/10 hover:border-white/30 backdrop-blur-sm transition-all duration-300">Masuk</a>
