@@ -101,9 +101,16 @@ class VerificationController extends Controller
 
     public function requestRevision(Request $request, User $user): RedirectResponse
     {
+        $messages = [
+            'notes.required' => 'Catatan revisi wajib diisi.',
+            'notes.string'   => 'Catatan revisi harus berupa teks.',
+            'notes.min'      => 'Catatan revisi minimal 10 karakter.',
+            'notes.max'      => 'Catatan revisi maksimal 2000 karakter.',
+        ];
+
         $data = $request->validate([
             'notes'   => ['required', 'string', 'min:10', 'max:2000'],
-        ]);
+        ], $messages);
 
         $user->forceFill([
             'seller_status'           => 'need_revision',
@@ -166,9 +173,16 @@ class VerificationController extends Controller
 
     public function reject(Request $request, User $user): RedirectResponse
     {
+        $messages = [
+            'notes.required' => 'Alasan penolakan wajib diisi.',
+            'notes.string'   => 'Alasan penolakan harus berupa teks.',
+            'notes.min'      => 'Alasan penolakan minimal 10 karakter.',
+            'notes.max'      => 'Alasan penolakan maksimal 2000 karakter.',
+        ];
+
         $data = $request->validate([
             'notes' => ['required', 'string', 'min:10', 'max:2000'],
-        ]);
+        ], $messages);
 
         $user->forceFill([
             'seller_status'           => 'rejected',
@@ -269,11 +283,19 @@ class VerificationController extends Controller
 
     public function sendClarification(Request $request, User $user): RedirectResponse
     {
+        $messages = [
+            'message.required' => 'Pesan klarifikasi wajib diisi.',
+            'message.string'   => 'Pesan klarifikasi harus berupa teks.',
+            'message.min'      => 'Pesan klarifikasi minimal 5 karakter.',
+            'message.max'      => 'Pesan klarifikasi maksimal 2000 karakter.',
+            'attachments.*.max' => 'Ukuran file lampiran maksimal 5MB.',
+        ];
+
         $data = $request->validate([
             'message'     => ['required', 'string', 'min:5', 'max:2000'],
             'attachments' => ['nullable', 'array'],
             'attachments.*' => ['file', 'max:5120'],
-        ]);
+        ], $messages);
 
         $attachments = [];
         if ($request->hasFile('attachments')) {
