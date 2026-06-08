@@ -19,8 +19,6 @@ class HeroCard extends Model
         'payment_text',
         'region_text',
         'promo_badge',
-        'receipt_title',
-        'receipt_desc',
         'image_path',
     ];
 }

@@ -17,8 +17,6 @@
             'payment_text' => '250 Diamonds - Rp 45.000',
             'region_text' => 'SEA Server',
             'promo_badge' => 'BONUS +20% TODAY',
-            'receipt_title' => 'Order #92841',
-            'receipt_desc' => 'Delivered instantly in 2s',
             'image_path' => null,
         ]);
     }
@@ -103,7 +101,6 @@
     width: 100%;
     height: 160px;
     border-radius: 14px;
-    background: url('{{ $bgImage }}') center/cover;
     position: relative;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.1);
@@ -246,7 +243,7 @@
     
     <!-- 1. Main Card -->
     <div class="float-card card-main">
-      <div class="main-img"></div>
+      <div class="main-img" style="background: url('{{ $bgImage }}') center/cover;"></div>
       <div class="game-title">{{ $heroCard->title }}</div>
       <div class="game-subtitle">{{ $heroCard->subtitle }}</div>
       
@@ -267,10 +264,10 @@
         </div>
       </div>
 
-      <button class="topup-btn">
+      <a href="{{ route('categories.show', 'top-up-game') }}" class="topup-btn" style="text-decoration:none;">
         <svg width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
         Top Up Now
-      </button>
+      </a>
     </div>
 
     <!-- 2. Payment Confirmed -->
@@ -294,15 +291,6 @@
     <!-- 4. Promo Badge -->
     <div class="float-card card-promo">
       {{ $heroCard->promo_badge }}
-    </div>
-
-    <!-- 5. User Receipt -->
-    <div class="float-card card-receipt">
-      <div class="avatar"></div>
-      <div class="receipt-text">
-        <h4>{{ $heroCard->receipt_title }} <span class="bolt">⚡</span></h4>
-        <p>{{ $heroCard->receipt_desc }}</p>
-      </div>
     </div>
 
   </div>

@@ -113,16 +113,6 @@
                 <input type="text" name="promo_badge" value="{{ old('promo_badge', $heroCard->promo_badge) }}" required class="w-full rounded-xl border border-white/10 bg-[#050816] px-4 py-3 text-white focus:border-blue-500 outline-none">
             </div>
             
-            <div class="col-span-1 md:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-6">
-                <div>
-                    <label class="block text-sm font-semibold text-slate-400 mb-2">Receipt Title</label>
-                    <input type="text" name="receipt_title" value="{{ old('receipt_title', $heroCard->receipt_title) }}" required class="w-full rounded-xl border border-white/10 bg-[#050816] px-4 py-3 text-white focus:border-blue-500 outline-none">
-                </div>
-                <div>
-                    <label class="block text-sm font-semibold text-slate-400 mb-2">Receipt Description</label>
-                    <input type="text" name="receipt_desc" value="{{ old('receipt_desc', $heroCard->receipt_desc) }}" required class="w-full rounded-xl border border-white/10 bg-[#050816] px-4 py-3 text-white focus:border-blue-500 outline-none">
-                </div>
-            </div>
         </div>
 
         <div class="pt-6 border-t border-white/10 flex justify-end">

@@ -31,8 +31,6 @@ class HeroCardController extends Controller
             'payment_text' => 'required|string|max:255',
             'region_text' => 'required|string|max:255',
             'promo_badge' => 'required|string|max:255',
-            'receipt_title' => 'required|string|max:255',
-            'receipt_desc' => 'required|string|max:255',
         ]);
 
         $heroCard = HeroCard::first();

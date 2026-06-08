@@ -24,8 +24,6 @@ return new class extends Migration
             $table->string('payment_text')->default('250 Diamonds - Rp 45.000');
             $table->string('region_text')->default('SEA Server');
             $table->string('promo_badge')->default('BONUS +20% TODAY');
-            $table->string('receipt_title')->default('Order #92841');
-            $table->string('receipt_desc')->default('Delivered instantly in 2s');
             $table->string('image_path')->nullable();
             $table->timestamps();
         });
